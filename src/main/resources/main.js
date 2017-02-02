@@ -1,5 +1,9 @@
+var initLib = require('/lib/office-league-init');
+
 log.info('Application ' + app.name + ' started');
 
-__.disposer(function() {
+initLib.initialize();
+
+__.disposer(function () {
     log.info('Application ' + app.name + ' stopped');
 });

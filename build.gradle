@@ -33,12 +33,16 @@ dependencies {
     //include "com.enonic.xp:lib-i18n:${xpVersion}"
     //include "com.enonic.xp:lib-auth:${xpVersion}"
     //include "com.enonic.xp:lib-cache:${xpVersion}"
-    //include "com.enonic.xp:lib-context:${xpVersion}"
     //include "com.enonic.xp:lib-http-client:${xpVersion}"
     //include "com.enonic.xp:lib-io:${xpVersion}"
     //include "com.enonic.xp:lib-mail:${xpVersion}"
     //include "com.enonic.xp:lib-repo:${xpVersion}"
     //include "com.enonic.xp:lib-websocket:${xpVersion}"
+
+    include "com.enonic.xp:lib-context:${xpVersion}"
+    include "com.enonic.xp:lib-repo:${xpVersion}"
+    include "com.enonic.xp:lib-node:${xpVersion}"
+    include "com.enonic.xp:lib-value:${xpVersion}"
 }
 
 repositories {
