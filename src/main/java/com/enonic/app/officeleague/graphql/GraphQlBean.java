@@ -11,10 +11,10 @@ import graphql.schema.GraphQLSchema;
 public class GraphQlBean
 {
 
-    public void test( final String request )
+    public GraphQLSchema createSchema()
     {
         final GraphQLFieldDefinition.Builder helloFieldDefinitionBuilder =
-            GraphQLFieldDefinition.newFieldDefinition().type( Scalars.GraphQLString ).name( "hello" ).staticValue( "Hello world3!" );
+            GraphQLFieldDefinition.newFieldDefinition().type( Scalars.GraphQLString ).name( "hello" ).staticValue( "Hello world4!" );
 
         GraphQLObjectType queryType = GraphQLObjectType.newObject().
             name( "helloWorldQuery" ).
@@ -24,29 +24,13 @@ public class GraphQlBean
         GraphQLSchema schema = GraphQLSchema.newSchema().
             query( queryType ).
             build();
-
-        GraphQL graphQL = new GraphQL( schema );
-        Map<String, Object> result = (Map<String, Object>) graphQL.execute( "{hello}" ).getData();
-
-        System.out.println( result );
+        return schema;
     }
 
-    public static void main( String[] args )
+    public void execute( final GraphQLSchema schema, final String request )
     {
-        final GraphQLFieldDefinition.Builder helloFieldDefinitionBuilder =
-            GraphQLFieldDefinition.newFieldDefinition().type( Scalars.GraphQLString ).name( "hello" ).staticValue( "Hello world!" );
-
-        GraphQLObjectType queryType = GraphQLObjectType.newObject().
-            name( "helloWorldQuery" ).
-            field( helloFieldDefinitionBuilder ).
-            build();
-
-        GraphQLSchema schema = GraphQLSchema.newSchema().
-            query( queryType ).
-            build();
-
         GraphQL graphQL = new GraphQL( schema );
-        Map<String, Object> result = (Map<String, Object>) graphQL.execute( "{hello}" ).getData();
+        Map<String, Object> result = (Map<String, Object>) graphQL.execute( request ).getData();
 
         System.out.println( result );
     }
