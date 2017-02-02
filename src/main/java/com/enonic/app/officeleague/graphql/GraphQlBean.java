@@ -11,13 +11,13 @@ import graphql.schema.GraphQLSchema;
 public class GraphQlBean
 {
 
-    public GraphQLSchema createSchema()
+    public GraphQLSchema createSchema( final Object obj )
     {
         final GraphQLFieldDefinition.Builder helloFieldDefinitionBuilder =
             GraphQLFieldDefinition.newFieldDefinition().type( Scalars.GraphQLString ).name( "hello" ).staticValue( "Hello world4!" );
 
         GraphQLObjectType queryType = GraphQLObjectType.newObject().
-            name( "helloWorldQuery" ).
+            name( "QueryType" ).
             field( helloFieldDefinitionBuilder ).
             build();
 
