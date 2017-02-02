@@ -100,7 +100,7 @@ var createRootNodes = function () {
         log.info('Creating node [' + LEAGUES_PATH + '] ...');
         var leaguesNode = repoConn.create({
             _name: LEAGUES_PATH.slice(1),
-            _path: LEAGUES_PATH
+            _parentPath: '/'
         });
     }
     var teamsExist = nodeWithPathExists(repoConn, TEAMS_PATH);
@@ -108,7 +108,7 @@ var createRootNodes = function () {
         log.info('Creating node [' + TEAMS_PATH + '] ...');
         var teamsNode = repoConn.create({
             _name: TEAMS_PATH.slice(1),
-            _path: TEAMS_PATH
+            _parentPath: '/'
         });
     }
     var playersExist = nodeWithPathExists(repoConn, PLAYERS_PATH);
@@ -116,7 +116,7 @@ var createRootNodes = function () {
         log.info('Creating node [' + PLAYERS_PATH + '] ...');
         var playersNode = repoConn.create({
             _name: PLAYERS_PATH.slice(1),
-            _path: PLAYERS_PATH
+            _parentPath: '/'
         });
     }
 };
