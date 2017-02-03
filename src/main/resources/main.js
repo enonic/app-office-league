@@ -6,8 +6,14 @@ var schema = graphQlLib.createSchema({
     query: {
         hello: {
             type: 'String',
-            staticValue: "test124"
+            data: "test124"
+        },
+        test2: {
+            type: 'String',
+            data: function () {
+                return "qqs"
+            }
         }
     }
 });
-graphQlLib.execute(schema, 'query{hello}'); 
+graphQlLib.execute(schema, 'query{test2}'); 

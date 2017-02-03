@@ -26,7 +26,7 @@ public class GraphQlBean
 
     public GraphQLSchema createSchema( final ScriptValue params )
     {
-        
+
         GraphQLObjectType.Builder graphQlQuery = GraphQLObjectType.newObject().
             name( "QueryType" );
 
@@ -39,26 +39,33 @@ public class GraphQlBean
         return schema;
     }
 
-    private void createQueryFieldTypes( final ScriptValue query, final GraphQLObjectType.Builder graphQlQuery )
+    private void createQueryFieldTypes( final ScriptValue scriptQuery, final GraphQLObjectType.Builder graphQlQuery )
     {
-        for ( String queryFieldKey : query.getKeys() )
+        for ( String scriptQueryFieldKey : scriptQuery.getKeys() )
         {
-            final ScriptValue queryFieldValue = query.getMember( queryFieldKey );
+            final ScriptValue scriptQueryFieldValue = scriptQuery.getMember( scriptQueryFieldKey );
 
-            final String typeKey = queryFieldValue.getMember( "type" ).getValue( String.class );
+            final String typeKey = scriptQueryFieldValue.getMember( "type" ).getValue( String.class );
             final GraphQLType graphQLType = getType( typeKey );
 
             final GraphQLFieldDefinition.Builder graphQlField = GraphQLFieldDefinition.newFieldDefinition().
                 type( (GraphQLScalarType) graphQLType ). //TODO
-                name( queryFieldKey );
+                name( scriptQueryFieldKey );
 
-            final Object staticValue = queryFieldValue.getMember( "staticValue" ).getValue( String.class );
-            if ( staticValue != null )
+            final ScriptValue data = scriptQueryFieldValue.getMember( "data" );
+            if ( data != null )
             {
-                graphQlField.staticValue( staticValue );
-            }
+                if ( data.isValue() )
+                {
+                    graphQlField.staticValue( data.getValue() );
+                }
+                else if ( data.isFunction() )
+                {
+                    graphQlField.dataFetcher( ( env ) -> data.call().getValue() );
+                }
 
-            graphQlQuery.field( graphQlField );
+                graphQlQuery.field( graphQlField );
+            }
         }
     }
 
