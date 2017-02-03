@@ -11,8 +11,14 @@ var TEAMS_PATH = '/teams';
 
 exports.get = function (req) {
 
-    importPlayers();
-    importTeams();
+    var repoConn = nodeLib.connect({
+        repoId: REPO_NAME,
+        branch: 'master',
+        principals: ["role:system.admin"]
+    });
+    importPlayers(repoConn);
+    importTeams(repoConn);
+    importLeague(repoConn);
 
     return {
         contentType: 'application/json',
@@ -22,15 +28,9 @@ exports.get = function (req) {
     }
 };
 
-var importPlayers = function () {
+var importPlayers = function (repoConn) {
     var players = fetchPlayers();
     var p;
-    var repoConn = nodeLib.connect({
-        repoId: REPO_NAME,
-        branch: 'master',
-        principals: ["role:system.admin"]
-    });
-
     log.info(players.length + ' players found');
     for (var i = 0; i < players.length; i++) {
         p = players[i];
@@ -39,15 +39,9 @@ var importPlayers = function () {
     }
 };
 
-var importTeams = function () {
+var importTeams = function (repoConn) {
     var teams = fetchTeams();
     var t;
-    var repoConn = nodeLib.connect({
-        repoId: REPO_NAME,
-        branch: 'master',
-        principals: ["role:system.admin"]
-    });
-
     log.info(teams.length + ' teams found');
     for (var i = 0; i < teams.length; i++) {
         t = teams[i];
@@ -56,12 +50,53 @@ var importTeams = function () {
     }
 };
 
+var importLeague = function (repoConn) {
+    var imageValue = null; // TODO
+    var leagueNode = repoConn.create({
+        _name: 'enonic-foos',
+        _parentPath: LEAGUES_PATH,
+        name: 'Enonic Foos',
+        sport: 'foos',
+        image: imageValue,
+        description: 'Enonic Foos League',
+        config: {},
+        playerStats: {},
+        teamStats: {}
+    });
+
+    var gamesNode = repoConn.create({
+        _name: 'games',
+        _parentPath: leagueNode._path,
+    });
+
+    var from = 0, games = [], i;
+    do {
+        from = from + games.length;
+        games = fetchGames(from);
+        for (i = 0; i < games.length; i++) {
+            createGame(repoConn, gamesNode, games[i]);
+        }
+    } while (games && games.length > 0);
+};
+
+var fetchGames = function (from) {
+    from = from || 0;
+    return contentLib.query({
+        start: from,
+        count: 10,
+        contentTypes: [LEGACY_APP_NAME + ":game"],
+        query: "data.retired != 'true'",
+        sort: "createdTime ASC",
+        branch: 'draft'
+    }).hits;
+};
+
 var fetchPlayers = function () {
     return contentLib.query({
         start: 0,
         count: -1,
         contentTypes: [LEGACY_APP_NAME + ":player"],
-        query: "data.retired != 'true'",
+        // query: "data.retired != 'true'",
         branch: 'draft'
     }).hits;
 };
@@ -71,9 +106,56 @@ var fetchTeams = function () {
         start: 0,
         count: -1,
         contentTypes: [LEGACY_APP_NAME + ":team"],
-        query: "data.retired != 'true'",
+        // query: "data.retired != 'true'",
         branch: 'draft'
     }).hits;
+};
+
+var createGame = function (repoConn, gamesNode, foosGame) {
+    var blueIds = [], redIds = [], goals = [], playerTable = {};
+    var foosGoal, goal;
+    var pw1, pw2, pl1, pl2;
+    if (foosGame.data.winners.length == 2) {
+        pw1 = foosGame.data.winners[0].playerId;
+        pw2 = foosGame.data.winners[1].playerId;
+        pl1 = foosGame.data.losers[0].playerId;
+        pl2 = foosGame.data.losers[1].playerId;
+        playerTable[pw1] = findPlayerNodeById(repoConn, pw1);
+        playerTable[pw2] = findPlayerNodeById(repoConn, pw2);
+        playerTable[pl1] = findPlayerNodeById(repoConn, pl1);
+        playerTable[pl2] = findPlayerNodeById(repoConn, pl2);
+
+        blueIds.push(valueLib.reference(playerTable[pw1]));
+        blueIds.push(valueLib.reference(playerTable[pw2]));
+        redIds.push(valueLib.reference(playerTable[pl1]));
+        redIds.push(valueLib.reference(playerTable[pl2]));
+    } else {
+        pw1 = foosGame.data.winners.playerId;
+        pl1 = foosGame.data.losers.playerId;
+        playerTable[pw1] = findPlayerNodeById(repoConn, pw1);
+        playerTable[pl1] = findPlayerNodeById(repoConn, pl1);
+
+        blueIds.push(valueLib.reference(playerTable[pw1]));
+        redIds.push(valueLib.reference(playerTable[pl1]));
+    }
+
+    for (var g = 0, l = foosGame.data.goals && foosGame.data.goals.length; g < l; g++) {
+        foosGoal = foosGame.data.goals[g];
+        goal = {
+            playerId: valueLib.reference(playerTable[foosGoal.playerId]),
+            time: foosGoal.time,
+            against: foosGoal.against
+        };
+        goals.push(goal);
+    }
+
+    var gameNode = repoConn.create({
+        _parentPath: gamesNode._path,
+        time: valueLib.instant(foosGame.createdTime),
+        bluePlayerIds: blueIds,
+        redPlayerIds: redIds,
+        goals: goals
+    });
 };
 
 var createPlayer = function (repoConn, foosPlayer) {
@@ -141,9 +223,11 @@ var createTeam = function (repoConn, foosTeam) {
         }
     }
     var players = [];
-    players.push(findPlayerNodeById(repoConn, foosTeam.data.playerIds[0]));
-    players.push(findPlayerNodeById(repoConn, foosTeam.data.playerIds[1]));
+    if (!foosTeam.data.playerIds[0]) {
+        log.info(JSON.stringify(foosTeam, null, 4));
+    }
 
+    log.info(foosTeam.data.playerIds[0]);
     var teamNode = repoConn.create({
         _name: foosTeam._name,
         _parentPath: TEAMS_PATH,
@@ -163,12 +247,9 @@ var findPlayerNodeById = function (repoConn, playerContentId) {
     if (!p) {
         return null;
     }
-    log.info(JSON.stringify(p));
 
     var path = PLAYERS_PATH + '/' + p._name;
-    log.info(path);
     var result = repoConn.get(path);
-    log.info(JSON.stringify(result));
     return result && result._id;
 };
 
