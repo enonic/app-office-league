@@ -20,6 +20,8 @@ exports.get = function (req) {
     importTeams(repoConn);
     importLeague(repoConn);
 
+    log.info('Import completed!');
+
     return {
         contentType: 'application/json',
         body: {
@@ -45,7 +47,7 @@ var importTeams = function (repoConn) {
     log.info(teams.length + ' teams found');
     for (var i = 0; i < teams.length; i++) {
         t = teams[i];
-        log.info(JSON.stringify(t));
+        // log.info(JSON.stringify(t));
         createTeam(repoConn, t);
     }
 };
@@ -64,6 +66,14 @@ var importLeague = function (repoConn) {
         teamStats: {}
     });
 
+    var playersNode = repoConn.create({
+        _name: 'players',
+        _parentPath: leagueNode._path,
+    });
+    var teamsNode = repoConn.create({
+        _name: 'teams',
+        _parentPath: leagueNode._path,
+    });
     var gamesNode = repoConn.create({
         _name: 'games',
         _parentPath: leagueNode._path,
@@ -77,6 +87,34 @@ var importLeague = function (repoConn) {
             createGame(repoConn, gamesNode, games[i]);
         }
     } while (games && games.length > 0);
+
+    // add players to league
+    var playersResult = repoConn.findChildren({
+        start: 0,
+        count: 1000,
+        parentKey: PLAYERS_PATH
+    });
+    var playerIds = playersResult.hits.map(function (hit) {
+        return hit.id;
+    });
+    var players = repoConn.get(playerIds);
+    players.forEach(function (player) {
+        createLeagueMember(repoConn, playersNode, player, leagueNode._id);
+    });
+
+    // add teams to league
+    var teamsResult = repoConn.findChildren({
+        start: 0,
+        count: 1000,
+        parentKey: TEAMS_PATH
+    });
+    var teamIds = teamsResult.hits.map(function (hit) {
+        return hit.id;
+    });
+    var teams = repoConn.get(teamIds);
+    teams.forEach(function (team) {
+        createLeagueMember(repoConn, teamsNode, team, leagueNode._id);
+    });
 };
 
 var fetchGames = function (from) {
@@ -109,6 +147,15 @@ var fetchTeams = function () {
         // query: "data.retired != 'true'",
         branch: 'draft'
     }).hits;
+};
+
+var createLeagueMember = function (repoConn, parentNode, member, leagueId) {
+    var leaguePlayerOrTeamNode = repoConn.create({
+        _parentPath: parentNode._path,
+        playerId: valueLib.reference(member._id),
+        leagueId: valueLib.reference(leagueId),
+        rating: 0
+    });
 };
 
 var createGame = function (repoConn, gamesNode, foosGame) {
@@ -223,11 +270,6 @@ var createTeam = function (repoConn, foosTeam) {
         }
     }
     var players = [];
-    if (!foosTeam.data.playerIds[0]) {
-        log.info(JSON.stringify(foosTeam, null, 4));
-    }
-
-    log.info(foosTeam.data.playerIds[0]);
     var teamNode = repoConn.create({
         _name: foosTeam._name,
         _parentPath: TEAMS_PATH,
@@ -236,7 +278,6 @@ var createTeam = function (repoConn, foosTeam) {
         description: foosTeam.data.description,
         playerIds: players
     });
-    log.info(JSON.stringify(teamNode));
 };
 
 var findPlayerNodeById = function (repoConn, playerContentId) {
