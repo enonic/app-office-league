@@ -7,22 +7,38 @@ import graphql.Scalars;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
 public class GraphQlBean
 {
 
-    public GraphQLSchema createSchema( final Object obj )
+    public GraphQLSchema createSchema( final ScriptObjectMirror params )
     {
-        final GraphQLFieldDefinition.Builder helloFieldDefinitionBuilder =
-            GraphQLFieldDefinition.newFieldDefinition().type( Scalars.GraphQLString ).name( "hello" ).staticValue( "Hello world4!" );
+        GraphQLObjectType.Builder graphQlQuery = GraphQLObjectType.newObject().
+            name( "QueryType" );
 
-        GraphQLObjectType queryType = GraphQLObjectType.newObject().
-            name( "QueryType" ).
-            field( helloFieldDefinitionBuilder ).
-            build();
+        final ScriptObjectMirror query = (ScriptObjectMirror) params.get( "query" );
+
+        for ( Map.Entry<String, Object> queryField : query.entrySet() )
+        {
+            final String queryFieldKey = queryField.getKey();
+            final GraphQLFieldDefinition.Builder graphQlField = GraphQLFieldDefinition.newFieldDefinition().
+                type( Scalars.GraphQLString ).
+                name( queryFieldKey );
+
+            final ScriptObjectMirror queryFieldValue = (ScriptObjectMirror) queryField.getValue();
+
+            final Object staticValue = queryFieldValue.get( "staticValue" );
+            if ( staticValue != null )
+            {
+                graphQlField.staticValue( staticValue );
+            }
+
+            graphQlQuery.field( graphQlField );
+        }
 
         GraphQLSchema schema = GraphQLSchema.newSchema().
-            query( queryType ).
+            query( graphQlQuery ).
             build();
         return schema;
     }
