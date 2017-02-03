@@ -1,13 +1,13 @@
 log.info('Application ' + app.name + ' started');
 
+var graphQlLib = require('graphql');
 
-var graphQlBEan = __.newBean('com.enonic.app.officeleague.graphql.GraphQlBean');
-var schema = graphQlBEan.createSchema({
+var schema = graphQlLib.createSchema({
     query: {
         hello: {
             type: 'String',
-            staticValue: "test123"
+            staticValue: "test124"
         }
     }
 });
-graphQlBEan.execute(schema, 'query{hello}'); 
+graphQlLib.execute(schema, 'query{hello}'); 
