@@ -1,0 +1,8 @@
+<!--Imports Foos data from existing content in cms-repo, and creates players, teams and a league in office-league repo-->
+
+<!-- http://localhost:8080/admin/portal/preview/draft/office-league/_/service/com.enonic.app.officeleague/import -->
+<service>
+  <allow>
+    <principal>role:system.admin</principal>
+  </allow>
+</service>
