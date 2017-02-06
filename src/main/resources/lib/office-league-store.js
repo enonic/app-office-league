@@ -130,11 +130,19 @@ var TYPE = {
 /**
  * @typedef {Object} Game
  * @property {string} type Object type: 'game'
+ * @property {string} leagueId League id.
  * @property {string} time Date and time when the game was started. An ISO-8601-formatted instant (e.g '2011-12-03T10:15:30Z').
  * @property {boolean} finished True if the game is completed, false if the game is still in progress.
  * @property {Point[]} points Array of points scored during the game.
  * @property {GamePlayer[]} gamePlayers Array with the players and its properties for this game.
  * @property {GameTeam[]} gameTeams Array with the teams and its properties for this game.
+ */
+
+/**
+ * @typedef {Object} LeagueGamesResponse
+ * @property {Game[]} games Array of game objects.
+ * @property {number} count Total number of games.
+ * @property {number} total Count of games returned.
  */
 
 /**
@@ -463,6 +471,38 @@ var getGameDetails = function (repoConn, game) {
     }
 
     return game;
+};
+
+/**
+ * Retrieve a list of league games.
+ * @param  {string} leagueId League id.
+ * @param  {number} [start=0] First index of the league games.
+ * @param  {number} [count=10] Number of games to fetch.
+ * @return {LeagueGamesResponse} League games.
+ */
+exports.getLeagueGames = function (leagueId, start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.GAME + "' AND leagueId = '" + leagueId + "'"
+    });
+
+    var games = [];
+    if (result.count > 0) {
+        games = result.hits.map(function (hit) {
+            return exports.getGameById(hit.id);
+        });
+    }
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "games": games
+    };
 };
 
 var newConnection = function () {

@@ -17,7 +17,8 @@ exports.get = function (req) {
             teamByName: storeLib.getTeamByName('Crawling sombreros'),
 
             leaguePlayers: storeLib.getLeaguePlayers('db0af7db-6a11-4242-b124-63467e58449c'),
-            leagueTeams: storeLib.getLeagueTeams('db0af7db-6a11-4242-b124-63467e58449c')
+            leagueTeams: storeLib.getLeagueTeams('db0af7db-6a11-4242-b124-63467e58449c'),
+            leagueGames: storeLib.getLeagueGames(storeLib.getLeagueByName('Enonic Foos')._id)
         }
     }
 };
