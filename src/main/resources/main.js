@@ -32,6 +32,6 @@ var schema = graphQlLib.createSchema({
     }
 });
 
-var result = graphQlLib.execute(schema, 'query{test2}');
-//log.info('result: ' + result.time);
+var result = graphQlLib.execute(schema, 'query{test3}');
+log.info('result: ' + JSON.stringify(result));
 

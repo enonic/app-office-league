@@ -112,11 +112,12 @@ public class GraphQlBean
         return GRAPH_QL_SCALAR_TYPE_MAP.get( typeKey );
     }
 
-    public void execute( final GraphQLSchema schema, final String request )
+    public MapMapper execute( final GraphQLSchema schema, final String request )
     {
         GraphQL graphQL = new GraphQL( schema );
         Map<String, Object> result = (Map<String, Object>) graphQL.execute( request ).getData();
 
         System.out.println( result );
+        return new MapMapper( result );
     }
 }

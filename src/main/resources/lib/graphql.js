@@ -8,5 +8,5 @@ exports.createSchema = function (schema) {
 };
 
 exports.execute = function (schema, request) {
-    return graphQlBean.execute(schema, request);
+    return __.toNativeObject(graphQlBean.execute(schema, request));
 };
