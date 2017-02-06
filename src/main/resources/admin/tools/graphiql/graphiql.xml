@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<tool xmlns="urn:enonic:xp:model:1.0">
+  <display-name>Office League - GraphQL</display-name>
+  <description>GraphQl Query editor for Office League.</description>
+  <allow>
+    <principal>role:system.admin.login</principal>
+  </allow>
+</tool>

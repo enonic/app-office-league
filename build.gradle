@@ -29,7 +29,7 @@ dependencies {
     include "com.enonic.xp:lib-portal:${xpVersion}"
     include "com.enonic.xp:lib-thymeleaf:${xpVersion}"
     //include "com.enonic.xp:lib-xslt:${xpVersion}"
-    //include "com.enonic.xp:lib-mustache:${xpVersion}"
+    include "com.enonic.xp:lib-mustache:${xpVersion}"
     //include "com.enonic.xp:lib-i18n:${xpVersion}"
     //include "com.enonic.xp:lib-auth:${xpVersion}"
     //include "com.enonic.xp:lib-cache:${xpVersion}"
