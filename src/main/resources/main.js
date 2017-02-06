@@ -4,7 +4,7 @@ var graphQlLib = require('graphql');
 
 var goalType = graphQlLib.createType({
     time: 'Int',
-    playerId: 'ID'
+    time2: 'Int'
 });
 
 
@@ -21,17 +21,16 @@ var schema = graphQlLib.createSchema({
             }
         },
         test3: {
-            type: 'String',
+            type: goalType,
             data: function () {
                 return {
-                    time: "10",
-                    playerId: "123"
+                    time: 10,
+                    time2: 11
                 }
             }
         }
     }
 });
-
-var result = graphQlLib.execute(schema, 'query{test3}');
-log.info('result: ' + JSON.stringify(result));
+var result = graphQlLib.execute(schema, 'query{test3{time}}');
+log.info('result: ' + JSON.stringify(result.test3));
 

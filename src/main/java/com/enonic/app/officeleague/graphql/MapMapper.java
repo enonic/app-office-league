@@ -19,7 +19,10 @@ public final class MapMapper
     @Override
     public void serialize( final MapGenerator gen )
     {
-        serializeMap( gen, this.value );
+        if ( this.value != null )
+        {
+            serializeMap( gen, this.value );
+        }
     }
 
     private static void serializeMap( final MapGenerator gen, final Map<?, ?> map )
