@@ -43,6 +43,7 @@ dependencies {
     include "com.enonic.xp:lib-repo:${xpVersion}"
     include "com.enonic.xp:lib-node:${xpVersion}"
     include "com.enonic.xp:lib-value:${xpVersion}"
+    include 'com.graphql-java:graphql-java:2.3.0'
 }
 
 repositories {
