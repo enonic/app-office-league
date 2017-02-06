@@ -15,7 +15,8 @@ exports.get = function (req) {
             teamById: storeLib.getTeamById('cf672365-4f1b-486c-a5c8-08ec05019b9e'),
             teamByName: storeLib.getTeamByName('Crawling sombreros'),
 
-            leaguePlayers: storeLib.getLeaguePlayers('db0af7db-6a11-4242-b124-63467e58449c')
+            leaguePlayers: storeLib.getLeaguePlayers('db0af7db-6a11-4242-b124-63467e58449c'),
+            leagueTeams: storeLib.getLeagueTeams('db0af7db-6a11-4242-b124-63467e58449c')
         }
     }
 };

@@ -80,6 +80,21 @@ var TYPE = {
  */
 
 /**
+ * @typedef {Object} LeagueTeam
+ * @property {string} type Object type: 'leagueTeam'
+ * @property {string} teamId Team id.
+ * @property {string} leagueId League id.
+ * @property {number} rating Ranking rating for the team in this league.
+ */
+
+/**
+ * @typedef {Object} LeagueTeamResponse
+ * @property {LeagueTeam[]} teams Array of league team objects.
+ * @property {number} count Total number of teams in the league.
+ * @property {number} total Count of teams returned.
+ */
+
+/**
  * Retrieve a list of leagues.
  * @param  {number} [start=0] First index of the leagues.
  * @param  {number} [count=10] Number of leagues to fetch.
@@ -177,6 +192,40 @@ exports.getLeaguePlayers = function (leagueId, start, count) {
         "total": result.total,
         "count": result.count,
         "players": leaguePlayers
+    };
+};
+
+/**
+ * Retrieve a list of league teams and their rating points in the ranking.
+ * @param  {string} leagueId League id.
+ * @param  {number} [start=0] First index of the teams.
+ * @param  {number} [count=10] Number of teams to fetch.
+ * @return {LeagueTeamResponse} League teams.
+ */
+exports.getLeagueTeams = function (leagueId, start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND leagueId='" + leagueId + "'",
+        sort: "rating DESC, name ASC"
+    });
+
+    var leagueTeams = [];
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        leagueTeams = [].concat(repoConn.get(ids));
+    }
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "teams": leagueTeams
     };
 };
 
