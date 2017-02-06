@@ -10,10 +10,10 @@ var goalType = graphQlLib.createType({
 
 var schema = graphQlLib.createSchema({
     query: {
-        hello: {
-            type: 'String',
-            data: "test124"
-        },
+        //hello: {
+        //    type: 'String',
+        //    data: "test124"
+        //},
         test2: {
             type: 'String',
             data: function () {
@@ -31,6 +31,9 @@ var schema = graphQlLib.createSchema({
         }
     }
 });
-var result = graphQlLib.execute(schema, 'query{test3{time}}');
-log.info('result: ' + JSON.stringify(result.test3));
+
+var result = graphQlLib.execute(schema, 'query{test2}');
+log.info('result: ' + JSON.stringify(result));
+var result2 = graphQlLib.execute(schema, 'query{test3{time}}');
+log.info('result2: ' + JSON.stringify(result2));
 
