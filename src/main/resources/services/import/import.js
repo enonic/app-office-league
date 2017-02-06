@@ -302,8 +302,8 @@ var createGame = function (repoConn, gamesNode, foosGame, leagueId) {
         gamePlayer = gamePlayers[k];
         gamePlayer._parentPath = gameNode._path;
         gamePlayer.leagueId = leagueId;
-        gamePlayer.type = TYPE.GAME_PLAYER,
-            gamePlayer.time = gameNode.time;
+        gamePlayer.type = TYPE.GAME_PLAYER;
+        gamePlayer.time = gameNode.time;
         gamePlayer.gameId = gameNode._id;
         repoConn.create(gamePlayer);
     }
@@ -312,8 +312,8 @@ var createGame = function (repoConn, gamesNode, foosGame, leagueId) {
         gameTeam = gameTeams[k];
         gameTeam._parentPath = gameNode._path;
         gameTeam.leagueId = leagueId;
-        gameTeam.type = TYPE.GAME_TEAM,
-            gameTeam.time = gameNode.time;
+        gameTeam.type = TYPE.GAME_TEAM;
+        gameTeam.time = gameNode.time;
         gameTeam.gameId = gameNode._id;
         repoConn.create(gameTeam);
     }
