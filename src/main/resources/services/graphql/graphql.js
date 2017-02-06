@@ -1,87 +1,74 @@
 var graphQlLib = require('graphql');
+var storeLib = require('office-league-store');
 
-var pointType = graphQlLib.createType('Point', {
-        playerId: {
+var playerType = graphQlLib.createType('Player', {
+        id: {
             type: graphQlLib.scalar('ID'),
             data: function (env) {
-                return env.getSource().playerId;
+                return env.getSource()._id;
             }
         },
-        time: {
-            type: graphQlLib.scalar('Int'),
+        name: {
+            type: graphQlLib.scalar('String'),
             data: function (env) {
-                return env.getSource().time;
+                return env.getSource().name;
             }
         },
-        against: {
-            type: graphQlLib.scalar('Boolean'),
+        nickname: {
+            type: graphQlLib.scalar('String'),
             data: function (env) {
-                return env.getSource().against;
+                return env.getSource().nickname;
+            }
+        },
+        nationality: {
+            type: graphQlLib.scalar('String'),
+            data: function (env) {
+                return env.getSource().nationality;
+            }
+        },
+        handedness: {
+            type: graphQlLib.scalar('String'),
+            data: function (env) {
+                return env.getSource().handedness;
+            }
+        },
+        description: {
+            type: graphQlLib.scalar('String'),
+            data: function (env) {
+                return env.getSource().description;
             }
         }
     }
 );
 
-
-var points = [{
-    playerId: '0000-0000-0001',
-    time: 12345,
-    against: true
-}, {
-    playerId: '0000-0000-0002',
-    time: 56789,
-    against: false
-}];
-var pointsMap = {
-    first: points[0],
-    second: points[1]
-};
-
-
 var schema = graphQlLib.createSchema({
     query: {
-        hello: {
-            type: graphQlLib.scalar('String'),
-            data: "test124"
-        },
-        point: {
-            type: pointType,
-            data: pointsMap.first
-        },
-        pointByPlayerId: {
-            type: pointType,
+        player: {
+            type: playerType,
             args: {
-                playerId: graphQlLib.scalar('ID')
+                id: graphQlLib.scalar('ID'),
+                name: graphQlLib.scalar('ID')
             },
             data: function (env) {
-                return points.filter(function (point) {
-                    return point.playerId == env.getArgument('playerId');
-                })[0];
+                var id = env.getArgument('id');
+                var name = env.getArgument('name');
+                if (id) {
+                    return storeLib.getPlayerById(id);
+                } else if (name) {
+                    return storeLib.getPlayerByName(name);
+                }
+                return null;
             }
-        },
-        points: {
-            type: graphQlLib.list(pointType),
-            data: points
         }
     }
 });
 
-var result = graphQlLib.execute(schema, 'query{hello}');
-log.info('result: ' + JSON.stringify(result));
-var getPointResult = graphQlLib.execute(schema, 'query{point{playerId time against}}');
-log.info('getPointResult: ' + JSON.stringify(getPointResult));
-var getPointsResult = graphQlLib.execute(schema, 'query{points{playerId time against}}');
-log.info('getPointsResult: ' + JSON.stringify(getPointsResult));
-var getPointByIdResult = graphQlLib.execute(schema, 'query{pointByPlayerId(playerId: "0000-0000-0002"){playerId time against}}');
-log.info('getPointByIdResult: ' + JSON.stringify(getPointByIdResult));
-
 
 exports.post = function (req) {
     var body = JSON.parse(req.body);
-    log.info('req.body: ' + body);
-    log.info('req.body.query: ' + body.query);
+    log.info("Query: " + body.query);
     var result = graphQlLib.execute(schema, body.query);
-    log.info('result: ' + JSON.stringify(result));
+    log.info("Query result: " + JSON.stringify(result));
     return {
         contentType: 'application/json',
         body: result
