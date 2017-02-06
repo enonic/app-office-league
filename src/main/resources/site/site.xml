@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
   <config/>
+
+  <mappings>
+    <!-- /portal/master/office-league/players/image/username -->
+    <mapping controller="/site/controllers/player-image.js" order="10">
+      <pattern>/players/image/.*</pattern>
+    </mapping>
+  </mappings>
+
 </site>

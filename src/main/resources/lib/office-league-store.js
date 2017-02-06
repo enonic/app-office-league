@@ -20,6 +20,8 @@ var TYPE = {
  * @property {string} name Name of the league.
  * @property {string} sport Sport id (e.g. 'foos')
  * @property {string} description League description text.
+ * @property {string} image Binary name of the league's image.
+ * @property {string} imageType Mime type of the league's image.
  * @property {Object} config League config.
  */
 
@@ -36,6 +38,7 @@ var TYPE = {
  * @property {string} name Name of the player.
  * @property {string} nickname Nickname of the player.
  * @property {string} image Binary name of the player's image.
+ * @property {string} imageType Mime type of the player's image.
  * @property {string} nationality 2 letter country code of the player (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
  * @property {string} handedness Player handedness: 'right', 'left', 'ambidexterity.
  * @property {string} description Description text.
@@ -53,6 +56,7 @@ var TYPE = {
  * @property {string} type Object type: 'team'
  * @property {string} name Name of the team.
  * @property {string} image Binary name of the team's image.
+ * @property {string} imageType Mime type of the team's image.
  * @property {string} description Description text.
  * @property {string[]} playerIds Array with ids of the team players.
  */
@@ -346,6 +350,23 @@ exports.getPlayerByName = function (name) {
 
     return player;
 };
+
+/**
+ * Retrieve a player image.
+ * @param  {Player} player Player object.
+ * @return {object} Player image stream.
+ */
+exports.getPlayerImageStream = function (player) {
+    var repoConn = newConnection();
+
+    var binaryStream = repoConn.getBinary({
+        key: player._id,
+        binaryReference: player.image
+    });
+    return binaryStream;
+};
+
+// exports.getPlayerImageUrl = function (playerId) {
 
 /**
  * Retrieve a list of teams.
