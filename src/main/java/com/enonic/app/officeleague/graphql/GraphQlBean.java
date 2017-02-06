@@ -1,5 +1,6 @@
 package com.enonic.app.officeleague.graphql;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -7,6 +8,7 @@ import com.google.common.collect.ImmutableMap;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
+import graphql.GraphQLError;
 import graphql.Scalars;
 import graphql.execution.SimpleExecutionStrategy;
 import graphql.schema.GraphQLArgument;
@@ -147,15 +149,21 @@ public class GraphQlBean
 
     public MapMapper execute( final GraphQLSchema schema, final String request )
     {
+        Map<String, Object> resultMap = new HashMap();
+
         GraphQL graphQL = new GraphQL( schema, new SimpleExecutionStrategy() );
         final ExecutionResult executionResult = graphQL.execute( request );
-        if ( executionResult.getErrors() != null && !executionResult.getErrors().isEmpty() )
-        {
-            System.out.println( "Errors: " + executionResult.getErrors() );
-        }
-        
-        
-        Map<String, Object> result = (Map<String, Object>) graphQL.execute( request ).getData();
-        return new MapMapper( result );
+        resultMap.put( "data", graphQL.execute( request ).getData() );
+        resultMap.put( "errors", executionResult.getErrors().stream().map( GraphQlBean::toMap ).collect( Collectors.toList() ) );
+        return new MapMapper( resultMap );
+    }
+
+    private static Map<String, Object> toMap( final GraphQLError error )
+    {
+        Map<String, Object> errorAsMap = new HashMap<>();
+        errorAsMap.put( "errorType", error.getErrorType() );
+        errorAsMap.put( "message", error.getMessage() );
+        errorAsMap.put( "locations", error.getLocations() );
+        return errorAsMap;
     }
 }
