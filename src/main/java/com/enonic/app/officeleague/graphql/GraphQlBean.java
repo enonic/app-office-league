@@ -64,6 +64,10 @@ public class GraphQlBean
                 {
                     graphQlField.staticValue( data.getValue() );
                 }
+                else if ( data.isObject() )
+                {
+                    graphQlField.staticValue( data.getMap() );
+                }
                 else if ( data.isFunction() )
                 {
                     graphQlField.dataFetcher( ( env ) -> {

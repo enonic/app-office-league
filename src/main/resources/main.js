@@ -39,9 +39,7 @@ var schema = graphQlLib.createSchema({
         },
         point: {
             type: pointType,
-            data: function () {
-                return aPoint;
-            }
+            data: aPoint
         }
     }
 });
