@@ -113,20 +113,23 @@ public class GraphQlBean
 
     private Object toGraphQlValue( final ScriptValue data )
     {
-        if ( data.isValue() )
+        if ( data != null )
         {
-            return data.getValue();
-        }
-        else if ( data.isObject() )
-        {
-            return data.getMap();
-        }
-        else if ( data.isArray() )
-        {
-            return data.getArray().
-                stream().
-                map( ( subData ) -> toGraphQlValue( subData ) ).
-                collect( Collectors.toList() );
+            if ( data.isValue() )
+            {
+                return data.getValue();
+            }
+            else if ( data.isObject() )
+            {
+                return data.getMap();
+            }
+            else if ( data.isArray() )
+            {
+                return data.getArray().
+                    stream().
+                    map( ( subData ) -> toGraphQlValue( subData ) ).
+                    collect( Collectors.toList() );
+            }
         }
         return null;
     }
