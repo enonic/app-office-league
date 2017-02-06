@@ -49,6 +49,22 @@ var TYPE = {
  */
 
 /**
+ * @typedef {Object} Team
+ * @property {string} type Object type: 'team'
+ * @property {string} name Name of the team.
+ * @property {string} image Binary name of the team's image.
+ * @property {string} description Description text.
+ * @property {string[]} playerIds Array with ids of the team players.
+ */
+
+/**
+ * @typedef {Object} TeamResponse
+ * @property {Team[]} teams Array of team objects.
+ * @property {number} count Total number of teams.
+ * @property {number} total Count of teams returned.
+ */
+
+/**
  * Retrieve a list of leagues.
  * @param  {number} [start=0] First index of the leagues.
  * @param  {number} [count=10] Number of leagues to fetch.
@@ -180,6 +196,73 @@ exports.getPlayerByName = function (name) {
     }
 
     return player;
+};
+
+/**
+ * Retrieve a list of teams.
+ * @param  {number} [start=0] First index of the teams.
+ * @param  {number} [count=10] Number of teams to fetch.
+ * @return {TeamResponse} Teams.
+ */
+exports.getTeams = function (start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.TEAM + "'"
+    });
+
+    var teams = [];
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        teams = [].concat(repoConn.get(ids));
+    }
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "teams": teams
+    };
+};
+
+/**
+ * Retrieve a team by its id.
+ * @param  {string} teamId Id of the team.
+ * @return {Team} Team object or null if not found.
+ */
+exports.getTeamById = function (teamId) {
+    var repoConn = newConnection();
+
+    var obj = repoConn.get(teamId);
+    return obj && (obj.type === TYPE.TEAM) ? obj : null;
+};
+
+/**
+ * Retrieve a team by its name.
+ * @param  {string} name Name of the team.
+ * @return {Team} Team object or null if not found.
+ */
+exports.getTeamByName = function (name) {
+    var repoConn = newConnection();
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.TEAM + "' AND name='" + name + "'"
+    });
+
+    var team;
+    if (result.count > 0) {
+        var id = result.hits[0].id;
+        team = repoConn.get(id);
+    }
+
+    return team;
 };
 
 var newConnection = function () {
