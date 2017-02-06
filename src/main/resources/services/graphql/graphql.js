@@ -59,6 +59,12 @@ var schema = graphQlLib.createSchema({
                 }
                 return null;
             }
+        },
+        players: {
+            type: graphQlLib.list(playerType),
+            data: function () {
+                return storeLib.getPlayers().players;
+            }
         }
     }
 });
