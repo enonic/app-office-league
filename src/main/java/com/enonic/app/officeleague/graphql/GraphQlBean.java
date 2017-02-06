@@ -10,7 +10,6 @@ import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
-import graphql.schema.GraphQLType;
 
 import com.enonic.xp.script.ScriptValue;
 
@@ -25,45 +24,23 @@ public class GraphQlBean
         build();
 
 
-    public GraphQLObjectType.Builder createType( final ScriptValue params )
+    public GraphQLSchema createSchema( final ScriptValue schemaScriptValue )
     {
-        final GraphQLObjectType.Builder graphQlType = GraphQLObjectType.newObject().
-            name( "DoesNotMatter" );
-        setTypeFieldTypes( params, graphQlType );
-        return graphQlType;
-    }
-
-    private void setTypeFieldTypes( final ScriptValue scriptType, final GraphQLObjectType.Builder graphQlType )
-    {
-        for ( String scriptFieldKey : scriptType.getKeys() )
-        {
-            final ScriptValue scriptFieldValue = scriptType.getMember( scriptFieldKey );
-            final GraphQLType graphQLType = getScalarType( scriptFieldValue.getValue( String.class ) );//TODO
-
-            final GraphQLFieldDefinition graphQlField =
-                GraphQLFieldDefinition.newFieldDefinition().name( scriptFieldKey ).type( graphQlType ).build();
-            graphQlType.field( graphQlField );
-        }
-    }
-
-    public GraphQLSchema createSchema( final ScriptValue params )
-    {
-        GraphQLObjectType.Builder graphQlQuery = GraphQLObjectType.newObject().
-            name( "QueryType" );
-
-        final ScriptValue scriptQuery = params.getMember( "query" );
-        setQueryFieldTypes( scriptQuery, graphQlQuery );
+        final ScriptValue queryScriptValue = schemaScriptValue.getMember( "query" );
+        final GraphQLObjectType.Builder queryObjectType = createType( "QueryType", queryScriptValue );
 
         return GraphQLSchema.newSchema().
-            query( graphQlQuery ).
+            query( queryObjectType ).
             build();
     }
 
-    private void setQueryFieldTypes( final ScriptValue scriptQuery, final GraphQLObjectType.Builder graphQlQuery )
+    public GraphQLObjectType.Builder createType( final String name, final ScriptValue scriptValue )
     {
-        for ( String scriptFieldKey : scriptQuery.getKeys() )
+        final GraphQLObjectType.Builder type = GraphQLObjectType.newObject().name( name );
+
+        for ( String scriptFieldKey : scriptValue.getKeys() )
         {
-            final ScriptValue scriptFieldValue = scriptQuery.getMember( scriptFieldKey );
+            final ScriptValue scriptFieldValue = scriptValue.getMember( scriptFieldKey );
 
             final GraphQLFieldDefinition.Builder graphQlField = GraphQLFieldDefinition.newFieldDefinition().
                 name( scriptFieldKey );
@@ -78,6 +55,7 @@ public class GraphQlBean
                 final GraphQLScalarType graphQLType = getScalarType( scriptFieldType.toString() );
                 graphQlField.type( graphQLType );
             }
+
             final ScriptValue data = scriptFieldValue.getMember( "data" );
             if ( data != null )
             {
@@ -102,9 +80,10 @@ public class GraphQlBean
                     } );
                 }
 
-                graphQlQuery.field( graphQlField );
+                type.field( graphQlField );
             }
         }
+        return type;
     }
 
     private GraphQLScalarType getScalarType( final String typeKey )

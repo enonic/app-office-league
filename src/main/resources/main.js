@@ -2,18 +2,24 @@ log.info('Application ' + app.name + ' started');
 
 var graphQlLib = require('graphql');
 
-var goalType = graphQlLib.createType({
-    time: 'Int',
-    time2: 'Int'
+var goalType = graphQlLib.createType('Goal', {
+    time: {
+        type: 'String',
+        data: 'aa'
+    },
+    time2: {
+        type: 'String',
+        data: 'bb'
+    }
 });
 
 
 var schema = graphQlLib.createSchema({
     query: {
-        //hello: {
-        //    type: 'String',
-        //    data: "test124"
-        //},
+        hello: {
+            type: 'String',
+            data: "test124"
+        },
         test2: {
             type: 'String',
             data: function () {
@@ -21,7 +27,7 @@ var schema = graphQlLib.createSchema({
             }
         },
         test3: {
-            type: goalType,
+            type: 'String',
             data: function () {
                 return {
                     time: 10,
@@ -34,6 +40,6 @@ var schema = graphQlLib.createSchema({
 
 var result = graphQlLib.execute(schema, 'query{test2}');
 log.info('result: ' + JSON.stringify(result));
-var result2 = graphQlLib.execute(schema, 'query{test3{time}}');
+var result2 = graphQlLib.execute(schema, 'query{test3}');
 log.info('result2: ' + JSON.stringify(result2));
 
