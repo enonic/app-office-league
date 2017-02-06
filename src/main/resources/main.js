@@ -30,6 +30,10 @@ var aPoint = {
     against: true
 };
 
+var points = [
+    aPoint, aPoint
+];
+
 
 var schema = graphQlLib.createSchema({
     query: {
@@ -40,12 +44,19 @@ var schema = graphQlLib.createSchema({
         point: {
             type: pointType,
             data: aPoint
+        },
+        points: {
+            type: graphQlLib.list(pointType),
+            data: points
         }
     }
 });
 
+
 var result = graphQlLib.execute(schema, 'query{hello}');
 log.info('result: ' + JSON.stringify(result));
-var result2 = graphQlLib.execute(schema, 'query{point{playerId time against}}');
-log.info('result2: ' + JSON.stringify(result2));
+var getPointResult = graphQlLib.execute(schema, 'query{point{playerId time against}}');
+log.info('getPointResult: ' + JSON.stringify(getPointResult));
+var getPointsResult = graphQlLib.execute(schema, 'query{points{playerId time against}}');
+log.info('getPointsResult: ' + JSON.stringify(getPointsResult));
 

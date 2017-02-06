@@ -8,7 +8,9 @@ import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.Scalars;
 import graphql.schema.GraphQLFieldDefinition;
+import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLObjectType;
+import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
 
@@ -46,49 +48,66 @@ public class GraphQlBean
             final GraphQLFieldDefinition.Builder graphQlField = GraphQLFieldDefinition.newFieldDefinition().
                 name( scriptFieldKey );
 
-            final Object scriptFieldType = scriptFieldValue.getMember( "type" ).getValue();
-            if ( scriptFieldType instanceof GraphQLObjectType.Builder )
-            {
-                graphQlField.type( (GraphQLObjectType.Builder) scriptFieldType );
-            }
-            else
-            {
-                final GraphQLScalarType graphQLType = getScalarType( scriptFieldType.toString() );
-                graphQlField.type( graphQLType );
-            }
-
+            setFieldType( scriptFieldValue, graphQlField );
             final ScriptValue data = scriptFieldValue.getMember( "data" );
             if ( data != null )
             {
-                if ( data.isValue() )
-                {
-                    graphQlField.staticValue( data.getValue() );
-                }
-                else if ( data.isObject() )
-                {
-                    graphQlField.staticValue( data.getMap() );
-                }
-                else if ( data.isFunction() )
-                {
-                    graphQlField.dataFetcher( ( env ) -> {
-                        final ScriptValue result = data.call( env );
-                        if ( result.isValue() )
-                        {
-                            return result.getValue();
-                        }
-
-                        if ( result.isObject() )
-                        {
-                            return result.getMap();
-                        }
-                        return null;
-                    } );
-                }
-
+                setFieldData( data, graphQlField );
                 type.field( graphQlField );
             }
         }
         return type;
+    }
+
+    private void setFieldType( final ScriptValue scriptFieldValue, final GraphQLFieldDefinition.Builder graphQlField )
+    {
+        final Object scriptFieldType = scriptFieldValue.getMember( "type" ).getValue();
+        if ( scriptFieldType instanceof GraphQLObjectType.Builder )
+        {
+            graphQlField.type( (GraphQLObjectType.Builder) scriptFieldType );
+        }
+        else if ( scriptFieldType instanceof GraphQLOutputType )
+        {
+            graphQlField.type( (GraphQLOutputType) scriptFieldType );
+        }
+        else
+        {
+            final GraphQLScalarType graphQLType = getScalarType( scriptFieldType.toString() );
+            graphQlField.type( graphQLType );
+        }
+    }
+
+    private void setFieldData( final ScriptValue data, final GraphQLFieldDefinition.Builder graphQlField )
+    {
+        if ( data.isValue() )
+        {
+            graphQlField.staticValue( data.getValue() );
+        }
+        else if ( data.isObject() )
+        {
+            graphQlField.staticValue( data.getMap() );
+        }
+        else if ( data.isFunction() )
+        {
+            graphQlField.dataFetcher( ( env ) -> {
+                final ScriptValue result = data.call( env );
+                if ( result.isValue() )
+                {
+                    return result.getValue();
+                }
+
+                if ( result.isObject() )
+                {
+                    return result.getMap();
+                }
+                return null;
+            } );
+        }
+    }
+
+    public GraphQLList list( GraphQLObjectType.Builder type )
+    {
+        return new GraphQLList( type.build() );
     }
 
     private GraphQLScalarType getScalarType( final String typeKey )
