@@ -4,19 +4,19 @@ var graphQlLib = require('graphql');
 
 var pointType = graphQlLib.createType('Point', {
         playerId: {
-            type: 'String',
+            type: graphQlLib.scalar('ID'),
             data: function (env) {
                 return env.getSource().playerId;
             }
         },
         time: {
-            type: 'Int',
+            type: graphQlLib.scalar('Int'),
             data: function (env) {
                 return env.getSource().time;
             }
         },
         against: {
-            type: 'Boolean',
+            type: graphQlLib.scalar('Boolean'),
             data: function (env) {
                 return env.getSource().against;
             }
@@ -24,26 +24,42 @@ var pointType = graphQlLib.createType('Point', {
     }
 );
 
-var aPoint = {
+
+var points = [{
     playerId: '0000-0000-0001',
     time: 12345,
     against: true
+}, {
+    playerId: '0000-0000-0002',
+    time: 56789,
+    against: false
+}];
+var pointsMap = {
+    first: points[0],
+    second: points[1]
 };
-
-var points = [
-    aPoint, aPoint
-];
 
 
 var schema = graphQlLib.createSchema({
     query: {
         hello: {
-            type: 'String',
+            type: graphQlLib.scalar('String'),
             data: "test124"
         },
         point: {
             type: pointType,
-            data: aPoint
+            data: pointsMap.first
+        },
+        pointByPlayerId: {
+            type: pointType,
+            args: {
+                playerId: graphQlLib.scalar('ID')
+            },
+            data: function (env) {
+                return points.filter(function (point) {
+                    return point.playerId == env.getArgument('playerId');
+                })[0];
+            }
         },
         points: {
             type: graphQlLib.list(pointType),
@@ -58,5 +74,8 @@ var getPointResult = graphQlLib.execute(schema, 'query{point{playerId time again
 log.info('getPointResult: ' + JSON.stringify(getPointResult));
 var getPointsResult = graphQlLib.execute(schema, 'query{points{playerId time against}}');
 log.info('getPointsResult: ' + JSON.stringify(getPointsResult));
+var getPointByIdResult = graphQlLib.execute(schema, 'query{pointByPlayerId(playerId: "0000-0000-0002"){playerId time against}}');
+log.info('getPointByIdResult: ' + JSON.stringify(getPointByIdResult));
+
 
 

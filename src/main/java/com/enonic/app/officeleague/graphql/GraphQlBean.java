@@ -8,12 +8,16 @@ import com.google.common.collect.ImmutableMap;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.Scalars;
+import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLFieldDefinition;
+import graphql.schema.GraphQLInputType;
+import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
+import graphql.schema.GraphQLUnionType;
 
 import com.enonic.xp.script.ScriptValue;
 
@@ -49,15 +53,25 @@ public class GraphQlBean
             final GraphQLFieldDefinition.Builder graphQlField = GraphQLFieldDefinition.newFieldDefinition().
                 name( scriptFieldKey );
 
+            setFieldArguments( scriptFieldValue, graphQlField );
             setFieldType( scriptFieldValue, graphQlField );
-            final ScriptValue data = scriptFieldValue.getMember( "data" );
-            if ( data != null )
-            {
-                setFieldData( data, graphQlField );
-                type.field( graphQlField );
-            }
+            setFieldData( scriptFieldValue, graphQlField );
+            type.field( graphQlField );
         }
         return type;
+    }
+
+    private void setFieldArguments( final ScriptValue scriptFieldValue, final GraphQLFieldDefinition.Builder graphQlField )
+    {
+        if ( scriptFieldValue.hasMember( "args" ) )
+        {
+            Map<String, Object> argsMap = scriptFieldValue.getMember( "args" ).getMap();
+            argsMap.entrySet().
+                stream().
+                map( ( argEntry ) -> GraphQLArgument.newArgument().name( argEntry.getKey() ).type(
+                    (GraphQLInputType) argEntry.getValue() ).build() ).
+                forEach( graphQLArgument -> graphQlField.argument( graphQLArgument ) );
+        }
     }
 
     private void setFieldType( final ScriptValue scriptFieldValue, final GraphQLFieldDefinition.Builder graphQlField )
@@ -67,19 +81,23 @@ public class GraphQlBean
         {
             graphQlField.type( (GraphQLObjectType.Builder) scriptFieldType );
         }
+        else if ( scriptFieldType instanceof GraphQLInterfaceType.Builder )
+        {
+            graphQlField.type( (GraphQLInterfaceType.Builder) scriptFieldType );
+        }
+        else if ( scriptFieldType instanceof GraphQLUnionType.Builder )
+        {
+            graphQlField.type( (GraphQLUnionType.Builder) scriptFieldType );
+        }
         else if ( scriptFieldType instanceof GraphQLOutputType )
         {
             graphQlField.type( (GraphQLOutputType) scriptFieldType );
         }
-        else
-        {
-            final GraphQLScalarType graphQLType = getScalarType( scriptFieldType.toString() );
-            graphQlField.type( graphQLType );
-        }
     }
 
-    private void setFieldData( final ScriptValue data, final GraphQLFieldDefinition.Builder graphQlField )
+    private void setFieldData( final ScriptValue scriptFieldValue, final GraphQLFieldDefinition.Builder graphQlField )
     {
+        final ScriptValue data = scriptFieldValue.getMember( "data" );
         if ( data.isFunction() )
         {
             graphQlField.dataFetcher( ( env ) -> {
@@ -118,7 +136,7 @@ public class GraphQlBean
         return new GraphQLList( type.build() );
     }
 
-    private GraphQLScalarType getScalarType( final String typeKey )
+    public GraphQLScalarType scalar( final String typeKey )
     {
         return GRAPH_QL_SCALAR_TYPE_MAP.get( typeKey );
     }

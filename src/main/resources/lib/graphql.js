@@ -12,6 +12,11 @@ exports.list = function (type) {
     return graphQlBean.list(type);
 };
 
+
+exports.scalar = function (type) {
+    return graphQlBean.scalar(type);
+};
+
 exports.execute = function (schema, request) {
     return __.toNativeObject(graphQlBean.execute(schema, request));
 };
