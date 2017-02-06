@@ -51,18 +51,6 @@ public final class MapMapper
 
     private static void serializeList( final MapGenerator gen, final String key, final List<?> values )
     {
-        if ( values.isEmpty() )
-        {
-            serializeKeyValue( gen, key, null );
-            return;
-        }
-
-        if ( values.size() == 1 )
-        {
-            serializeKeyValue( gen, key, values.get( 0 ) );
-            return;
-        }
-
         gen.array( key );
         for ( final Object value : values )
         {

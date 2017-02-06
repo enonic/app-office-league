@@ -77,6 +77,6 @@ exports.post = function (req) {
     log.info("Query result: " + JSON.stringify(result));
     return {
         contentType: 'application/json',
-        body: result
+        body: {data: result}
     };
 }
