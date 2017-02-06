@@ -1,4 +1,3 @@
-var contextLib = require('/lib/xp/context');
 var nodeLib = require('/lib/xp/node');
 var contentLib = require('/lib/xp/content');
 var valueLib = require('/lib/xp/value');
@@ -8,6 +7,17 @@ var REPO_NAME = 'office-league';
 var LEAGUES_PATH = '/leagues';
 var PLAYERS_PATH = '/players';
 var TEAMS_PATH = '/teams';
+
+var TYPE = {
+    PLAYER: 'player',
+    TEAM: 'team',
+    GAME: 'game',
+    GAME_PLAYER: 'gamePlayer',
+    GAME_TEAM: 'gameTeam',
+    LEAGUE: 'league',
+    LEAGUE_PLAYER: 'leaguePlayer',
+    LEAGUE_TEAM: 'leagueTeam'
+};
 
 exports.get = function (req) {
 
@@ -57,6 +67,7 @@ var importLeague = function (repoConn) {
     var leagueNode = repoConn.create({
         _name: 'enonic-foos',
         _parentPath: LEAGUES_PATH,
+        type: TYPE.LEAGUE,
         name: 'Enonic Foos',
         sport: 'foos',
         image: imageValue,
@@ -68,15 +79,15 @@ var importLeague = function (repoConn) {
 
     var playersNode = repoConn.create({
         _name: 'players',
-        _parentPath: leagueNode._path,
+        _parentPath: leagueNode._path
     });
     var teamsNode = repoConn.create({
         _name: 'teams',
-        _parentPath: leagueNode._path,
+        _parentPath: leagueNode._path
     });
     var gamesNode = repoConn.create({
         _name: 'games',
-        _parentPath: leagueNode._path,
+        _parentPath: leagueNode._path
     });
 
     var from = 0, games = [], i;
@@ -84,7 +95,7 @@ var importLeague = function (repoConn) {
         from = from + games.length;
         games = fetchGames(from);
         for (i = 0; i < games.length; i++) {
-            createGame(repoConn, gamesNode, games[i]);
+            createGame(repoConn, gamesNode, games[i], valueLib.reference(leagueNode._id));
         }
     } while (games && games.length > 0);
 
@@ -99,7 +110,13 @@ var importLeague = function (repoConn) {
     });
     var players = repoConn.get(playerIds);
     players.forEach(function (player) {
-        createLeagueMember(repoConn, playersNode, player, leagueNode._id);
+        repoConn.create({
+            _parentPath: playersNode._path,
+            type: TYPE.LEAGUE_PLAYER,
+            playerId: valueLib.reference(player._id),
+            leagueId: valueLib.reference(leagueNode._id),
+            rating: 0
+        });
     });
 
     // add teams to league
@@ -113,7 +130,13 @@ var importLeague = function (repoConn) {
     });
     var teams = repoConn.get(teamIds);
     teams.forEach(function (team) {
-        createLeagueMember(repoConn, teamsNode, team, leagueNode._id);
+        repoConn.create({
+            _parentPath: teamsNode._path,
+            type: TYPE.LEAGUE_TEAM,
+            teamId: valueLib.reference(team._id),
+            leagueId: valueLib.reference(leagueNode._id),
+            rating: 0
+        });
     });
 };
 
@@ -149,16 +172,7 @@ var fetchTeams = function () {
     }).hits;
 };
 
-var createLeagueMember = function (repoConn, parentNode, member, leagueId) {
-    var leaguePlayerOrTeamNode = repoConn.create({
-        _parentPath: parentNode._path,
-        playerId: valueLib.reference(member._id),
-        leagueId: valueLib.reference(leagueId),
-        rating: 0
-    });
-};
-
-var createGame = function (repoConn, gamesNode, foosGame) {
+var createGame = function (repoConn, gamesNode, foosGame, leagueId) {
     var blueIds = [], redIds = [], goals = [], playerTable = {};
     var foosGoal, goal;
     var pw1, pw2, pl1, pl2;
@@ -276,6 +290,8 @@ var createGame = function (repoConn, gamesNode, foosGame) {
 
     var gameNode = repoConn.create({
         _parentPath: gamesNode._path,
+        type: TYPE.GAME,
+        leagueId: leagueId,
         time: valueLib.instant(foosGame.createdTime),
         finished: true,
         points: goals
@@ -285,7 +301,9 @@ var createGame = function (repoConn, gamesNode, foosGame) {
     for (k in gamePlayers) {
         gamePlayer = gamePlayers[k];
         gamePlayer._parentPath = gameNode._path;
-        gamePlayer.time = gameNode.time;
+        gamePlayer.leagueId = leagueId;
+        gamePlayer.type = TYPE.GAME_PLAYER,
+            gamePlayer.time = gameNode.time;
         gamePlayer.gameId = gameNode._id;
         repoConn.create(gamePlayer);
     }
@@ -293,7 +311,9 @@ var createGame = function (repoConn, gamesNode, foosGame) {
     for (k in gameTeams) {
         gameTeam = gameTeams[k];
         gameTeam._parentPath = gameNode._path;
-        gameTeam.time = gameNode.time;
+        gameTeam.leagueId = leagueId;
+        gameTeam.type = TYPE.GAME_TEAM,
+            gameTeam.time = gameNode.time;
         gameTeam.gameId = gameNode._id;
         repoConn.create(gameTeam);
     }
@@ -328,6 +348,7 @@ var createPlayer = function (repoConn, foosPlayer) {
     var playerNode = repoConn.create({
         _name: foosPlayer._name,
         _parentPath: PLAYERS_PATH,
+        type: TYPE.PLAYER,
         name: foosPlayer.displayName,
         nickname: foosPlayer.data.nickname,
         image: imageValue,
@@ -370,6 +391,7 @@ var createTeam = function (repoConn, foosTeam) {
     var teamNode = repoConn.create({
         _name: foosTeam._name,
         _parentPath: TEAMS_PATH,
+        type: TYPE.TEAM,
         name: foosTeam.displayName,
         image: imageValue,
         description: foosTeam.data.description,
@@ -388,6 +410,7 @@ var createTeamWithPlayers = function (repoConn, playerId1, playerId2) {
     var teamNode = repoConn.create({
         _name: teamName,
         _parentPath: TEAMS_PATH,
+        type: TYPE.TEAM,
         name: 'Team ' + teamName,
         image: null,
         description: '',
