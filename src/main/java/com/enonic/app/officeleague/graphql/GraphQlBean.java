@@ -16,7 +16,7 @@ import com.enonic.xp.script.ScriptValue;
 
 public class GraphQlBean
 {
-    ImmutableMap<String, GraphQLType> GRAPH_QL_SCALAR_TYPE_MAP = ImmutableMap.<String, GraphQLType>builder().
+    ImmutableMap<String, GraphQLScalarType> GRAPH_QL_SCALAR_TYPE_MAP = ImmutableMap.<String, GraphQLScalarType>builder().
         put( "Int", Scalars.GraphQLInt ).
         put( "Float", Scalars.GraphQLFloat ).
         put( "String", Scalars.GraphQLString ).
@@ -24,35 +24,61 @@ public class GraphQlBean
         put( "ID", Scalars.GraphQLID ).
         build();
 
+
+    public GraphQLObjectType.Builder createType( final ScriptValue params )
+    {
+        final GraphQLObjectType.Builder graphQlType = GraphQLObjectType.newObject().
+            name( "DoesNotMatter" );
+        setTypeFieldTypes( params, graphQlType );
+        return graphQlType;
+    }
+
+    private void setTypeFieldTypes( final ScriptValue scriptType, final GraphQLObjectType.Builder graphQlType )
+    {
+        for ( String scriptFieldKey : scriptType.getKeys() )
+        {
+            final ScriptValue scriptFieldValue = scriptType.getMember( scriptFieldKey );
+            final GraphQLType graphQLType = getScalarType( scriptFieldValue.getValue( String.class ) );//TODO
+
+            final GraphQLFieldDefinition graphQlField =
+                GraphQLFieldDefinition.newFieldDefinition().name( scriptFieldKey ).type( graphQlType ).build();
+            graphQlType.field( graphQlField );
+        }
+    }
+
     public GraphQLSchema createSchema( final ScriptValue params )
     {
-
         GraphQLObjectType.Builder graphQlQuery = GraphQLObjectType.newObject().
             name( "QueryType" );
 
-        final ScriptValue query = params.getMember( "query" );
-        createQueryFieldTypes( query, graphQlQuery );
+        final ScriptValue scriptQuery = params.getMember( "query" );
+        setQueryFieldTypes( scriptQuery, graphQlQuery );
 
-        GraphQLSchema schema = GraphQLSchema.newSchema().
+        return GraphQLSchema.newSchema().
             query( graphQlQuery ).
             build();
-        return schema;
     }
 
-    private void createQueryFieldTypes( final ScriptValue scriptQuery, final GraphQLObjectType.Builder graphQlQuery )
+    private void setQueryFieldTypes( final ScriptValue scriptQuery, final GraphQLObjectType.Builder graphQlQuery )
     {
-        for ( String scriptQueryFieldKey : scriptQuery.getKeys() )
+        for ( String scriptFieldKey : scriptQuery.getKeys() )
         {
-            final ScriptValue scriptQueryFieldValue = scriptQuery.getMember( scriptQueryFieldKey );
-
-            final String typeKey = scriptQueryFieldValue.getMember( "type" ).getValue( String.class );
-            final GraphQLType graphQLType = getType( typeKey );
+            final ScriptValue scriptFieldValue = scriptQuery.getMember( scriptFieldKey );
 
             final GraphQLFieldDefinition.Builder graphQlField = GraphQLFieldDefinition.newFieldDefinition().
-                type( (GraphQLScalarType) graphQLType ). //TODO
-                name( scriptQueryFieldKey );
+                name( scriptFieldKey );
 
-            final ScriptValue data = scriptQueryFieldValue.getMember( "data" );
+            final Object scriptFieldType = scriptFieldValue.getMember( "type" ).getValue();
+            if ( scriptFieldType instanceof GraphQLObjectType.Builder )
+            {
+                graphQlField.type( (GraphQLObjectType.Builder) scriptFieldType );
+            }
+            else
+            {
+                final GraphQLScalarType graphQLType = getScalarType( scriptFieldType.toString() );
+                graphQlField.type( graphQLType );
+            }
+            final ScriptValue data = scriptFieldValue.getMember( "data" );
             if ( data != null )
             {
                 if ( data.isValue() )
@@ -69,7 +95,7 @@ public class GraphQlBean
         }
     }
 
-    private GraphQLType getType( final String typeKey )
+    private GraphQLScalarType getScalarType( final String typeKey )
     {
         return GRAPH_QL_SCALAR_TYPE_MAP.get( typeKey );
     }
