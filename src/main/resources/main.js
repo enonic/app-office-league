@@ -2,19 +2,33 @@ log.info('Application ' + app.name + ' started');
 
 var graphQlLib = require('graphql');
 
-var goalType = graphQlLib.createType('Goal', {
-    time: {
-        type: 'String',
-        data: 'aa'
-    },
-    time2: {
-        type: 'Int',
-        data: function (env) {
-            log.info("env: " + env.getSource().time);
-            return '15'
+var pointType = graphQlLib.createType('Point', {
+        playerId: {
+            type: 'String',
+            data: function (env) {
+                return env.getSource().playerId;
+            }
+        },
+        time: {
+            type: 'Int',
+            data: function (env) {
+                return env.getSource().time;
+            }
+        },
+        against: {
+            type: 'Boolean',
+            data: function (env) {
+                return env.getSource().against;
+            }
         }
     }
-});
+);
+
+var aPoint = {
+    playerId: '0000-0000-0001',
+    time: 12345,
+    against: true
+};
 
 
 var schema = graphQlLib.createSchema({
@@ -23,27 +37,17 @@ var schema = graphQlLib.createSchema({
             type: 'String',
             data: "test124"
         },
-        test2: {
-            type: 'String',
+        point: {
+            type: pointType,
             data: function () {
-                return "qqs"
-            }
-        },
-        test3: {
-            type: goalType,
-            data: function () {
-                return {
-                    time: 10,
-                    time2: 11
-                }
+                return aPoint;
             }
         }
     }
 });
 
-var result = graphQlLib.execute(schema, 'query{test2}');
+var result = graphQlLib.execute(schema, 'query{hello}');
 log.info('result: ' + JSON.stringify(result));
-var result2 = graphQlLib.execute(schema, 'query{test3{time, time2}}');
+var result2 = graphQlLib.execute(schema, 'query{point{playerId time against}}');
 log.info('result2: ' + JSON.stringify(result2));
-log.info('result2.time2: ' + JSON.stringify(result2.test3.time2));
 
