@@ -1,6 +1,7 @@
 package com.enonic.app.officeleague.graphql;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -79,30 +80,37 @@ public class GraphQlBean
 
     private void setFieldData( final ScriptValue data, final GraphQLFieldDefinition.Builder graphQlField )
     {
-        if ( data.isValue() )
-        {
-            graphQlField.staticValue( data.getValue() );
-        }
-        else if ( data.isObject() )
-        {
-            graphQlField.staticValue( data.getMap() );
-        }
-        else if ( data.isFunction() )
+        if ( data.isFunction() )
         {
             graphQlField.dataFetcher( ( env ) -> {
                 final ScriptValue result = data.call( env );
-                if ( result.isValue() )
-                {
-                    return result.getValue();
-                }
-
-                if ( result.isObject() )
-                {
-                    return result.getMap();
-                }
-                return null;
+                return toGraphQlValue( result );
             } );
         }
+        else
+        {
+            graphQlField.staticValue( toGraphQlValue( data ) );
+        }
+    }
+
+    private Object toGraphQlValue( final ScriptValue data )
+    {
+        if ( data.isValue() )
+        {
+            return data.getValue();
+        }
+        else if ( data.isObject() )
+        {
+            return data.getMap();
+        }
+        else if ( data.isArray() )
+        {
+            return data.getArray().
+                stream().
+                map( ( subData ) -> toGraphQlValue( subData ) ).
+                collect( Collectors.toList() );
+        }
+        return null;
     }
 
     public GraphQLList list( GraphQLObjectType.Builder type )
@@ -124,8 +132,6 @@ public class GraphQlBean
             System.out.println( "Errors: " + executionResult.getErrors() );
         }
         Map<String, Object> result = (Map<String, Object>) graphQL.execute( request ).getData();
-
-        System.out.println( result );
         return new MapMapper( result );
     }
 }

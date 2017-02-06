@@ -52,11 +52,11 @@ var schema = graphQlLib.createSchema({
     }
 });
 
-
 var result = graphQlLib.execute(schema, 'query{hello}');
 log.info('result: ' + JSON.stringify(result));
 var getPointResult = graphQlLib.execute(schema, 'query{point{playerId time against}}');
 log.info('getPointResult: ' + JSON.stringify(getPointResult));
 var getPointsResult = graphQlLib.execute(schema, 'query{points{playerId time against}}');
 log.info('getPointsResult: ' + JSON.stringify(getPointsResult));
+
 
