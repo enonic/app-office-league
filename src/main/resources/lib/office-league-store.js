@@ -65,6 +65,21 @@ var TYPE = {
  */
 
 /**
+ * @typedef {Object} LeaguePlayer
+ * @property {string} type Object type: 'leaguePlayer'
+ * @property {string} playerId Player id.
+ * @property {string} leagueId League id.
+ * @property {number} rating Ranking rating for the player in this league.
+ */
+
+/**
+ * @typedef {Object} LeaguePlayerResponse
+ * @property {LeaguePlayer[]} players Array of league player objects.
+ * @property {number} count Total number of players in the league.
+ * @property {number} total Count of players returned.
+ */
+
+/**
  * Retrieve a list of leagues.
  * @param  {number} [start=0] First index of the leagues.
  * @param  {number} [count=10] Number of leagues to fetch.
@@ -129,6 +144,40 @@ exports.getLeagueByName = function (name) {
     }
 
     return league;
+};
+
+/**
+ * Retrieve a list of league players and their rating points in the ranking.
+ * @param  {string} leagueId League id.
+ * @param  {number} [start=0] First index of the players.
+ * @param  {number} [count=10] Number of players to fetch.
+ * @return {LeaguePlayerResponse} League players.
+ */
+exports.getLeaguePlayers = function (leagueId, start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "'",
+        sort: "rating DESC, name ASC"
+    });
+
+    var leaguePlayers = [];
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        leaguePlayers = [].concat(repoConn.get(ids));
+    }
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "players": leaguePlayers
+    };
 };
 
 /**

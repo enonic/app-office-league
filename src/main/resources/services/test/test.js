@@ -13,7 +13,9 @@ exports.get = function (req) {
             playerByName: storeLib.getPlayerByName('aro'),
             teams: storeLib.getTeams(0, 10),
             teamById: storeLib.getTeamById('cf672365-4f1b-486c-a5c8-08ec05019b9e'),
-            teamByName: storeLib.getTeamByName('Crawling sombreros')
+            teamByName: storeLib.getTeamByName('Crawling sombreros'),
+
+            leaguePlayers: storeLib.getLeaguePlayers('db0af7db-6a11-4242-b124-63467e58449c')
         }
     }
 };
