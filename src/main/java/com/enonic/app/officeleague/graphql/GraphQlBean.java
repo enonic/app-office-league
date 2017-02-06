@@ -67,7 +67,7 @@ public class GraphQlBean
                 else if ( data.isFunction() )
                 {
                     graphQlField.dataFetcher( ( env ) -> {
-                        final ScriptValue result = data.call();
+                        final ScriptValue result = data.call( env );
                         if ( result.isValue() )
                         {
                             return result.getValue();

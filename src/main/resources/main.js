@@ -8,8 +8,11 @@ var goalType = graphQlLib.createType('Goal', {
         data: 'aa'
     },
     time2: {
-        type: 'String',
-        data: 'bb'
+        type: 'Int',
+        data: function (env) {
+            log.info("env: " + env.getSource().time);
+            return '15'
+        }
     }
 });
 
@@ -40,6 +43,7 @@ var schema = graphQlLib.createSchema({
 
 var result = graphQlLib.execute(schema, 'query{test2}');
 log.info('result: ' + JSON.stringify(result));
-var result2 = graphQlLib.execute(schema, 'query{test3{time}}');
+var result2 = graphQlLib.execute(schema, 'query{test3{time, time2}}');
 log.info('result2: ' + JSON.stringify(result2));
+log.info('result2.time2: ' + JSON.stringify(result2.test3.time2));
 
