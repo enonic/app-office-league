@@ -5,6 +5,7 @@ exports.get = function (req) {
     return {
         contentType: 'application/json',
         body: {
+            game: storeLib.getGameById('e97d933c-cf49-4482-8c64-1e28eecff61a'),
             leagues: storeLib.getLeagues(),
             leagueById: storeLib.getLeagueById('db0af7db-6a11-4242-b124-63467e58449c'),
             leagueByName: storeLib.getLeagueByName('Enonic Foos'),

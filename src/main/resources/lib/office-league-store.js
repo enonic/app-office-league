@@ -95,6 +95,49 @@ var TYPE = {
  */
 
 /**
+ * @typedef {Object} Point
+ * @property {string} playerId Player that scored the point.
+ * @property {number} time Time offset in seconds since the beginning of the game.
+ * @property {boolean} against True if the point was scored against its own player.
+ */
+
+/**
+ * @typedef {Object} GameTeam
+ * @property {string} type Object type: 'gameTeam'
+ * @property {string} gameId Game id.
+ * @property {string} teamId Team id.
+ * @property {string} time Time offset in seconds since the beginning of the game.
+ * @property {string} side Team side: 'blue' or 'red'.
+ * @property {boolean} winner True if this team is the winner of the game.
+ * @property {number} score Total score for this team in the game.
+ * @property {number} scoreAgainst Total score against itself, for this team in the game.
+ * @property {number} ratingDelta Increment in rating for this team ranking based to the game result.
+ */
+
+/**
+ * @typedef {Object} GamePlayer
+ * @property {string} type Object type: 'gamePlayer'
+ * @property {string} gameId Game id.
+ * @property {string} playerId Player id.
+ * @property {string} time Time offset in seconds since the beginning of the game.
+ * @property {string} side Player side: 'blue' or 'red'.
+ * @property {boolean} winner True if this player is the winner of the game.
+ * @property {number} score Total score for this player in the game.
+ * @property {number} scoreAgainst Total score against itself, for this player in the game.
+ * @property {number} ratingDelta Increment in rating for this player ranking based to the game result.
+ */
+
+/**
+ * @typedef {Object} Game
+ * @property {string} type Object type: 'game'
+ * @property {string} time Date and time when the game was started. An ISO-8601-formatted instant (e.g '2011-12-03T10:15:30Z').
+ * @property {boolean} finished True if the game is completed, false if the game is still in progress.
+ * @property {Point[]} points Array of points scored during the game.
+ * @property {GamePlayer[]} gamePlayers Array with the players and its properties for this game.
+ * @property {GameTeam[]} gameTeams Array with the teams and its properties for this game.
+ */
+
+/**
  * Retrieve a list of leagues.
  * @param  {number} [start=0] First index of the leagues.
  * @param  {number} [count=10] Number of leagues to fetch.
@@ -361,6 +404,65 @@ exports.getTeamByName = function (name) {
     }
 
     return team;
+};
+
+/**
+ * Retrieve a game by its id.
+ * @param  {string} gameId Id of the game.
+ * @return {Game} Game object or null if not found.
+ */
+exports.getGameById = function (gameId) {
+    var repoConn = newConnection();
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.GAME + "' AND _id='" + gameId + "'"
+    });
+
+    var game;
+    if (result.count > 0) {
+        var id = result.hits[0].id;
+        game = repoConn.get(id);
+    }
+    if (game) {
+        getGameDetails(repoConn, game);
+    }
+
+    return game;
+};
+
+/**
+ * Retrieve players and teams for a game.
+ * @param  {object} repoConn Repository connection.
+ * @param  {Game} game Game object.
+ */
+var getGameDetails = function (repoConn, game) {
+    game.gamePlayers = [];
+    game.gameTeams = [];
+
+    var result = repoConn.query({
+        start: 0,
+        count: 6,
+        query: "type IN ('" + TYPE.GAME_PLAYER + "', '" + TYPE.GAME_TEAM + "') AND gameId='" + game._id + "'"
+    });
+
+    var members;
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        members = [].concat(repoConn.get(ids));
+        for (var i = 0; i < members.length; i++) {
+            if (members[i].type === TYPE.GAME_PLAYER) {
+                game.gamePlayers.push(members[i]);
+            } else if (members[i].type === TYPE.GAME_TEAM) {
+                game.gameTeams.push(members[i]);
+            }
+        }
+    }
+
+    return game;
 };
 
 var newConnection = function () {
