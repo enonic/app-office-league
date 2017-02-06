@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
+import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.Scalars;
 import graphql.schema.GraphQLFieldDefinition;
@@ -94,6 +95,11 @@ public class GraphQlBean
     public MapMapper execute( final GraphQLSchema schema, final String request )
     {
         GraphQL graphQL = new GraphQL( schema );
+        final ExecutionResult executionResult = graphQL.execute( request );
+        if ( executionResult.getErrors() != null && !executionResult.getErrors().isEmpty() )
+        {
+            System.out.println( "Errors: " + executionResult.getErrors() );
+        }
         Map<String, Object> result = (Map<String, Object>) graphQL.execute( request ).getData();
 
         System.out.println( result );
