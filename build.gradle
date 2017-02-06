@@ -12,6 +12,7 @@ buildscript {
     }
 }
 
+apply plugin: 'maven'
 apply plugin: 'com.enonic.xp.app'
 
 app {
@@ -32,19 +33,31 @@ dependencies {
     //include "com.enonic.xp:lib-i18n:${xpVersion}"
     //include "com.enonic.xp:lib-auth:${xpVersion}"
     //include "com.enonic.xp:lib-cache:${xpVersion}"
-    //include "com.enonic.xp:lib-context:${xpVersion}"
     //include "com.enonic.xp:lib-http-client:${xpVersion}"
     //include "com.enonic.xp:lib-io:${xpVersion}"
     //include "com.enonic.xp:lib-mail:${xpVersion}"
     //include "com.enonic.xp:lib-repo:${xpVersion}"
     //include "com.enonic.xp:lib-websocket:${xpVersion}"
+
+    include "com.enonic.xp:lib-context:${xpVersion}"
+    include "com.enonic.xp:lib-repo:${xpVersion}"
+    include "com.enonic.xp:lib-node:${xpVersion}"
+    include "com.enonic.xp:lib-value:${xpVersion}"
     include 'com.graphql-java:graphql-java:2.3.0'
 }
 
 repositories {
     mavenLocal()
-    jcenter()
+    mavenCentral()
     maven {
         url 'http://repo.enonic.com/public'
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository( url: 'http://repo.enonic.com/artifactory/public' )
+        }
     }
 }

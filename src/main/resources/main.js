@@ -1,4 +1,12 @@
+var initLib = require('/lib/office-league-init');
+
 log.info('Application ' + app.name + ' started');
+
+initLib.initialize();
+
+__.disposer(function () {
+    log.info('Application ' + app.name + ' stopped');
+});
 
 var graphQlLib = require('graphql');
 
@@ -76,6 +84,3 @@ var getPointsResult = graphQlLib.execute(schema, 'query{points{playerId time aga
 log.info('getPointsResult: ' + JSON.stringify(getPointsResult));
 var getPointByIdResult = graphQlLib.execute(schema, 'query{pointByPlayerId(playerId: "0000-0000-0002"){playerId time against}}');
 log.info('getPointByIdResult: ' + JSON.stringify(getPointByIdResult));
-
-
-
