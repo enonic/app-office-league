@@ -21,7 +21,7 @@ var schema = graphQlLib.createSchema({
             }
         },
         test3: {
-            type: goalType,
+            type: 'String',
             data: function () {
                 return {
                     time: "10",
@@ -31,4 +31,7 @@ var schema = graphQlLib.createSchema({
         }
     }
 });
-graphQlLib.execute(schema, 'query{test2}'); 
+
+var result = graphQlLib.execute(schema, 'query{test2}');
+//log.info('result: ' + result.time);
+

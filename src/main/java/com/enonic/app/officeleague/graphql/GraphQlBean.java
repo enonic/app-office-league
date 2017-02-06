@@ -87,7 +87,19 @@ public class GraphQlBean
                 }
                 else if ( data.isFunction() )
                 {
-                    graphQlField.dataFetcher( ( env ) -> data.call().getValue() );
+                    graphQlField.dataFetcher( ( env ) -> {
+                        final ScriptValue result = data.call();
+                        if ( result.isValue() )
+                        {
+                            return result.getValue();
+                        }
+
+                        if ( result.isObject() )
+                        {
+                            return result.getMap();
+                        }
+                        return null;
+                    } );
                 }
 
                 graphQlQuery.field( graphQlField );
