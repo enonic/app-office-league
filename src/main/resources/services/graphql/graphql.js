@@ -59,15 +59,14 @@ var teamType = graphQlLib.createType('Team', {
             data: function (env) {
                 return env.source.nickname;
             }
-            //},
-            //players: {
-            //    type: graphQlLib.list(playerType),
-            //    data: function (env) {
-            //        log.info('Team->players: ' + JSON.stringify(env.source, null, 2));
-            //        return env.source.playerIds.map(function (playerId) {
-            //            return storeLib.getPlayerById(playerId);
-            //        });
-            //    }
+        },
+        players: {
+            type: graphQlLib.list(playerType),
+            data: function (env) {
+                return env.source.playerIds.map(function (playerId) {
+                    return storeLib.getPlayerById(playerId);
+                });
+            }
         }
     }
 );
