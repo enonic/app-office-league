@@ -3,7 +3,7 @@ var storeLib = require('/lib/office-league-store');
 exports.get = function (req) {
 
     return {
-        contentType: 'application/json',
+        contentType: 'application/json; charset=utf-8',
         body: {
             game: storeLib.getGameById('e97d933c-cf49-4482-8c64-1e28eecff61a'),
             leagues: storeLib.getLeagues(),
@@ -18,7 +18,11 @@ exports.get = function (req) {
 
             leaguePlayers: storeLib.getLeaguePlayers('db0af7db-6a11-4242-b124-63467e58449c'),
             leagueTeams: storeLib.getLeagueTeams('db0af7db-6a11-4242-b124-63467e58449c'),
-            leagueGames: storeLib.getLeagueGames(storeLib.getLeagueByName('Enonic Foos')._id)
+            leagueGames: storeLib.getLeagueGames(storeLib.getLeagueByName('Enonic Foos')._id),
+
+            playerLeagues: storeLib.getPlayerLeagues(storeLib.getPlayerByName('aro')._id),
+            playerTeams: storeLib.getPlayerTeams(storeLib.getPlayerByName('aro')._id),
+            playerGames: storeLib.getPlayerGames(storeLib.getPlayerByName('aro')._id)
         }
     }
 };

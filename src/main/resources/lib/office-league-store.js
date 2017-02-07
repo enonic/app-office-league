@@ -143,7 +143,7 @@ var TYPE = {
  */
 
 /**
- * @typedef {Object} LeagueGamesResponse
+ * @typedef {Object} GamesResponse
  * @property {Game[]} games Array of game objects.
  * @property {number} count Total number of games.
  * @property {number} total Count of games returned.
@@ -499,7 +499,7 @@ var getGameDetails = function (repoConn, game) {
  * @param  {string} leagueId League id.
  * @param  {number} [start=0] First index of the league games.
  * @param  {number} [count=10] Number of games to fetch.
- * @return {LeagueGamesResponse} League games.
+ * @return {GamesResponse} League games.
  */
 exports.getLeagueGames = function (leagueId, start, count) {
     var repoConn = newConnection();
@@ -518,6 +518,117 @@ exports.getLeagueGames = function (leagueId, start, count) {
             return exports.getGameById(hit.id);
         });
     }
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "games": games
+    };
+};
+
+/**
+ * Retrieve the list of leagues a player is a member of.
+ * @param  {string} playerId Player id.
+ * @param  {number} [start=0] First index of the leagues.
+ * @param  {number} [count=10] Number of leagues to fetch.
+ * @return {LeagueResponse} Leagues.
+ */
+exports.getPlayerLeagues = function (playerId, start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId = '" + playerId + "'"
+    });
+
+    var leaguePlayers = [];
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        leaguePlayers = [].concat(repoConn.get(ids));
+    }
+    var leagueIds = leaguePlayers.map(function (leaguePlayer) {
+        return leaguePlayer.leagueId;
+    });
+    var leagues = [].concat(repoConn.get(leagueIds));
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "leagues": leagues
+    };
+};
+
+/**
+ * Retrieve the list of teams a player is a member of.
+ * @param  {string} playerId Player id.
+ * @param  {number} [start=0] First index of the teams.
+ * @param  {number} [count=10] Number of teams to fetch.
+ * @return {TeamResponse} Teams.
+ */
+exports.getPlayerTeams = function (playerId, start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.TEAM + "' AND playerIds = '" + playerId + "'"
+    });
+
+    var teams = [];
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        teams = [].concat(repoConn.get(ids));
+    }
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "teams": teams
+    };
+};
+
+//
+/**
+ * Retrieve a list of games for a player.
+ * @param  {string} playerId Player id.
+ * @param  {number} [start=0] First index of the league games.
+ * @param  {number} [count=10] Number of games to fetch.
+ * @return {GamesResponse} League games.
+ */
+exports.getPlayerGames = function (playerId, start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.GAME_PLAYER + "' AND playerId = '" + playerId + "'",
+        sort: "time DESC"
+    });
+
+    var gamePlayers = [];
+    if (result.count > 0) {
+        gamePlayers = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        gamePlayers = [].concat(repoConn.get(gamePlayers));
+    }
+    var gameIds = gamePlayers.map(function (gamePlayer) {
+        return gamePlayer.gameId;
+    });
+    var games = gameIds.map(function (gameId) {
+        return exports.getGameById(gameId);
+    });
 
     return {
         "total": result.total,
