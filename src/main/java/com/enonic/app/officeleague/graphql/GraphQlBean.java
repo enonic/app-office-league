@@ -48,7 +48,18 @@ public class GraphQlBean
     public GraphQLObjectType.Builder createType( final String name, final ScriptValue scriptValue )
     {
         final GraphQLObjectType.Builder type = GraphQLObjectType.newObject().name( name );
+        setTypeFields( scriptValue, type );
+        return type;
+    }
 
+    public GraphQLObjectType.Builder updateType( final GraphQLObjectType.Builder type, final ScriptValue scriptValue )
+    {
+        setTypeFields( scriptValue, type );
+        return type;
+    }
+
+    private void setTypeFields( final ScriptValue scriptValue, final GraphQLObjectType.Builder type )
+    {
         for ( String scriptFieldKey : scriptValue.getKeys() )
         {
             final ScriptValue scriptFieldValue = scriptValue.getMember( scriptFieldKey );
@@ -61,7 +72,6 @@ public class GraphQlBean
             setFieldData( scriptFieldValue, graphQlField );
             type.field( graphQlField );
         }
-        return type;
     }
 
     private void setFieldArguments( final ScriptValue scriptFieldValue, final GraphQLFieldDefinition.Builder graphQlField )
