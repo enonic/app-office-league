@@ -41,6 +41,37 @@ var playerType = graphQlLib.createType('Player', {
     }
 );
 
+var teamType = graphQlLib.createType('Team', {
+        id: {
+            type: graphQlLib.scalar('ID'),
+            data: function (env) {
+                return env.getSource()._id;
+            }
+        },
+        name: {
+            type: graphQlLib.scalar('String'),
+            data: function (env) {
+                return env.getSource().name;
+            }
+        },
+        description: {
+            type: graphQlLib.scalar('String'),
+            data: function (env) {
+                return env.getSource().nickname;
+            }
+            //},
+            //players: {
+            //    type: graphQlLib.list(playerType),
+            //    data: function (env) {
+            //        log.info('Team->players: ' + JSON.stringify(env.getSource(), null, 2));
+            //        return env.getSource().playerIds.map(function (playerId) {
+            //            return storeLib.getPlayerById(playerId);
+            //        });
+            //    }
+        }
+    }
+);
+
 var schema = graphQlLib.createSchema({
     query: {
         player: {
@@ -71,7 +102,20 @@ var schema = graphQlLib.createSchema({
                 var count = env.getArgument('count');
                 return storeLib.getPlayers(start, count).players;
             }
+        },
+        teams: {
+            type: graphQlLib.list(teamType),
+            args: {
+                start: graphQlLib.scalar('Int'),
+                count: graphQlLib.scalar('Int')
+            },
+            data: function (env) {
+                var start = env.getArgument('start');
+                var count = env.getArgument('count');
+                return storeLib.getTeams(start, count).teams;
+            }
         }
+
     }
 });
 
