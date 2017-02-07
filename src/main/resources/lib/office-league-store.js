@@ -5,6 +5,7 @@ var REPO_NAME = 'office-league';
 var LEAGUES_PATH = '/leagues';
 var PLAYERS_PATH = '/players';
 var TEAMS_PATH = '/teams';
+var LEAGUE_GAMES_REL_PATH = '/games';
 
 var TYPE = {
     PLAYER: 'player',
@@ -868,6 +869,77 @@ exports.createTeam = function (params) {
     });
 
     return teamNode._id;
+};
+
+/**
+ * Create a new game.
+ *
+ * @param {object} params JSON with the game parameters.
+ * @param {string} params.leagueId League id.
+ * @param {string} params.time Date and time when the game was started. An ISO-8601-formatted instant (e.g '2011-12-03T10:15:30Z').
+ * @param {boolean} params.finished True if the game is completed, false if the game is still in progress.
+ * @param {Point[]} [params.points] Array of points scored during the game.
+ * @param {GamePlayer[]} params.gamePlayers Array with the players and its properties for this game.
+ * @param {GameTeam[]} params.gameTeams Array with the teams and its properties for this game.
+ * @return {string} Game id.
+ */
+exports.createGame = function (params) {
+    var repoConn = newConnection();
+
+    var leagueNode = repoConn.get(params.leagueId);
+    if (!leagueNode) {
+        throw "League not found: " + params.leagueId;
+    }
+
+    params.points = params.points || [];
+    params.gameTeams = params.gameTeams || [];
+
+    var gameNode = repoConn.create({
+        _parentPath: leagueNode._path + LEAGUE_GAMES_REL_PATH,
+        type: TYPE.GAME,
+        leagueId: params.leagueId,
+        time: valueLib.instant(params.time),
+        finished: !!params.finished,
+        points: params.points
+    });
+
+    var i, gamePlayer, gameTeam;
+    for (i = 0; i < params.gamePlayers.length; i++) {
+        gamePlayer = params.gamePlayers[i];
+        repoConn.create({
+            _parentPath: gameNode._path,
+            leagueId: params.leagueId,
+            type: TYPE.GAME_PLAYER,
+            time: valueLib.instant(params.time),
+            gameId: gameNode._id,
+
+            playerId: gamePlayer.playerId,
+            score: gamePlayer.score,
+            scoreAgainst: gamePlayer.scoreAgainst,
+            side: gamePlayer.side,
+            winner: gamePlayer.winner,
+            ratingDelta: gamePlayer.ratingDelta
+        });
+    }
+    for (i = 0; i < params.gameTeams.length; i++) {
+        gameTeam = params.gameTeams[i];
+        repoConn.create({
+            _parentPath: gameNode._path,
+            leagueId: params.leagueId,
+            type: TYPE.GAME_TEAM,
+            time: valueLib.instant(params.time),
+            gameId: gameNode._id,
+
+            teamId: gameTeam.teamId,
+            score: gameTeam.score,
+            scoreAgainst: gameTeam.scoreAgainst,
+            side: gameTeam.side,
+            winner: gameTeam.winner,
+            ratingDelta: gameTeam.ratingDelta
+        });
+    }
+
+    return gameNode._id;
 };
 
 var newConnection = function () {
