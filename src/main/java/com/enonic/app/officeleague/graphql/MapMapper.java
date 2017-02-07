@@ -9,9 +9,9 @@ import com.enonic.xp.script.serializer.MapSerializable;
 public final class MapMapper
     implements MapSerializable
 {
-    private final Map<String, Object> value;
+    private final Map<?, ?> value;
 
-    public MapMapper( final Map<String, Object> value )
+    public MapMapper( final Map<?, ?> value )
     {
         this.value = value;
     }
