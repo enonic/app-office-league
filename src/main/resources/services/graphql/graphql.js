@@ -62,8 +62,14 @@ var schema = graphQlLib.createSchema({
         },
         players: {
             type: graphQlLib.list(playerType),
-            data: function () {
-                return storeLib.getPlayers().players;
+            args: {
+                start: graphQlLib.scalar('Int'),
+                count: graphQlLib.scalar('Int')
+            },
+            data: function (env) {
+                var start = env.getArgument('start');
+                var count = env.getArgument('count');
+                return storeLib.getPlayers(start, count).players;
             }
         }
     }
