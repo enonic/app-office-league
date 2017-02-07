@@ -104,7 +104,8 @@ public class GraphQlBean
         if ( data.isFunction() )
         {
             graphQlField.dataFetcher( ( env ) -> {
-                final ScriptValue result = data.call( env );
+                final DataFetchingEnvironmentMapper environmentMapper = new DataFetchingEnvironmentMapper( env );
+                final ScriptValue result = data.call( environmentMapper );
                 return toGraphQlValue( result );
             } );
         }

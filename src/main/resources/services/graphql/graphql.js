@@ -5,37 +5,37 @@ var playerType = graphQlLib.createType('Player', {
         id: {
             type: graphQlLib.scalar('ID'),
             data: function (env) {
-                return env.getSource()._id;
+                return env.source._id;
             }
         },
         name: {
             type: graphQlLib.scalar('String'),
             data: function (env) {
-                return env.getSource().name;
+                return env.source.name;
             }
         },
         nickname: {
             type: graphQlLib.scalar('String'),
             data: function (env) {
-                return env.getSource().nickname;
+                return env.source.nickname;
             }
         },
         nationality: {
             type: graphQlLib.scalar('String'),
             data: function (env) {
-                return env.getSource().nationality;
+                return env.source.nationality;
             }
         },
         handedness: {
             type: graphQlLib.scalar('String'),
             data: function (env) {
-                return env.getSource().handedness;
+                return env.source.handedness;
             }
         },
         description: {
             type: graphQlLib.scalar('String'),
             data: function (env) {
-                return env.getSource().description;
+                return env.source.description;
             }
         }
     }
@@ -45,26 +45,26 @@ var teamType = graphQlLib.createType('Team', {
         id: {
             type: graphQlLib.scalar('ID'),
             data: function (env) {
-                return env.getSource()._id;
+                return env.source._id;
             }
         },
         name: {
             type: graphQlLib.scalar('String'),
             data: function (env) {
-                return env.getSource().name;
+                return env.source.name;
             }
         },
         description: {
             type: graphQlLib.scalar('String'),
             data: function (env) {
-                return env.getSource().nickname;
+                return env.source.nickname;
             }
             //},
             //players: {
             //    type: graphQlLib.list(playerType),
             //    data: function (env) {
-            //        log.info('Team->players: ' + JSON.stringify(env.getSource(), null, 2));
-            //        return env.getSource().playerIds.map(function (playerId) {
+            //        log.info('Team->players: ' + JSON.stringify(env.source, null, 2));
+            //        return env.source.playerIds.map(function (playerId) {
             //            return storeLib.getPlayerById(playerId);
             //        });
             //    }
@@ -81,8 +81,8 @@ var schema = graphQlLib.createSchema({
                 name: graphQlLib.scalar('ID')
             },
             data: function (env) {
-                var id = env.getArgument('id');
-                var name = env.getArgument('name');
+                var id = env.args.id;
+                var name = env.args.name;
                 if (id) {
                     return storeLib.getPlayerById(id);
                 } else if (name) {
@@ -98,8 +98,8 @@ var schema = graphQlLib.createSchema({
                 count: graphQlLib.scalar('Int')
             },
             data: function (env) {
-                var start = env.getArgument('start');
-                var count = env.getArgument('count');
+                var start = env.args.start;
+                var count = env.args.count;
                 return storeLib.getPlayers(start, count).players;
             }
         },
@@ -110,8 +110,8 @@ var schema = graphQlLib.createSchema({
                 count: graphQlLib.scalar('Int')
             },
             data: function (env) {
-                var start = env.getArgument('start');
-                var count = env.getArgument('count');
+                var start = env.args.start;
+                var count = env.args.count;
                 return storeLib.getTeams(start, count).teams;
             }
         }
