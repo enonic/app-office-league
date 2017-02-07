@@ -3,10 +3,16 @@
   <config/>
 
   <mappings>
-    <!-- /portal/master/office-league/players/image/username -->
+    <!-- /portal/master/office-league/players/image/<playername> -->
     <mapping controller="/site/controllers/player-image.js" order="10">
       <pattern>/players/image/.*</pattern>
     </mapping>
+
+    <!-- /portal/master/office-league/teams/image/<teamname> -->
+    <mapping controller="/site/controllers/team-image.js" order="10">
+      <pattern>/teams/image/.*</pattern>
+    </mapping>
+
   </mappings>
 
 </site>

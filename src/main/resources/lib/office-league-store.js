@@ -3,6 +3,8 @@ var valueLib = require('/lib/xp/value');
 
 var REPO_NAME = 'office-league';
 var LEAGUES_PATH = '/leagues';
+var PLAYERS_PATH = '/players';
+var TEAMS_PATH = '/teams';
 
 var TYPE = {
     PLAYER: 'player',
@@ -367,6 +369,21 @@ exports.getPlayerImageStream = function (player) {
     return binaryStream;
 };
 
+/**
+ * Retrieve a team image.
+ * @param  {Team} team Team object.
+ * @return {object} Team image stream.
+ */
+exports.getTeamImageStream = function (team) {
+    var repoConn = newConnection();
+
+    var binaryStream = repoConn.getBinary({
+        key: team._id,
+        binaryReference: team.image
+    });
+    return binaryStream;
+};
+
 // exports.getPlayerImageUrl = function (playerId) {
 
 /**
@@ -715,16 +732,15 @@ exports.getTeamGames = function (teamId, start, count) {
     };
 };
 
-
 /**
  * Create a new league.
  *
  * @param {object} params JSON with the league parameters.
  * @param {string} params.name Name of the league.
  * @param {string} params.sport Sport id (e.g. 'foos')
- * @param {string} params.description League description text.
- * @param {string} params.imageStream Stream with the league's image.
- * @param {string} params.imageType Mime type of the league's image.
+ * @param {string} [params.description] League description text.
+ * @param {string} [params.imageStream] Stream with the league's image.
+ * @param {string} [params.imageType] Mime type of the league's image.
  * @param {Object} [params.config] League config.
  * @return {string} League id.
  */
@@ -735,7 +751,13 @@ exports.createLeague = function (params) {
     params.sport = params.sport || 'foos';
     required(params, 'name');
 
-    var imageValue;
+    var imageValue = null;
+    if (params.imageStream) {
+        required(params, 'imageType');
+        var ext = extensionFromMimeType(params.imageType);
+        imageValue = valueLib.binary('team' + ext, params.image);
+    }
+
     var leagueNode = repoConn.create({
         _name: prettifyName(params.name),
         _parentPath: LEAGUES_PATH,
@@ -764,6 +786,90 @@ exports.createLeague = function (params) {
     return leagueNode._id;
 };
 
+/**
+ * Create a new player.
+ *
+ * @param {object} params JSON with the player parameters.
+ * @param {string} params.name Name of the player.
+ * @param {string} [params.nickname] Nickname of the player.
+ * @param {string} [params.imageStream] Stream with the player's image.
+ * @param {string} [params.imageType] Mime type of the player's image.
+ * @param {string} [params.nationality] 2 letter country code of the player (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
+ * @param {string} [params.handedness='right'] Player handedness: 'right', 'left', 'ambidexterity.
+ * @param {string} [params.description] Description text.
+ * @return {string} Player id.
+ */
+exports.createPlayer = function (params) {
+    var repoConn = newConnection();
+
+    params.handedness = params.handedness || 'right';
+    required(params, 'name');
+
+    var imageValue = null;
+    if (params.imageStream) {
+        required(params, 'imageType');
+        var ext = extensionFromMimeType(params.imageType);
+        imageValue = valueLib.binary('player' + ext, params.imageStream);
+    }
+
+    var playerNode = repoConn.create({
+        _name: prettifyName(params.name),
+        _parentPath: PLAYERS_PATH,
+        type: TYPE.PLAYER,
+        name: params.name,
+        nickname: params.nickname,
+        image: imageValue,
+        imageType: params.imageType,
+        nationality: params.nationality,
+        handedness: params.handedness,
+        description: params.description
+    });
+
+    return playerNode._id;
+};
+
+/**
+ * Create a new team.
+ *
+ * @param {object} params JSON with the team parameters.
+ * @param {string} params.name Name of the team.
+ * @param {string} [params.imageStream] Stream with the team's image.
+ * @param {string} [params.imageType] Mime type of the team's image.
+ * @param {string} [params.description] Description text.
+ * @param {string[]} params.playerIds Array with ids of the team players.
+ * @return {string} Team id.
+ */
+exports.createTeam = function (params) {
+    var repoConn = newConnection();
+
+    params.handedness = params.handedness || 'right';
+    required(params, 'name');
+    required(params, 'playerIds');
+    if (params.playerIds.length !== 2) {
+        throw "Parameter 'playerIds' must have 2 values";
+    }
+
+    var imageValue = null;
+    if (params.imageStream) {
+        required(params, 'imageType');
+        var ext = extensionFromMimeType(params.imageType);
+        imageValue = valueLib.binary('team' + ext, params.imageStream);
+    }
+
+    var teamNode = repoConn.create({
+        _name: prettifyName(params.name),
+        _parentPath: TEAMS_PATH,
+        type: TYPE.TEAM,
+        name: params.name,
+        image: imageValue,
+        imageType: params.imageType,
+        description: params.description,
+        playerIds: params.playerIds
+    });
+
+    return teamNode._id;
+};
+
 var newConnection = function () {
     return nodeLib.connect({
         repoId: REPO_NAME,
@@ -783,4 +889,14 @@ var required = function (params, name) {
 
 var prettifyName = function (val) {
     return val == null ? val : val.replace(/ /g, '-').toLowerCase();
+};
+
+var extensionFromMimeType = function (mimeType) {
+    var ext = '';
+    if (mimeType.indexOf('image/png') > -1) {
+        ext = '.png';
+    } else if (mimeType.indexOf('image/jpg') > -1 || mimeType.indexOf('image/jpeg') > -1) {
+        ext = '.jpg';
+    }
+    return ext;
 };
