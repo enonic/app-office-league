@@ -2,6 +2,7 @@ var nodeLib = require('/lib/xp/node');
 var valueLib = require('/lib/xp/value');
 
 var REPO_NAME = 'office-league';
+var LEAGUES_PATH = '/leagues';
 
 var TYPE = {
     PLAYER: 'player',
@@ -714,10 +715,72 @@ exports.getTeamGames = function (teamId, start, count) {
     };
 };
 
+
+/**
+ * Create a new league.
+ *
+ * @param {object} params JSON with the league parameters.
+ * @param {string} params.name Name of the league.
+ * @param {string} params.sport Sport id (e.g. 'foos')
+ * @param {string} params.description League description text.
+ * @param {string} params.imageStream Stream with the league's image.
+ * @param {string} params.imageType Mime type of the league's image.
+ * @param {Object} [params.config] League config.
+ * @return {string} League id.
+ */
+exports.createLeague = function (params) {
+    var repoConn = newConnection();
+
+    params.config = params.config || {};
+    params.sport = params.sport || 'foos';
+    required(params, 'name');
+
+    var imageValue;
+    var leagueNode = repoConn.create({
+        _name: prettifyName(params.name),
+        _parentPath: LEAGUES_PATH,
+        type: TYPE.LEAGUE,
+        name: params.name,
+        sport: params.sport,
+        image: imageValue,
+        imageType: params.imageType,
+        description: params.description,
+        config: params.config
+    });
+
+    var playersNode = repoConn.create({
+        _name: 'players',
+        _parentPath: leagueNode._path
+    });
+    var teamsNode = repoConn.create({
+        _name: 'teams',
+        _parentPath: leagueNode._path
+    });
+    var gamesNode = repoConn.create({
+        _name: 'games',
+        _parentPath: leagueNode._path
+    });
+
+    return leagueNode._id;
+};
+
 var newConnection = function () {
     return nodeLib.connect({
         repoId: REPO_NAME,
         branch: 'master',
         principals: ["role:system.admin"]
     });
+};
+
+var required = function (params, name) {
+    var value = params[name];
+    if (value === undefined) {
+        throw "Parameter '" + name + "' is required";
+    }
+
+    return value;
+};
+
+var prettifyName = function (val) {
+    return val == null ? val : val.replace(/ /g, '-').toLowerCase();
 };
