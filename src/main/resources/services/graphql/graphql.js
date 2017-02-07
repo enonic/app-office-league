@@ -71,6 +71,15 @@ var teamType = graphQlLib.createType('Team', {
     }
 );
 
+graphQlLib.updateType(playerType, {
+    teams: {
+        type: graphQlLib.list(teamType),
+        data: function (env) {
+            return [storeLib.getTeamByName('A bald old guy & a young chick')];
+        }
+    }
+});
+
 var schema = graphQlLib.createSchema({
     query: {
         player: {
@@ -121,9 +130,7 @@ var schema = graphQlLib.createSchema({
 
 exports.post = function (req) {
     var body = JSON.parse(req.body);
-    log.info("Query: " + body.query);
     var result = graphQlLib.execute(schema, body.query);
-    log.info("Query result: " + JSON.stringify(result));
     return {
         contentType: 'application/json',
         body: result
