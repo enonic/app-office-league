@@ -95,6 +95,12 @@ if (!teamB) {
     log.info('Team B created');
 }
 
+storeLib.joinPlayerLeague(league._id, player1._id);
+storeLib.joinPlayerLeague(league._id, player2._id);
+storeLib.joinPlayerLeague(league._id, player3._id);
+storeLib.joinPlayerLeague(league._id, player4._id);
+storeLib.joinTeamLeague(league._id, teamA._id);
+storeLib.joinTeamLeague(league._id, teamB._id);
 
 var createRandomGame = function (player1Id, player2Id, player3Id, player4Id, teamAId, teamBId) {
     var points = [];

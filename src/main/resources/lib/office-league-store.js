@@ -6,6 +6,8 @@ var LEAGUES_PATH = '/leagues';
 var PLAYERS_PATH = '/players';
 var TEAMS_PATH = '/teams';
 var LEAGUE_GAMES_REL_PATH = '/games';
+var LEAGUE_PLAYERS_REL_PATH = '/players';
+var LEAGUE_TEAMS_REL_PATH = '/teams';
 
 var TYPE = {
     PLAYER: 'player',
@@ -940,6 +942,86 @@ exports.createGame = function (params) {
     }
 
     return gameNode._id;
+};
+
+/**
+ * Add a player to an existing league.
+ *
+ * @param {string} leagueId Id of the league.
+ * @param {string} playerId Id of the player.
+ * @param {number} [rating=0] Initial player rating in the league ranking.
+ */
+exports.joinPlayerLeague = function (leagueId, playerId, rating) {
+    var repoConn = newConnection();
+    rating = rating || 0;
+
+    var leagueNode = repoConn.get(leagueId);
+    if (!leagueNode || leagueNode.type !== TYPE.LEAGUE) {
+        throw "League not found: " + leagueId;
+    }
+
+    var playerNode = repoConn.get(playerId);
+    if (!playerNode || playerNode.type !== TYPE.PLAYER) {
+        throw "League not found: " + leagueId;
+    }
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "' AND leagueId='" + leagueId + "'"
+    });
+    if (result.count > 0) {
+        log.info('Player [' + playerId + '] already a member of league [' + leagueId + ']');
+        return;
+    }
+
+    repoConn.create({
+        _parentPath: leagueNode._path + LEAGUE_PLAYERS_REL_PATH,
+        type: TYPE.LEAGUE_PLAYER,
+        playerId: playerId,
+        leagueId: leagueId,
+        rating: rating
+    });
+};
+
+/**
+ * Add a team to an existing league.
+ *
+ * @param {string} leagueId Id of the league.
+ * @param {string} teamId Id of the team.
+ * @param {number} [rating=0] Initial team rating in the league ranking.
+ */
+exports.joinTeamLeague = function (leagueId, teamId, rating) {
+    var repoConn = newConnection();
+    rating = rating || 0;
+
+    var leagueNode = repoConn.get(leagueId);
+    if (!leagueNode || leagueNode.type !== TYPE.LEAGUE) {
+        throw "League not found: " + leagueId;
+    }
+
+    var teamNode = repoConn.get(teamId);
+    if (!teamNode || teamNode.type !== TYPE.TEAM) {
+        throw "League not found: " + leagueId;
+    }
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND teamId='" + teamId + "' AND leagueId='" + leagueId + "'"
+    });
+    if (result.count > 0) {
+        log.info('Team [' + teamId + '] already a member of league [' + leagueId + ']');
+        return;
+    }
+
+    repoConn.create({
+        _parentPath: leagueNode._path + LEAGUE_TEAMS_REL_PATH,
+        type: TYPE.LEAGUE_TEAM,
+        teamId: teamId,
+        leagueId: leagueId,
+        rating: rating
+    });
 };
 
 var newConnection = function () {
