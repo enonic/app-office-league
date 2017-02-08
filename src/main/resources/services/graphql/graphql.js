@@ -71,6 +71,98 @@ var teamType = graphQlLib.createType('Team', {
     }
 );
 
+var gamePlayerType = graphQlLib.createType('GamePlayer', {
+        id: {
+            type: graphQlLib.scalar('ID'),
+            data: function (env) {
+                return env.source._id;
+            }
+        },
+        time: {
+            type: graphQlLib.scalar('String'),
+            data: function (env) {
+                return env.source.time;
+            }
+        },
+        score: {
+            type: graphQlLib.scalar('Int'),
+            data: function (env) {
+                return env.source.score;
+            }
+        },
+        side: {
+            type: graphQlLib.scalar('String'), //TODO Replace by Enum
+            data: function (env) {
+                return env.source.side;
+            }
+        },
+        winner: {
+            type: graphQlLib.scalar('Boolean'),
+            data: function (env) {
+                return env.source.winner;
+            }
+        },
+        ratingDelta: {
+            type: graphQlLib.scalar('Int'),
+            data: function (env) {
+                return env.source.ratingDelta;
+            }
+        },
+        player: {
+            type: playerType,
+            data: function (env) {
+                return storeLib.getPlayerById(env.source.playerId);
+            }
+        }
+    }
+);
+
+var gameTeamType = graphQlLib.createType('GameTeam', {
+        id: {
+            type: graphQlLib.scalar('ID'),
+            data: function (env) {
+                return env.source._id;
+            }
+        },
+        time: {
+            type: graphQlLib.scalar('String'),
+            data: function (env) {
+                return env.source.time;
+            }
+        },
+        score: {
+            type: graphQlLib.scalar('Int'),
+            data: function (env) {
+                return env.source.score;
+            }
+        },
+        side: {
+            type: graphQlLib.scalar('String'), //TODO Replace by Enum
+            data: function (env) {
+                return env.source.side;
+            }
+        },
+        winner: {
+            type: graphQlLib.scalar('Boolean'),
+            data: function (env) {
+                return env.source.winner;
+            }
+        },
+        ratingDelta: {
+            type: graphQlLib.scalar('Int'),
+            data: function (env) {
+                return env.source.ratingDelta;
+            }
+        },
+        team: {
+            type: teamType,
+            data: function (env) {
+                return storeLib.getTeamById(env.source.teamId);
+            }
+        }
+    }
+);
+
 var pointType = graphQlLib.createType('Point', {
         id: {
             type: graphQlLib.scalar('ID'),
@@ -162,6 +254,18 @@ var gameType = graphQlLib.createType('Game', {
             },
             data: function (env) {
                 return storeLib.getGameComments(env.source._id, env.args.start, env.args.count).comments;
+            }
+        },
+        gamePlayers: {
+            type: graphQlLib.list(gamePlayerType),
+            data: function (env) {
+                return env.source.gamePlayers;
+            }
+        },
+        gameTeams: {
+            type: graphQlLib.list(gameTeamType),
+            data: function (env) {
+                return env.source.gameTeams;
             }
         }
     }
