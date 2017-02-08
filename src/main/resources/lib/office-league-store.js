@@ -1142,8 +1142,28 @@ var required = function (params, name) {
     return value;
 };
 
-var prettifyName = function (val) {
-    return val == null ? val : val.replace(/ /g, '-').toLowerCase();
+var prettifyName = function (str) {
+    var result = '';
+    for (var i = 0; i < str.length; i++) {
+        var c = str[i];
+        var isNumber = c >= '0' && c <= '9';
+        if (isNumber) {
+            result += c;
+            continue;
+        }
+        var isLetter = c.toUpperCase() !== c.toLowerCase();
+        if (isLetter) {
+            result += c.toLowerCase();
+        } else if ('_-'.indexOf(c) > -1) {
+            result += c;
+        } else if (result && result.slice(-1) !== '-') {
+            result += '-';
+        }
+    }
+    if (result && result.slice(-1) === '-') {
+        result = result.slice(0, -1);
+    }
+    return result;
 };
 
 var extensionFromMimeType = function (mimeType) {
@@ -1152,6 +1172,8 @@ var extensionFromMimeType = function (mimeType) {
         ext = '.png';
     } else if (mimeType.indexOf('image/jpg') > -1 || mimeType.indexOf('image/jpeg') > -1) {
         ext = '.jpg';
+    } else if (mimeType.indexOf('image/gif') > -1) {
+        ext = '.gif';
     }
     return ext;
 };

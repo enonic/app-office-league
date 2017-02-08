@@ -54,13 +54,42 @@ var createSite = function () {
             branch: 'draft',
             contentType: 'portal:site',
             data: {
-                // TODO bug in contentLib.create function
-                // siteConfig: {
-                //     applicationKey: app.name,
-                //     config: {}
-                // }
+                siteConfig: {
+                    applicationKey: app.name,
+                    config: {}
+                }
             },
             x: {}
+        });
+
+        log.info('Creating PWA page template...');
+        var templateContent = contentLib.create({
+            name: 'pwa',
+            parentPath: siteContent._path + '/_templates',
+            displayName: 'PWA',
+            branch: 'draft',
+            contentType: 'portal:page-template',
+            data: {
+                supports: 'portal:site'
+            }
+        });
+        // add page to template
+        var repoConn = nodeLib.connect({
+            repoId: 'cms-repo',
+            branch: 'draft',
+            principals: ["role:system.admin"]
+        });
+        repoConn.modify({
+            key: templateContent._id,
+            editor: function (node) {
+                node.page = {
+                    controller: app.name + ':pwa',
+                    config: {},
+                    regions: {},
+                    customized: false
+                };
+                return node;
+            }
         });
     }
 };
