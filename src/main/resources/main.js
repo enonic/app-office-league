@@ -188,7 +188,7 @@ var createRandomGame = function (player1Id, player2Id, player3Id, player4Id, tea
         }
     }
 
-    storeLib.createGame({
+    var gameId = storeLib.createGame({
         leagueId: league._id,
         finished: true,
         time: new Date().toISOString(),
@@ -196,6 +196,13 @@ var createRandomGame = function (player1Id, player2Id, player3Id, player4Id, tea
         gamePlayers: gamePlayers,
         gameTeams: gameTeams
     });
+
+    var commentId = storeLib.createComment({
+        gameId: gameId,
+        author: player1Id,
+        text: 'Game comment'
+    });
+
     log.info('Game created');
 };
 

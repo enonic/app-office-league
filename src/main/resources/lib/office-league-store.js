@@ -17,7 +17,8 @@ var TYPE = {
     GAME_TEAM: 'gameTeam',
     LEAGUE: 'league',
     LEAGUE_PLAYER: 'leaguePlayer',
-    LEAGUE_TEAM: 'leagueTeam'
+    LEAGUE_TEAM: 'leagueTeam',
+    COMMENT: 'comment'
 };
 
 /**
@@ -153,6 +154,23 @@ var TYPE = {
  * @property {Game[]} games Array of game objects.
  * @property {number} count Total number of games.
  * @property {number} total Count of games returned.
+ */
+
+/**
+ * @typedef {Object} Comment
+ * @property {string} type Object type: 'comment'
+ * @property {string} text Comment text.
+ * @property {string} gameId Game id.
+ * @property {string} author Player id.
+ * @property {string} media Binary name of the league's image.
+ * @property {string} mediaType Mime type of the league's image.
+ */
+
+/**
+ * @typedef {Object} CommentsResponse
+ * @property {Comment[]} comments Array of game comment objects.
+ * @property {number} count Total number of comments.
+ * @property {number} total Count of comments returned.
  */
 
 /**
@@ -962,7 +980,7 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
 
     var playerNode = repoConn.get(playerId);
     if (!playerNode || playerNode.type !== TYPE.PLAYER) {
-        throw "League not found: " + leagueId;
+        throw "Player not found: " + leagueId;
     }
 
     var result = repoConn.query({
@@ -1002,7 +1020,7 @@ exports.joinTeamLeague = function (leagueId, teamId, rating) {
 
     var teamNode = repoConn.get(teamId);
     if (!teamNode || teamNode.type !== TYPE.TEAM) {
-        throw "League not found: " + leagueId;
+        throw "Team not found: " + leagueId;
     }
 
     var result = repoConn.query({
@@ -1022,6 +1040,89 @@ exports.joinTeamLeague = function (leagueId, teamId, rating) {
         leagueId: leagueId,
         rating: rating
     });
+};
+
+/**
+ * Create a comment for a game.
+ *
+ * @param {object} params JSON with the comment parameters.
+ * @param {string} params.text Name of the league.
+ * @param {string} params.gameId Game id.
+ * @param {string} params.author Player id.
+ * @param {string} params.mediaStream Binary name of the league's image.
+ * @param {string} params.mediaType Mime type of the league's image.
+ * @return {string} Comment id.
+ */
+exports.createComment = function (params) {
+    var repoConn = newConnection();
+
+    required(params, 'text');
+    required(params, 'gameId');
+
+    var mediaValue = null;
+    if (params.mediaStream) {
+        required(params, 'mediaType');
+        var ext = extensionFromMimeType(params.mediaType);
+        mediaValue = valueLib.binary('comment' + ext, params.mediaStream);
+    }
+
+    var gameNode = repoConn.get(params.gameId);
+    if (!gameNode || gameNode.type !== TYPE.GAME) {
+        throw "Comment game not found: " + params.gameId;
+    }
+
+    if (params.author) {
+        var playerNode = repoConn.get(params.author);
+        if (!playerNode || playerNode.type !== TYPE.PLAYER) {
+            throw "Comment author not found: " + params.author;
+        }
+    }
+
+    var commentNode = repoConn.create({
+        _parentPath: gameNode._path,
+        type: TYPE.COMMENT,
+        gameId: params.gameId,
+        author: params.author,
+        text: params.text,
+        media: mediaValue,
+        mediaType: params.mediaType
+    });
+
+    return commentNode._id;
+};
+
+/**
+ * Retrieve the list of comments for a game.
+ * @param  {string} gameId Game id.
+ * @param  {number} [start=0] First index of the comments.
+ * @param  {number} [count=10] Number of comments to fetch.
+ * @return {CommentsResponse} Game comments.
+ */
+exports.getGameComments = function (gameId, start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.COMMENT + "' AND gameId='" + gameId + "'",
+        sort: "_timestamp DESC"
+    });
+
+    var comments = [];
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        comments = [].concat(repoConn.get(ids));
+    }
+
+    return {
+        total: result.total,
+        count: result.count,
+        comments: comments
+    };
 };
 
 var newConnection = function () {
