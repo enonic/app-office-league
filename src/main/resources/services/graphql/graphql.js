@@ -307,7 +307,7 @@ var leagueTeamType = graphQlLib.createType('LeagueTeam', {
     team: {
         type: teamType,
         data: function (env) {
-            return storeLib.getPlayerById(env.source.teamId);
+            return storeLib.getTeamById(env.source.teamId);
         }
     }
 });
@@ -406,6 +406,23 @@ var schema = graphQlLib.createSchema({
                 return storeLib.getPlayers(start, count).players;
             }
         },
+        team: {
+            type: teamType,
+            args: {
+                id: graphQlLib.scalar('ID'),
+                name: graphQlLib.scalar('ID')
+            },
+            data: function (env) {
+                var id = env.args.id;
+                var name = env.args.name;
+                if (id) {
+                    return storeLib.getTeamById(id);
+                } else if (name) {
+                    return storeLib.getTeamByName(name);
+                }
+                return null;
+            }
+        },
         teams: {
             type: graphQlLib.list(teamType),
             args: {
@@ -430,6 +447,16 @@ var schema = graphQlLib.createSchema({
                 var start = env.args.start;
                 var count = env.args.count;
                 return storeLib.getLeagueGames(leagueId, start, count).games;
+            }
+        },
+        league: {
+            type: leagueType,
+            args: {
+                id: graphQlLib.scalar('ID')
+            },
+            data: function (env) {
+                var id = env.args.id;
+                return storeLib.getLeagueById(id);
             }
         },
         leagues: {
