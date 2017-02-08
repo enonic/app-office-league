@@ -24,3 +24,6 @@ exports.scalar = function (type) {
 exports.execute = function (schema, request) {
     return __.toNativeObject(graphQlBean.execute(schema, request));
 };
+
+
+//TODO Export scalar types

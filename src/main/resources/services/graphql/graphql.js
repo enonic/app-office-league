@@ -21,13 +21,13 @@ var playerType = graphQlLib.createType('Player', {
             }
         },
         nationality: {
-            type: graphQlLib.scalar('String'),
+            type: graphQlLib.scalar('String'), //TODO Change to enum
             data: function (env) {
                 return env.source.nationality;
             }
         },
         handedness: {
-            type: graphQlLib.scalar('String'),
+            type: graphQlLib.scalar('String'), //TODO Change to enum
             data: function (env) {
                 return env.source.handedness;
             }
@@ -222,54 +222,149 @@ var commentType = graphQlLib.createType('Comment', {
 );
 
 var gameType = graphQlLib.createType('Game', {
-        id: {
-            type: graphQlLib.scalar('ID'),
-            data: function (env) {
-                return env.source._id;
-            }
+    id: {
+        type: graphQlLib.scalar('ID'),
+        data: function (env) {
+            return env.source._id;
+        }
+    },
+    time: {
+        type: graphQlLib.scalar('String'),
+        data: function (env) {
+            return env.source.time;
+        }
+    },
+    finished: {
+        type: graphQlLib.scalar('Boolean'),
+        data: function (env) {
+            return env.source.finished;
+        }
+    },
+    points: {
+        type: graphQlLib.list(pointType),
+        data: function (env) {
+            return env.source.points;
+        }
+    },
+    comments: {
+        type: graphQlLib.list(commentType),
+        args: {
+            start: graphQlLib.scalar('Int'),
+            count: graphQlLib.scalar('Int')
         },
-        time: {
-            type: graphQlLib.scalar('String'),
-            data: function (env) {
-                return env.source.time;
-            }
-        },
-        finished: {
-            type: graphQlLib.scalar('Boolean'),
-            data: function (env) {
-                return env.source.finished;
-            }
-        },
-        points: {
-            type: graphQlLib.list(pointType),
-            data: function (env) {
-                return env.source.points;
-            }
-        },
-        comments: {
-            type: graphQlLib.list(commentType),
-            args: {
-                start: graphQlLib.scalar('Int'),
-                count: graphQlLib.scalar('Int')
-            },
-            data: function (env) {
-                return storeLib.getGameComments(env.source._id, env.args.start, env.args.count).comments;
-            }
-        },
-        gamePlayers: {
-            type: graphQlLib.list(gamePlayerType),
-            data: function (env) {
-                return env.source.gamePlayers;
-            }
-        },
-        gameTeams: {
-            type: graphQlLib.list(gameTeamType),
-            data: function (env) {
-                return env.source.gameTeams;
-            }
+        data: function (env) {
+            return storeLib.getGameComments(env.source._id, env.args.start, env.args.count).comments;
+        }
+    },
+    gamePlayers: {
+        type: graphQlLib.list(gamePlayerType),
+        data: function (env) {
+            return env.source.gamePlayers;
+        }
+    },
+    gameTeams: {
+        type: graphQlLib.list(gameTeamType),
+        data: function (env) {
+            return env.source.gameTeams;
         }
     }
-);
+});
+
+var leaguePlayerType = graphQlLib.createType('LeaguePlayer', {
+    id: {
+        type: graphQlLib.scalar('ID'),
+        data: function (env) {
+            return env.source._id;
+        }
+    },
+    rating: {
+        type: graphQlLib.scalar('Int'),
+        data: function (env) {
+            return env.source.rating;
+        }
+    },
+    player: {
+        type: playerType,
+        data: function (env) {
+            return storeLib.getPlayerById(env.source.playerId);
+        }
+    }
+});
+
+var leagueTeamType = graphQlLib.createType('LeagueTeam', {
+    id: {
+        type: graphQlLib.scalar('ID'),
+        data: function (env) {
+            return env.source._id;
+        }
+    },
+    rating: {
+        type: graphQlLib.scalar('Int'),
+        data: function (env) {
+            return env.source.rating;
+        }
+    },
+    team: {
+        type: teamType,
+        data: function (env) {
+            return storeLib.getPlayerById(env.source.teamId);
+        }
+    }
+});
+
+var leagueType = graphQlLib.createType('League', {
+    id: {
+        type: graphQlLib.scalar('ID'),
+        data: function (env) {
+            return env.source._id;
+        }
+    },
+    name: {
+        type: graphQlLib.scalar('String'),
+        data: function (env) {
+            return env.source.name;
+        }
+    },
+    sport: {
+        type: graphQlLib.scalar('String'), //TODO Change to enum
+        data: function (env) {
+            return env.source.sport;
+        }
+    },
+    description: {
+        type: graphQlLib.scalar('String'),
+        data: function (env) {
+            return env.source.description;
+        }
+    },
+    config: {
+        type: graphQlLib.scalar('String'), //TODO Is it? Is there a unstructured type?
+        data: function (env) {
+            return JSON.stringify(env.source.config);
+        }
+    },
+    leaguePlayers: {
+        type: graphQlLib.list(leaguePlayerType),
+        args: {
+            start: graphQlLib.scalar('Int'),
+            count: graphQlLib.scalar('Int')
+        },
+        data: function (env) {
+            return storeLib.getLeaguePlayers(env.source._id, env.args.start, env.args.count).players;
+        }
+    },
+    leagueTeams: {
+        type: graphQlLib.list(leagueTeamType),
+        args: {
+            start: graphQlLib.scalar('Int'),
+            count: graphQlLib.scalar('Int')
+        },
+        data: function (env) {
+            log.info('Test');
+            return storeLib.getLeagueTeams(env.source._id, env.args.start, env.args.count).teams;
+        }
+    }
+});
 
 graphQlLib.updateType(playerType, {
     teams: {
@@ -335,6 +430,18 @@ var schema = graphQlLib.createSchema({
                 var start = env.args.start;
                 var count = env.args.count;
                 return storeLib.getLeagueGames(leagueId, start, count).games;
+            }
+        },
+        leagues: {
+            type: graphQlLib.list(leagueType),
+            args: {
+                start: graphQlLib.scalar('Int'),
+                count: graphQlLib.scalar('Int')
+            },
+            data: function (env) {
+                var start = env.args.start;
+                var count = env.args.count;
+                return storeLib.getLeagues(start, count).leagues;
             }
         }
     }
