@@ -115,7 +115,7 @@ var commentType = graphQlLib.createType('Comment', {
         author: {
             type: playerType,
             data: function (env) {
-                return storeLib.getPlayerById(env.source.authorId);
+                return storeLib.getPlayerById(env.source.author);
             }
         },
         likes: {
@@ -152,6 +152,16 @@ var gameType = graphQlLib.createType('Game', {
             type: graphQlLib.list(pointType),
             data: function (env) {
                 return env.source.points;
+            }
+        },
+        comments: {
+            type: graphQlLib.list(commentType),
+            args: {
+                start: graphQlLib.scalar('Int'),
+                count: graphQlLib.scalar('Int')
+            },
+            data: function (env) {
+                return storeLib.getGameComments(env.source._id, env.args.start, env.args.count).comments;
             }
         }
     }
