@@ -45,7 +45,7 @@ var playerType = graphQlLib.createType('Player', {
                 count: graphQlLib.scalar('Int')
             },
             data: function (env) {
-                return storeLib.getPlayerTeams(env.source._id, env.args.start, env.args.count).teams;
+                return storeLib.getTeamsByPlayerId(env.source._id, env.args.start, env.args.count).teams;
             }
         }
     }
@@ -263,7 +263,7 @@ var gameType = graphQlLib.createType('Game', {
             count: graphQlLib.scalar('Int')
         },
         data: function (env) {
-            return storeLib.getGameComments(env.source._id, env.args.start, env.args.count).comments;
+            return storeLib.getCommentsByGameId(env.source._id, env.args.start, env.args.count).comments;
         }
     },
     gamePlayers: {
@@ -372,7 +372,7 @@ var leagueType = graphQlLib.createType('League', {
             count: graphQlLib.scalar('Int')
         },
         data: function (env) {
-            return storeLib.getLeaguePlayers(env.source._id, env.args.start, env.args.count).players;
+            return storeLib.getLeaguePlayersByLeagueId(env.source._id, env.args.start, env.args.count).players;
         }
     },
     leagueTeams: {
@@ -382,7 +382,7 @@ var leagueType = graphQlLib.createType('League', {
             count: graphQlLib.scalar('Int')
         },
         data: function (env) {
-            return storeLib.getLeagueTeams(env.source._id, env.args.start, env.args.count).teams;
+            return storeLib.getLeagueTeamsByLeagueId(env.source._id, env.args.start, env.args.count).teams;
         }
     },
     games: {
@@ -392,7 +392,7 @@ var leagueType = graphQlLib.createType('League', {
             count: graphQlLib.scalar('Int')
         },
         data: function (env) {
-            return storeLib.getLeagueGames(env.source._id, env.args.start, env.args.count).games;
+            return storeLib.getGamesByLeagueId(env.source._id, env.args.start, env.args.count).games;
         }
     }
 });
@@ -468,7 +468,7 @@ var schema = graphQlLib.createSchema({
                 var leagueId = env.args.leagueId;
                 var start = env.args.start;
                 var count = env.args.count;
-                return storeLib.getLeagueGames(leagueId, start, count).games;
+                return storeLib.getGamesByLeagueId(leagueId, start, count).games;
             }
         },
         league: {
