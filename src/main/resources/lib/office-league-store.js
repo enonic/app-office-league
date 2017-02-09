@@ -970,6 +970,81 @@ exports.createPlayer = function (params) {
 };
 
 /**
+ * Modify an existing player.
+ *
+ * @param {object} params JSON with the player parameters.
+ * @param {string} params.playerId Id of the player to update.
+ * @param {string} [params.name] New name of the player.
+ * @param {string} [params.nickname] New nickname of the player.
+ * @param {string} [params.imageStream] New stream with the player's image.
+ * @param {string} [params.imageType] New mime type of the player's image.
+ * @param {string} [params.nationality] New 2 letter country code of the player.
+ * @param {string} [params.handedness='right'] New player handedness: 'right', 'left', 'ambidexterity.
+ * @param {string} [params.description] New description text.
+ * @return {Player} Updated player or null if the player could not be updated.
+ */
+exports.updatePlayer = function (params) {
+    var repoConn = newConnection();
+
+    params.handedness = params.handedness || 'right';
+    required(params, 'playerId');
+
+    var imageValue = null;
+    if (params.imageStream) {
+        required(params, 'imageType');
+        var ext = extensionFromMimeType(params.imageType);
+        imageValue = valueLib.binary('player' + ext, params.imageStream);
+    }
+
+    if (params.name != null) {
+        var node = repoConn.get(params.playerId);
+        if (!node) {
+            return null;
+        }
+        if (node.name !== params.name) {
+            var success = repoConn.move({
+                source: params.playerId,
+                target: prettifyName(params.name)
+            });
+            if (!success) {
+                return null;
+            }
+        }
+    }
+
+    var playerNode = repoConn.modify({
+        key: params.playerId,
+        editor: function (playerNode) {
+            if (params.name != null) {
+                playerNode.name = params.name;
+            }
+            if (params.nickname != null) {
+                playerNode.nickname = params.nickname;
+            }
+            if (params.nationality != null) {
+                playerNode.nationality = params.nationality;
+            }
+            if (params.handedness != null) {
+                playerNode.handedness = params.handedness;
+            }
+            if (params.description != null) {
+                playerNode.description = params.description;
+            }
+            if (params.name != null) {
+                playerNode.name = params.name;
+            }
+            if (imageValue) {
+                playerNode.image = imageValue;
+                playerNode.imageType = params.imageType;
+            }
+            return playerNode;
+        }
+    });
+
+    return playerNode;
+};
+
+/**
  * Create a new team.
  *
  * @param {object} params JSON with the team parameters.
