@@ -521,6 +521,23 @@ var schema = graphQlLib.createSchema({
         }
     },
     mutation: {
+        createLeague: {
+            type: leagueType,
+            args: {
+                name: graphQlLib.scalar('String'),
+                sport: graphQlLib.scalar('String'),//TODO
+                description: graphQlLib.scalar('String'),
+                config: graphQlLib.scalar('String')//TODO
+            },
+            data: function (env) {
+                return storeLib.createLeague({
+                    name: env.args.name,
+                    sport: env.args.sport,
+                    description: env.args.description,
+                    config: env.args.config ? JSON.parse(env.args.config) : {} //TODO
+                });
+            }
+        },
         createPlayer: {
             type: playerType,
             args: {
