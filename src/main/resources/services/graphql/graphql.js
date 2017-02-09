@@ -325,6 +325,12 @@ var leagueTeamType = graphQlLib.createType('LeagueTeam', {
         data: function (env) {
             return storeLib.getTeamById(env.source.teamId);
         }
+    },
+    league: {
+        type: graphQlLib.reference('League'),
+        data: function (env) {
+            return storeLib.getLeagueById(env.source.leagueId);
+        }
     }
 });
 
