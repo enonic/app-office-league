@@ -1014,30 +1014,27 @@ exports.updatePlayer = function (params) {
 
     var playerNode = repoConn.modify({
         key: params.playerId,
-        editor: function (playerNode) {
+        editor: function (node) {
             if (params.name != null) {
-                playerNode.name = params.name;
+                node.name = params.name;
             }
             if (params.nickname != null) {
-                playerNode.nickname = params.nickname;
+                node.nickname = params.nickname;
             }
             if (params.nationality != null) {
-                playerNode.nationality = params.nationality;
+                node.nationality = params.nationality;
             }
             if (params.handedness != null) {
-                playerNode.handedness = params.handedness;
+                node.handedness = params.handedness;
             }
             if (params.description != null) {
-                playerNode.description = params.description;
-            }
-            if (params.name != null) {
-                playerNode.name = params.name;
+                node.description = params.description;
             }
             if (imageValue) {
-                playerNode.image = imageValue;
-                playerNode.imageType = params.imageType;
+                node.image = imageValue;
+                node.imageType = params.imageType;
             }
-            return playerNode;
+            return node;
         }
     });
 
