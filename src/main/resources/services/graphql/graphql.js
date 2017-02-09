@@ -622,6 +622,21 @@ var schema = graphQlLib.createSchema({
                     rating: env.args.rating
                 });
             }
+        },
+        createGame: {
+            type: gameType,
+            args: {
+                leagueId: graphQlLib.scalar('ID'),
+                time: graphQlLib.scalar('String'),
+                finished: graphQlLib.scalar('Boolean')
+            },
+            data: function (env) {
+                return storeLib.createGame({
+                    leagueId: env.args.leagueId,
+                    time: env.args.time,
+                    finished: env.args.finished
+                });
+            }
         }
     }
 });
@@ -637,8 +652,6 @@ function toArray(object, callback) {
 }
 
 exports.post = function (req) {
-
-    log.info('post');
     var body = JSON.parse(req.body);
     var result = graphQlLib.execute(schema, body.query);
     return {

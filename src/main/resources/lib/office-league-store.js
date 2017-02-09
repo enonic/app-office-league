@@ -1158,7 +1158,7 @@ exports.updatePlayer = function (params) {
  * @param {string} [params.imageType] Mime type of the team's image.
  * @param {string} [params.description] Description text.
  * @param {string[]} params.playerIds Array with ids of the team players.
- * @return {string} Team id.
+ * @return {string} Created team.
  */
 exports.createTeam = function (params) {
     var repoConn = newConnection();
@@ -1201,7 +1201,7 @@ exports.createTeam = function (params) {
  * @param {Point[]} [params.points] Array of points scored during the game.
  * @param {GamePlayer[]} params.gamePlayers Array with the players and its properties for this game.
  * @param {GameTeam[]} params.gameTeams Array with the teams and its properties for this game.
- * @return {string} Game id.
+ * @return {string} Created game.
  */
 exports.createGame = function (params) {
     var repoConn = newConnection();
@@ -1268,6 +1268,7 @@ exports.createGame = function (params) {
  * @param {string} leagueId Id of the league.
  * @param {string} playerId Id of the player.
  * @param {number} [rating=0] Initial player rating in the league ranking.
+ * @return {string} Created leaguePlayer.
  */
 exports.joinPlayerLeague = function (leagueId, playerId, rating) {
     var repoConn = newConnection();
@@ -1310,6 +1311,7 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
  * @param {string} leagueId Id of the league.
  * @param {string} teamId Id of the team.
  * @param {number} [rating=0] Initial team rating in the league ranking.
+ * @return {string} Created leagueTeam.
  */
 exports.joinTeamLeague = function (leagueId, teamId, rating) {
     var repoConn = newConnection();
@@ -1355,7 +1357,7 @@ exports.joinTeamLeague = function (leagueId, teamId, rating) {
  * @param {string} params.author Player id.
  * @param {string} params.mediaStream Binary name of the league's image.
  * @param {string} params.mediaType Mime type of the league's image.
- * @return {string} Comment id.
+ * @return {string} Created comment.
  */
 exports.createComment = function (params) {
     var repoConn = newConnection();
