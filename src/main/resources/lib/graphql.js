@@ -8,10 +8,6 @@ exports.createType = function (name, schema) {
     return graphQlBean.createType(name, __.toScriptValue(schema));
 };
 
-exports.updateType = function (type, schema) {
-    return graphQlBean.updateType(type, __.toScriptValue(schema));
-};
-
 exports.list = function (type) {
     return graphQlBean.list(type);
 };

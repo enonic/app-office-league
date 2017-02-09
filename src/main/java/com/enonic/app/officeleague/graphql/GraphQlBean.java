@@ -53,12 +53,6 @@ public class GraphQlBean
         return type;
     }
 
-    public GraphQLObjectType.Builder updateType( final GraphQLObjectType.Builder type, final ScriptValue scriptValue )
-    {
-        setTypeFields( scriptValue, type );
-        return type;
-    }
-
     private void setTypeFields( final ScriptValue scriptValue, final GraphQLObjectType.Builder type )
     {
         for ( String scriptFieldKey : scriptValue.getKeys() )

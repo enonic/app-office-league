@@ -37,6 +37,16 @@ var playerType = graphQlLib.createType('Player', {
             data: function (env) {
                 return env.source.description;
             }
+        },
+        teams: {
+            type: graphQlLib.reference('Team'),
+            args: {
+                start: graphQlLib.scalar('Int'),
+                count: graphQlLib.scalar('Int')
+            },
+            data: function (env) {
+                return storeLib.getPlayerTeams(env.source._id, env.args.start, env.args.count).teams;
+            }
         }
     }
 );
@@ -377,19 +387,6 @@ var leagueType = graphQlLib.createType('League', {
         },
         data: function (env) {
             return storeLib.getLeagueGames(env.source._id, env.args.start, env.args.count).games;
-        }
-    }
-});
-
-graphQlLib.updateType(playerType, {
-    teams: {
-        type: graphQlLib.list(teamType),
-        args: {
-            start: graphQlLib.scalar('Int'),
-            count: graphQlLib.scalar('Int')
-        },
-        data: function (env) {
-            return storeLib.getPlayerTeams(env.source._id, env.args.start, env.args.count).teams;
         }
     }
 });
