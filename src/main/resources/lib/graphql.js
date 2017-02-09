@@ -16,9 +16,12 @@ exports.list = function (type) {
     return graphQlBean.list(type);
 };
 
-
 exports.scalar = function (type) {
     return graphQlBean.scalar(type);
+};
+
+exports.reference = function (typeKey) {
+    return graphQlBean.reference(typeKey);
 };
 
 exports.execute = function (schema, request) {

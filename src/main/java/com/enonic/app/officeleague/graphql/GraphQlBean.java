@@ -20,6 +20,7 @@ import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
+import graphql.schema.GraphQLTypeReference;
 import graphql.schema.GraphQLUnionType;
 
 import com.enonic.xp.script.ScriptValue;
@@ -156,6 +157,11 @@ public class GraphQlBean
     public GraphQLScalarType scalar( final String typeKey )
     {
         return GRAPH_QL_SCALAR_TYPE_MAP.get( typeKey );
+    }
+
+    public GraphQLTypeReference reference( final String typeKey )
+    {
+        return new GraphQLTypeReference( typeKey );
     }
 
     public MapMapper execute( final GraphQLSchema schema, final String request )
