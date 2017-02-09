@@ -341,6 +341,102 @@ exports.getPlayers = function (start, count) {
 };
 
 /**
+ * Search for players.
+ * @param  {string} searchText Text search.
+ * @param  {number} [start=0] First index of the players.
+ * @param  {number} [count=10] Number of players to fetch.
+ * @return {PlayerResponse} Players.
+ */
+exports.findPlayers = function (searchText, start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.PLAYER + "' AND ngram('name^5,nickname^3,description^3', '" + searchText + "', 'AND')"
+    });
+    var players = [];
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        players = [].concat(repoConn.get(ids));
+    }
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "players": players
+    };
+};
+
+/**
+ * Search for teams.
+ * @param  {string} searchText Text search.
+ * @param  {number} [start=0] First index of the teams.
+ * @param  {number} [count=10] Number of teams to fetch.
+ * @return {TeamResponse} Teams.
+ */
+exports.findTeams = function (searchText, start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.TEAM + "' AND ngram('name^5,description^3', '" + searchText + "', 'AND')"
+    });
+    var teams = [];
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        teams = [].concat(repoConn.get(ids));
+    }
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "teams": teams
+    };
+};
+
+/**
+ * Search for leagues.
+ * @param  {string} searchText Text search.
+ * @param  {number} [start=0] First index of the leagues.
+ * @param  {number} [count=10] Number of leagues to fetch.
+ * @return {LeagueResponse} Leagues.
+ */
+exports.findLeagues = function (searchText, start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.LEAGUE + "' AND ngram('name^5,description^3', '" + searchText + "', 'AND')"
+    });
+    var leagues = [];
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        leagues = [].concat(repoConn.get(ids));
+    }
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "leagues": leagues
+    };
+};
+
+/**
  * Retrieve a player by its id.
  * @param  {string} playerId Id of the player.
  * @return {Player} Player object or null if not found.
