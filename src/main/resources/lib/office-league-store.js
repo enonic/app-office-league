@@ -1,5 +1,6 @@
 var nodeLib = require('/lib/xp/node');
 var valueLib = require('/lib/xp/value');
+var ratingLib = require('/lib/office-league-rating');
 
 var REPO_NAME = 'office-league';
 var LEAGUES_PATH = '/leagues';
@@ -1272,7 +1273,7 @@ exports.createGame = function (params) {
  */
 exports.joinPlayerLeague = function (leagueId, playerId, rating) {
     var repoConn = newConnection();
-    rating = rating || 0;
+    rating = rating || ratingLib.INITIAL_RATING;
 
     var leagueNode = repoConn.get(leagueId);
     if (!leagueNode || leagueNode.type !== TYPE.LEAGUE) {
@@ -1315,7 +1316,7 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
  */
 exports.joinTeamLeague = function (leagueId, teamId, rating) {
     var repoConn = newConnection();
-    rating = rating || 0;
+    rating = rating || ratingLib.INITIAL_RATING;
 
     var leagueNode = repoConn.get(leagueId);
     if (!leagueNode || leagueNode.type !== TYPE.LEAGUE) {
