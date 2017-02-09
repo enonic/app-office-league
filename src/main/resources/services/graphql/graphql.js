@@ -360,7 +360,6 @@ var leagueType = graphQlLib.createType('League', {
             count: graphQlLib.scalar('Int')
         },
         data: function (env) {
-            log.info('Test');
             return storeLib.getLeagueTeams(env.source._id, env.args.start, env.args.count).teams;
         }
     }
@@ -369,8 +368,12 @@ var leagueType = graphQlLib.createType('League', {
 graphQlLib.updateType(playerType, {
     teams: {
         type: graphQlLib.list(teamType),
+        args: {
+            start: graphQlLib.scalar('Int'),
+            count: graphQlLib.scalar('Int')
+        },
         data: function (env) {
-            return [storeLib.getTeamByName('A bald old guy & a young chick')];
+            return storeLib.getPlayerTeams(env.source._id, env.args.start, env.args.count).teams;
         }
     }
 });
