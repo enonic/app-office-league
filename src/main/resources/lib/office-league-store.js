@@ -247,7 +247,7 @@ exports.getLeagueByName = function (name) {
  * @param  {number} [count=10] Number of players to fetch.
  * @return {LeaguePlayerResponse} League players.
  */
-exports.getLeaguePlayers = function (leagueId, start, count) {
+exports.getLeaguePlayersByLeagueId = function (leagueId, start, count) {
     var repoConn = newConnection();
 
     start = start || 0;
@@ -281,7 +281,7 @@ exports.getLeaguePlayers = function (leagueId, start, count) {
  * @param  {number} [count=10] Number of teams to fetch.
  * @return {LeagueTeamResponse} League teams.
  */
-exports.getLeagueTeams = function (leagueId, start, count) {
+exports.getLeagueTeamsByLeagueId = function (leagueId, start, count) {
     var repoConn = newConnection();
 
     start = start || 0;
@@ -553,7 +553,7 @@ exports.getTeamById = function (teamId) {
  * @param  {string} playerId2 Id of the 2nd player in the team.
  * @return {Team} Team object or null if not found.
  */
-exports.getTeamByPlayers = function (playerId1, playerId2) {
+exports.getTeamByPlayerIds = function (playerId1, playerId2) {
     var repoConn = newConnection();
 
     var result = repoConn.query({
@@ -660,7 +660,7 @@ var getGameDetails = function (repoConn, game) {
  * @param  {number} [count=10] Number of games to fetch.
  * @return {GamesResponse} League games.
  */
-exports.getLeagueGames = function (leagueId, start, count) {
+exports.getGamesByLeagueId = function (leagueId, start, count) {
     var repoConn = newConnection();
 
     start = start || 0;
@@ -692,7 +692,7 @@ exports.getLeagueGames = function (leagueId, start, count) {
  * @param  {number} [count=10] Number of leagues to fetch.
  * @return {LeagueResponse} Leagues.
  */
-exports.getPlayerLeagues = function (playerId, start, count) {
+exports.getLeaguesByPlayerId = function (playerId, start, count) {
     var repoConn = newConnection();
 
     start = start || 0;
@@ -729,7 +729,7 @@ exports.getPlayerLeagues = function (playerId, start, count) {
  * @param  {number} [count=10] Number of teams to fetch.
  * @return {TeamResponse} Teams.
  */
-exports.getPlayerTeams = function (playerId, start, count) {
+exports.getTeamsByPlayerId = function (playerId, start, count) {
     var repoConn = newConnection();
 
     start = start || 0;
@@ -763,7 +763,7 @@ exports.getPlayerTeams = function (playerId, start, count) {
  * @param  {number} [count=10] Number of games to fetch.
  * @return {GamesResponse} Player games.
  */
-exports.getPlayerGames = function (playerId, start, count) {
+exports.getGamesByPlayerId = function (playerId, start, count) {
     var repoConn = newConnection();
 
     start = start || 0;
@@ -803,7 +803,7 @@ exports.getPlayerGames = function (playerId, start, count) {
  * @param  {number} [count=10] Number of leagues to fetch.
  * @return {LeagueResponse} Leagues.
  */
-exports.getTeamLeagues = function (teamId, start, count) {
+exports.getLeaguesByTeamId = function (teamId, start, count) {
     var repoConn = newConnection();
 
     start = start || 0;
@@ -840,7 +840,7 @@ exports.getTeamLeagues = function (teamId, start, count) {
  * @param  {number} [count=10] Number of games to fetch.
  * @return {GamesResponse} Team games.
  */
-exports.getTeamGames = function (teamId, start, count) {
+exports.getGamesByTeamId = function (teamId, start, count) {
     var repoConn = newConnection();
 
     start = start || 0;
@@ -1290,7 +1290,7 @@ exports.createComment = function (params) {
  * @param  {number} [count=10] Number of comments to fetch.
  * @return {CommentsResponse} Game comments.
  */
-exports.getGameComments = function (gameId, start, count) {
+exports.getCommentsByGameId = function (gameId, start, count) {
     var repoConn = newConnection();
 
     start = start || 0;
