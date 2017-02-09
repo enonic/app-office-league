@@ -519,6 +519,27 @@ var schema = graphQlLib.createSchema({
                 return storeLib.getLeagues(start, count).leagues;
             }
         }
+    },
+    mutation: {
+        createPlayer: {
+            type: playerType,
+            args: {
+                name: graphQlLib.scalar('String'),
+                nickname: graphQlLib.scalar('String'),
+                nationality: graphQlLib.scalar('String'), //TODO
+                handedness: graphQlLib.scalar('String'), //TODO
+                description: graphQlLib.scalar('String')
+            },
+            data: function (env) {
+                return storeLib.createPlayer({
+                    name: env.args.name,
+                    nickname: env.args.nickname,
+                    nationality: env.args.nationality,
+                    handedness: env.args.handedness,
+                    description: env.args.description
+                });
+            }
+        }
     }
 });
 
@@ -533,6 +554,8 @@ function toArray(object, callback) {
 }
 
 exports.post = function (req) {
+
+    log.info('post');
     var body = JSON.parse(req.body);
     var result = graphQlLib.execute(schema, body.query);
     return {

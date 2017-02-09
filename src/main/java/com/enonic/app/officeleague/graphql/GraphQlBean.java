@@ -42,8 +42,12 @@ public class GraphQlBean
         final ScriptValue queryScriptValue = schemaScriptValue.getMember( "query" );
         final GraphQLObjectType.Builder queryObjectType = createType( "QueryType", queryScriptValue );
 
+        final ScriptValue mutationScriptValue = schemaScriptValue.getMember( "mutation" );
+        final GraphQLObjectType.Builder mutationObjectType = createType( "MutationType", mutationScriptValue );
+
         return GraphQLSchema.newSchema().
             query( queryObjectType ).
+            mutation( mutationObjectType ).
             build();
     }
 
@@ -170,7 +174,7 @@ public class GraphQlBean
 
         GraphQL graphQL = new GraphQL( schema, new SimpleExecutionStrategy() );
         final ExecutionResult executionResult = graphQL.execute( request );
-        resultMap.put( "data", graphQL.execute( request ).getData() );
+        resultMap.put( "data", executionResult.getData() );
         resultMap.put( "errors", executionResult.getErrors().stream().map( GraphQlBean::toMap ).collect( Collectors.toList() ) );
         return new MapMapper( resultMap );
     }

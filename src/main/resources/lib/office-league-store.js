@@ -1006,9 +1006,13 @@ exports.createLeague = function (params) {
  * @param {string} [params.nationality] 2 letter country code of the player (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
  * @param {string} [params.handedness='right'] Player handedness: 'right', 'left', 'ambidexterity.
  * @param {string} [params.description] Description text.
- * @return {string} Player id.
+ * @return {object} Created player.
  */
 exports.createPlayer = function (params) {
+
+    log.info('\n\n\n\n\ncreatePlayer!!!!!!!!!!!!!!\n\n\n\n');
+
+
     var repoConn = newConnection();
 
     params.handedness = params.handedness || 'right';
@@ -1034,7 +1038,9 @@ exports.createPlayer = function (params) {
         description: params.description
     });
 
-    return playerNode._id;
+    log.info('playerNode: ' + JSON.stringify(playerNode, null, 2));
+
+    return playerNode;
 };
 
 /**
