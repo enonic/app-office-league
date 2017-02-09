@@ -275,6 +275,40 @@ exports.getLeaguePlayersByLeagueId = function (leagueId, start, count) {
 };
 
 /**
+ * Retrieve a list of league players and their rating points in the ranking.
+ * @param  {string} playerId Player id.
+ * @param  {number} [start=0] First index of the players.
+ * @param  {number} [count=10] Number of players to fetch.
+ * @return {LeaguePlayerResponse} League players.
+ */
+exports.getLeaguePlayersByPlayerId = function (playerId, start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "'",
+        sort: "rating DESC, name ASC"
+    });
+
+    var leaguePlayers = [];
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        leaguePlayers = [].concat(repoConn.get(ids));
+    }
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "players": leaguePlayers
+    };
+};
+
+/**
  * Retrieve a list of league teams and their rating points in the ranking.
  * @param  {string} leagueId League id.
  * @param  {number} [start=0] First index of the teams.
@@ -290,6 +324,40 @@ exports.getLeagueTeamsByLeagueId = function (leagueId, start, count) {
         start: start,
         count: count,
         query: "type = '" + TYPE.LEAGUE_TEAM + "' AND leagueId='" + leagueId + "'",
+        sort: "rating DESC, name ASC"
+    });
+
+    var leagueTeams = [];
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        leagueTeams = [].concat(repoConn.get(ids));
+    }
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "teams": leagueTeams
+    };
+};
+
+/**
+ * Retrieve a list of league teams and their rating points in the ranking.
+ * @param  {string} teamId Team id.
+ * @param  {number} [start=0] First index of the teams.
+ * @param  {number} [count=10] Number of teams to fetch.
+ * @return {LeagueTeamResponse} League teams.
+ */
+exports.getLeagueTeamsByTeamId = function (teamId, start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND teamId='" + teamId + "'",
         sort: "rating DESC, name ASC"
     });
 
