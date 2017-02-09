@@ -20,6 +20,7 @@ import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
+import graphql.schema.GraphQLType;
 import graphql.schema.GraphQLTypeReference;
 import graphql.schema.GraphQLUnionType;
 
@@ -146,6 +147,11 @@ public class GraphQlBean
     public GraphQLList list( GraphQLObjectType.Builder type )
     {
         return new GraphQLList( type.build() );
+    }
+
+    public GraphQLList list( GraphQLType type )
+    {
+        return new GraphQLList( type );
     }
 
     public GraphQLScalarType scalar( final String typeKey )

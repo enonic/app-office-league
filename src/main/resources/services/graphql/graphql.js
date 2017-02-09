@@ -39,7 +39,7 @@ var playerType = graphQlLib.createType('Player', {
             }
         },
         teams: {
-            type: graphQlLib.reference('Team'),
+            type: graphQlLib.list(graphQlLib.reference('Team')),
             args: {
                 start: graphQlLib.scalar('Int'),
                 count: graphQlLib.scalar('Int')
