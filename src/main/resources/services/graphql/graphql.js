@@ -556,6 +556,27 @@ var schema = graphQlLib.createSchema({
                     description: env.args.description
                 });
             }
+        },
+        updatePlayer: {
+            type: playerType,
+            args: {
+                id: graphQlLib.scalar('ID'),
+                name: graphQlLib.scalar('String'),
+                nickname: graphQlLib.scalar('String'),
+                nationality: graphQlLib.scalar('String'), //TODO
+                handedness: graphQlLib.scalar('String'), //TODO
+                description: graphQlLib.scalar('String')
+            },
+            data: function (env) {
+                return storeLib.updatePlayer({
+                    playerId: env.args.id,
+                    name: env.args.name,
+                    nickname: env.args.nickname,
+                    nationality: env.args.nationality,
+                    handedness: env.args.handedness,
+                    description: env.args.description
+                });
+            }
         }
     }
 });
