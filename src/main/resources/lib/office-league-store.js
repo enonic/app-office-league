@@ -1293,13 +1293,15 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
         return;
     }
 
-    repoConn.create({
+    var leaguePlayer = repoConn.create({
         _parentPath: leagueNode._path + LEAGUE_PLAYERS_REL_PATH,
         type: TYPE.LEAGUE_PLAYER,
         playerId: playerId,
         leagueId: leagueId,
         rating: rating
     });
+
+    return leaguePlayer;
 };
 
 /**
@@ -1333,13 +1335,15 @@ exports.joinTeamLeague = function (leagueId, teamId, rating) {
         return;
     }
 
-    repoConn.create({
+    var leagueTeam = repoConn.create({
         _parentPath: leagueNode._path + LEAGUE_TEAMS_REL_PATH,
         type: TYPE.LEAGUE_TEAM,
         teamId: teamId,
         leagueId: leagueId,
         rating: rating
     });
+
+    return leagueTeam;
 };
 
 /**

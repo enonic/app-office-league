@@ -577,6 +577,51 @@ var schema = graphQlLib.createSchema({
                     description: env.args.description
                 });
             }
+        },
+        createTeam: {
+            type: teamType,
+            args: {
+                name: graphQlLib.scalar('String'),
+                description: graphQlLib.scalar('String'),
+                playerIds: graphQlLib.list(graphQlLib.scalar('ID'))
+            },
+            data: function (env) {
+                return storeLib.createTeam({
+                    name: env.args.name,
+                    description: env.args.description,
+                    playerIds: env.args.playerIds
+                });
+            }
+        },
+        joinPlayerLeague: {
+            type: leaguePlayerType,
+            args: {
+                leagueId: graphQlLib.scalar('ID'),
+                playerId: graphQlLib.scalar('ID'),
+                rating: graphQlLib.scalar('Int')
+            },
+            data: function (env) {
+                return storeLib.joinPlayerLeague({
+                    leagueId: env.args.leagueId,
+                    playerId: env.args.playerId,
+                    rating: env.args.rating
+                });
+            }
+        },
+        joinTeamLeague: {
+            type: leagueTeamType,
+            args: {
+                leagueId: graphQlLib.scalar('ID'),
+                teamId: graphQlLib.scalar('ID'),
+                rating: graphQlLib.scalar('Int')
+            },
+            data: function (env) {
+                return storeLib.joinTeamLeague({
+                    leagueId: env.args.leagueId,
+                    teamId: env.args.teamId,
+                    rating: env.args.rating
+                });
+            }
         }
     }
 });
