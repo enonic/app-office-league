@@ -277,6 +277,12 @@ var gameType = graphQlLib.createType('Game', {
         data: function (env) {
             return env.source.gameTeams;
         }
+    },
+    league: {
+        type: graphQlLib.reference('League'),
+        data: function (env) {
+            return storeLib.getLeagueById(env.source.leagueId);
+        }
     }
 });
 
