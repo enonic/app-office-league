@@ -548,6 +548,30 @@ exports.getTeamById = function (teamId) {
 };
 
 /**
+ * Retrieve a team by its players.
+ * @param  {string} playerId1 Id of the 1st player in the team.
+ * @param  {string} playerId2 Id of the 2nd player in the team.
+ * @return {Team} Team object or null if not found.
+ */
+exports.getTeamByPlayers = function (playerId1, playerId2) {
+    var repoConn = newConnection();
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.TEAM + "' AND playerIds='" + playerId1 + "' AND playerIds='" + playerId2 + "'"
+    });
+
+    var team;
+    if (result.count > 0) {
+        var id = result.hits[0].id;
+        team = repoConn.get(id);
+    }
+
+    return team;
+};
+
+/**
  * Retrieve a team by its name.
  * @param  {string} name Name of the team.
  * @return {Team} Team object or null if not found.
