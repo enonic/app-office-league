@@ -942,6 +942,40 @@ exports.getGamesByTeamId = function (teamId, start, count) {
 };
 
 /**
+ * Retrieve the list of comments for a game.
+ * @param  {string} gameId Game id.
+ * @param  {number} [start=0] First index of the comments.
+ * @param  {number} [count=10] Number of comments to fetch.
+ * @return {CommentsResponse} Game comments.
+ */
+exports.getCommentsByGameId = function (gameId, start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.COMMENT + "' AND gameId='" + gameId + "'",
+        sort: "_timestamp DESC"
+    });
+
+    var comments = [];
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        comments = [].concat(repoConn.get(ids));
+    }
+
+    return {
+        total: result.total,
+        count: result.count,
+        comments: comments
+    };
+};
+
+/**
  * Create a new league.
  *
  * @param {object} params JSON with the league parameters.
@@ -992,7 +1026,7 @@ exports.createLeague = function (params) {
         _parentPath: leagueNode._path
     });
 
-    return leagueNode._id;
+    return leagueNode;
 };
 
 /**
@@ -1154,7 +1188,7 @@ exports.createTeam = function (params) {
         playerIds: params.playerIds
     });
 
-    return teamNode._id;
+    return teamNode;
 };
 
 /**
@@ -1225,7 +1259,7 @@ exports.createGame = function (params) {
         });
     }
 
-    return gameNode._id;
+    return gameNode;
 };
 
 /**
@@ -1354,41 +1388,7 @@ exports.createComment = function (params) {
         mediaType: params.mediaType
     });
 
-    return commentNode._id;
-};
-
-/**
- * Retrieve the list of comments for a game.
- * @param  {string} gameId Game id.
- * @param  {number} [start=0] First index of the comments.
- * @param  {number} [count=10] Number of comments to fetch.
- * @return {CommentsResponse} Game comments.
- */
-exports.getCommentsByGameId = function (gameId, start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
-        start: start,
-        count: count,
-        query: "type = '" + TYPE.COMMENT + "' AND gameId='" + gameId + "'",
-        sort: "_timestamp DESC"
-    });
-
-    var comments = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        comments = [].concat(repoConn.get(ids));
-    }
-
-    return {
-        total: result.total,
-        count: result.count,
-        comments: comments
-    };
+    return commentNode;
 };
 
 var newConnection = function () {
