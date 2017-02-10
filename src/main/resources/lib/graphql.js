@@ -6,8 +6,8 @@ exports.createSchema = function (schema) {
     return graphQlBean.createSchema(__.toScriptValue(schema));
 };
 
-exports.createOutputObjectType = function (name, schema) {
-    return graphQlBean.createOutputObjectType(name, __.toScriptValue(schema));
+exports.createObjectType = function (name, schema) {
+    return graphQlBean.createObjectType(name, __.toScriptValue(schema));
 };
 
 

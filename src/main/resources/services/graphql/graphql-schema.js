@@ -1,7 +1,7 @@
 var graphQlLib = require('graphql');
 var storeLib = require('office-league-store');
 
-var playerType = graphQlLib.createOutputObjectType('Player', {
+var playerType = graphQlLib.createObjectType('Player', {
         id: {
             type: graphQlLib.GraphQLID,
             data: function (env) {
@@ -61,7 +61,7 @@ var playerType = graphQlLib.createOutputObjectType('Player', {
     }
 );
 
-var teamType = graphQlLib.createOutputObjectType('Team', {
+var teamType = graphQlLib.createObjectType('Team', {
         id: {
             type: graphQlLib.GraphQLID,
             data: function (env) {
@@ -101,7 +101,7 @@ var teamType = graphQlLib.createOutputObjectType('Team', {
     }
 );
 
-var gamePlayerType = graphQlLib.createOutputObjectType('GamePlayer', {
+var gamePlayerType = graphQlLib.createObjectType('GamePlayer', {
         id: {
             type: graphQlLib.GraphQLID,
             data: function (env) {
@@ -147,7 +147,7 @@ var gamePlayerType = graphQlLib.createOutputObjectType('GamePlayer', {
     }
 );
 
-var gameTeamType = graphQlLib.createOutputObjectType('GameTeam', {
+var gameTeamType = graphQlLib.createObjectType('GameTeam', {
         id: {
             type: graphQlLib.GraphQLID,
             data: function (env) {
@@ -193,7 +193,7 @@ var gameTeamType = graphQlLib.createOutputObjectType('GameTeam', {
     }
 );
 
-var pointType = graphQlLib.createOutputObjectType('Point', {
+var pointType = graphQlLib.createObjectType('Point', {
         id: {
             type: graphQlLib.GraphQLID,
             data: function (env) {
@@ -221,7 +221,7 @@ var pointType = graphQlLib.createOutputObjectType('Point', {
     }
 );
 
-var commentType = graphQlLib.createOutputObjectType('Comment', {
+var commentType = graphQlLib.createObjectType('Comment', {
         id: {
             type: graphQlLib.GraphQLID,
             data: function (env) {
@@ -251,7 +251,7 @@ var commentType = graphQlLib.createOutputObjectType('Comment', {
     }
 );
 
-var gameType = graphQlLib.createOutputObjectType('Game', {
+var gameType = graphQlLib.createObjectType('Game', {
     id: {
         type: graphQlLib.GraphQLID,
         data: function (env) {
@@ -306,7 +306,7 @@ var gameType = graphQlLib.createOutputObjectType('Game', {
     }
 });
 
-var leaguePlayerType = graphQlLib.createOutputObjectType('LeaguePlayer', {
+var leaguePlayerType = graphQlLib.createObjectType('LeaguePlayer', {
     id: {
         type: graphQlLib.GraphQLID,
         data: function (env) {
@@ -333,7 +333,7 @@ var leaguePlayerType = graphQlLib.createOutputObjectType('LeaguePlayer', {
     }
 });
 
-var leagueTeamType = graphQlLib.createOutputObjectType('LeagueTeam', {
+var leagueTeamType = graphQlLib.createObjectType('LeagueTeam', {
     id: {
         type: graphQlLib.GraphQLID,
         data: function (env) {
@@ -360,7 +360,7 @@ var leagueTeamType = graphQlLib.createOutputObjectType('LeagueTeam', {
     }
 });
 
-var leagueType = graphQlLib.createOutputObjectType('League', {
+var leagueType = graphQlLib.createObjectType('League', {
     id: {
         type: graphQlLib.GraphQLID,
         data: function (env) {
