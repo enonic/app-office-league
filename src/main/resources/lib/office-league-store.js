@@ -1104,10 +1104,6 @@ exports.createLeague = function (params) {
  * @return {object} Created player.
  */
 exports.createPlayer = function (params) {
-
-    log.info('\n\n\n\n\ncreatePlayer!!!!!!!!!!!!!!\n\n\n\n');
-
-
     var repoConn = newConnection();
 
     params.handedness = params.handedness || 'right';
@@ -1132,8 +1128,6 @@ exports.createPlayer = function (params) {
         handedness: params.handedness,
         description: params.description
     });
-
-    log.info('playerNode: ' + JSON.stringify(playerNode, null, 2));
 
     return playerNode;
 };
