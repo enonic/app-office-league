@@ -1205,6 +1205,128 @@ exports.updatePlayer = function (params) {
 };
 
 /**
+ * Modify an existing team.
+ *
+ * @param {object} params JSON with the team parameters.
+ * @param {string} params.teamId Id of the team to update.
+ * @param {string} [params.name] New name of the team.
+ * @param {string} [params.imageStream] New stream with the team's image.
+ * @param {string} [params.imageType] New mime type of the team's image.
+ * @param {string} [params.description] New description text.
+ * @return {Team} Updated team or null if the team could not be updated.
+ */
+exports.updateTeam = function (params) {
+    var repoConn = newConnection();
+
+    required(params, 'teamId');
+
+    var imageValue = null;
+    if (params.imageStream) {
+        required(params, 'imageType');
+        var ext = extensionFromMimeType(params.imageType);
+        imageValue = valueLib.binary('team' + ext, params.imageStream);
+    }
+
+    if (params.name != null) {
+        var node = repoConn.get(params.teamId);
+        if (!node) {
+            return null;
+        }
+        if (node.name !== params.name) {
+            var success = repoConn.move({
+                source: params.teamId,
+                target: prettifyName(params.name)
+            });
+            if (!success) {
+                return null;
+            }
+        }
+    }
+
+    var teamNode = repoConn.modify({
+        key: params.teamId,
+        editor: function (node) {
+            if (params.name != null) {
+                node.name = params.name;
+            }
+            if (params.description != null) {
+                node.description = params.description;
+            }
+            if (imageValue) {
+                node.image = imageValue;
+                node.imageType = params.imageType;
+            }
+            return node;
+        }
+    });
+
+    return teamNode;
+};
+
+/**
+ * Modify an existing league.
+ *
+ * @param {object} params JSON with the league parameters.
+ * @param {string} params.leagueId Id of the league to update.
+ * @param {string} [params.name] New name of the league.
+ * @param {string} [params.imageStream] New stream with the league's image.
+ * @param {string} [params.imageType] New mime type of the league's image.
+ * @param {string} [params.description] New description text.
+ * @param {object} [params.config] New league config.
+ * @return {League} Updated league or null if the league could not be updated.
+ */
+exports.updateLeague = function (params) {
+    var repoConn = newConnection();
+
+    required(params, 'leagueId');
+
+    var imageValue = null;
+    if (params.imageStream) {
+        required(params, 'imageType');
+        var ext = extensionFromMimeType(params.imageType);
+        imageValue = valueLib.binary('league' + ext, params.imageStream);
+    }
+
+    if (params.name != null) {
+        var node = repoConn.get(params.leagueId);
+        if (!node) {
+            return null;
+        }
+        if (node.name !== params.name) {
+            var success = repoConn.move({
+                source: params.leagueId,
+                target: prettifyName(params.name)
+            });
+            if (!success) {
+                return null;
+            }
+        }
+    }
+
+    var leagueNode = repoConn.modify({
+        key: params.leagueId,
+        editor: function (node) {
+            if (params.name != null) {
+                node.name = params.name;
+            }
+            if (params.description != null) {
+                node.description = params.description;
+            }
+            if (imageValue) {
+                node.image = imageValue;
+                node.imageType = params.imageType;
+            }
+            if (params.config != null) {
+                node.config = params.config;
+            }
+            return node;
+        }
+    });
+
+    return leagueNode;
+};
+
+/**
  * Create a new team.
  *
  * @param {object} params JSON with the team parameters.
