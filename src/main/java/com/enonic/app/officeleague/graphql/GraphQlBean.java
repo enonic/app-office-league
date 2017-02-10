@@ -45,34 +45,34 @@ public class GraphQlBean
         return graphQLSchema.build();
     }
 
-    public GraphQLObjectType.Builder createObjectType( final String name, final ScriptValue scriptValue )
+    public GraphQLObjectType.Builder createObjectType( final String name, final ScriptValue fieldsScriptValue )
     {
-        final GraphQLObjectType.Builder type = GraphQLObjectType.newObject().name( name );
-        setTypeFields( scriptValue, type );
-        return type;
+        final GraphQLObjectType.Builder objectType = GraphQLObjectType.newObject().name( name );
+        setTypeFields( fieldsScriptValue, objectType );
+        return objectType;
     }
 
-    private void setTypeFields( final ScriptValue scriptValue, final GraphQLObjectType.Builder type )
+    private void setTypeFields( final ScriptValue fieldsScriptValue, final GraphQLObjectType.Builder objectType )
     {
-        for ( String scriptFieldKey : scriptValue.getKeys() )
+        for ( String fieldKey : fieldsScriptValue.getKeys() )
         {
-            final ScriptValue scriptFieldValue = scriptValue.getMember( scriptFieldKey );
+            final ScriptValue fieldScriptValue = fieldsScriptValue.getMember( fieldKey );
 
             final GraphQLFieldDefinition.Builder graphQlField = GraphQLFieldDefinition.newFieldDefinition().
-                name( scriptFieldKey );
+                name( fieldKey );
 
-            setFieldArguments( scriptFieldValue, graphQlField );
-            setFieldType( scriptFieldValue, graphQlField );
-            setFieldData( scriptFieldValue, graphQlField );
-            type.field( graphQlField );
+            setFieldArguments( fieldScriptValue, graphQlField );
+            setFieldType( fieldScriptValue, graphQlField );
+            setFieldData( fieldScriptValue, graphQlField );
+            objectType.field( graphQlField );
         }
     }
 
-    private void setFieldArguments( final ScriptValue scriptFieldValue, final GraphQLFieldDefinition.Builder graphQlField )
+    private void setFieldArguments( final ScriptValue fieldScriptValue, final GraphQLFieldDefinition.Builder graphQlField )
     {
-        if ( scriptFieldValue.hasMember( "args" ) )
+        if ( fieldScriptValue.hasMember( "args" ) )
         {
-            Map<String, Object> argsMap = scriptFieldValue.getMember( "args" ).getMap();
+            Map<String, Object> argsMap = fieldScriptValue.getMember( "args" ).getMap();
             argsMap.entrySet().
                 stream().
                 map( ( argEntry ) -> GraphQLArgument.newArgument().name( argEntry.getKey() ).type(
@@ -81,9 +81,9 @@ public class GraphQlBean
         }
     }
 
-    private void setFieldType( final ScriptValue scriptFieldValue, final GraphQLFieldDefinition.Builder graphQlField )
+    private void setFieldType( final ScriptValue fieldScriptValue, final GraphQLFieldDefinition.Builder graphQlField )
     {
-        final Object scriptFieldType = scriptFieldValue.getMember( "type" ).getValue();
+        final Object scriptFieldType = fieldScriptValue.getMember( "type" ).getValue();
         if ( scriptFieldType instanceof GraphQLObjectType.Builder )
         {
             graphQlField.type( (GraphQLObjectType.Builder) scriptFieldType );
@@ -159,10 +159,10 @@ public class GraphQlBean
 
     public MapMapper execute( final GraphQLSchema schema, final String request )
     {
-        Map<String, Object> resultMap = new HashMap();
-
         GraphQL graphQL = new GraphQL( schema, new SimpleExecutionStrategy() );
         final ExecutionResult executionResult = graphQL.execute( request );
+
+        Map<String, Object> resultMap = new HashMap();
         resultMap.put( "data", executionResult.getData() );
         resultMap.put( "errors", executionResult.getErrors().stream().map( GraphQlBean::toMap ).collect( Collectors.toList() ) );
         return new MapMapper( resultMap );

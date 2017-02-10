@@ -10,12 +10,14 @@ exports.GraphQLID = Scalars.GraphQLID;
 
 
 //Schema creation
-exports.createSchema = function (schema) {
-    return graphQlBean.createSchema(__.toScriptValue(schema));
+exports.createSchema = function (params) {
+    return graphQlBean.createSchema(__.toScriptValue(params));
 };
 
-exports.createObjectType = function (name, schema) {
-    return graphQlBean.createObjectType(name, __.toScriptValue(schema));
+exports.createObjectType = function (params) {
+    var name = required(params, 'name');
+    var fields = required(params, 'fields');
+    return graphQlBean.createObjectType(name, __.toScriptValue(fields));
 };
 
 
@@ -32,5 +34,13 @@ exports.reference = function (typeKey) {
 //Query execution
 exports.execute = function (schema, request) {
     return __.toNativeObject(graphQlBean.execute(schema, request));
+};
+
+function required(params, name) {
+    var value = params[name];
+    if (value === undefined) {
+        throw "Parameter '" + name + "' is required";
+    }
+    return value;
 };
 

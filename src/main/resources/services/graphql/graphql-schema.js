@@ -1,7 +1,9 @@
 var graphQlLib = require('graphql');
 var storeLib = require('office-league-store');
 
-var playerType = graphQlLib.createObjectType('Player', {
+var playerType = graphQlLib.createObjectType({
+    name: 'Player',
+    fields: {
         id: {
             type: graphQlLib.GraphQLID,
             data: function (env) {
@@ -59,9 +61,11 @@ var playerType = graphQlLib.createObjectType('Player', {
             }
         }
     }
-);
+});
 
-var teamType = graphQlLib.createObjectType('Team', {
+var teamType = graphQlLib.createObjectType({
+    name: 'Team',
+    fields: {
         id: {
             type: graphQlLib.GraphQLID,
             data: function (env) {
@@ -99,9 +103,11 @@ var teamType = graphQlLib.createObjectType('Team', {
             }
         }
     }
-);
+});
 
-var gamePlayerType = graphQlLib.createObjectType('GamePlayer', {
+var gamePlayerType = graphQlLib.createObjectType({
+    name: 'GamePlayer',
+    fields: {
         id: {
             type: graphQlLib.GraphQLID,
             data: function (env) {
@@ -145,9 +151,11 @@ var gamePlayerType = graphQlLib.createObjectType('GamePlayer', {
             }
         }
     }
-);
+});
 
-var gameTeamType = graphQlLib.createObjectType('GameTeam', {
+var gameTeamType = graphQlLib.createObjectType({
+    name: 'GameTeam',
+    fields: {
         id: {
             type: graphQlLib.GraphQLID,
             data: function (env) {
@@ -191,9 +199,11 @@ var gameTeamType = graphQlLib.createObjectType('GameTeam', {
             }
         }
     }
-);
+});
 
-var pointType = graphQlLib.createObjectType('Point', {
+var pointType = graphQlLib.createObjectType({
+    name: 'Point',
+    fields: {
         id: {
             type: graphQlLib.GraphQLID,
             data: function (env) {
@@ -219,9 +229,11 @@ var pointType = graphQlLib.createObjectType('Point', {
             }
         }
     }
-);
+});
 
-var commentType = graphQlLib.createObjectType('Comment', {
+var commentType = graphQlLib.createObjectType({
+    name: 'Comment',
+    fields: {
         id: {
             type: graphQlLib.GraphQLID,
             data: function (env) {
@@ -249,395 +261,413 @@ var commentType = graphQlLib.createObjectType('Comment', {
             }
         }
     }
-);
-
-var gameType = graphQlLib.createObjectType('Game', {
-    id: {
-        type: graphQlLib.GraphQLID,
-        data: function (env) {
-            return env.source._id;
-        }
-    },
-    time: {
-        type: graphQlLib.GraphQLString,
-        data: function (env) {
-            return env.source.time;
-        }
-    },
-    finished: {
-        type: graphQlLib.GraphQLBoolean,
-        data: function (env) {
-            return env.source.finished;
-        }
-    },
-    points: {
-        type: graphQlLib.list(pointType),
-        data: function (env) {
-            return env.source.points;
-        }
-    },
-    comments: {
-        type: graphQlLib.list(commentType),
-        args: {
-            start: graphQlLib.GraphQLInt,
-            count: graphQlLib.GraphQLInt
-        },
-        data: function (env) {
-            return storeLib.getCommentsByGameId(env.source._id, env.args.start, env.args.count).comments;
-        }
-    },
-    gamePlayers: {
-        type: graphQlLib.list(gamePlayerType),
-        data: function (env) {
-            return env.source.gamePlayers;
-        }
-    },
-    gameTeams: {
-        type: graphQlLib.list(gameTeamType),
-        data: function (env) {
-            return env.source.gameTeams;
-        }
-    },
-    league: {
-        type: graphQlLib.reference('League'),
-        data: function (env) {
-            return storeLib.getLeagueById(env.source.leagueId);
-        }
-    }
 });
 
-var leaguePlayerType = graphQlLib.createObjectType('LeaguePlayer', {
-    id: {
-        type: graphQlLib.GraphQLID,
-        data: function (env) {
-            return env.source._id;
-        }
-    },
-    rating: {
-        type: graphQlLib.GraphQLInt,
-        data: function (env) {
-            return env.source.rating;
-        }
-    },
-    player: {
-        type: playerType,
-        data: function (env) {
-            return storeLib.getPlayerById(env.source.playerId);
-        }
-    },
-    league: {
-        type: graphQlLib.reference('League'),
-        data: function (env) {
-            return storeLib.getLeagueById(env.source.leagueId);
-        }
-    }
-});
-
-var leagueTeamType = graphQlLib.createObjectType('LeagueTeam', {
-    id: {
-        type: graphQlLib.GraphQLID,
-        data: function (env) {
-            return env.source._id;
-        }
-    },
-    rating: {
-        type: graphQlLib.GraphQLInt,
-        data: function (env) {
-            return env.source.rating;
-        }
-    },
-    team: {
-        type: teamType,
-        data: function (env) {
-            return storeLib.getTeamById(env.source.teamId);
-        }
-    },
-    league: {
-        type: graphQlLib.reference('League'),
-        data: function (env) {
-            return storeLib.getLeagueById(env.source.leagueId);
-        }
-    }
-});
-
-var leagueType = graphQlLib.createObjectType('League', {
-    id: {
-        type: graphQlLib.GraphQLID,
-        data: function (env) {
-            return env.source._id;
-        }
-    },
-    name: {
-        type: graphQlLib.GraphQLString,
-        data: function (env) {
-            return env.source.name;
-        }
-    },
-    sport: {
-        type: graphQlLib.GraphQLString, //TODO Change to enum
-        data: function (env) {
-            return env.source.sport;
-        }
-    },
-    description: {
-        type: graphQlLib.GraphQLString,
-        data: function (env) {
-            return env.source.description;
-        }
-    },
-    config: {
-        type: graphQlLib.GraphQLString, //TODO Is it? Is there a unstructured type?
-        data: function (env) {
-            return JSON.stringify(env.source.config);
-        }
-    },
-    leaguePlayers: {
-        type: graphQlLib.list(leaguePlayerType),
-        args: {
-            start: graphQlLib.GraphQLInt,
-            count: graphQlLib.GraphQLInt
-        },
-        data: function (env) {
-            return storeLib.getLeaguePlayersByLeagueId(env.source._id, env.args.start, env.args.count).players;
-        }
-    },
-    leagueTeams: {
-        type: graphQlLib.list(leagueTeamType),
-        args: {
-            start: graphQlLib.GraphQLInt,
-            count: graphQlLib.GraphQLInt
-        },
-        data: function (env) {
-            return storeLib.getLeagueTeamsByLeagueId(env.source._id, env.args.start, env.args.count).teams;
-        }
-    },
-    games: {
-        type: graphQlLib.list(gameType),
-        args: {
-            start: graphQlLib.GraphQLInt,
-            count: graphQlLib.GraphQLInt
-        },
-        data: function (env) {
-            return storeLib.getGamesByLeagueId(env.source._id, env.args.start, env.args.count).games;
-        }
-    }
-});
-
-var rootQueryType = graphQlLib.createObjectType('RootQuery', {
-    player: {
-        type: playerType,
-        args: {
-            id: graphQlLib.GraphQLID,
-            name: graphQlLib.GraphQLID
-        },
-        data: function (env) {
-            var id = env.args.id;
-            var name = env.args.name;
-            if (id) {
-                return storeLib.getPlayerById(id);
-            } else if (name) {
-                return storeLib.getPlayerByName(name);
+var gameType = graphQlLib.createObjectType({
+    name: 'Game',
+    fields: {
+        id: {
+            type: graphQlLib.GraphQLID,
+            data: function (env) {
+                return env.source._id;
             }
-            return null;
-        }
-    },
-    players: {
-        type: graphQlLib.list(playerType),
-        args: {
-            start: graphQlLib.GraphQLInt,
-            count: graphQlLib.GraphQLInt
         },
-        data: function (env) {
-            var start = env.args.start;
-            var count = env.args.count;
-            return storeLib.getPlayers(start, count).players;
-        }
-    },
-    team: {
-        type: teamType,
-        args: {
-            id: graphQlLib.GraphQLID,
-            name: graphQlLib.GraphQLID
-        },
-        data: function (env) {
-            var id = env.args.id;
-            var name = env.args.name;
-            if (id) {
-                return storeLib.getTeamById(id);
-            } else if (name) {
-                return storeLib.getTeamByName(name);
+        time: {
+            type: graphQlLib.GraphQLString,
+            data: function (env) {
+                return env.source.time;
             }
-            return null;
-        }
-    },
-    teams: {
-        type: graphQlLib.list(teamType),
-        args: {
-            start: graphQlLib.GraphQLInt,
-            count: graphQlLib.GraphQLInt
         },
-        data: function (env) {
-            var start = env.args.start;
-            var count = env.args.count;
-            return storeLib.getTeams(start, count).teams;
-        }
-    },
-    games: {
-        type: graphQlLib.list(gameType),
-        args: {
-            leagueId: graphQlLib.GraphQLID,
-            start: graphQlLib.GraphQLInt,
-            count: graphQlLib.GraphQLInt
+        finished: {
+            type: graphQlLib.GraphQLBoolean,
+            data: function (env) {
+                return env.source.finished;
+            }
         },
-        data: function (env) {
-            var leagueId = env.args.leagueId;
-            var start = env.args.start;
-            var count = env.args.count;
-            return storeLib.getGamesByLeagueId(leagueId, start, count).games;
-        }
-    },
-    league: {
-        type: leagueType,
-        args: {
-            id: graphQlLib.GraphQLID
+        points: {
+            type: graphQlLib.list(pointType),
+            data: function (env) {
+                return env.source.points;
+            }
         },
-        data: function (env) {
-            var id = env.args.id;
-            return storeLib.getLeagueById(id);
-        }
-    },
-    leagues: {
-        type: graphQlLib.list(leagueType),
-        args: {
-            start: graphQlLib.GraphQLInt,
-            count: graphQlLib.GraphQLInt
+        comments: {
+            type: graphQlLib.list(commentType),
+            args: {
+                start: graphQlLib.GraphQLInt,
+                count: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                return storeLib.getCommentsByGameId(env.source._id, env.args.start, env.args.count).comments;
+            }
         },
-        data: function (env) {
-            var start = env.args.start;
-            var count = env.args.count;
-            return storeLib.getLeagues(start, count).leagues;
+        gamePlayers: {
+            type: graphQlLib.list(gamePlayerType),
+            data: function (env) {
+                return env.source.gamePlayers;
+            }
+        },
+        gameTeams: {
+            type: graphQlLib.list(gameTeamType),
+            data: function (env) {
+                return env.source.gameTeams;
+            }
+        },
+        league: {
+            type: graphQlLib.reference('League'),
+            data: function (env) {
+                return storeLib.getLeagueById(env.source.leagueId);
+            }
         }
     }
 });
 
-var rootMutationType = graphQlLib.createObjectType('RootMutation', {
-    createLeague: {
-        type: leagueType,
-        args: {
-            name: graphQlLib.GraphQLString,
-            sport: graphQlLib.GraphQLString,//TODO
-            description: graphQlLib.GraphQLString,
-            config: graphQlLib.GraphQLString//TODO
+var leaguePlayerType = graphQlLib.createObjectType({
+    name: 'LeaguePlayer',
+    fields: {
+        id: {
+            type: graphQlLib.GraphQLID,
+            data: function (env) {
+                return env.source._id;
+            }
         },
-        data: function (env) {
-            return storeLib.createLeague({
-                name: env.args.name,
-                sport: env.args.sport,
-                description: env.args.description,
-                config: env.args.config ? JSON.parse(env.args.config) : {} //TODO
-            });
-        }
-    },
-    createPlayer: {
-        type: playerType,
-        args: {
-            name: graphQlLib.GraphQLString,
-            nickname: graphQlLib.GraphQLString,
-            nationality: graphQlLib.GraphQLString, //TODO
-            handedness: graphQlLib.GraphQLString, //TODO
-            description: graphQlLib.GraphQLString
+        rating: {
+            type: graphQlLib.GraphQLInt,
+            data: function (env) {
+                return env.source.rating;
+            }
         },
-        data: function (env) {
-            return storeLib.createPlayer({
-                name: env.args.name,
-                nickname: env.args.nickname,
-                nationality: env.args.nationality,
-                handedness: env.args.handedness,
-                description: env.args.description
-            });
-        }
-    },
-    updatePlayer: {
-        type: playerType,
-        args: {
-            id: graphQlLib.GraphQLID,
-            name: graphQlLib.GraphQLString,
-            nickname: graphQlLib.GraphQLString,
-            nationality: graphQlLib.GraphQLString, //TODO
-            handedness: graphQlLib.GraphQLString, //TODO
-            description: graphQlLib.GraphQLString
+        player: {
+            type: playerType,
+            data: function (env) {
+                return storeLib.getPlayerById(env.source.playerId);
+            }
         },
-        data: function (env) {
-            return storeLib.updatePlayer({
-                playerId: env.args.id,
-                name: env.args.name,
-                nickname: env.args.nickname,
-                nationality: env.args.nationality,
-                handedness: env.args.handedness,
-                description: env.args.description
-            });
+        league: {
+            type: graphQlLib.reference('League'),
+            data: function (env) {
+                return storeLib.getLeagueById(env.source.leagueId);
+            }
         }
-    },
-    createTeam: {
-        type: teamType,
-        args: {
-            name: graphQlLib.GraphQLString,
-            description: graphQlLib.GraphQLString,
-            playerIds: graphQlLib.list(graphQlLib.GraphQLID)
+    }
+});
+
+var leagueTeamType = graphQlLib.createObjectType({
+    name: 'LeagueTeam',
+    fields: {
+        id: {
+            type: graphQlLib.GraphQLID,
+            data: function (env) {
+                return env.source._id;
+            }
         },
-        data: function (env) {
-            return storeLib.createTeam({
-                name: env.args.name,
-                description: env.args.description,
-                playerIds: env.args.playerIds
-            });
-        }
-    },
-    joinPlayerLeague: {
-        type: leaguePlayerType,
-        args: {
-            leagueId: graphQlLib.GraphQLID,
-            playerId: graphQlLib.GraphQLID,
-            rating: graphQlLib.GraphQLInt
+        rating: {
+            type: graphQlLib.GraphQLInt,
+            data: function (env) {
+                return env.source.rating;
+            }
         },
-        data: function (env) {
-            return storeLib.joinPlayerLeague({
-                leagueId: env.args.leagueId,
-                playerId: env.args.playerId,
-                rating: env.args.rating
-            });
-        }
-    },
-    joinTeamLeague: {
-        type: leagueTeamType,
-        args: {
-            leagueId: graphQlLib.GraphQLID,
-            teamId: graphQlLib.GraphQLID,
-            rating: graphQlLib.GraphQLInt
+        team: {
+            type: teamType,
+            data: function (env) {
+                return storeLib.getTeamById(env.source.teamId);
+            }
         },
-        data: function (env) {
-            return storeLib.joinTeamLeague({
-                leagueId: env.args.leagueId,
-                teamId: env.args.teamId,
-                rating: env.args.rating
-            });
+        league: {
+            type: graphQlLib.reference('League'),
+            data: function (env) {
+                return storeLib.getLeagueById(env.source.leagueId);
+            }
         }
-    }/*,
-     createGame: {
-     type: gameType,
-     args: {
-     leagueId: graphQlLib.GraphQLID,
-     time: graphQlLib.GraphQLString,
-     finished: graphQlLib.GraphQLID
-     },
-     data: function (env) {
-     return storeLib.createGame({
-     leagueId: env.args.leagueId,
-     time: env.args.time,
-     finished: env.args.finished
-     });
-     }
-     }*/
+    }
+});
+
+var leagueType = graphQlLib.createObjectType({
+    name: 'League',
+    fields: {
+        id: {
+            type: graphQlLib.GraphQLID,
+            data: function (env) {
+                return env.source._id;
+            }
+        },
+        name: {
+            type: graphQlLib.GraphQLString,
+            data: function (env) {
+                return env.source.name;
+            }
+        },
+        sport: {
+            type: graphQlLib.GraphQLString, //TODO Change to enum
+            data: function (env) {
+                return env.source.sport;
+            }
+        },
+        description: {
+            type: graphQlLib.GraphQLString,
+            data: function (env) {
+                return env.source.description;
+            }
+        },
+        config: {
+            type: graphQlLib.GraphQLString, //TODO Is it? Is there a unstructured type?
+            data: function (env) {
+                return JSON.stringify(env.source.config);
+            }
+        },
+        leaguePlayers: {
+            type: graphQlLib.list(leaguePlayerType),
+            args: {
+                start: graphQlLib.GraphQLInt,
+                count: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                return storeLib.getLeaguePlayersByLeagueId(env.source._id, env.args.start, env.args.count).players;
+            }
+        },
+        leagueTeams: {
+            type: graphQlLib.list(leagueTeamType),
+            args: {
+                start: graphQlLib.GraphQLInt,
+                count: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                return storeLib.getLeagueTeamsByLeagueId(env.source._id, env.args.start, env.args.count).teams;
+            }
+        },
+        games: {
+            type: graphQlLib.list(gameType),
+            args: {
+                start: graphQlLib.GraphQLInt,
+                count: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                return storeLib.getGamesByLeagueId(env.source._id, env.args.start, env.args.count).games;
+            }
+        }
+    }
+});
+
+var rootQueryType = graphQlLib.createObjectType({
+    name: 'GamePlayer',
+    fields: {
+        player: {
+            type: playerType,
+            args: {
+                id: graphQlLib.GraphQLID,
+                name: graphQlLib.GraphQLID
+            },
+            data: function (env) {
+                var id = env.args.id;
+                var name = env.args.name;
+                if (id) {
+                    return storeLib.getPlayerById(id);
+                } else if (name) {
+                    return storeLib.getPlayerByName(name);
+                }
+                return null;
+            }
+        },
+        players: {
+            type: graphQlLib.list(playerType),
+            args: {
+                start: graphQlLib.GraphQLInt,
+                count: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                var start = env.args.start;
+                var count = env.args.count;
+                return storeLib.getPlayers(start, count).players;
+            }
+        },
+        team: {
+            type: teamType,
+            args: {
+                id: graphQlLib.GraphQLID,
+                name: graphQlLib.GraphQLID
+            },
+            data: function (env) {
+                var id = env.args.id;
+                var name = env.args.name;
+                if (id) {
+                    return storeLib.getTeamById(id);
+                } else if (name) {
+                    return storeLib.getTeamByName(name);
+                }
+                return null;
+            }
+        },
+        teams: {
+            type: graphQlLib.list(teamType),
+            args: {
+                start: graphQlLib.GraphQLInt,
+                count: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                var start = env.args.start;
+                var count = env.args.count;
+                return storeLib.getTeams(start, count).teams;
+            }
+        },
+        games: {
+            type: graphQlLib.list(gameType),
+            args: {
+                leagueId: graphQlLib.GraphQLID,
+                start: graphQlLib.GraphQLInt,
+                count: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                var leagueId = env.args.leagueId;
+                var start = env.args.start;
+                var count = env.args.count;
+                return storeLib.getGamesByLeagueId(leagueId, start, count).games;
+            }
+        },
+        league: {
+            type: leagueType,
+            args: {
+                id: graphQlLib.GraphQLID
+            },
+            data: function (env) {
+                var id = env.args.id;
+                return storeLib.getLeagueById(id);
+            }
+        },
+        leagues: {
+            type: graphQlLib.list(leagueType),
+            args: {
+                start: graphQlLib.GraphQLInt,
+                count: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                var start = env.args.start;
+                var count = env.args.count;
+                return storeLib.getLeagues(start, count).leagues;
+            }
+        }
+    }
+});
+
+var rootMutationType = graphQlLib.createObjectType({
+    name: 'GamePlayer',
+    fields: {
+        createLeague: {
+            type: leagueType,
+            args: {
+                name: graphQlLib.GraphQLString,
+                sport: graphQlLib.GraphQLString,//TODO
+                description: graphQlLib.GraphQLString,
+                config: graphQlLib.GraphQLString//TODO
+            },
+            data: function (env) {
+                return storeLib.createLeague({
+                    name: env.args.name,
+                    sport: env.args.sport,
+                    description: env.args.description,
+                    config: env.args.config ? JSON.parse(env.args.config) : {} //TODO
+                });
+            }
+        },
+        createPlayer: {
+            type: playerType,
+            args: {
+                name: graphQlLib.GraphQLString,
+                nickname: graphQlLib.GraphQLString,
+                nationality: graphQlLib.GraphQLString, //TODO
+                handedness: graphQlLib.GraphQLString, //TODO
+                description: graphQlLib.GraphQLString
+            },
+            data: function (env) {
+                return storeLib.createPlayer({
+                    name: env.args.name,
+                    nickname: env.args.nickname,
+                    nationality: env.args.nationality,
+                    handedness: env.args.handedness,
+                    description: env.args.description
+                });
+            }
+        },
+        updatePlayer: {
+            type: playerType,
+            args: {
+                id: graphQlLib.GraphQLID,
+                name: graphQlLib.GraphQLString,
+                nickname: graphQlLib.GraphQLString,
+                nationality: graphQlLib.GraphQLString, //TODO
+                handedness: graphQlLib.GraphQLString, //TODO
+                description: graphQlLib.GraphQLString
+            },
+            data: function (env) {
+                return storeLib.updatePlayer({
+                    playerId: env.args.id,
+                    name: env.args.name,
+                    nickname: env.args.nickname,
+                    nationality: env.args.nationality,
+                    handedness: env.args.handedness,
+                    description: env.args.description
+                });
+            }
+        },
+        createTeam: {
+            type: teamType,
+            args: {
+                name: graphQlLib.GraphQLString,
+                description: graphQlLib.GraphQLString,
+                playerIds: graphQlLib.list(graphQlLib.GraphQLID)
+            },
+            data: function (env) {
+                return storeLib.createTeam({
+                    name: env.args.name,
+                    description: env.args.description,
+                    playerIds: env.args.playerIds
+                });
+            }
+        },
+        joinPlayerLeague: {
+            type: leaguePlayerType,
+            args: {
+                leagueId: graphQlLib.GraphQLID,
+                playerId: graphQlLib.GraphQLID,
+                rating: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                return storeLib.joinPlayerLeague({
+                    leagueId: env.args.leagueId,
+                    playerId: env.args.playerId,
+                    rating: env.args.rating
+                });
+            }
+        },
+        joinTeamLeague: {
+            type: leagueTeamType,
+            args: {
+                leagueId: graphQlLib.GraphQLID,
+                teamId: graphQlLib.GraphQLID,
+                rating: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                return storeLib.joinTeamLeague({
+                    leagueId: env.args.leagueId,
+                    teamId: env.args.teamId,
+                    rating: env.args.rating
+                });
+            }
+        }/*,
+         createGame: {
+         type: gameType,
+         args: {
+         leagueId: graphQlLib.GraphQLID,
+         time: graphQlLib.GraphQLString,
+         finished: graphQlLib.GraphQLID
+         },
+         data: function (env) {
+         return storeLib.createGame({
+         leagueId: env.args.leagueId,
+         time: env.args.time,
+         finished: env.args.finished
+         });
+         }
+         }*/
+    }
 });
 
 exports.schema = graphQlLib.createSchema({
