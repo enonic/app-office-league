@@ -9,6 +9,7 @@ import graphql.GraphQL;
 import graphql.GraphQLError;
 import graphql.execution.SimpleExecutionStrategy;
 import graphql.schema.GraphQLArgument;
+import graphql.schema.GraphQLEnumType;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLInterfaceType;
@@ -58,6 +59,24 @@ public class GraphQlBean
             description( description );
         setTypeFields( fieldsScriptValue, interfaceType );
         return interfaceType.build();
+    }
+
+    public GraphQLEnumType createEnumType( final String name, final ScriptValue valuesScriptValue, final String description )
+    {
+        final GraphQLEnumType.Builder enumType = GraphQLEnumType.newEnum().
+            name( name ).
+            description( description );
+        setValues( valuesScriptValue, enumType );
+        return enumType.build();
+    }
+
+    private void setValues( final ScriptValue valuesScriptValue, final GraphQLEnumType.Builder enumType )
+    {
+        for ( String valueKey : valuesScriptValue.getKeys() )
+        {
+            final ScriptValue valueScriptValue = valuesScriptValue.getMember( valueKey );
+            enumType.value( valueKey, valueScriptValue.getValue() );
+        }
     }
 
     private void setTypeFields( final ScriptValue fieldsScriptValue, final GraphQLObjectType.Builder objectType )

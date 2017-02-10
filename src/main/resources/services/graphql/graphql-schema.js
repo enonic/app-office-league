@@ -14,6 +14,25 @@ var identifiableType = graphQlLib.createInterfaceType({
     }
 });
 
+var handednessEnumType = graphQlLib.createEnumType({
+    name: 'Handedness',
+    description: 'Enumeration of handedness',
+    values: {
+        right: 'right',
+        left: 'left',
+        ambidexterity: 'ambidexterity'
+    }
+});
+
+var sideEnumType = graphQlLib.createEnumType({
+    name: 'Side',
+    description: 'Enumeration of handedness',
+    values: {
+        blue: 'blue',
+        red: 'red'
+    }
+});
+
 var playerType = graphQlLib.createObjectType({
     name: 'Player',
     description: 'Domain representation of a player. A player has a link to a user',
@@ -44,7 +63,7 @@ var playerType = graphQlLib.createObjectType({
             }
         },
         handedness: {
-            type: graphQlLib.GraphQLString, //TODO Change to enum
+            type: handednessEnumType,
             data: function (env) {
                 return env.source.handedness;
             }
@@ -147,7 +166,7 @@ var gamePlayerType = graphQlLib.createObjectType({
             }
         },
         side: {
-            type: graphQlLib.GraphQLString, //TODO Replace by Enum
+            type: sideEnumType,
             data: function (env) {
                 return env.source.side;
             }
@@ -198,7 +217,7 @@ var gameTeamType = graphQlLib.createObjectType({
             }
         },
         side: {
-            type: graphQlLib.GraphQLString, //TODO Replace by Enum
+            type: sideEnumType,
             data: function (env) {
                 return env.source.side;
             }
@@ -610,7 +629,7 @@ var rootMutationType = graphQlLib.createObjectType({
                 name: graphQlLib.GraphQLString,
                 nickname: graphQlLib.GraphQLString,
                 nationality: graphQlLib.GraphQLString, //TODO
-                handedness: graphQlLib.GraphQLString, //TODO
+                handedness: handednessEnumType,
                 description: graphQlLib.GraphQLString
             },
             data: function (env) {
@@ -630,7 +649,7 @@ var rootMutationType = graphQlLib.createObjectType({
                 name: graphQlLib.GraphQLString,
                 nickname: graphQlLib.GraphQLString,
                 nationality: graphQlLib.GraphQLString, //TODO
-                handedness: graphQlLib.GraphQLString, //TODO
+                handedness: handednessEnumType,
                 description: graphQlLib.GraphQLString
             },
             data: function (env) {

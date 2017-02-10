@@ -31,6 +31,13 @@ exports.createInterfaceType = function (params) {
     return graphQlBean.createInterfaceType(name, __.toScriptValue(fields), description);
 };
 
+exports.createEnumType = function (params) {
+    var name = required(params, 'name');
+    var values = required(params, 'values');
+    var description = optional(params, 'description');
+    return graphQlBean.createEnumType(name, __.toScriptValue(values), description);
+};
+
 
 //Schema util functions
 exports.list = function (type) {
