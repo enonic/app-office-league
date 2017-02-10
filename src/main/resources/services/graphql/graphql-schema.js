@@ -6,7 +6,7 @@ var identifiableType = graphQlLib.createInterfaceType({
     description: 'Contains a field ID with a unique value',
     fields: {
         id: {
-            type: graphQlLib.GraphQLID,
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID),
             data: function (env) {
                 return env.source._id;
             }
@@ -47,13 +47,13 @@ var playerType = graphQlLib.createObjectType({
     interfaces: [identifiableType],
     fields: {
         id: {
-            type: graphQlLib.GraphQLID,
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID),
             data: function (env) {
                 return env.source._id;
             }
         },
         name: {
-            type: graphQlLib.GraphQLString,
+            type: graphQlLib.nonNull(graphQlLib.GraphQLString),
             data: function (env) {
                 return env.source.name;
             }
@@ -111,13 +111,13 @@ var teamType = graphQlLib.createObjectType({
     interfaces: [identifiableType],
     fields: {
         id: {
-            type: graphQlLib.GraphQLID,
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID),
             data: function (env) {
                 return env.source._id;
             }
         },
         name: {
-            type: graphQlLib.GraphQLString,
+            type: graphQlLib.nonNull(graphQlLib.GraphQLString),
             data: function (env) {
                 return env.source.name;
             }
@@ -156,7 +156,7 @@ var gamePlayerType = graphQlLib.createObjectType({
     interfaces: [identifiableType],
     fields: {
         id: {
-            type: graphQlLib.GraphQLID,
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID),
             data: function (env) {
                 return env.source._id;
             }
@@ -207,7 +207,7 @@ var gameTeamType = graphQlLib.createObjectType({
     interfaces: [identifiableType],
     fields: {
         id: {
-            type: graphQlLib.GraphQLID,
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID),
             data: function (env) {
                 return env.source._id;
             }
@@ -254,28 +254,21 @@ var gameTeamType = graphQlLib.createObjectType({
 var pointType = graphQlLib.createObjectType({
     name: 'Point',
     description: 'Domain representation of a goal/point.',
-    interfaces: [identifiableType],
     fields: {
-        id: {
-            type: graphQlLib.GraphQLID,
-            data: function (env) {
-                return env.source._id;
-            }
-        },
         time: {
-            type: graphQlLib.GraphQLInt,
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
             data: function (env) {
                 return env.source.time;
             }
         },
         against: {
-            type: graphQlLib.GraphQLBoolean,
+            type: graphQlLib.nonNull(graphQlLib.GraphQLBoolean),
             data: function (env) {
                 return env.source.against;
             }
         },
         player: {
-            type: playerType,
+            type: graphQlLib.nonNull(playerType),
             data: function (env) {
                 return storeLib.getPlayerById(env.source.playerId);
             }
@@ -289,7 +282,7 @@ var commentType = graphQlLib.createObjectType({
     interfaces: [identifiableType],
     fields: {
         id: {
-            type: graphQlLib.GraphQLID,
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID),
             data: function (env) {
                 return env.source._id;
             }
@@ -323,7 +316,7 @@ var gameType = graphQlLib.createObjectType({
     interfaces: [identifiableType],
     fields: {
         id: {
-            type: graphQlLib.GraphQLID,
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID),
             data: function (env) {
                 return env.source._id;
             }
@@ -384,7 +377,7 @@ var leaguePlayerType = graphQlLib.createObjectType({
     interfaces: [identifiableType],
     fields: {
         id: {
-            type: graphQlLib.GraphQLID,
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID),
             data: function (env) {
                 return env.source._id;
             }
@@ -417,7 +410,7 @@ var leagueTeamType = graphQlLib.createObjectType({
     interfaces: [identifiableType],
     fields: {
         id: {
-            type: graphQlLib.GraphQLID,
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID),
             data: function (env) {
                 return env.source._id;
             }
@@ -449,7 +442,7 @@ var leagueType = graphQlLib.createObjectType({
     interfaces: [identifiableType],
     fields: {
         id: {
-            type: graphQlLib.GraphQLID,
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID),
             data: function (env) {
                 return env.source._id;
             }
@@ -575,7 +568,7 @@ var rootQueryType = graphQlLib.createObjectType({
         games: {
             type: graphQlLib.list(gameType),
             args: {
-                leagueId: graphQlLib.GraphQLID,
+                leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 start: graphQlLib.GraphQLInt,
                 count: graphQlLib.GraphQLInt
             },
@@ -589,7 +582,7 @@ var rootQueryType = graphQlLib.createObjectType({
         league: {
             type: leagueType,
             args: {
-                id: graphQlLib.GraphQLID
+                id: graphQlLib.nonNull(graphQlLib.GraphQLID)
             },
             data: function (env) {
                 var id = env.args.id;
