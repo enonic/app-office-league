@@ -4,12 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableMap;
-
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.GraphQLError;
-import graphql.Scalars;
 import graphql.execution.SimpleExecutionStrategy;
 import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLFieldDefinition;
@@ -18,7 +15,6 @@ import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
-import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLType;
 import graphql.schema.GraphQLTypeReference;
@@ -28,15 +24,6 @@ import com.enonic.xp.script.ScriptValue;
 
 public class GraphQlBean
 {
-    ImmutableMap<String, GraphQLScalarType> GRAPH_QL_SCALAR_TYPE_MAP = ImmutableMap.<String, GraphQLScalarType>builder().
-        put( "Int", Scalars.GraphQLInt ).
-        put( "Float", Scalars.GraphQLFloat ).
-        put( "String", Scalars.GraphQLString ).
-        put( "Boolean", Scalars.GraphQLBoolean ).
-        put( "ID", Scalars.GraphQLID ).
-        build();
-
-
     public GraphQLSchema createSchema( final ScriptValue schemaScriptValue )
     {
         final GraphQLSchema.Builder graphQLSchema = GraphQLSchema.newSchema();
@@ -163,11 +150,6 @@ public class GraphQlBean
     public GraphQLList list( GraphQLType type )
     {
         return new GraphQLList( type );
-    }
-
-    public GraphQLScalarType scalar( final String typeKey )
-    {
-        return GRAPH_QL_SCALAR_TYPE_MAP.get( typeKey );
     }
 
     public GraphQLTypeReference reference( final String typeKey )

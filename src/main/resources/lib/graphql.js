@@ -1,5 +1,13 @@
 var graphQlBean = __.newBean('com.enonic.app.officeleague.graphql.GraphQlBean');
 
+//Scalars
+var Scalars = Java.type('graphql.Scalars')
+exports.GraphQLInt = Scalars.GraphQLInt;
+exports.GraphQLFloat = Scalars.GraphQLFloat;
+exports.GraphQLString = Scalars.GraphQLString;
+exports.GraphQLBoolean = Scalars.GraphQLBoolean;
+exports.GraphQLID = Scalars.GraphQLID;
+
 
 //Schema creation
 exports.createSchema = function (schema) {
@@ -16,23 +24,13 @@ exports.list = function (type) {
     return graphQlBean.list(type);
 };
 
-exports.scalarType = function (typeKey) {
-    return graphQlBean.scalar(typeKey);
-};
-
 exports.reference = function (typeKey) {
     return graphQlBean.reference(typeKey);
 };
+
 
 //Query execution
 exports.execute = function (schema, request) {
     return __.toNativeObject(graphQlBean.execute(schema, request));
 };
 
-
-//Scalars
-exports.GraphQLInt = exports.scalarType('Int');
-exports.GraphQLFloat = exports.scalarType('Float');
-exports.GraphQLString = exports.scalarType('String');
-exports.GraphQLBoolean = exports.scalarType('Boolean');
-exports.GraphQLID = exports.scalarType('ID');
