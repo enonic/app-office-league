@@ -1,9 +1,23 @@
 var graphQlLib = require('graphql');
 var storeLib = require('office-league-store');
 
+var identifiableType = graphQlLib.createInterfaceType({
+    name: 'Identifiable',
+    description: 'Contains a field ID with a unique value',
+    fields: {
+        id: {
+            type: graphQlLib.GraphQLID,
+            data: function (env) {
+                return env.source._id;
+            }
+        }
+    }
+});
+
 var playerType = graphQlLib.createObjectType({
     name: 'Player',
     description: 'Domain representation of a player. A player has a link to a user',
+    interfaces: [identifiableType],
     fields: {
         id: {
             type: graphQlLib.GraphQLID,
@@ -67,6 +81,7 @@ var playerType = graphQlLib.createObjectType({
 var teamType = graphQlLib.createObjectType({
     name: 'Team',
     description: 'Domain representation of a team. A team is composed of two player',
+    interfaces: [identifiableType],
     fields: {
         id: {
             type: graphQlLib.GraphQLID,
@@ -111,6 +126,7 @@ var gamePlayerType = graphQlLib.createObjectType({
     name: 'GamePlayer',
     description: 'Relation between a player and a game. ' +
                  'This relation means that a player is a part of a game. GamePlayer also contains statistics',
+    interfaces: [identifiableType],
     fields: {
         id: {
             type: graphQlLib.GraphQLID,
@@ -161,6 +177,7 @@ var gameTeamType = graphQlLib.createObjectType({
     name: 'GameTeam',
     description: 'Relation between a team and a game. ' +
                  'This relation means that a team is a part of a game. GameTeam also contains statistics',
+    interfaces: [identifiableType],
     fields: {
         id: {
             type: graphQlLib.GraphQLID,
@@ -210,6 +227,7 @@ var gameTeamType = graphQlLib.createObjectType({
 var pointType = graphQlLib.createObjectType({
     name: 'Point',
     description: 'Domain representation of a goal/point.',
+    interfaces: [identifiableType],
     fields: {
         id: {
             type: graphQlLib.GraphQLID,
@@ -241,6 +259,7 @@ var pointType = graphQlLib.createObjectType({
 var commentType = graphQlLib.createObjectType({
     name: 'Comment',
     description: 'Domain representation of a user comment.',
+    interfaces: [identifiableType],
     fields: {
         id: {
             type: graphQlLib.GraphQLID,
@@ -274,6 +293,7 @@ var commentType = graphQlLib.createObjectType({
 var gameType = graphQlLib.createObjectType({
     name: 'Game',
     description: 'Domain representation of a game',
+    interfaces: [identifiableType],
     fields: {
         id: {
             type: graphQlLib.GraphQLID,
@@ -334,6 +354,7 @@ var leaguePlayerType = graphQlLib.createObjectType({
     name: 'LeaguePlayer',
     description: 'Relation between a player and a league. ' +
                  'This relation means that a player is a part of a league. LeaguePlayer also contains statistics',
+    interfaces: [identifiableType],
     fields: {
         id: {
             type: graphQlLib.GraphQLID,
@@ -366,6 +387,7 @@ var leagueTeamType = graphQlLib.createObjectType({
     name: 'LeagueTeam',
     description: 'Relation between a team and a league. ' +
                  'This relation means that a team is a part of a league. LeagueTeam also contains statistics',
+    interfaces: [identifiableType],
     fields: {
         id: {
             type: graphQlLib.GraphQLID,
@@ -397,6 +419,7 @@ var leagueTeamType = graphQlLib.createObjectType({
 var leagueType = graphQlLib.createObjectType({
     name: 'League',
     description: 'Domain representation of a league. A league contains games. Players can join 0..* leagues and indirectly their teams.',
+    interfaces: [identifiableType],
     fields: {
         id: {
             type: graphQlLib.GraphQLID,

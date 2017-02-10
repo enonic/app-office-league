@@ -35,13 +35,29 @@ public class GraphQlBean
         return graphQLSchema.build();
     }
 
-    public GraphQLObjectType.Builder createObjectType( final String name, final ScriptValue fieldsScriptValue, final String description )
+    public GraphQLObjectType.Builder createObjectType( final String name, final ScriptValue fieldsScriptValue,
+                                                       final ScriptValue interfacesScriptValue, final String description )
     {
         final GraphQLObjectType.Builder objectType = GraphQLObjectType.newObject().
             name( name ).
             description( description );
+        if ( interfacesScriptValue != null )
+        {
+            interfacesScriptValue.getArray().
+                forEach( ( interfaceScriptValue ) -> objectType.withInterface( (GraphQLInterfaceType) interfaceScriptValue.getValue() ) );
+        }
         setTypeFields( fieldsScriptValue, objectType );
         return objectType;
+    }
+
+    public GraphQLInterfaceType createInterfaceType( final String name, final ScriptValue fieldsScriptValue, final String description )
+    {
+        final GraphQLInterfaceType.Builder interfaceType = GraphQLInterfaceType.newInterface().
+            name( name ).
+            typeResolver( ( object ) -> null ). //TODO
+            description( description );
+        setTypeFields( fieldsScriptValue, interfaceType );
+        return interfaceType.build();
     }
 
     private void setTypeFields( final ScriptValue fieldsScriptValue, final GraphQLObjectType.Builder objectType )
@@ -57,6 +73,22 @@ public class GraphQlBean
             setFieldType( fieldScriptValue, graphQlField );
             setFieldData( fieldScriptValue, graphQlField );
             objectType.field( graphQlField );
+        }
+    }
+
+    private void setTypeFields( final ScriptValue fieldsScriptValue, final GraphQLInterfaceType.Builder interfaceType )
+    {
+        for ( String fieldKey : fieldsScriptValue.getKeys() )
+        {
+            final ScriptValue fieldScriptValue = fieldsScriptValue.getMember( fieldKey );
+
+            final GraphQLFieldDefinition.Builder graphQlField = GraphQLFieldDefinition.newFieldDefinition().
+                name( fieldKey );
+
+            setFieldArguments( fieldScriptValue, graphQlField );
+            setFieldType( fieldScriptValue, graphQlField );
+            setFieldData( fieldScriptValue, graphQlField );
+            interfaceType.field( graphQlField );
         }
     }
 

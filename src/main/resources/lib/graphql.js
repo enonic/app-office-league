@@ -19,8 +19,16 @@ exports.createSchema = function (params) {
 exports.createObjectType = function (params) {
     var name = required(params, 'name');
     var fields = required(params, 'fields');
+    var interfaces = optional(params, 'interfaces');
     var description = optional(params, 'description');
-    return graphQlBean.createObjectType(name, __.toScriptValue(fields), description);
+    return graphQlBean.createObjectType(name, __.toScriptValue(fields), __.toScriptValue(interfaces), description);
+};
+
+exports.createInterfaceType = function (params) {
+    var name = required(params, 'name');
+    var fields = required(params, 'fields');
+    var description = optional(params, 'description');
+    return graphQlBean.createInterfaceType(name, __.toScriptValue(fields), description);
 };
 
 
