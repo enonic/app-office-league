@@ -26,10 +26,18 @@ var handednessEnumType = graphQlLib.createEnumType({
 
 var sideEnumType = graphQlLib.createEnumType({
     name: 'Side',
-    description: 'Enumeration of handedness',
+    description: 'Enumeration of sides',
     values: {
         blue: 'blue',
         red: 'red'
+    }
+});
+
+var sportEnumType = graphQlLib.createEnumType({
+    name: 'Sport',
+    description: 'Enumeration of sports handled',
+    values: {
+        foos: 'foos'
     }
 });
 
@@ -453,7 +461,7 @@ var leagueType = graphQlLib.createObjectType({
             }
         },
         sport: {
-            type: graphQlLib.GraphQLString, //TODO Change to enum
+            type: sportEnumType,
             data: function (env) {
                 return env.source.sport;
             }
@@ -610,7 +618,7 @@ var rootMutationType = graphQlLib.createObjectType({
             type: leagueType,
             args: {
                 name: graphQlLib.GraphQLString,
-                sport: graphQlLib.GraphQLString,//TODO
+                sport: sportEnumType,
                 description: graphQlLib.GraphQLString,
                 config: graphQlLib.GraphQLString//TODO
             },
