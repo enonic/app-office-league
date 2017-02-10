@@ -1526,6 +1526,70 @@ exports.joinTeamLeague = function (leagueId, teamId, rating) {
 };
 
 /**
+ * Add or decrease player rating in an existing league.
+ *
+ * @param {string} leagueId Id of the league.
+ * @param {string} playerId Id of the player.
+ * @param {number} ratingDelta Increment in rating points.
+ * @return {boolean} True if successfully updated.
+ */
+exports.updatePlayerLeagueRating = function (leagueId, playerId, ratingDelta) {
+    var repoConn = newConnection();
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "' AND leagueId='" + leagueId + "'"
+    });
+
+    if (result.count === 0) {
+        log.info('League player not found for playerId=[' + playerId + '] and leagueId=[' + leagueId + ']');
+        return false;
+    }
+
+    var leaguePlayerNode = repoConn.modify({
+        key: result.hits[0].id,
+        editor: function (node) {
+            node.rating = (node.rating || 0) + ratingDelta;
+            return node;
+        }
+    });
+    return leaguePlayerNode != null;
+};
+
+/**
+ * Add or decrease team rating in an existing league.
+ *
+ * @param {string} leagueId Id of the league.
+ * @param {string} teamId Id of the team.
+ * @param {number} ratingDelta Increment in rating points.
+ * @return {boolean} True if successfully updated.
+ */
+exports.updateTeamLeagueRating = function (leagueId, teamId, ratingDelta) {
+    var repoConn = newConnection();
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND teamId='" + teamId + "' AND leagueId='" + leagueId + "'"
+    });
+
+    if (result.count === 0) {
+        log.info('League team not found for teamId=[' + teamId + '] and leagueId=[' + leagueId + ']');
+        return false;
+    }
+
+    var leagueTeamNode = repoConn.modify({
+        key: result.hits[0].id,
+        editor: function (node) {
+            node.rating = (node.rating || 0) + ratingDelta;
+            return node;
+        }
+    });
+    return leagueTeamNode != null;
+};
+
+/**
  * Create a comment for a game.
  *
  * @param {object} params JSON with the comment parameters.
