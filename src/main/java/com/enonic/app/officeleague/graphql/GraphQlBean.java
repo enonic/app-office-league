@@ -40,10 +40,10 @@ public class GraphQlBean
     public GraphQLSchema createSchema( final ScriptValue schemaScriptValue )
     {
         final ScriptValue queryScriptValue = schemaScriptValue.getMember( "query" );
-        final GraphQLObjectType.Builder queryObjectType = createType( "QueryType", queryScriptValue );
+        final GraphQLObjectType.Builder queryObjectType = createOutputObjectType( "QueryType", queryScriptValue );
 
         final ScriptValue mutationScriptValue = schemaScriptValue.getMember( "mutation" );
-        final GraphQLObjectType.Builder mutationObjectType = createType( "MutationType", mutationScriptValue );
+        final GraphQLObjectType.Builder mutationObjectType = createOutputObjectType( "MutationType", mutationScriptValue );
 
         return GraphQLSchema.newSchema().
             query( queryObjectType ).
@@ -51,7 +51,7 @@ public class GraphQlBean
             build();
     }
 
-    public GraphQLObjectType.Builder createType( final String name, final ScriptValue scriptValue )
+    public GraphQLObjectType.Builder createOutputObjectType( final String name, final ScriptValue scriptValue )
     {
         final GraphQLObjectType.Builder type = GraphQLObjectType.newObject().name( name );
         setTypeFields( scriptValue, type );

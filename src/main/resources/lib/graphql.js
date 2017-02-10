@@ -1,13 +1,17 @@
 var graphQlBean = __.newBean('com.enonic.app.officeleague.graphql.GraphQlBean');
 
+
+//Schema creation
 exports.createSchema = function (schema) {
     return graphQlBean.createSchema(__.toScriptValue(schema));
 };
 
-exports.createType = function (name, schema) {
-    return graphQlBean.createType(name, __.toScriptValue(schema));
+exports.createOutputObjectType = function (name, schema) {
+    return graphQlBean.createOutputObjectType(name, __.toScriptValue(schema));
 };
 
+
+//Schema util functions
 exports.list = function (type) {
     return graphQlBean.list(type);
 };
@@ -20,6 +24,7 @@ exports.reference = function (typeKey) {
     return graphQlBean.reference(typeKey);
 };
 
+//Query execution
 exports.execute = function (schema, request) {
     return __.toNativeObject(graphQlBean.execute(schema, request));
 };
@@ -31,6 +36,3 @@ exports.GraphQLFloat = exports.scalarType('Float');
 exports.GraphQLString = exports.scalarType('String');
 exports.GraphQLBoolean = exports.scalarType('Boolean');
 exports.GraphQLID = exports.scalarType('ID');
-
-
-//TODO Export scalar types
