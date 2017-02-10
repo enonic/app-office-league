@@ -39,16 +39,23 @@ public class GraphQlBean
 
     public GraphQLSchema createSchema( final ScriptValue schemaScriptValue )
     {
+        final GraphQLSchema.Builder graphQLSchema = GraphQLSchema.newSchema();
+
         final ScriptValue queryScriptValue = schemaScriptValue.getMember( "query" );
-        final GraphQLObjectType.Builder queryObjectType = createObjectType( "QueryType", queryScriptValue );
+        final Object queryObjectType = queryScriptValue.getValue();
+        if ( queryObjectType instanceof GraphQLObjectType.Builder )
+        {
+            graphQLSchema.query( (GraphQLObjectType.Builder) queryObjectType );
+        }
 
         final ScriptValue mutationScriptValue = schemaScriptValue.getMember( "mutation" );
-        final GraphQLObjectType.Builder mutationObjectType = createObjectType( "MutationType", mutationScriptValue );
+        final Object mutationObjectType = mutationScriptValue.getValue();
+        if ( mutationObjectType instanceof GraphQLObjectType.Builder )
+        {
+            graphQLSchema.mutation( (GraphQLObjectType.Builder) mutationObjectType );
+        }
 
-        return GraphQLSchema.newSchema().
-            query( queryObjectType ).
-            mutation( mutationObjectType ).
-            build();
+        return graphQLSchema.build();
     }
 
     public GraphQLObjectType.Builder createObjectType( final String name, final ScriptValue scriptValue )
