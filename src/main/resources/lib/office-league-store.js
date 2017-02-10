@@ -1133,6 +1133,255 @@ exports.createPlayer = function (params) {
 };
 
 /**
+ * Create a new team.
+ *
+ * @param {object} params JSON with the team parameters.
+ * @param {string} params.name Name of the team.
+ * @param {string} [params.imageStream] Stream with the team's image.
+ * @param {string} [params.imageType] Mime type of the team's image.
+ * @param {string} [params.description] Description text.
+ * @param {string[]} params.playerIds Array with ids of the team players.
+ * @return {string} Created team.
+ */
+exports.createTeam = function (params) {
+    var repoConn = newConnection();
+
+    params.handedness = params.handedness || 'right';
+    required(params, 'name');
+    required(params, 'playerIds');
+    if (params.playerIds.length !== 2) {
+        throw "Parameter 'playerIds' must have 2 values";
+    }
+
+    var imageValue = null;
+    if (params.imageStream) {
+        required(params, 'imageType');
+        var ext = extensionFromMimeType(params.imageType);
+        imageValue = valueLib.binary('team' + ext, params.imageStream);
+    }
+
+    var teamNode = repoConn.create({
+        _name: prettifyName(params.name),
+        _parentPath: TEAMS_PATH,
+        type: TYPE.TEAM,
+        name: params.name,
+        image: imageValue,
+        imageType: params.imageType,
+        description: params.description,
+        playerIds: params.playerIds
+    });
+
+    return teamNode;
+};
+
+/**
+ * Create a new game.
+ *
+ * @param {object} params JSON with the game parameters.
+ * @param {string} params.leagueId League id.
+ * @param {string} params.time Date and time when the game was started. An ISO-8601-formatted instant (e.g '2011-12-03T10:15:30Z').
+ * @param {boolean} params.finished True if the game is completed, false if the game is still in progress.
+ * @param {Point[]} [params.points] Array of points scored during the game.
+ * @param {GamePlayer[]} params.gamePlayers Array with the players and its properties for this game.
+ * @param {GameTeam[]} params.gameTeams Array with the teams and its properties for this game.
+ * @return {string} Created game id.
+ */
+exports.createGame = function (params) {
+    var repoConn = newConnection();
+
+    var leagueNode = repoConn.get(params.leagueId);
+    if (!leagueNode) {
+        throw "League not found: " + params.leagueId;
+    }
+
+    params.points = params.points || [];
+    params.gameTeams = params.gameTeams || [];
+
+    var gameNode = repoConn.create({
+        _parentPath: leagueNode._path + LEAGUE_GAMES_REL_PATH,
+        type: TYPE.GAME,
+        leagueId: params.leagueId,
+        time: valueLib.instant(params.time),
+        finished: !!params.finished,
+        points: params.points
+    });
+
+    var i, gamePlayer, gameTeam;
+    for (i = 0; i < params.gamePlayers.length; i++) {
+        gamePlayer = params.gamePlayers[i];
+        repoConn.create({
+            _parentPath: gameNode._path,
+            leagueId: params.leagueId,
+            type: TYPE.GAME_PLAYER,
+            time: valueLib.instant(params.time),
+            gameId: gameNode._id,
+
+            playerId: gamePlayer.playerId,
+            score: gamePlayer.score,
+            scoreAgainst: gamePlayer.scoreAgainst,
+            side: gamePlayer.side,
+            winner: gamePlayer.winner,
+            ratingDelta: gamePlayer.ratingDelta
+        });
+    }
+    for (i = 0; i < params.gameTeams.length; i++) {
+        gameTeam = params.gameTeams[i];
+        repoConn.create({
+            _parentPath: gameNode._path,
+            leagueId: params.leagueId,
+            type: TYPE.GAME_TEAM,
+            time: valueLib.instant(params.time),
+            gameId: gameNode._id,
+
+            teamId: gameTeam.teamId,
+            score: gameTeam.score,
+            scoreAgainst: gameTeam.scoreAgainst,
+            side: gameTeam.side,
+            winner: gameTeam.winner,
+            ratingDelta: gameTeam.ratingDelta
+        });
+    }
+
+    return gameNode._id;
+};
+
+/**
+ * Create a comment for a game.
+ *
+ * @param {object} params JSON with the comment parameters.
+ * @param {string} params.text Name of the league.
+ * @param {string} params.gameId Game id.
+ * @param {string} params.author Player id.
+ * @param {string} params.mediaStream Binary name of the league's image.
+ * @param {string} params.mediaType Mime type of the league's image.
+ * @return {string} Created comment.
+ */
+exports.createComment = function (params) {
+    var repoConn = newConnection();
+
+    required(params, 'text');
+    required(params, 'gameId');
+
+    var mediaValue = null;
+    if (params.mediaStream) {
+        required(params, 'mediaType');
+        var ext = extensionFromMimeType(params.mediaType);
+        mediaValue = valueLib.binary('comment' + ext, params.mediaStream);
+    }
+
+    var gameNode = repoConn.get(params.gameId);
+    if (!gameNode || gameNode.type !== TYPE.GAME) {
+        throw "Comment game not found: " + params.gameId;
+    }
+
+    if (params.author) {
+        var playerNode = repoConn.get(params.author);
+        if (!playerNode || playerNode.type !== TYPE.PLAYER) {
+            throw "Comment author not found: " + params.author;
+        }
+    }
+
+    var commentNode = repoConn.create({
+        _parentPath: gameNode._path,
+        type: TYPE.COMMENT,
+        gameId: params.gameId,
+        author: params.author,
+        text: params.text,
+        media: mediaValue,
+        mediaType: params.mediaType
+    });
+
+    return commentNode;
+};
+
+
+/**
+ * Add a player to an existing league.
+ *
+ * @param {string} leagueId Id of the league.
+ * @param {string} playerId Id of the player.
+ * @param {number} [rating=0] Initial player rating in the league ranking.
+ * @return {string} Created leaguePlayer.
+ */
+exports.joinPlayerLeague = function (leagueId, playerId, rating) {
+    var repoConn = newConnection();
+    rating = rating || ratingLib.INITIAL_RATING;
+
+    var leagueNode = repoConn.get(leagueId);
+    if (!leagueNode || leagueNode.type !== TYPE.LEAGUE) {
+        throw "League not found: " + leagueId;
+    }
+
+    var playerNode = repoConn.get(playerId);
+    if (!playerNode || playerNode.type !== TYPE.PLAYER) {
+        throw "Player not found: " + leagueId;
+    }
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "' AND leagueId='" + leagueId + "'"
+    });
+    if (result.count > 0) {
+        log.info('Player [' + playerId + '] already a member of league [' + leagueId + ']');
+        return;
+    }
+
+    var leaguePlayer = repoConn.create({
+        _parentPath: leagueNode._path + LEAGUE_PLAYERS_REL_PATH,
+        type: TYPE.LEAGUE_PLAYER,
+        playerId: playerId,
+        leagueId: leagueId,
+        rating: rating
+    });
+
+    return leaguePlayer;
+};
+
+/**
+ * Add a team to an existing league.
+ *
+ * @param {string} leagueId Id of the league.
+ * @param {string} teamId Id of the team.
+ * @param {number} [rating=0] Initial team rating in the league ranking.
+ * @return {string} Created leagueTeam.
+ */
+exports.joinTeamLeague = function (leagueId, teamId, rating) {
+    var repoConn = newConnection();
+    rating = rating || ratingLib.INITIAL_RATING;
+
+    var leagueNode = repoConn.get(leagueId);
+    if (!leagueNode || leagueNode.type !== TYPE.LEAGUE) {
+        throw "League not found: " + leagueId;
+    }
+
+    var teamNode = repoConn.get(teamId);
+    if (!teamNode || teamNode.type !== TYPE.TEAM) {
+        throw "Team not found: " + leagueId;
+    }
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND teamId='" + teamId + "' AND leagueId='" + leagueId + "'"
+    });
+    if (result.count > 0) {
+        log.info('Team [' + teamId + '] already a member of league [' + leagueId + ']');
+        return;
+    }
+
+    var leagueTeam = repoConn.create({
+        _parentPath: leagueNode._path + LEAGUE_TEAMS_REL_PATH,
+        type: TYPE.LEAGUE_TEAM,
+        teamId: teamId,
+        leagueId: leagueId,
+        rating: rating
+    });
+
+    return leagueTeam;
+};
+
+/**
  * Modify an existing player.
  *
  * @param {object} params JSON with the player parameters.
@@ -1326,204 +1575,6 @@ exports.updateLeague = function (params) {
     return leagueNode;
 };
 
-/**
- * Create a new team.
- *
- * @param {object} params JSON with the team parameters.
- * @param {string} params.name Name of the team.
- * @param {string} [params.imageStream] Stream with the team's image.
- * @param {string} [params.imageType] Mime type of the team's image.
- * @param {string} [params.description] Description text.
- * @param {string[]} params.playerIds Array with ids of the team players.
- * @return {string} Created team.
- */
-exports.createTeam = function (params) {
-    var repoConn = newConnection();
-
-    params.handedness = params.handedness || 'right';
-    required(params, 'name');
-    required(params, 'playerIds');
-    if (params.playerIds.length !== 2) {
-        throw "Parameter 'playerIds' must have 2 values";
-    }
-
-    var imageValue = null;
-    if (params.imageStream) {
-        required(params, 'imageType');
-        var ext = extensionFromMimeType(params.imageType);
-        imageValue = valueLib.binary('team' + ext, params.imageStream);
-    }
-
-    var teamNode = repoConn.create({
-        _name: prettifyName(params.name),
-        _parentPath: TEAMS_PATH,
-        type: TYPE.TEAM,
-        name: params.name,
-        image: imageValue,
-        imageType: params.imageType,
-        description: params.description,
-        playerIds: params.playerIds
-    });
-
-    return teamNode;
-};
-
-/**
- * Create a new game.
- *
- * @param {object} params JSON with the game parameters.
- * @param {string} params.leagueId League id.
- * @param {string} params.time Date and time when the game was started. An ISO-8601-formatted instant (e.g '2011-12-03T10:15:30Z').
- * @param {boolean} params.finished True if the game is completed, false if the game is still in progress.
- * @param {Point[]} [params.points] Array of points scored during the game.
- * @param {GamePlayer[]} params.gamePlayers Array with the players and its properties for this game.
- * @param {GameTeam[]} params.gameTeams Array with the teams and its properties for this game.
- * @return {string} Created game id.
- */
-exports.createGame = function (params) {
-    var repoConn = newConnection();
-
-    var leagueNode = repoConn.get(params.leagueId);
-    if (!leagueNode) {
-        throw "League not found: " + params.leagueId;
-    }
-
-    params.points = params.points || [];
-    params.gameTeams = params.gameTeams || [];
-
-    var gameNode = repoConn.create({
-        _parentPath: leagueNode._path + LEAGUE_GAMES_REL_PATH,
-        type: TYPE.GAME,
-        leagueId: params.leagueId,
-        time: valueLib.instant(params.time),
-        finished: !!params.finished,
-        points: params.points
-    });
-
-    var i, gamePlayer, gameTeam;
-    for (i = 0; i < params.gamePlayers.length; i++) {
-        gamePlayer = params.gamePlayers[i];
-        repoConn.create({
-            _parentPath: gameNode._path,
-            leagueId: params.leagueId,
-            type: TYPE.GAME_PLAYER,
-            time: valueLib.instant(params.time),
-            gameId: gameNode._id,
-
-            playerId: gamePlayer.playerId,
-            score: gamePlayer.score,
-            scoreAgainst: gamePlayer.scoreAgainst,
-            side: gamePlayer.side,
-            winner: gamePlayer.winner,
-            ratingDelta: gamePlayer.ratingDelta
-        });
-    }
-    for (i = 0; i < params.gameTeams.length; i++) {
-        gameTeam = params.gameTeams[i];
-        repoConn.create({
-            _parentPath: gameNode._path,
-            leagueId: params.leagueId,
-            type: TYPE.GAME_TEAM,
-            time: valueLib.instant(params.time),
-            gameId: gameNode._id,
-
-            teamId: gameTeam.teamId,
-            score: gameTeam.score,
-            scoreAgainst: gameTeam.scoreAgainst,
-            side: gameTeam.side,
-            winner: gameTeam.winner,
-            ratingDelta: gameTeam.ratingDelta
-        });
-    }
-
-    return gameNode._id;
-};
-
-/**
- * Add a player to an existing league.
- *
- * @param {string} leagueId Id of the league.
- * @param {string} playerId Id of the player.
- * @param {number} [rating=0] Initial player rating in the league ranking.
- * @return {string} Created leaguePlayer.
- */
-exports.joinPlayerLeague = function (leagueId, playerId, rating) {
-    var repoConn = newConnection();
-    rating = rating || ratingLib.INITIAL_RATING;
-
-    var leagueNode = repoConn.get(leagueId);
-    if (!leagueNode || leagueNode.type !== TYPE.LEAGUE) {
-        throw "League not found: " + leagueId;
-    }
-
-    var playerNode = repoConn.get(playerId);
-    if (!playerNode || playerNode.type !== TYPE.PLAYER) {
-        throw "Player not found: " + leagueId;
-    }
-
-    var result = repoConn.query({
-        start: 0,
-        count: 1,
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "' AND leagueId='" + leagueId + "'"
-    });
-    if (result.count > 0) {
-        log.info('Player [' + playerId + '] already a member of league [' + leagueId + ']');
-        return;
-    }
-
-    var leaguePlayer = repoConn.create({
-        _parentPath: leagueNode._path + LEAGUE_PLAYERS_REL_PATH,
-        type: TYPE.LEAGUE_PLAYER,
-        playerId: playerId,
-        leagueId: leagueId,
-        rating: rating
-    });
-
-    return leaguePlayer;
-};
-
-/**
- * Add a team to an existing league.
- *
- * @param {string} leagueId Id of the league.
- * @param {string} teamId Id of the team.
- * @param {number} [rating=0] Initial team rating in the league ranking.
- * @return {string} Created leagueTeam.
- */
-exports.joinTeamLeague = function (leagueId, teamId, rating) {
-    var repoConn = newConnection();
-    rating = rating || ratingLib.INITIAL_RATING;
-
-    var leagueNode = repoConn.get(leagueId);
-    if (!leagueNode || leagueNode.type !== TYPE.LEAGUE) {
-        throw "League not found: " + leagueId;
-    }
-
-    var teamNode = repoConn.get(teamId);
-    if (!teamNode || teamNode.type !== TYPE.TEAM) {
-        throw "Team not found: " + leagueId;
-    }
-
-    var result = repoConn.query({
-        start: 0,
-        count: 1,
-        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND teamId='" + teamId + "' AND leagueId='" + leagueId + "'"
-    });
-    if (result.count > 0) {
-        log.info('Team [' + teamId + '] already a member of league [' + leagueId + ']');
-        return;
-    }
-
-    var leagueTeam = repoConn.create({
-        _parentPath: leagueNode._path + LEAGUE_TEAMS_REL_PATH,
-        type: TYPE.LEAGUE_TEAM,
-        teamId: teamId,
-        leagueId: leagueId,
-        rating: rating
-    });
-
-    return leagueTeam;
-};
 
 /**
  * Add or decrease player rating in an existing league.
@@ -1589,54 +1640,6 @@ exports.updateTeamLeagueRating = function (leagueId, teamId, ratingDelta) {
     return leagueTeamNode != null;
 };
 
-/**
- * Create a comment for a game.
- *
- * @param {object} params JSON with the comment parameters.
- * @param {string} params.text Name of the league.
- * @param {string} params.gameId Game id.
- * @param {string} params.author Player id.
- * @param {string} params.mediaStream Binary name of the league's image.
- * @param {string} params.mediaType Mime type of the league's image.
- * @return {string} Created comment.
- */
-exports.createComment = function (params) {
-    var repoConn = newConnection();
-
-    required(params, 'text');
-    required(params, 'gameId');
-
-    var mediaValue = null;
-    if (params.mediaStream) {
-        required(params, 'mediaType');
-        var ext = extensionFromMimeType(params.mediaType);
-        mediaValue = valueLib.binary('comment' + ext, params.mediaStream);
-    }
-
-    var gameNode = repoConn.get(params.gameId);
-    if (!gameNode || gameNode.type !== TYPE.GAME) {
-        throw "Comment game not found: " + params.gameId;
-    }
-
-    if (params.author) {
-        var playerNode = repoConn.get(params.author);
-        if (!playerNode || playerNode.type !== TYPE.PLAYER) {
-            throw "Comment author not found: " + params.author;
-        }
-    }
-
-    var commentNode = repoConn.create({
-        _parentPath: gameNode._path,
-        type: TYPE.COMMENT,
-        gameId: params.gameId,
-        author: params.author,
-        text: params.text,
-        media: mediaValue,
-        mediaType: params.mediaType
-    });
-
-    return commentNode;
-};
 
 /**
  * Refresh the index.
