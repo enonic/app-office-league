@@ -12,14 +12,15 @@ exports.GraphQLID = Scalars.GraphQLID;
 //Schema creation
 exports.createSchema = function (params) {
     var query = required(params, 'query');
-    var mutation = params.mutation || null;
+    var mutation = optional(params, 'mutation');
     return graphQlBean.createSchema(query, mutation);
 };
 
 exports.createObjectType = function (params) {
     var name = required(params, 'name');
     var fields = required(params, 'fields');
-    return graphQlBean.createObjectType(name, __.toScriptValue(fields));
+    var description = optional(params, 'description');
+    return graphQlBean.createObjectType(name, __.toScriptValue(fields), description);
 };
 
 
@@ -42,6 +43,14 @@ function required(params, name) {
     var value = params[name];
     if (value === undefined) {
         throw "Parameter '" + name + "' is required";
+    }
+    return value;
+};
+
+function optional(params, name) {
+    var value = params[name];
+    if (value === undefined) {
+        return null;
     }
     return value;
 };

@@ -35,9 +35,11 @@ public class GraphQlBean
         return graphQLSchema.build();
     }
 
-    public GraphQLObjectType.Builder createObjectType( final String name, final ScriptValue fieldsScriptValue )
+    public GraphQLObjectType.Builder createObjectType( final String name, final ScriptValue fieldsScriptValue, final String description )
     {
-        final GraphQLObjectType.Builder objectType = GraphQLObjectType.newObject().name( name );
+        final GraphQLObjectType.Builder objectType = GraphQLObjectType.newObject().
+            name( name ).
+            description( description );
         setTypeFields( fieldsScriptValue, objectType );
         return objectType;
     }
