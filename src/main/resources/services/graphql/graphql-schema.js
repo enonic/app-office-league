@@ -610,8 +610,8 @@ var rootMutationType = graphQlLib.createObjectType({
         createLeague: {
             type: leagueType,
             args: {
-                name: graphQlLib.GraphQLString,
-                sport: sportEnumType,
+                name: graphQlLib.nonNull(graphQlLib.GraphQLString),
+                sport: graphQlLib.nonNull(sportEnumType),
                 description: graphQlLib.GraphQLString,
                 config: graphQlLib.GraphQLString//TODO
             },
