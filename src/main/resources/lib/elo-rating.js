@@ -15,7 +15,20 @@
  */
 exports.calculateNewRating = function (rating, opponentRating, score, kFactor) {
     var expectedScore = exports.calculateExpectedScore(rating, opponentRating);
-    return calculateNewRating(rating, score, expectedScore, kFactor);
+    return rating + calculateRatingDelta(rating, score, expectedScore, kFactor);
+};
+
+/**
+ * Returns the rating increment (positive or negative) for the player after winning or losing to the opponent(s) with the given rating.
+ * @param {number} rating Player's old rating.
+ * @param {number} opponentRating The rating of the opposing player(s).
+ * @param {number} score Game score (WIN = 1.0, DRAW = 0.5, LOSS = 0.0).
+ * @param {number} kFactor Elo rating K-factor.
+ * @returns {number} Player's rating delta.
+ */
+exports.calculateNewRatingDelta = function (rating, opponentRating, score, kFactor) {
+    var expectedScore = exports.calculateExpectedScore(rating, opponentRating);
+    return calculateRatingDelta(rating, score, expectedScore, kFactor);
 };
 
 /**
@@ -30,16 +43,16 @@ exports.calculateExpectedScore = function (rating, opponentRating) {
 };
 
 /**
- * Calculates the new rating for the player based on the old rating, the game score, the expected game score
+ * Calculates the rating delta for the player based on the old rating, the game score, the expected game score
  * and the k-factor.
  * @param {number} rating Player's old rating.
  * @param {number} score Game score (WIN = 1.0, DRAW = 0.5, LOSS = 0.0).
  * @param {number} expectedScore Expected game score (based on participant ratings).
  * @param {number} kFactor K-factor.
- * @returns {number} Player's new rating.
+ * @returns {number} Player's rating delta.
  */
-var calculateNewRating = function (rating, score, expectedScore, kFactor) {
-    return rating + parseInt(roundWithSign(kFactor * (score - expectedScore)), 10);
+var calculateRatingDelta = function (rating, score, expectedScore, kFactor) {
+    return parseInt(roundWithSign(kFactor * (score - expectedScore)), 10);
 };
 
 var roundWithSign = function (value) {

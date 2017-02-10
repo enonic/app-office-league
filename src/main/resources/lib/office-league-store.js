@@ -310,6 +310,66 @@ exports.getLeaguePlayersByPlayerId = function (playerId, start, count) {
 };
 
 /**
+ * Retrieve a list of league players and their rating points in the ranking.
+ * @param  {string} leagueId League id.
+ * @param  {string[]} playerIds Player ids.
+ * @return {LeaguePlayer[]} League players.
+ */
+exports.getLeaguePlayersByLeagueIdAndPlayerIds = function (leagueId, playerIds) {
+    var repoConn = newConnection();
+
+    playerIds = playerIds || [];
+    var playersCondition = playerIds.map(function (id) {
+        return "playerId='" + id + "'";
+    }).join(' OR ');
+    var result = repoConn.query({
+        start: 0,
+        count: playerIds.length,
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND (" + playersCondition + ")"
+    });
+
+    var leaguePlayers = [];
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        leaguePlayers = [].concat(repoConn.get(ids));
+    }
+
+    return leaguePlayers;
+};
+
+/**
+ * Retrieve a list of league teams and their rating points in the ranking.
+ * @param  {string} leagueId League id.
+ * @param  {string[]} teamIds Team ids.
+ * @return {LeagueTeam[]} League teams.
+ */
+exports.getLeagueTeamsByLeagueIdAndTeamIds = function (leagueId, teamIds) {
+    var repoConn = newConnection();
+
+    teamIds = teamIds || [];
+    var teamsCondition = teamIds.map(function (id) {
+        return "teamId='" + id + "'";
+    }).join(' OR ');
+    var result = repoConn.query({
+        start: 0,
+        count: teamIds.length,
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND (" + teamsCondition + ")"
+    });
+
+    var leagueTeams = [];
+    if (result.count > 0) {
+        var ids = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        leagueTeams = [].concat(repoConn.get(ids));
+    }
+
+    return leagueTeams;
+};
+
+/**
  * Retrieve a list of league teams and their rating points in the ranking.
  * @param  {string} leagueId League id.
  * @param  {number} [start=0] First index of the teams.
@@ -1202,7 +1262,7 @@ exports.createTeam = function (params) {
  * @param {Point[]} [params.points] Array of points scored during the game.
  * @param {GamePlayer[]} params.gamePlayers Array with the players and its properties for this game.
  * @param {GameTeam[]} params.gameTeams Array with the teams and its properties for this game.
- * @return {string} Created game.
+ * @return {string} Created game id.
  */
 exports.createGame = function (params) {
     var repoConn = newConnection();
@@ -1260,7 +1320,7 @@ exports.createGame = function (params) {
         });
     }
 
-    return gameNode;
+    return gameNode._id;
 };
 
 /**
@@ -1396,6 +1456,14 @@ exports.createComment = function (params) {
     });
 
     return commentNode;
+};
+
+/**
+ * Refresh the index.
+ */
+exports.refresh = function () {
+    var repoConn = newConnection();
+    repoConn.refresh('SEARCH');
 };
 
 var newConnection = function () {

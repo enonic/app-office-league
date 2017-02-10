@@ -1,5 +1,6 @@
 var initLib = require('/lib/office-league-init');
 var storeLib = require('/lib/office-league-store');
+var ratingLib = require('/lib/office-league-rating');
 var ioLib = require('/lib/xp/io');
 
 log.info('Application ' + app.name + ' started');
@@ -188,7 +189,7 @@ var createRandomGame = function (player1Id, player2Id, player3Id, player4Id, tea
         }
     }
 
-    var game = storeLib.createGame({
+    var gameId = storeLib.createGame({
         leagueId: league._id,
         finished: true,
         time: new Date().toISOString(),
@@ -197,8 +198,24 @@ var createRandomGame = function (player1Id, player2Id, player3Id, player4Id, tea
         gameTeams: gameTeams
     });
 
+    storeLib.refresh();
+    var game = storeLib.getGameById(gameId);
+    var playerIds = game.gamePlayers.map(function (gp) {
+        return gp.playerId;
+    });
+    var teamIds = game.gameTeams.map(function (gp) {
+        return gp.teamId;
+    });
+    var leaguePlayers = storeLib.getLeaguePlayersByLeagueIdAndPlayerIds(game.leagueId, playerIds);
+    var leagueTeams = storeLib.getLeagueTeamsByLeagueIdAndTeamIds(game.leagueId, teamIds);
+    ratingLib.calculateGameRatings(game, leaguePlayers, leagueTeams);
+    // log.info('------------------------------------------------------');
+    // log.info(JSON.stringify(game, null, 2));
+    // log.info(JSON.stringify(leaguePlayers, null, 2));
+    // log.info(JSON.stringify(leagueTeams, null, 2));
+
     var commentId = storeLib.createComment({
-        gameId: game._id,
+        gameId: gameId,
         author: player1Id,
         text: 'Game comment'
     });
@@ -206,7 +223,7 @@ var createRandomGame = function (player1Id, player2Id, player3Id, player4Id, tea
     log.info('Game created');
 };
 
-for (var g = 0; g < 10; g++) {
+for (var g = 0; g < 2; g++) {
     createRandomGame(player1._id, player2._id, player3._id, player4._id, teamA._id, teamB._id);
 }
 

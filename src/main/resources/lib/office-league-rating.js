@@ -54,14 +54,14 @@ exports.calculateGameRatings = function (game, leaguePlayers, leagueTeams) {
 
     // calculate rating deltas for players
     var playerDelta = {
-        red: eloRating.calculateNewRating(playerTotalRating.red, playerTotalRating.blue, scores.redScore, K_FACTOR),
-        blue: eloRating.calculateNewRating(playerTotalRating.blue, playerTotalRating.red, scores.blueScore, K_FACTOR)
+        red: eloRating.calculateNewRatingDelta(playerTotalRating.red, playerTotalRating.blue, scores.redScore, K_FACTOR),
+        blue: eloRating.calculateNewRatingDelta(playerTotalRating.blue, playerTotalRating.red, scores.blueScore, K_FACTOR)
     };
 
     // calculate rating deltas for teams
     var teamDelta = {
-        red: eloRating.calculateNewRating(teamTotalRating.red, teamTotalRating.blue, scores.redScore, K_FACTOR),
-        blue: eloRating.calculateNewRating(teamTotalRating.blue, teamTotalRating.red, scores.blueScore, K_FACTOR)
+        red: eloRating.calculateNewRatingDelta(teamTotalRating.red, teamTotalRating.blue, scores.redScore, K_FACTOR),
+        blue: eloRating.calculateNewRatingDelta(teamTotalRating.blue, teamTotalRating.red, scores.blueScore, K_FACTOR)
     };
 
     // update game player ratings
