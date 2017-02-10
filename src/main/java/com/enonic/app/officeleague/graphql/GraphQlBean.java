@@ -24,24 +24,14 @@ import com.enonic.xp.script.ScriptValue;
 
 public class GraphQlBean
 {
-    public GraphQLSchema createSchema( final ScriptValue schemaScriptValue )
+    public GraphQLSchema createSchema( final GraphQLObjectType.Builder queryObjectType, final GraphQLObjectType.Builder mutationObjectType )
     {
-        final GraphQLSchema.Builder graphQLSchema = GraphQLSchema.newSchema();
-
-        final ScriptValue queryScriptValue = schemaScriptValue.getMember( "query" );
-        final Object queryObjectType = queryScriptValue.getValue();
-        if ( queryObjectType instanceof GraphQLObjectType.Builder )
+        final GraphQLSchema.Builder graphQLSchema = GraphQLSchema.newSchema().query( queryObjectType );
+        if ( mutationObjectType != null )
         {
-            graphQLSchema.query( (GraphQLObjectType.Builder) queryObjectType );
-        }
+            graphQLSchema.mutation( mutationObjectType );
 
-        final ScriptValue mutationScriptValue = schemaScriptValue.getMember( "mutation" );
-        final Object mutationObjectType = mutationScriptValue.getValue();
-        if ( mutationObjectType instanceof GraphQLObjectType.Builder )
-        {
-            graphQLSchema.mutation( (GraphQLObjectType.Builder) mutationObjectType );
         }
-
         return graphQLSchema.build();
     }
 

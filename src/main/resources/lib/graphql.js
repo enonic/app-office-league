@@ -11,7 +11,9 @@ exports.GraphQLID = Scalars.GraphQLID;
 
 //Schema creation
 exports.createSchema = function (params) {
-    return graphQlBean.createSchema(__.toScriptValue(params));
+    var query = required(params, 'query');
+    var mutation = params.mutation || null;
+    return graphQlBean.createSchema(query, mutation);
 };
 
 exports.createObjectType = function (params) {
