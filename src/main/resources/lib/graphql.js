@@ -12,8 +12,8 @@ exports.list = function (type) {
     return graphQlBean.list(type);
 };
 
-exports.scalar = function (type) {
-    return graphQlBean.scalar(type);
+exports.scalarType = function (typeKey) {
+    return graphQlBean.scalar(typeKey);
 };
 
 exports.reference = function (typeKey) {
@@ -23,6 +23,14 @@ exports.reference = function (typeKey) {
 exports.execute = function (schema, request) {
     return __.toNativeObject(graphQlBean.execute(schema, request));
 };
+
+
+//Scalars
+exports.GraphQLInt = exports.scalarType('Int');
+exports.GraphQLFloat = exports.scalarType('Float');
+exports.GraphQLString = exports.scalarType('String');
+exports.GraphQLBoolean = exports.scalarType('Boolean');
+exports.GraphQLID = exports.scalarType('ID');
 
 
 //TODO Export scalar types
