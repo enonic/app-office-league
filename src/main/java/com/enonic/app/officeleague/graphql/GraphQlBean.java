@@ -14,6 +14,7 @@ import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLList;
+import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLSchema;
@@ -25,7 +26,7 @@ import com.enonic.xp.script.ScriptValue;
 
 public class GraphQlBean
 {
-    public GraphQLSchema createSchema( final GraphQLObjectType.Builder queryObjectType, final GraphQLObjectType.Builder mutationObjectType )
+    public GraphQLSchema createSchema( final GraphQLObjectType queryObjectType, final GraphQLObjectType mutationObjectType )
     {
         final GraphQLSchema.Builder graphQLSchema = GraphQLSchema.newSchema().query( queryObjectType );
         if ( mutationObjectType != null )
@@ -36,8 +37,8 @@ public class GraphQlBean
         return graphQLSchema.build();
     }
 
-    public GraphQLObjectType.Builder createObjectType( final String name, final ScriptValue fieldsScriptValue,
-                                                       final ScriptValue interfacesScriptValue, final String description )
+    public GraphQLObjectType createObjectType( final String name, final ScriptValue fieldsScriptValue,
+                                               final ScriptValue interfacesScriptValue, final String description )
     {
         final GraphQLObjectType.Builder objectType = GraphQLObjectType.newObject().
             name( name ).
@@ -48,7 +49,7 @@ public class GraphQlBean
                 forEach( ( interfaceScriptValue ) -> objectType.withInterface( (GraphQLInterfaceType) interfaceScriptValue.getValue() ) );
         }
         setTypeFields( fieldsScriptValue, objectType );
-        return objectType;
+        return objectType.build();
     }
 
     public GraphQLInterfaceType createInterfaceType( final String name, final ScriptValue fieldsScriptValue, final String description )
@@ -185,14 +186,14 @@ public class GraphQlBean
         return null;
     }
 
-    public GraphQLList list( GraphQLObjectType.Builder type )
-    {
-        return new GraphQLList( type.build() );
-    }
-
     public GraphQLList list( GraphQLType type )
     {
         return new GraphQLList( type );
+    }
+
+    public GraphQLNonNull nonNull( GraphQLType type )
+    {
+        return new GraphQLNonNull( type );
     }
 
     public GraphQLTypeReference reference( final String typeKey )

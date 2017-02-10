@@ -44,6 +44,10 @@ exports.list = function (type) {
     return graphQlBean.list(type);
 };
 
+exports.nonNull = function (type) {
+    return graphQlBean.nonNull(type);
+};
+
 exports.reference = function (typeKey) {
     return graphQlBean.reference(typeKey);
 };
