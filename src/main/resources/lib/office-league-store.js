@@ -23,14 +23,22 @@ var TYPE = {
 };
 
 /**
+ * @typedef {Object} Attachment
+ * @property {string} name Attachment name.
+ * @property {string} [label] Attachment label.
+ * @property {binary} binary Binary stream.
+ * @property {string} mimeType Mime type of the attachment.
+ * @property {number} size Size of the attachment in bytes.
+ */
+
+/**
  * @typedef {Object} League
- * @property {string} type Object type: 'league'
  * @property {string} name Name of the league.
  * @property {string} sport Sport id (e.g. 'foos')
  * @property {string} description League description text.
- * @property {string} image Binary name of the league's image.
- * @property {string} imageType Mime type of the league's image.
+ * @property {string} image Attachment name of the league's image.
  * @property {Object} config League config.
+ * @property {Attachment|Attachment[]} [attachment] League attachments.
  */
 
 /**
@@ -45,11 +53,11 @@ var TYPE = {
  * @property {string} type Object type: 'player'
  * @property {string} name Name of the player.
  * @property {string} nickname Nickname of the player.
- * @property {string} image Binary name of the player's image.
- * @property {string} imageType Mime type of the player's image.
+ * @property {string} image Attachment name of the player's image.
  * @property {string} nationality 2 letter country code of the player (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
  * @property {string} handedness Player handedness: 'right', 'left', 'ambidexterity.
  * @property {string} description Description text.
+ * @property {Attachment|Attachment[]} [attachment] Player attachments.
  */
 
 /**
@@ -63,10 +71,10 @@ var TYPE = {
  * @typedef {Object} Team
  * @property {string} type Object type: 'team'
  * @property {string} name Name of the team.
- * @property {string} image Binary name of the team's image.
- * @property {string} imageType Mime type of the team's image.
+ * @property {string} image Attachment name of the team's image.
  * @property {string} description Description text.
  * @property {string[]} playerIds Array with ids of the team players.
+ * @property {Attachment|Attachment[]} [attachment] Team attachments.
  */
 
 /**
@@ -1055,11 +1063,10 @@ exports.createLeague = function (params) {
     params.sport = params.sport || 'foos';
     required(params, 'name');
 
-    var imageValue = null;
-    if (params.imageStream) {
-        required(params, 'imageType');
+    var imageAttachment = null;
+    if (params.imageStream && required(params, 'imageType')) {
         var ext = extensionFromMimeType(params.imageType);
-        imageValue = valueLib.binary('team' + ext, params.image);
+        imageAttachment = newAttachment('league' + ext, params.imageStream, params.imageType)
     }
 
     var leagueNode = repoConn.create({
@@ -1068,10 +1075,10 @@ exports.createLeague = function (params) {
         type: TYPE.LEAGUE,
         name: params.name,
         sport: params.sport,
-        image: imageValue,
-        imageType: params.imageType,
+        image: imageAttachment && imageAttachment.name,
         description: params.description,
-        config: params.config
+        config: params.config,
+        attachment: imageAttachment
     });
 
     var playersNode = repoConn.create({
@@ -1109,11 +1116,10 @@ exports.createPlayer = function (params) {
     params.handedness = params.handedness || 'right';
     required(params, 'name');
 
-    var imageValue = null;
-    if (params.imageStream) {
-        required(params, 'imageType');
+    var imageAttachment = null;
+    if (params.imageStream && required(params, 'imageType')) {
         var ext = extensionFromMimeType(params.imageType);
-        imageValue = valueLib.binary('player' + ext, params.imageStream);
+        imageAttachment = newAttachment('player' + ext, params.imageStream, params.imageType)
     }
 
     var playerNode = repoConn.create({
@@ -1122,11 +1128,11 @@ exports.createPlayer = function (params) {
         type: TYPE.PLAYER,
         name: params.name,
         nickname: params.nickname,
-        image: imageValue,
-        imageType: params.imageType,
+        image: imageAttachment && imageAttachment.name,
         nationality: params.nationality,
         handedness: params.handedness,
-        description: params.description
+        description: params.description,
+        attachment: imageAttachment
     });
 
     return playerNode;
@@ -1153,11 +1159,10 @@ exports.createTeam = function (params) {
         throw "Parameter 'playerIds' must have 2 values";
     }
 
-    var imageValue = null;
-    if (params.imageStream) {
-        required(params, 'imageType');
+    var imageAttachment = null;
+    if (params.imageStream && required(params, 'imageType')) {
         var ext = extensionFromMimeType(params.imageType);
-        imageValue = valueLib.binary('team' + ext, params.imageStream);
+        imageAttachment = newAttachment('team' + ext, params.imageStream, params.imageType)
     }
 
     var teamNode = repoConn.create({
@@ -1165,10 +1170,10 @@ exports.createTeam = function (params) {
         _parentPath: TEAMS_PATH,
         type: TYPE.TEAM,
         name: params.name,
-        image: imageValue,
-        imageType: params.imageType,
+        image: imageAttachment && imageAttachment.name,
         description: params.description,
-        playerIds: params.playerIds
+        playerIds: params.playerIds,
+        attachment: imageAttachment
     });
 
     return teamNode;
@@ -1262,11 +1267,10 @@ exports.createComment = function (params) {
     required(params, 'text');
     required(params, 'gameId');
 
-    var mediaValue = null;
-    if (params.mediaStream) {
-        required(params, 'mediaType');
+    var mediaAttachment = null;
+    if (params.mediaStream && required(params, 'mediaType')) {
         var ext = extensionFromMimeType(params.mediaType);
-        mediaValue = valueLib.binary('comment' + ext, params.mediaStream);
+        mediaAttachment = newAttachment('comment' + ext, params.mediaStream, params.mediaType)
     }
 
     var gameNode = repoConn.get(params.gameId);
@@ -1287,8 +1291,8 @@ exports.createComment = function (params) {
         gameId: params.gameId,
         author: params.author,
         text: params.text,
-        media: mediaValue,
-        mediaType: params.mediaType
+        media: mediaAttachment && mediaAttachment.name,
+        attachment: mediaAttachment
     });
 
     return commentNode;
@@ -1401,11 +1405,10 @@ exports.updatePlayer = function (params) {
     params.handedness = params.handedness || 'right';
     required(params, 'playerId');
 
-    var imageValue = null;
-    if (params.imageStream) {
-        required(params, 'imageType');
+    var imageAttachment = null;
+    if (params.imageStream && required(params, 'imageType')) {
         var ext = extensionFromMimeType(params.imageType);
-        imageValue = valueLib.binary('player' + ext, params.imageStream);
+        imageAttachment = newAttachment('player' + ext, params.imageStream, params.imageType)
     }
 
     if (params.name != null) {
@@ -1442,9 +1445,9 @@ exports.updatePlayer = function (params) {
             if (params.description != null) {
                 node.description = params.description;
             }
-            if (imageValue) {
-                node.image = imageValue;
-                node.imageType = params.imageType;
+            if (imageAttachment) {
+                node.image = imageAttachment.name;
+                node.attachment = imageAttachment;
             }
             return node;
         }
@@ -1469,11 +1472,10 @@ exports.updateTeam = function (params) {
 
     required(params, 'teamId');
 
-    var imageValue = null;
-    if (params.imageStream) {
-        required(params, 'imageType');
+    var imageAttachment = null;
+    if (params.imageStream && required(params, 'imageType')) {
         var ext = extensionFromMimeType(params.imageType);
-        imageValue = valueLib.binary('team' + ext, params.imageStream);
+        imageAttachment = newAttachment('team' + ext, params.imageStream, params.imageType)
     }
 
     if (params.name != null) {
@@ -1501,9 +1503,9 @@ exports.updateTeam = function (params) {
             if (params.description != null) {
                 node.description = params.description;
             }
-            if (imageValue) {
-                node.image = imageValue;
-                node.imageType = params.imageType;
+            if (imageAttachment) {
+                node.image = imageAttachment.name;
+                node.attachment = imageAttachment;
             }
             return node;
         }
@@ -1529,11 +1531,10 @@ exports.updateLeague = function (params) {
 
     required(params, 'leagueId');
 
-    var imageValue = null;
-    if (params.imageStream) {
-        required(params, 'imageType');
+    var imageAttachment = null;
+    if (params.imageStream && required(params, 'imageType')) {
         var ext = extensionFromMimeType(params.imageType);
-        imageValue = valueLib.binary('league' + ext, params.imageStream);
+        imageAttachment = newAttachment('league' + ext, params.imageStream, params.imageType)
     }
 
     if (params.name != null) {
@@ -1561,9 +1562,9 @@ exports.updateLeague = function (params) {
             if (params.description != null) {
                 node.description = params.description;
             }
-            if (imageValue) {
-                node.image = imageValue;
-                node.imageType = params.imageType;
+            if (imageAttachment) {
+                node.image = imageAttachment.name;
+                node.attachment = imageAttachment;
             }
             if (params.config != null) {
                 node.config = params.config;
@@ -1760,12 +1761,39 @@ var newConnection = function () {
     });
 };
 
+/**
+ * Create an attachment object.
+ *
+ * @param {string} attachmentName Attachment name.
+ * @param {Object} attachmentBinary Binary stream.
+ * @param {string} mimeType Mime type of the attachment.
+ * @param {string} [label] Attachment label.
+ * @return {Attachment} Attachment object.
+ */
+var newAttachment = function (attachmentName, attachmentBinary, mimeType, label) {
+    var bin = valueLib.binary(notNull(attachmentName, 'attachmentName'), notNull(attachmentBinary, 'attachmentBinary'));
+    return {
+        name: attachmentName,
+        binary: bin,
+        mimeType: notNull(mimeType, 'mimeType'),
+        label: label,
+        size: attachmentBinary.size()
+    };
+};
+
 var required = function (params, name) {
     var value = params[name];
     if (value === undefined) {
         throw "Parameter '" + name + "' is required";
     }
 
+    return value;
+};
+
+var notNull = function (value, paramName) {
+    if (notNull == null) {
+        throw "Parameter '" + paramName + "' is required";
+    }
     return value;
 };
 
