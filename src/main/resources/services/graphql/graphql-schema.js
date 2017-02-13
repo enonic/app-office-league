@@ -781,8 +781,8 @@ var rootMutationType = graphQlLib.createObjectType({
                 time: graphQlLib.nonNull(graphQlLib.GraphQLString),
                 finished: graphQlLib.GraphQLID,
                 points: graphQlLib.list(pointInputType),
-                gamePlayers: graphQlLib.list(gamePlayerInputType),
-                gameTeams: graphQlLib.list(gameTeamInputType)
+                gamePlayers: graphQlLib.nonNull(graphQlLib.list(gamePlayerInputType)),
+                gameTeams: graphQlLib.nonNull(graphQlLib.list(gameTeamInputType))
             },
             data: function (env) {
                 return storeLib.createGame({

@@ -751,7 +751,7 @@ exports.getGameById = function (gameId) {
         game = repoConn.get(id);
     }
     if (game) {
-        getGameDetails(repoConn, game); //TODO Adapt getGame so that it returns playerGames and playerTeams only on demand
+        getGameDetails(repoConn, game);
     }
 
     return game;
@@ -1189,7 +1189,7 @@ exports.createTeam = function (params) {
  * @param {Point[]} [params.points] Array of points scored during the game.
  * @param {GamePlayer[]} params.gamePlayers Array with the players and its properties for this game.
  * @param {GameTeam[]} params.gameTeams Array with the teams and its properties for this game.
- * @return {string} Created game id.
+ * @return {object} Created game.
  */
 exports.createGame = function (params) {
     var repoConn = newConnection();
@@ -1212,9 +1212,10 @@ exports.createGame = function (params) {
     });
 
     var i, gamePlayer, gameTeam;
+    gameNode.gamePlayers = [];
     for (i = 0; i < params.gamePlayers.length; i++) {
         gamePlayer = params.gamePlayers[i];
-        repoConn.create({
+        var gamePlayerNode = repoConn.create({
             _parentPath: gameNode._path,
             leagueId: params.leagueId,
             type: TYPE.GAME_PLAYER,
@@ -1228,10 +1229,13 @@ exports.createGame = function (params) {
             winner: gamePlayer.winner,
             ratingDelta: gamePlayer.ratingDelta
         });
+        gameNode.gamePlayers.push(gamePlayerNode);
     }
+
+    gameNode.gameTeams = [];
     for (i = 0; i < params.gameTeams.length; i++) {
         gameTeam = params.gameTeams[i];
-        repoConn.create({
+        var gameTeamNode = repoConn.create({
             _parentPath: gameNode._path,
             leagueId: params.leagueId,
             type: TYPE.GAME_TEAM,
@@ -1245,6 +1249,7 @@ exports.createGame = function (params) {
             winner: gameTeam.winner,
             ratingDelta: gameTeam.ratingDelta
         });
+        gameNode.gameTeams.push(gameTeamNode);
     }
 
     return gameNode;
