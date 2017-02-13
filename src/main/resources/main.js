@@ -209,10 +209,25 @@ var createRandomGame = function (player1Id, player2Id, player3Id, player4Id, tea
     var leaguePlayers = storeLib.getLeaguePlayersByLeagueIdAndPlayerIds(game.leagueId, playerIds);
     var leagueTeams = storeLib.getLeagueTeamsByLeagueIdAndTeamIds(game.leagueId, teamIds);
     ratingLib.calculateGameRatings(game, leaguePlayers, leagueTeams);
-    // log.info('------------------------------------------------------');
-    // log.info(JSON.stringify(game, null, 2));
-    // log.info(JSON.stringify(leaguePlayers, null, 2));
-    // log.info(JSON.stringify(leagueTeams, null, 2));
+    for (var j = 0; j < game.gamePlayers.length; j++) {
+        storeLib.updatePlayerLeagueRating(game.leagueId, game.gamePlayers[j].playerId, game.gamePlayers[j].ratingDelta);
+    }
+    for (var k = 0; k < game.gameTeams.length; k++) {
+        storeLib.updateTeamLeagueRating(game.leagueId, game.gameTeams[k].teamId, game.gameTeams[k].ratingDelta);
+    }
+    storeLib.updateGame({
+        gameId: game._id,
+        finished: true,
+        gamePlayers: game.gamePlayers,
+        gameTeams: game.gameTeams,
+        points: game.points
+    });
+
+    game = storeLib.getGameById(gameId);
+    log.info('------------------------------------------------------');
+    log.info(JSON.stringify(game, null, 2));
+    log.info(JSON.stringify(leaguePlayers, null, 2));
+    log.info(JSON.stringify(leagueTeams, null, 2));
 
     var commentId = storeLib.createComment({
         gameId: gameId,

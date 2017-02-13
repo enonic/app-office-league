@@ -1640,6 +1640,108 @@ exports.updateTeamLeagueRating = function (leagueId, teamId, ratingDelta) {
     return leagueTeamNode != null;
 };
 
+/**
+ * Update a game.
+ *
+ * @param {object} params JSON with the game parameters.
+ * @param {string} params.gameId Game id.
+ * @param {boolean} [params.finished] True if the game is completed, false if the game is still in progress.
+ * @param {Point[]} [params.points] Array of points scored during the game.
+ * @param {GamePlayer[]} [params.gamePlayers] Array with the players and its properties for this game.
+ * @param {GameTeam[]} [params.gameTeams] Array with the teams and its properties for this game.
+ */
+exports.updateGame = function (params) {
+    var repoConn = newConnection();
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.GAME + "' AND gameId='" + params.gameId + "'"
+    });
+
+    if (result.count > 0) {
+        repoConn.modify({
+            key: result.hits[0].id,
+            editor: function (node) {
+                if (params.finished != null) {
+                    node.finished = params.finished;
+                }
+                if (params.points != null) {
+                    node.points = params.points;
+                }
+                return node;
+            }
+        });
+    }
+
+    params.gamePlayers = params.gamePlayers || [];
+    params.gameTeams = params.gameTeams || [];
+    var i, gamePlayer, gameTeam;
+    // For gamePlayer, gameTeam update only: score, scoreAgainst, winner, ratingDelta
+    for (i = 0; i < params.gamePlayers.length; i++) {
+        gamePlayer = params.gamePlayers[i];
+        var gamePlayerResult = repoConn.query({
+            start: 0,
+            count: 1,
+            query: "type = '" + TYPE.GAME_PLAYER + "' AND gameId='" + params.gameId + "' AND playerId='" + gamePlayer.playerId + "'"
+        });
+
+        if (gamePlayerResult.count > 0) {
+            (function (gp) {
+                repoConn.modify({
+                    key: gamePlayerResult.hits[0].id,
+                    editor: function (node) {
+                        if (gp.score != null) {
+                            node.score = gp.score;
+                        }
+                        if (gp.scoreAgainst != null) {
+                            node.scoreAgainst = gp.scoreAgainst;
+                        }
+                        if (gp.winner != null) {
+                            node.winner = gp.winner;
+                        }
+                        if (gp.ratingDelta != null) {
+                            node.ratingDelta = gp.ratingDelta;
+                        }
+                        return node;
+                    }
+                });
+            })(gamePlayer);
+        }
+    }
+
+    for (i = 0; i < params.gameTeams.length; i++) {
+        gameTeam = params.gameTeams[i];
+        var gameTeamResult = repoConn.query({
+            start: 0,
+            count: 1,
+            query: "type = '" + TYPE.GAME_TEAM + "' AND gameId='" + params.gameId + "' AND teamId='" + gameTeam.teamId + "'"
+        });
+
+        if (gameTeamResult.count > 0) {
+            (function (gt) {
+                repoConn.modify({
+                    key: gameTeamResult.hits[0].id,
+                    editor: function (node) {
+                        if (gt.score != null) {
+                            node.score = gt.score;
+                        }
+                        if (gt.scoreAgainst != null) {
+                            node.scoreAgainst = gt.scoreAgainst;
+                        }
+                        if (gt.winner != null) {
+                            node.winner = gt.winner;
+                        }
+                        if (gt.ratingDelta != null) {
+                            node.ratingDelta = gt.ratingDelta;
+                        }
+                        return node;
+                    }
+                });
+            })(gameTeam);
+        }
+    }
+};
 
 /**
  * Refresh the index.
