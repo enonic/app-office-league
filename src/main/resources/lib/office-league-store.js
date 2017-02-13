@@ -1676,6 +1676,7 @@ exports.updateGame = function (params) {
 
     params.gamePlayers = params.gamePlayers || [];
     params.gameTeams = params.gameTeams || [];
+
     var i, gamePlayer, gameTeam;
     // For gamePlayer, gameTeam update only: score, scoreAgainst, winner, ratingDelta
     for (i = 0; i < params.gamePlayers.length; i++) {
