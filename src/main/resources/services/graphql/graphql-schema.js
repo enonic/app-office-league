@@ -615,7 +615,7 @@ var pointInputType = graphQlLib.createInputObjectType({
         against: {
             type: graphQlLib.nonNull(graphQlLib.GraphQLBoolean)
         },
-        playerID: {
+        playerId: {
             type: graphQlLib.nonNull(graphQlLib.GraphQLID)
         }
     }
