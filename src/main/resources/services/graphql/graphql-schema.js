@@ -805,7 +805,7 @@ var rootMutationType = graphQlLib.createObjectType({
             }
         },
         updateTeamLeagueRating: {
-            type: leaguePlayerType,
+            type: leagueTeamType,
             args: {
                 leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 teamId: graphQlLib.nonNull(graphQlLib.GraphQLID),
