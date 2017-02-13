@@ -336,7 +336,7 @@ var gameType = graphQlLib.createObjectType({
         points: {
             type: graphQlLib.list(pointType),
             data: function (env) {
-                return env.source.points;
+                return toArray(env.source.points);
             }
         },
         comments: {
@@ -604,6 +604,23 @@ var rootQueryType = graphQlLib.createObjectType({
     }
 });
 
+
+var pointInputType = graphQlLib.createInputObjectType({
+    name: 'PointCreation',
+    description: 'Representation of a goal/point for game creation.',
+    fields: {
+        time: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt)
+        },
+        against: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLBoolean)
+        },
+        playerId: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID)
+        }
+    }
+});
+
 var rootMutationType = graphQlLib.createObjectType({
     name: 'RootMutation',
     fields: {
@@ -627,7 +644,7 @@ var rootMutationType = graphQlLib.createObjectType({
         createPlayer: {
             type: playerType,
             args: {
-                name: graphQlLib.GraphQLString,
+                name: graphQlLib.nonNull(graphQlLib.GraphQLString),
                 nickname: graphQlLib.GraphQLString,
                 nationality: graphQlLib.GraphQLString, //TODO
                 handedness: handednessEnumType,
@@ -667,9 +684,9 @@ var rootMutationType = graphQlLib.createObjectType({
         createTeam: {
             type: teamType,
             args: {
-                name: graphQlLib.GraphQLString,
+                name: graphQlLib.nonNull(graphQlLib.GraphQLString),
                 description: graphQlLib.GraphQLString,
-                playerIds: graphQlLib.list(graphQlLib.GraphQLID)
+                playerIds: graphQlLib.nonNull(graphQlLib.list(graphQlLib.GraphQLID))
             },
             data: function (env) {
                 return storeLib.createTeam({
@@ -682,8 +699,8 @@ var rootMutationType = graphQlLib.createObjectType({
         joinPlayerLeague: {
             type: leaguePlayerType,
             args: {
-                leagueId: graphQlLib.GraphQLID,
-                playerId: graphQlLib.GraphQLID,
+                leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
+                playerId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 rating: graphQlLib.GraphQLInt
             },
             data: function (env) {
@@ -697,8 +714,8 @@ var rootMutationType = graphQlLib.createObjectType({
         joinTeamLeague: {
             type: leagueTeamType,
             args: {
-                leagueId: graphQlLib.GraphQLID,
-                teamId: graphQlLib.GraphQLID,
+                leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
+                teamId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 rating: graphQlLib.GraphQLInt
             },
             data: function (env) {
@@ -708,22 +725,27 @@ var rootMutationType = graphQlLib.createObjectType({
                     rating: env.args.rating
                 });
             }
-        }/*,
-         createGame: {
-         type: gameType,
-         args: {
-         leagueId: graphQlLib.GraphQLID,
-         time: graphQlLib.GraphQLString,
-         finished: graphQlLib.GraphQLID
-         },
-         data: function (env) {
-         return storeLib.createGame({
-         leagueId: env.args.leagueId,
-         time: env.args.time,
-         finished: env.args.finished
-         });
-         }
-         }*/
+        },
+        createGame: {
+            type: gameType,
+            args: {
+                leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
+                time: graphQlLib.nonNull(graphQlLib.GraphQLString),
+                finished: graphQlLib.GraphQLID,
+                points: graphQlLib.list(pointInputType),
+                gamePlayers: graphQlLib.list(graphQlLib.GraphQLString),
+                gameTeams: graphQlLib.list(graphQlLib.GraphQLString)
+            },
+            data: function (env) {
+                return storeLib.createGame({
+                    leagueId: env.args.leagueId,
+                    time: env.args.time,
+                    points: env.args.points,
+                    gamePlayers: [], //env.args.gamePlayers,
+                    gameTeams: []//env.args.gameTeams
+                });
+            }
+        }
     }
 });
 
@@ -732,7 +754,7 @@ exports.schema = graphQlLib.createSchema({
     mutation: rootMutationType
 });
 
-function toArray(object, callback) {
+function toArray(object) {
     if (!object) {
         return [];
     }

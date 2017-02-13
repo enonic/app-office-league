@@ -24,6 +24,13 @@ exports.createObjectType = function (params) {
     return graphQlBean.createObjectType(name, __.toScriptValue(fields), __.toScriptValue(interfaces), description);
 };
 
+exports.createInputObjectType = function (params) {
+    var name = required(params, 'name');
+    var fields = required(params, 'fields');
+    var description = optional(params, 'description');
+    return graphQlBean.createInputObjectType(name, __.toScriptValue(fields), description);
+};
+
 exports.createInterfaceType = function (params) {
     var name = required(params, 'name');
     var fields = required(params, 'fields');
