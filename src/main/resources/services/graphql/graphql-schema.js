@@ -621,6 +621,54 @@ var pointInputType = graphQlLib.createInputObjectType({
     }
 });
 
+var gamePlayerInputType = graphQlLib.createInputObjectType({
+    name: 'GamePlayerCreation',
+    fields: {
+        side: {
+            type: graphQlLib.nonNull(sideEnumType)
+        },
+        winner: {
+            type: graphQlLib.GraphQLBoolean
+        },
+        score: {
+            type: graphQlLib.GraphQLInt
+        },
+        scoreAgainst: {
+            type: graphQlLib.GraphQLInt
+        },
+        ratingDelta: {
+            type: graphQlLib.GraphQLInt
+        },
+        playerId: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID)
+        }
+    }
+});
+
+var gameTeamInputType = graphQlLib.createInputObjectType({
+    name: 'GameTeamCreation',
+    fields: {
+        side: {
+            type: graphQlLib.nonNull(sideEnumType)
+        },
+        winner: {
+            type: graphQlLib.GraphQLBoolean
+        },
+        score: {
+            type: graphQlLib.GraphQLInt
+        },
+        scoreAgainst: {
+            type: graphQlLib.GraphQLInt
+        },
+        ratingDelta: {
+            type: graphQlLib.GraphQLInt
+        },
+        teamId: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID)
+        }
+    }
+});
+
 var rootMutationType = graphQlLib.createObjectType({
     name: 'RootMutation',
     fields: {
@@ -733,16 +781,16 @@ var rootMutationType = graphQlLib.createObjectType({
                 time: graphQlLib.nonNull(graphQlLib.GraphQLString),
                 finished: graphQlLib.GraphQLID,
                 points: graphQlLib.list(pointInputType),
-                gamePlayers: graphQlLib.list(graphQlLib.GraphQLString),
-                gameTeams: graphQlLib.list(graphQlLib.GraphQLString)
+                gamePlayers: graphQlLib.list(gamePlayerInputType),
+                gameTeams: graphQlLib.list(gameTeamInputType)
             },
             data: function (env) {
                 return storeLib.createGame({
                     leagueId: env.args.leagueId,
                     time: env.args.time,
                     points: env.args.points,
-                    gamePlayers: [], //env.args.gamePlayers,
-                    gameTeams: []//env.args.gameTeams
+                    gamePlayers: env.args.gamePlayers,
+                    gameTeams: env.args.gameTeams
                 });
             }
         }

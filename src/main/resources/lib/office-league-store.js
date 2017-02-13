@@ -743,7 +743,7 @@ exports.getGameById = function (gameId) {
         game = repoConn.get(id);
     }
     if (game) {
-        getGameDetails(repoConn, game);
+        getGameDetails(repoConn, game); //TODO Adapt getGame so that it returns playerGames and playerTeams only on demand
     }
 
     return game;
