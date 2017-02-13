@@ -793,6 +793,21 @@ var rootMutationType = graphQlLib.createObjectType({
                     gameTeams: env.args.gameTeams
                 });
             }
+        },
+        createComment: {
+            type: commentType,
+            args: {
+                gameId: graphQlLib.nonNull(graphQlLib.GraphQLID),
+                author: graphQlLib.nonNull(graphQlLib.GraphQLID),
+                text: graphQlLib.GraphQLString
+            },
+            data: function (env) {
+                return storeLib.createComment({
+                    gameId: env.args.gameId,
+                    author: env.args.author,
+                    text: env.args.text
+                });
+            }
         }
     }
 });
