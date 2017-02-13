@@ -11,6 +11,8 @@ import graphql.execution.SimpleExecutionStrategy;
 import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLEnumType;
 import graphql.schema.GraphQLFieldDefinition;
+import graphql.schema.GraphQLInputObjectField;
+import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLList;
@@ -52,6 +54,16 @@ public class GraphQlBean
         return objectType.build();
     }
 
+    public GraphQLInputObjectType createInputObjectType( final String name, final ScriptValue fieldsScriptValue, final String description )
+    {
+        final GraphQLInputObjectType.Builder objectType = GraphQLInputObjectType.newInputObject().
+            name( name ).
+            description( description );
+        setTypeFields( fieldsScriptValue, objectType );
+        return objectType.build();
+    }
+
+
     public GraphQLInterfaceType createInterfaceType( final String name, final ScriptValue fieldsScriptValue, final String description )
     {
         final GraphQLInterfaceType.Builder interfaceType = GraphQLInterfaceType.newInterface().
@@ -92,6 +104,20 @@ public class GraphQlBean
             setFieldArguments( fieldScriptValue, graphQlField );
             setFieldType( fieldScriptValue, graphQlField );
             setFieldData( fieldScriptValue, graphQlField );
+            objectType.field( graphQlField );
+        }
+    }
+
+    private void setTypeFields( final ScriptValue fieldsScriptValue, final GraphQLInputObjectType.Builder objectType )
+    {
+        for ( String fieldKey : fieldsScriptValue.getKeys() )
+        {
+            final ScriptValue fieldScriptValue = fieldsScriptValue.getMember( fieldKey );
+
+            final GraphQLInputObjectField.Builder graphQlField = GraphQLInputObjectField.newInputObjectField().
+                name( fieldKey );
+
+            setFieldType( fieldScriptValue, graphQlField );
             objectType.field( graphQlField );
         }
     }
@@ -143,6 +169,19 @@ public class GraphQlBean
         else if ( scriptFieldType instanceof GraphQLOutputType )
         {
             graphQlField.type( (GraphQLOutputType) scriptFieldType );
+        }
+    }
+
+    private void setFieldType( final ScriptValue fieldScriptValue, final GraphQLInputObjectField.Builder graphQlField )
+    {
+        final Object scriptFieldType = fieldScriptValue.getMember( "type" ).getValue();
+        if ( scriptFieldType instanceof GraphQLInputObjectType.Builder )
+        {
+            graphQlField.type( (GraphQLInputObjectType.Builder) scriptFieldType );
+        }
+        else if ( scriptFieldType instanceof GraphQLInputType )
+        {
+            graphQlField.type( (GraphQLInputType) scriptFieldType );
         }
     }
 

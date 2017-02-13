@@ -1242,7 +1242,7 @@ exports.createGame = function (params) {
         });
     }
 
-    return gameNode._id;
+    return gameNode;
 };
 
 /**
