@@ -189,7 +189,7 @@ var createRandomGame = function (player1Id, player2Id, player3Id, player4Id, tea
         }
     }
 
-    var gameId = storeLib.createGame({
+    var game = storeLib.createGame({
         leagueId: league._id,
         finished: true,
         time: new Date().toISOString(),
@@ -199,7 +199,6 @@ var createRandomGame = function (player1Id, player2Id, player3Id, player4Id, tea
     });
 
     storeLib.refresh();
-    var game = storeLib.getGameById(gameId);
     var playerIds = game.gamePlayers.map(function (gp) {
         return gp.playerId;
     });
