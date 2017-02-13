@@ -767,11 +767,7 @@ var rootMutationType = graphQlLib.createObjectType({
                 rating: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.joinPlayerLeague({
-                    leagueId: env.args.leagueId,
-                    playerId: env.args.playerId,
-                    rating: env.args.rating
-                });
+                return storeLib.joinPlayerLeague(env.args.leagueId, env.args.playerId, env.args.rating);
             }
         },
         updatePlayerLeagueRating: {
@@ -779,14 +775,10 @@ var rootMutationType = graphQlLib.createObjectType({
             args: {
                 leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 playerId: graphQlLib.nonNull(graphQlLib.GraphQLID),
-                ratingDelta: graphQlLib.GraphQLInt
+                ratingDelta: graphQlLib.nonNull(graphQlLib.GraphQLInt)
             },
             data: function (env) {
-                return storeLib.updatePlayerLeagueRating({
-                    leagueId: env.args.leagueId,
-                    playerId: env.args.playerId,
-                    ratingDelta: env.args.ratingDelta
-                });
+                return storeLib.updatePlayerLeagueRating(env.args.leagueId, env.args.playerId, env.args.ratingDelta);
             }
         },
         joinTeamLeague: {
@@ -797,11 +789,7 @@ var rootMutationType = graphQlLib.createObjectType({
                 rating: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.joinTeamLeague({
-                    leagueId: env.args.leagueId,
-                    teamId: env.args.teamId,
-                    rating: env.args.rating
-                });
+                return storeLib.joinTeamLeague(env.args.leagueId, env.args.teamId, env.args.rating);
             }
         },
         updateTeamLeagueRating: {
@@ -809,14 +797,10 @@ var rootMutationType = graphQlLib.createObjectType({
             args: {
                 leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 teamId: graphQlLib.nonNull(graphQlLib.GraphQLID),
-                ratingDelta: graphQlLib.GraphQLInt
+                ratingDelta: graphQlLib.nonNull(graphQlLib.GraphQLInt)
             },
             data: function (env) {
-                return storeLib.updateTeamLeagueRating({
-                    leagueId: env.args.leagueId,
-                    teamId: env.args.teamId,
-                    ratingDelta: env.args.ratingDelta
-                });
+                return storeLib.updateTeamLeagueRating(env.args.leagueId, env.args.teamId, env.args.ratingDelta);
             }
         },
         createGame: {

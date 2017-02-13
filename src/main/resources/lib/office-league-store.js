@@ -1310,7 +1310,7 @@ exports.createComment = function (params) {
  * @param {string} leagueId Id of the league.
  * @param {string} playerId Id of the player.
  * @param {number} [rating=0] Initial player rating in the league ranking.
- * @return {string} Created leaguePlayer.
+ * @return {LeaguePlayer} Created leaguePlayer.
  */
 exports.joinPlayerLeague = function (leagueId, playerId, rating) {
     var repoConn = newConnection();
@@ -1353,7 +1353,7 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
  * @param {string} leagueId Id of the league.
  * @param {string} teamId Id of the team.
  * @param {number} [rating=0] Initial team rating in the league ranking.
- * @return {string} Created leagueTeam.
+ * @return {LeagueTeam} Created leagueTeam.
  */
 exports.joinTeamLeague = function (leagueId, teamId, rating) {
     var repoConn = newConnection();
@@ -1386,6 +1386,8 @@ exports.joinTeamLeague = function (leagueId, teamId, rating) {
         leagueId: leagueId,
         rating: rating
     });
+
+    log.info('leagueTeam: ' + JSON.stringify(leagueTeam, null, 2));
 
     return leagueTeam;
 };
@@ -1588,7 +1590,7 @@ exports.updateLeague = function (params) {
  * @param {string} leagueId Id of the league.
  * @param {string} playerId Id of the player.
  * @param {number} ratingDelta Increment in rating points.
- * @return {boolean} True if successfully updated.
+ * @return {LeaguePlayer} Updated leaguePlayer.
  */
 exports.updatePlayerLeagueRating = function (leagueId, playerId, ratingDelta) {
     var repoConn = newConnection();
@@ -1601,7 +1603,7 @@ exports.updatePlayerLeagueRating = function (leagueId, playerId, ratingDelta) {
 
     if (result.count === 0) {
         log.info('League player not found for playerId=[' + playerId + '] and leagueId=[' + leagueId + ']');
-        return false;
+        return null;
     }
 
     var leaguePlayerNode = repoConn.modify({
@@ -1611,7 +1613,7 @@ exports.updatePlayerLeagueRating = function (leagueId, playerId, ratingDelta) {
             return node;
         }
     });
-    return leaguePlayerNode != null;
+    return leaguePlayerNode;
 };
 
 /**
@@ -1620,7 +1622,7 @@ exports.updatePlayerLeagueRating = function (leagueId, playerId, ratingDelta) {
  * @param {string} leagueId Id of the league.
  * @param {string} teamId Id of the team.
  * @param {number} ratingDelta Increment in rating points.
- * @return {boolean} True if successfully updated.
+ * @return {LeagueTeam} Updated leagueTeam.
  */
 exports.updateTeamLeagueRating = function (leagueId, teamId, ratingDelta) {
     var repoConn = newConnection();
@@ -1633,7 +1635,7 @@ exports.updateTeamLeagueRating = function (leagueId, teamId, ratingDelta) {
 
     if (result.count === 0) {
         log.info('League team not found for teamId=[' + teamId + '] and leagueId=[' + leagueId + ']');
-        return false;
+        return null;
     }
 
     var leagueTeamNode = repoConn.modify({
@@ -1643,7 +1645,8 @@ exports.updateTeamLeagueRating = function (leagueId, teamId, ratingDelta) {
             return node;
         }
     });
-    return leagueTeamNode != null;
+
+    return leagueTeamNode;
 };
 
 /**
