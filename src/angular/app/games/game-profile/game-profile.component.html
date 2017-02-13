@@ -1,0 +1,24 @@
+<template [ngIf]="game == null">
+    <h4>Loading...</h4>
+</template>
+<div class="container" *ngIf="game != null">
+
+    <div class="block clearfix">
+        <game [game]="game"></game>
+    </div>
+
+    <ul class="row list">
+        <li class="col-md-5">
+            <team-players [players]="loserPlayers" [responsive]="false"></team-players>
+        </li>
+
+        <li class="colon col-md-2 block">
+            VS
+        </li>
+
+        <li class="col-md-5">
+            <team-players [players]="winnerPlayers" [responsive]="false"></team-players>
+        </li>
+    </ul>
+
+</div>

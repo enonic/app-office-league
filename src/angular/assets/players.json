@@ -1,0 +1,66 @@
+{
+  "data": {
+    "players": [
+      {
+        "displayName": "ARO",
+        "nickname": "El toro",
+        "rating": 1637,
+        "previousRating": 1627
+      },
+      {
+        "displayName": "ASE",
+        "nickname": null,
+        "rating": 1427,
+        "previousRating": 1419
+      },
+      {
+        "displayName": "ASL",
+        "nickname": null,
+        "rating": 1500,
+        "previousRating": 1500
+      },
+      {
+        "displayName": "BHJ",
+        "nickname": "Helmet Violence",
+        "rating": 1619,
+        "previousRating": 1614
+      },
+      {
+        "displayName": "BWE",
+        "nickname": null,
+        "rating": 1593,
+        "previousRating": 1595
+      },
+      {
+        "displayName": "CPB",
+        "nickname": null,
+        "rating": 1467,
+        "previousRating": 1478
+      },
+      {
+        "displayName": "CWE",
+        "nickname": "Comlock",
+        "rating": 1481,
+        "previousRating": 1486
+      },
+      {
+        "displayName": "DAP",
+        "nickname": "DAP",
+        "rating": 1449,
+        "previousRating": 1459
+      },
+      {
+        "displayName": "DMI",
+        "nickname": "The Poker Drone",
+        "rating": 1506,
+        "previousRating": 1503
+      },
+      {
+        "displayName": "ESU",
+        "nickname": null,
+        "rating": 1374,
+        "previousRating": 1382
+      }
+    ]
+  }
+}

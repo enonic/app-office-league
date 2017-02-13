@@ -1,0 +1,16 @@
+<template [ngIf]="player == null">
+    <h4>Loading...</h4>
+</template>
+<template [ngIf]="player != null">
+
+    <rating class="pull-right" [rating]="player.rating" [previousRating]="player.previousRating"></rating>
+
+    <span *ngIf="index != undefined" class="pull-left index">{{index}}</span>
+
+    <i class="material-icons pull-left avatar">face</i>
+
+    <h4 class="list-group-item-heading">{{player.displayName}}</h4>
+
+    <p class="list-group-item-text" *ngIf="player.nickname">{{player.nickname}}</p>
+
+</template>

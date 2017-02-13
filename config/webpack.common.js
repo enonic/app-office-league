@@ -12,7 +12,7 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['.ts', '.js']
+        extensions: ['.ts', '.js', 'less']
     },
 
     module: {
@@ -51,7 +51,7 @@ module.exports = {
             {
                 test: /\.(less|css)$/,
                 include: helpers.root('src', 'angular', 'app'),
-                loader: 'raw-loader'
+                loader: 'to-string-loader!css-loader!less-loader'
             }
         ]
     },

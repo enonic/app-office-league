@@ -1,0 +1,22 @@
+.rating-number {
+  font-size: 32px;
+  line-height: 48px;
+}
+
+.rating-icon {
+  color: indianred;
+  &:before {
+    content: 'arrow_downward'
+  }
+
+  &.rating-rising {
+    color: seagreen;
+    &:before {
+      content: 'arrow_upward'
+    }
+  }
+
+  &.dramatically {
+    font-weight: bold;
+  }
+}

@@ -1,0 +1,26 @@
+<template [ngIf]="game == null">
+    <h4>Loading...</h4>
+</template>
+<template [ngIf]="game != null">
+
+    <h4 class="list-group-item-heading">{{game.displayName}}</h4>
+
+    <div class="clearfix">
+
+        <ul class="losers" *ngIf="game.losers">
+            <li class="score">{{loserGoals}}</li>
+            <li *ngFor="let loser of game.losers">{{loser.player.displayName}}</li>
+        </ul>
+
+        <span class="colon">:</span>
+
+        <ul class="winners" *ngIf="game.winners">
+            <li class="score">{{winnerGoals}}</li>
+            <li *ngFor="let winner of game.winners">{{winner.player.displayName}}</li>
+        </ul>
+
+    </div>
+
+    <p class="list-group-item-text clearfix">{{game.date | date}}</p>
+
+</template>

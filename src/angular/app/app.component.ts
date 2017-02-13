@@ -1,12 +1,14 @@
 import {Component} from '@angular/core';
+import {AuthService} from './auth.service';
 
 @Component({
-    selector: 'my-app',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.less'],
+  selector: 'office-league',
+  templateUrl: './app.component.html',
+  styleUrls: ['app.component.less']
 })
 export class AppComponent {
 
-    private title: string = 'Angular starter app!';
+  constructor(private auth: AuthService) {
 
+  }
 }

@@ -1,0 +1,320 @@
+{
+  "data": {
+    "games": [
+      {
+        "id": "e0714cdd-4ade-4eb7-8abc-3a474b906b52",
+        "displayName": "Game797",
+        "date": "2017-01-24",
+        "winners": [
+          {
+            "player": {
+              "displayName": "ARO"
+            },
+            "goals": 5,
+            "goalsAgainst": 0
+          },
+          {
+            "player": {
+              "displayName": "PMI"
+            },
+            "goals": 5,
+            "goalsAgainst": 0
+          }
+        ],
+        "losers": [
+          {
+            "player": {
+              "displayName": "DAP"
+            },
+            "goals": 2,
+            "goalsAgainst": 0
+          },
+          {
+            "player": {
+              "displayName": "GRI"
+            },
+            "goals": 3,
+            "goalsAgainst": 0
+          }
+        ]
+      },
+      {
+        "id": "291e3399-fc8a-410c-acf1-aeb97d2928be",
+        "displayName": "Game796",
+        "date": "2017-01-24",
+        "winners": [
+          {
+            "player": {
+              "displayName": "RMY"
+            },
+            "goals": 16,
+            "goalsAgainst": 0
+          }
+        ],
+        "losers": [
+          {
+            "player": {
+              "displayName": "ARO"
+            },
+            "goals": 15,
+            "goalsAgainst": 1
+          }
+        ]
+      },
+      {
+        "id": "1605611a-2cb0-4c3c-baa4-1ad0f78aedc7",
+        "displayName": "Game795",
+        "date": "2017-01-24",
+        "winners": [
+          {
+            "player": {
+              "displayName": "SIW"
+            },
+            "goals": 8,
+            "goalsAgainst": 0
+          }
+        ],
+        "losers": [
+          {
+            "player": {
+              "displayName": "SRS"
+            },
+            "goals": 4,
+            "goalsAgainst": 2
+          }
+        ]
+      },
+      {
+        "id": "d5ecbd2a-3d31-4876-95bd-5728f69ae64c",
+        "displayName": "Game794",
+        "date": "2017-01-24",
+        "winners": [
+          {
+            "player": {
+              "displayName": "ASE"
+            },
+            "goals": 2,
+            "goalsAgainst": 1
+          },
+          {
+            "player": {
+              "displayName": "PMI"
+            },
+            "goals": 8,
+            "goalsAgainst": 0
+          }
+        ],
+        "losers": [
+          {
+            "player": {
+              "displayName": "STS"
+            },
+            "goals": 3,
+            "goalsAgainst": 0
+          },
+          {
+            "player": {
+              "displayName": "JSI"
+            },
+            "goals": 2,
+            "goalsAgainst": 0
+          }
+        ]
+      },
+      {
+        "id": "113c2781-170e-4b48-b7d2-024648d20ab1",
+        "displayName": "Game793",
+        "date": "2017-01-24",
+        "winners": [
+          {
+            "player": {
+              "displayName": "RMY"
+            },
+            "goals": 5,
+            "goalsAgainst": 0
+          },
+          {
+            "player": {
+              "displayName": "GRI"
+            },
+            "goals": 5,
+            "goalsAgainst": 0
+          }
+        ],
+        "losers": [
+          {
+            "player": {
+              "displayName": "DAP"
+            },
+            "goals": 2,
+            "goalsAgainst": 0
+          },
+          {
+            "player": {
+              "displayName": "ARO"
+            },
+            "goals": 4,
+            "goalsAgainst": 0
+          }
+        ]
+      },
+      {
+        "id": "295757e0-4d2b-47e7-9020-1c8610aac3ed",
+        "displayName": "Game792",
+        "date": "2017-01-24",
+        "winners": [
+          {
+            "player": {
+              "displayName": "ARO"
+            },
+            "goals": 9,
+            "goalsAgainst": 0
+          }
+        ],
+        "losers": [
+          {
+            "player": {
+              "displayName": "GRI"
+            },
+            "goals": 8,
+            "goalsAgainst": 1
+          }
+        ]
+      },
+      {
+        "id": "eb6ebaad-f9a0-4ef7-99e9-05baaf1fc941",
+        "displayName": "Game791",
+        "date": "2017-01-23",
+        "winners": [
+          {
+            "player": {
+              "displayName": "RMY"
+            },
+            "goals": 10,
+            "goalsAgainst": 0
+          },
+          {
+            "player": {
+              "displayName": "PMI"
+            },
+            "goals": 4,
+            "goalsAgainst": 0
+          }
+        ],
+        "losers": [
+          {
+            "player": {
+              "displayName": "ARO"
+            },
+            "goals": 4,
+            "goalsAgainst": 0
+          },
+          {
+            "player": {
+              "displayName": "GRI"
+            },
+            "goals": 8,
+            "goalsAgainst": 0
+          }
+        ]
+      },
+      {
+        "id": "e0cfcffb-80ff-4114-9c6c-395684afd536",
+        "displayName": "Game790",
+        "date": "2017-01-23",
+        "winners": [
+          {
+            "player": {
+              "displayName": "GRI"
+            },
+            "goals": 10,
+            "goalsAgainst": 1
+          }
+        ],
+        "losers": [
+          {
+            "player": {
+              "displayName": "RMY"
+            },
+            "goals": 7,
+            "goalsAgainst": 0
+          }
+        ]
+      },
+      {
+        "id": "59b0bdb1-dd8a-47fb-8c7d-70c2aadef029",
+        "displayName": "Game789",
+        "date": "2017-01-23",
+        "winners": [
+          {
+            "player": {
+              "displayName": "ARO"
+            },
+            "goals": 2,
+            "goalsAgainst": 0
+          },
+          {
+            "player": {
+              "displayName": "RMY"
+            },
+            "goals": 8,
+            "goalsAgainst": 0
+          }
+        ],
+        "losers": [
+          {
+            "player": {
+              "displayName": "PMI"
+            },
+            "goals": 1,
+            "goalsAgainst": 0
+          },
+          {
+            "player": {
+              "displayName": "GRI"
+            },
+            "goals": 1,
+            "goalsAgainst": 0
+          }
+        ]
+      },
+      {
+        "id": "28bcd780-12ca-4006-bb54-111b0d5a6f31",
+        "displayName": "Game788",
+        "date": "2017-01-23",
+        "winners": [
+          {
+            "player": {
+              "displayName": "GRI"
+            },
+            "goals": 5,
+            "goalsAgainst": 0
+          },
+          {
+            "player": {
+              "displayName": "JSI"
+            },
+            "goals": 5,
+            "goalsAgainst": 0
+          }
+        ],
+        "losers": [
+          {
+            "player": {
+              "displayName": "ARO"
+            },
+            "goals": 6,
+            "goalsAgainst": 0
+          },
+          {
+            "player": {
+              "displayName": "DAP"
+            },
+            "goals": 1,
+            "goalsAgainst": 0
+          }
+        ]
+      }
+    ]
+  }
+}

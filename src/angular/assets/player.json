@@ -1,0 +1,1448 @@
+{
+  "data": {
+    "player": {
+      "displayName": "ARO",
+      "nickname": "El toro",
+      "rating": 1637,
+      "previousRating": 1627,
+      "games": [
+        {
+          "id": "e0714cdd-4ade-4eb7-8abc-3a474b906b52",
+          "date": "2017-01-24",
+          "displayName": "Game797",
+          "winners": [
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "goals": 5
+            },
+            {
+              "player": {
+                "displayName": "PMI"
+              },
+              "goals": 5
+            }
+          ],
+          "losers": [
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "goals": 2
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "goals": 3
+            }
+          ],
+          "goals": [
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 6
+            },
+            {
+              "player": {
+                "displayName": "PMI"
+              },
+              "time": 30
+            },
+            {
+              "player": {
+                "displayName": "PMI"
+              },
+              "time": 58
+            },
+            {
+              "player": {
+                "displayName": "PMI"
+              },
+              "time": 86
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 99
+            },
+            {
+              "player": {
+                "displayName": "PMI"
+              },
+              "time": 111
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 137
+            },
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "time": 186
+            },
+            {
+              "player": {
+                "displayName": "PMI"
+              },
+              "time": 196
+            },
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "time": 242
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 271
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 319
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 334
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 359
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 374
+            }
+          ]
+        },
+        {
+          "id": "291e3399-fc8a-410c-acf1-aeb97d2928be",
+          "date": "2017-01-24",
+          "displayName": "Game796",
+          "winners": [
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "goals": 16
+            }
+          ],
+          "losers": [
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "goals": 15
+            }
+          ],
+          "goals": [
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 8
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 55
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 89
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 101
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 118
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 133
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 153
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 171
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 243
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 257
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 313
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 356
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 414
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 436
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 454
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 460
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 528
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 546
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 565
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 594
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 612
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 626
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 630
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 638
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 645
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 669
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 716
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 805
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 833
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 874
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 893
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 907
+            }
+          ]
+        },
+        {
+          "id": "113c2781-170e-4b48-b7d2-024648d20ab1",
+          "date": "2017-01-24",
+          "displayName": "Game793",
+          "winners": [
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "goals": 5
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "goals": 5
+            }
+          ],
+          "losers": [
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "goals": 2
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "goals": 4
+            }
+          ],
+          "goals": [
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 36
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 54
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 69
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 149
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 199
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 227
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 280
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 301
+            },
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "time": 335
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 356
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 372
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 476
+            },
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "time": 515
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 562
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 594
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 634
+            }
+          ]
+        },
+        {
+          "id": "295757e0-4d2b-47e7-9020-1c8610aac3ed",
+          "date": "2017-01-24",
+          "displayName": "Game792",
+          "winners": [
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "goals": 9
+            }
+          ],
+          "losers": [
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "goals": 8
+            }
+          ],
+          "goals": [
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 12
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 42
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 64
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 71
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 83
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 113
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 172
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 185
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 193
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 202
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 246
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 282
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 293
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 315
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 372
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 396
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 407
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 430
+            }
+          ]
+        },
+        {
+          "id": "eb6ebaad-f9a0-4ef7-99e9-05baaf1fc941",
+          "date": "2017-01-23",
+          "displayName": "Game791",
+          "winners": [
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "goals": 10
+            },
+            {
+              "player": {
+                "displayName": "PMI"
+              },
+              "goals": 4
+            }
+          ],
+          "losers": [
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "goals": 4
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "goals": 8
+            }
+          ],
+          "goals": [
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 49
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 112
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 159
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 182
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 211
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 237
+            },
+            {
+              "player": {
+                "displayName": "PMI"
+              },
+              "time": 289
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 322
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 329
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 401
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 468
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 483
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 500
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 535
+            },
+            {
+              "player": {
+                "displayName": "PMI"
+              },
+              "time": 559
+            },
+            {
+              "player": {
+                "displayName": "PMI"
+              },
+              "time": 596
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 611
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 672
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 682
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 690
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 710
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 775
+            },
+            {
+              "player": {
+                "displayName": "PMI"
+              },
+              "time": 825
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 861
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 880
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 910
+            }
+          ]
+        },
+        {
+          "id": "59b0bdb1-dd8a-47fb-8c7d-70c2aadef029",
+          "date": "2017-01-23",
+          "displayName": "Game789",
+          "winners": [
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "goals": 2
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "goals": 8
+            }
+          ],
+          "losers": [
+            {
+              "player": {
+                "displayName": "PMI"
+              },
+              "goals": 1
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "goals": 1
+            }
+          ],
+          "goals": [
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 59
+            },
+            {
+              "player": {
+                "displayName": "PMI"
+              },
+              "time": 82
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 132
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 173
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 183
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 214
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 222
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 292
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 333
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 358
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 392
+            },
+            {
+              "player": {
+                "displayName": "RMY"
+              },
+              "time": 416
+            }
+          ]
+        },
+        {
+          "id": "28bcd780-12ca-4006-bb54-111b0d5a6f31",
+          "date": "2017-01-23",
+          "displayName": "Game788",
+          "winners": [
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "goals": 5
+            },
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "goals": 5
+            }
+          ],
+          "losers": [
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "goals": 6
+            },
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "goals": 1
+            }
+          ],
+          "goals": [
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "time": 55
+            },
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "time": 71
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 214
+            },
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "time": 270
+            },
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "time": 308
+            },
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "time": 331
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 382
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 409
+            },
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "time": 445
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 459
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 482
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 514
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 618
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 675
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 689
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 745
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 753
+            }
+          ]
+        },
+        {
+          "id": "7af17ab9-15b5-4ae1-93f6-753e400cdd2e",
+          "date": "2017-01-20",
+          "displayName": "Game784",
+          "winners": [
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "goals": 6
+            },
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "goals": 4
+            }
+          ],
+          "losers": [
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "goals": 4
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "goals": 3
+            }
+          ],
+          "goals": [
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "time": 37
+            },
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "time": 69
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 83
+            },
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "time": 94
+            },
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "time": 113
+            },
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "time": 161
+            },
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "time": 197
+            },
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "time": 224
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 233
+            },
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "time": 284
+            },
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "time": 351
+            },
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "time": 364
+            },
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "time": 405
+            },
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "time": 444
+            },
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "time": 499
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 511
+            },
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "time": 644
+            }
+          ]
+        },
+        {
+          "id": "0d2485bf-2c3e-485d-8cc0-090b914f9d7d",
+          "date": "2017-01-20",
+          "displayName": "Game783",
+          "winners": [
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "goals": 3
+            },
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "goals": 7
+            }
+          ],
+          "losers": [
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "goals": 5
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "goals": 1
+            }
+          ],
+          "goals": [
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 41
+            },
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "time": 61
+            },
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "time": 82
+            },
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "time": 110
+            },
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "time": 211
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 231
+            },
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "time": 260
+            },
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "time": 300
+            },
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "time": 316
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 352
+            },
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "time": 402
+            },
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "time": 424
+            },
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "time": 462
+            },
+            {
+              "player": {
+                "displayName": "BHJ"
+              },
+              "time": 469
+            },
+            {
+              "player": {
+                "displayName": "JSI"
+              },
+              "time": 581
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 646
+            }
+          ]
+        },
+        {
+          "id": "3e96fdb7-df8c-435f-9c90-bc31f81d8492",
+          "date": "2017-01-20",
+          "displayName": "Game782",
+          "winners": [
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "goals": 5
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "goals": 4
+            }
+          ],
+          "losers": [
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "goals": 3
+            },
+            {
+              "player": {
+                "displayName": "BWE"
+              },
+              "goals": 3
+            }
+          ],
+          "goals": [
+            {
+              "player": {
+                "displayName": "BWE"
+              },
+              "time": 11
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 18
+            },
+            {
+              "player": {
+                "displayName": "BWE"
+              },
+              "time": 25
+            },
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "time": 39
+            },
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "time": 56
+            },
+            {
+              "player": {
+                "displayName": "BWE"
+              },
+              "time": 72
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 90
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 102
+            },
+            {
+              "player": {
+                "displayName": "BWE"
+              },
+              "time": 120
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 142
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 214
+            },
+            {
+              "player": {
+                "displayName": "DAP"
+              },
+              "time": 224
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 298
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 323
+            },
+            {
+              "player": {
+                "displayName": "GRI"
+              },
+              "time": 344
+            },
+            {
+              "player": {
+                "displayName": "ARO"
+              },
+              "time": 364
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,6 @@
+<h4 *ngIf="title">{{title}}</h4>
+<ul class="list-group list">
+    <li class="list-group-item clearfix" *ngFor="let team of teams; let i = index" (click)="onTeamClicked(team)">
+        <team [team]="team" [index]="i + 1"></team>
+    </li>
+</ul>

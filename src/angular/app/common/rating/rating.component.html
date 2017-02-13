@@ -1,0 +1,4 @@
+<i *ngIf="rating != previousRating" class="rating-icon material-icons"
+   [class.rating-rising]="isRising()"
+   [class.dramatically]="isDramatically()"></i>
+<span class="rating-number">{{rating}}</span>
