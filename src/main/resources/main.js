@@ -222,14 +222,14 @@ var createRandomGame = function (player1Id, player2Id, player3Id, player4Id, tea
         points: game.points
     });
 
-    game = storeLib.getGameById(gameId);
+    game = storeLib.getGameById(game._id);
     log.info('------------------------------------------------------');
     log.info(JSON.stringify(game, null, 2));
     log.info(JSON.stringify(leaguePlayers, null, 2));
     log.info(JSON.stringify(leagueTeams, null, 2));
 
     var commentId = storeLib.createComment({
-        gameId: gameId,
+        gameId: game._id,
         author: player1Id,
         text: 'Game comment'
     });
