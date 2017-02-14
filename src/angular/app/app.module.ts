@@ -10,16 +10,21 @@ import {TeamsModule} from './teams/team.module';
 import {LeaguesModule} from './leagues/league.module';
 import {AuthRouteGuard} from './auth.route.guard';
 import {AuthService} from './auth.service';
+import {HomeComponent} from './home.component';
+import {CommonModule} from './common/common.module';
 
 const appRoutes: Routes = [
-    {path: '', redirectTo: 'games', pathMatch: 'full'}
+    {path: '', component: HomeComponent},
+    {path: '**', redirectTo: '', pathMatch: 'full'}
 ];
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        HomeComponent
     ],
     imports: [
+        CommonModule,
         RouterModule.forRoot(appRoutes),
         FormsModule,
         HttpModule,

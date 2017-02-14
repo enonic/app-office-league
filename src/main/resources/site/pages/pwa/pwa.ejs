@@ -24,14 +24,14 @@
 
 </body>
 
-<% for (key in htmlWebpackPlugin.files.chunks) { %>
-<% item = htmlWebpackPlugin.files.chunks[key].entry; %>
-<script type="text/javascript" src="<%= '{{assetsUrl}}/' + item %>"></script>
-<% }; %>
-
 <script type="text/javascript">
     var XPCONFIG = {
-        assetsUrl: '{{assetsUrl}}'
+        user: JSON.parse('{{{user}}}'),
+        baseHref: '{{{baseHref}}}',
+        idProvider: '{{{idProvider}}}',
+        assetsUrl: '{{{assetsUrl}}}',
+        loginUrl: '{{{loginUrl}}}',
+        logoutUrl: '{{{logoutUrl}}}'
     }
 </script>
 
@@ -41,5 +41,10 @@
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<% for (key in htmlWebpackPlugin.files.chunks) { %>
+<% item = htmlWebpackPlugin.files.chunks[key].entry; %>
+<script type="text/javascript" src="<%= '{{assetsUrl}}/' + item %>"></script>
+<% }; %>
 
 </html>

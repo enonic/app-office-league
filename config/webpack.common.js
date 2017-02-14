@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 var helpers = require('./helpers');
 
 // https://angular.io/docs/ts/latest/guide/webpack.html
@@ -67,6 +68,9 @@ module.exports = {
 
         new webpack.optimize.CommonsChunkPlugin({
             name: ['app', 'vendor', 'polyfills']
-        })
+        }),
+        new CopyWebpackPlugin([
+            {from: './src/angular/assets'}
+        ])
     ]
 };
