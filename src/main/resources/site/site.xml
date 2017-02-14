@@ -13,6 +13,24 @@
       <pattern>/teams/image/.*</pattern>
     </mapping>
 
+    <mapping controller="/site/controllers/team-image.js" order="10">
+      <pattern>/teams/image/.*</pattern>
+    </mapping>
+
+    <!-- mappings for routes handled in Angular -->
+    <mapping controller="/site/pages/pwa/pwa.js" order="20">
+      <pattern>/teams(/[^/]+)?</pattern>
+    </mapping>
+    <mapping controller="/site/pages/pwa/pwa.js" order="20">
+      <pattern>/players(/[^/]+)?</pattern>
+    </mapping>
+    <mapping controller="/site/pages/pwa/pwa.js" order="20">
+      <pattern>/leagues(/[^/]+)?</pattern>
+    </mapping>
+    <mapping controller="/site/pages/pwa/pwa.js" order="20">
+      <pattern>/games(/[^/]+)?</pattern>
+    </mapping>
+
   </mappings>
 
 </site>
