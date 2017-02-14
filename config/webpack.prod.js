@@ -1,6 +1,7 @@
 var webpack = require("webpack");
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 var webpackMerge = require('webpack-merge');
 var commonConfig = require('./webpack.common.js');
 var helpers = require('./helpers');
@@ -39,6 +40,9 @@ module.exports = webpackMerge(commonConfig, {
             compress: {
                 warnings: false
             }
-        })
+        }),
+        new CopyWebpackPlugin([
+            {from: './src/angular/assets'}
+        ])
     ]
 });

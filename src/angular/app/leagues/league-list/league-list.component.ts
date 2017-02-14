@@ -4,6 +4,8 @@ import {GraphQLService} from '../../graphql.service';
 import {League} from '../../../graphql/schemas/League';
 import {ListComponent} from '../../common/list.component';
 
+declare var XPCONFIG: any;
+
 @Component({
     selector: 'league-list',
     templateUrl: 'league-list.component.html'
@@ -32,7 +34,7 @@ export class LeagueListComponent extends ListComponent implements OnInit {
         super.ngOnInit();
 
         if (this.autoLoad) {
-            this.service.getJson('assets/leagues.json').then((data: any) => {
+            this.service.getJson(XPCONFIG.assetsUrl + '/json/leagues.json').then((data: any) => {
                 this.leagues = data.leagues.map(league => League.fromJson(league));
             })
         }
