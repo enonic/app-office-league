@@ -19,8 +19,8 @@ exports.get = function (req) {
         user: JSON.stringify(userObj),
         baseHref: baseHref,
         assetsUrl: portalLib.assetUrl({path: ""}),
-        loginUrl: portalLib.loginUrl(),
-        logoutUrl: portalLib.logoutUrl(),
+        loginUrl: portalLib.loginUrl({redirect: baseHref}),
+        logoutUrl: portalLib.logoutUrl({redirect: baseHref}),
         idProvider: portalLib.idProviderUrl()
     };
     var body = mustacheLib.render(view, params);
