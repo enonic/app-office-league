@@ -609,51 +609,6 @@ exports.getPlayerByName = function (name) {
 };
 
 /**
- * Retrieve a player image.
- * @param  {Player} player Player object.
- * @return {object} Player image stream.
- */
-exports.getPlayerImageStream = function (player) {
-    var repoConn = newConnection();
-
-    var binaryStream = repoConn.getBinary({
-        key: player._id,
-        binaryReference: player.image
-    });
-    return binaryStream;
-};
-
-/**
- * Retrieve a team image.
- * @param  {Team} team Team object.
- * @return {object} Team image stream.
- */
-exports.getTeamImageStream = function (team) {
-    var repoConn = newConnection();
-
-    var binaryStream = repoConn.getBinary({
-        key: team._id,
-        binaryReference: team.image
-    });
-    return binaryStream;
-};
-
-/**
- * Retrieve the league image.
- * @param  {Team} league League object.
- * @return {object} League image stream.
- */
-exports.getLeagueImageStream = function (league) {
-    var repoConn = newConnection();
-
-    var binaryStream = repoConn.getBinary({
-        key: league._id,
-        binaryReference: league.image
-    });
-    return binaryStream;
-};
-
-/**
  * Retrieve a list of teams.
  * @param  {number} [start=0] First index of the teams.
  * @param  {number} [count=10] Number of teams to fetch.
@@ -1772,6 +1727,13 @@ exports.updateGame = function (params) {
 exports.refresh = function () {
     var repoConn = newConnection();
     repoConn.refresh('SEARCH');
+};
+
+/**
+ * @return {RepoConnection} Connection to the node repository for office-league data.
+ */
+exports.getRepoConnection = function () {
+    return newConnection();
 };
 
 var newConnection = function () {

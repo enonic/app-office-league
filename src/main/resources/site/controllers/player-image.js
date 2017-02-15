@@ -1,24 +1,24 @@
 var storeLib = require('/lib/office-league-store');
+var attachmentLib = require('/lib/attachment');
+var ioLib = require('/lib/xp/io');
+
+var defaultImage = ioLib.getResource('/site/controllers/default-images/account.svg').getStream();
+var defaultImageType = 'image/svg+xml';
 
 exports.get = function (req) {
     var playerName = req.url.substr(req.url.lastIndexOf('/') + 1);
 
     var player = storeLib.getPlayerByName(playerName);
     if (!player) {
-        return {
-            status: 404
-        }
+        return defaultImageHandler();
     }
 
-    var img = storeLib.getPlayerImageStream(player);
-    if (!img) {
-        return {
-            status: 404
-        }
-    }
+    return attachmentLib.serveAttachment(req, storeLib.getRepoConnection(), player, player.image, defaultImageHandler);
+};
 
+var defaultImageHandler = function () {
     return {
-        contentType: player.imageType || 'image/png',
-        body: img
+        body: defaultImage,
+        contentType: defaultImageType
     }
 };

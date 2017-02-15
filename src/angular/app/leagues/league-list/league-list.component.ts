@@ -3,8 +3,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {GraphQLService} from '../../graphql.service';
 import {League} from '../../../graphql/schemas/League';
 import {ListComponent} from '../../common/list.component';
-
-declare var XPCONFIG: any;
+import {XPCONFIG} from '../../app.config';
 
 @Component({
     selector: 'league-list',
