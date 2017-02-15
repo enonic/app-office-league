@@ -54,13 +54,32 @@ var createSite = function () {
             branch: 'draft',
             contentType: 'portal:site',
             data: {
-                // siteConfig: {
+                // siteConfig: { //TODO Adapt function in Enonic XP
                 //     applicationKey: app.name,
                 //     config: {}
                 // }
             },
             x: {}
         });
+
+        log.info('Set Site permissions...');
+        contentLib.setPermissions({
+            key: siteContent._id,
+            inheritPermissions: false,
+            overwriteChildPermissions: true,
+            permissions: [{
+                principal: 'role:system.everyone',
+                allow: ['READ'],
+                deny: [] //TODO This parameters should be optional in the lib. Adapt function in Enonic XP
+            }, {
+                principal: 'role:cms.cm.app',
+                allow: ['CREATE', 'MODIFY', 'DELETE', 'PUBLISH'],
+                deny: [] //TODO This parameters should be optional in the lib. Adapt function in Enonic XP
+            }]
+        });
+
+
+        log.info('Assigning application to site...');
         var repoConn = nodeLib.connect({
             repoId: 'cms-repo',
             branch: 'draft',
