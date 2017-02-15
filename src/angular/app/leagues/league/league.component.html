@@ -3,7 +3,8 @@
 </template>
 <template [ngIf]="league != null">
 
-    <i class="material-icons pull-left avatar">public</i>
+    <!--<i class="material-icons pull-left avatar">public</i>-->
+    <img src="{{league.imageUrl}}"/>
     <h4 class="list-group-item-heading">{{league.name}}</h4>
     <p class="list-group-item-text">{{league.description}}</p>
 

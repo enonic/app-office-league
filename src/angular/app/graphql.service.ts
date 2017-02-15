@@ -32,6 +32,13 @@ export class GraphQLService {
             .toPromise();
     }
 
+    postJson(url: string, query: string) {
+        return this.http.post(url, {query: query})
+            .map(this.extractData)
+            .catch(this.handleError)
+            .toPromise();
+    }
+
     private extractData(res: Response) {
         let json = res.json();
         return json.data || {};

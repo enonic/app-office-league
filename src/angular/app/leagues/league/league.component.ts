@@ -6,7 +6,8 @@ import {BaseComponent} from '../../common/base.component';
 
 @Component({
     selector: 'league',
-    templateUrl: 'league.component.html'
+    templateUrl: 'league.component.html',
+    styleUrls: ['league.component.less']
 })
 export class LeagueComponent extends BaseComponent implements OnInit {
 

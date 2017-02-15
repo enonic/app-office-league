@@ -638,7 +638,20 @@ exports.getTeamImageStream = function (team) {
     return binaryStream;
 };
 
-// exports.getPlayerImageUrl = function (playerId) {
+/**
+ * Retrieve the league image.
+ * @param  {Team} league League object.
+ * @return {object} League image stream.
+ */
+exports.getLeagueImageStream = function (league) {
+    var repoConn = newConnection();
+
+    var binaryStream = repoConn.getBinary({
+        key: league._id,
+        binaryReference: league.image
+    });
+    return binaryStream;
+};
 
 /**
  * Retrieve a list of teams.

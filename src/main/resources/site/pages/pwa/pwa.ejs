@@ -26,12 +26,13 @@
 
 <script type="text/javascript">
     var XPCONFIG = {
-        user: JSON.parse('{{{user}}}'),
+        user: {{{user}}},
         baseHref: '{{{baseHref}}}',
         idProvider: '{{{idProvider}}}',
         assetsUrl: '{{{assetsUrl}}}',
         loginUrl: '{{{loginUrl}}}',
-        logoutUrl: '{{{logoutUrl}}}'
+        logoutUrl: '{{{logoutUrl}}}',
+        graphQlUrl: '{{baseHref}}/api/graphql'
     }
 </script>
 

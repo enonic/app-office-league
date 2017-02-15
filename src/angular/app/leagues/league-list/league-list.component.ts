@@ -17,24 +17,27 @@ export class LeagueListComponent extends ListComponent implements OnInit {
     @Input() teamId: string;
 
     constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
-        super(route, `query{
-        teams{
-          id,
-          displayName, 
-          rating,
-          previousRating,
-          players{
-            displayName
-          }
-        }
-      }`);
+        super(route,
+            `query {
+  leagues {
+    id
+    name
+    description
+    sport
+    leaguePlayers {
+      player {
+        name
+      }
+    }
+  }
+}`);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
 
         if (this.autoLoad) {
-            this.service.getJson(XPCONFIG.assetsUrl + '/json/leagues.json').then((data: any) => {
+            this.service.postJson(XPCONFIG.graphQlUrl, this.query).then((data: any) => {
                 this.leagues = data.leagues.map(league => League.fromJson(league));
             })
         }

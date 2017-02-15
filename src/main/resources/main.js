@@ -15,7 +15,9 @@ if (!league) {
     league = storeLib.createLeague({
         name: 'My League',
         description: 'Test league',
-        sport: 'foos'
+        sport: 'foos',
+        imageStream: teamImage.getStream(),
+        imageType: 'image/png'
     });
     log.info('League created');
 }

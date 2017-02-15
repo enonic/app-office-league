@@ -3,18 +3,23 @@
   <config/>
 
   <mappings>
-    <!-- /portal/master/office-league/players/image/<playername> -->
+    <!-- /<site>/players/image/<playername> -->
     <mapping controller="/site/controllers/player-image.js" order="10">
       <pattern>/players/image/.*</pattern>
     </mapping>
 
-    <!-- /portal/master/office-league/teams/image/<teamname> -->
+    <!-- /<site>/teams/image/<teamname> -->
     <mapping controller="/site/controllers/team-image.js" order="10">
       <pattern>/teams/image/.*</pattern>
     </mapping>
 
-    <mapping controller="/site/controllers/team-image.js" order="10">
-      <pattern>/teams/image/.*</pattern>
+    <!-- /<site>/leagues/image/<leaguename> -->
+    <mapping controller="/site/controllers/league-image.js" order="10">
+      <pattern>/leagues/image/.*</pattern>
+    </mapping>
+
+    <mapping controller="/services/graphql/graphql.js" order="10">
+      <pattern>/api/graphql</pattern>
     </mapping>
 
     <!-- mappings for routes handled in Angular -->
