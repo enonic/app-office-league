@@ -10,13 +10,13 @@ exports.get = function (req) {
         path: content.path
     });
     var user = authLib.getUser();
-    var userObj = {
-        key: user.key,
-        displayName: user.displayName
-    };
+    var userObj = user && {
+            key: user.key,
+            displayName: user.displayName
+        };
 
     var params = {
-        user: JSON.stringify(userObj),
+        user: userObj && JSON.stringify(userObj),
         baseHref: baseHref,
         assetsUrl: portalLib.assetUrl({path: ""}),
         loginUrl: portalLib.loginUrl({redirect: baseHref}),
