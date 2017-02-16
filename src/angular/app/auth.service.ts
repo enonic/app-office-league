@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-
-declare var XPCONFIG: any;
+import {XPCONFIG, ConfigUser} from './app.config';
 
 @Injectable()
 export class AuthService {
 
-    private user: any = XPCONFIG.user;
+    private user: ConfigUser;
 
     constructor(private activatedRoute: ActivatedRoute) {
+        this.user = XPCONFIG.user;
     }
 
     public login() {

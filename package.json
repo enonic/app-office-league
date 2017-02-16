@@ -1,7 +1,7 @@
 {
   "name": "office-league",
   "scripts": {
-    "start": "webpack-dev-server --hot --inline --progress --color --port 4200",
+    "start": "webpack-dev-server --config config/webpack.dev.js --progress --color",
     "build": "webpack --config config/webpack.prod.js --color --bail"
   },
   "dependencies": {

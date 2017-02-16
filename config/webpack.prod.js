@@ -29,11 +29,6 @@ module.exports = webpackMerge(commonConfig, {
             filename: '../site/pages/pwa/pwa.html',
             inject: false
         }),
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery",
-            "window.jQuery": "jquery"
-        }),
         new webpack.optimize.UglifyJsPlugin({
             minimize: true,
             compress: {

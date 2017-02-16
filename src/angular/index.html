@@ -7,21 +7,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+
+    <!-- have it in header to be available to all scripts-->
+    <script type="text/javascript">
+        var XPCONFIG = {
+            user: {
+                displayName: 'Test user',
+                key: 'test:user:key'
+            },
+            baseHref: '/',
+            idProvider: '',
+            assetsUrl: '',
+            loginUrl: '',
+            logoutUrl: ''
+        }
+    </script>
 </head>
 <body>
 <office-league>Loading...</office-league>
 </body>
 
-<script type="text/javascript">
-    var XPCONFIG = {
-        user: JSON.parse('{{{user}}}'),
-        baseHref: '/',
-        idProvider: '',
-        assetsUrl: '',
-        loginUrl: '',
-        logoutUrl: ''
-    }
-</script>
-
+<script type="text/javascript" src="../../node_modules/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="../../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 </html>
