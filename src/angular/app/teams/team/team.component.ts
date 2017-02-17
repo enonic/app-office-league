@@ -20,7 +20,30 @@ export class TeamComponent implements OnInit {
             id = this.route.snapshot.params['id'];
 
         if (!this.team && autoLoad && id) {
-            this.team = this.service.team || new Team(id);
+            // check if the team was passed from list to spare request
+            this.team = this.service.team;
+            if (!this.team) {
+                // no team was passed because this was probably a page reload
+                let query = `query {
+                    team(name: "${id}") {
+                        id,
+                        name,
+                        description,
+                        players {
+                            name
+                        },
+                        leagueTeams {
+                            league {
+                                name
+                            },
+                            team {
+                                name
+                            }
+                        }
+                    }
+                }`;
+                this.service.post(query).then(data => this.team = Team.fromJson(data.team));
+            }
         }
     }
 

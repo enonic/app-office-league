@@ -1,38 +1,59 @@
-import {Game} from './Game';
+import {Team} from './Team';
+import {LeaguePlayer} from './LeaguePlayer';
+
+export enum PlayerHandedness {
+    LEFT, RIGTH, AMBIDEXTER
+}
+
 export class Player {
 
-    id: String;
-    displayName: String = 'Unknown player';
-    nickname: String;
-    rating: number = -1;
-    previousRating: number = -1;
-    games: Game[] = [];
+    id: string;
+    name: string = 'Unknown player';
+    nickname: string;
+    nationality: string;
+    handedness: PlayerHandedness;
+    description: string;
+    teams: Team[] = [];
+    leaguePlayers: LeaguePlayer[] = [];
 
-    constructor(displayName: string) {
-        if (!displayName) {
-            throw new Error('User.displayName can not be null');
+
+    /*    rating: number = -1;
+     previousRating: number = -1;
+     games: Game[] = [];*/
+
+    constructor(name: string) {
+        if (!name) {
+            throw new Error('Player.name can not be null');
         }
-        this.displayName = displayName;
+        this.name = name;
     }
 
     static fromJson(json: any): Player {
-        let p = new Player(json.displayName);
+        let p = new Player(json.name);
+        p.handedness = this.parseHandedness(json.handedness);
         if (json.id) {
             p.id = json.id;
         }
         if (json.nickname) {
             p.nickname = json.nickname;
         }
-        if (json.rating) {
-            p.rating = json.rating;
+        if (json.nationality) {
+            p.nationality = json.nationality;
         }
-        if (json.previousRating) {
-            p.previousRating = json.previousRating;
+        if (json.teams) {
+            p.teams = json.teams.map(team => Team.fromJson(team));
         }
-        if (json.games) {
-            p.games = json.games.map(game => Game.fromJson(game))
+        if (json.leaguePlayers) {
+            p.leaguePlayers = json.leaguePlayers.map(leaguePlayer => LeaguePlayer.fromJson(leaguePlayer))
         }
         return p;
+    }
+
+    private static parseHandedness(value: any): PlayerHandedness {
+        if (typeof value === 'string') {
+            return PlayerHandedness[value.toUpperCase()];
+        }
+        return null;
     }
 
 }

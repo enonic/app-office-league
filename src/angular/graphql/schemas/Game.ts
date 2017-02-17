@@ -1,39 +1,61 @@
-import {PlayerResult} from './PlayerResult';
-import {Goal} from './Goal';
+import {League} from './League';
+import {Point} from './Point';
+import {Comment} from './Comment';
+import {GamePlayer} from './GamePlayer';
+import {GameTeam} from './GameTeam';
+
+export enum GameSide {
+    RED, BLUE
+}
 
 export class Game {
-    id: String;
-    displayName: String = "Unknown game";
-    date: Date = new Date();//(Format YYYY-MM-DD)
-    winners: PlayerResult[] = [];// 1 or 2
-    losers: PlayerResult[] = []; // 1 or 2
-    goals: Goal[] = [];   //Optional
+    id: string;
+    time: Date;
+    finished: boolean;
+    points: Point[] = [];
+    comments: Comment[] = [];
+    gamePlayers: GamePlayer[] = [];
+    gameTeams: GameTeam[] = [];
+    league: League;
 
-    constructor(displayName: String) {
-        if (!displayName) {
+    constructor(id: string, time?: string, finished: boolean = true) {
+        if (!id) {
             throw new Error('Game.id can not be null');
         }
-        this.displayName = displayName;
+        this.id = id;
+        this.time = this.parseDate(time);
+        this.finished = finished;
     }
 
     static fromJson(json: any): Game {
-        let g = new Game(json.displayName);
-        if (json.date) {
-            let from = json.date.split("-");
-            g.date = new Date(from[0], from[1] - 1, from[2]);
+        let g = new Game(json.id, json.time, json.finished);
+        if (json.points && json.points.length > 0) {
+            g.points = json.points.map(point => Point.fromJson(point));
         }
-        if (json.id) {
-            g.id = json.id;
+        if (json.comments && json.comments.length > 0) {
+            g.comments = json.comments.map(comment => Comment.fromJson(comment));
         }
-        if (json.winners && json.winners.length > 0) {
-            g.winners = json.winners.map(winner => PlayerResult.fromJson(winner));
+        if (json.gamePlayers && json.gamePlayers.length > 0) {
+            g.gamePlayers = json.gamePlayers.map(gamePlayer => GamePlayer.fromJson(gamePlayer));
         }
-        if (json.losers && json.losers.length > 0) {
-            g.losers = json.losers.map(loser => PlayerResult.fromJson(loser));
+        if (json.gameTeams && json.gameTeams.length > 0) {
+            g.gameTeams = json.gameTeams.map(gameTeam => GameTeam.fromJson(gameTeam));
         }
-        if (json.goals && json.goals.length > 0) {
-            g.goals = json.goals.map(goal => Goal.fromJson(goal));
+        if (json.league) {
+            g.league = League.fromJson(json.league);
         }
         return g;
+    }
+
+    private parseDate(value: string): Date {
+        let parsed: Date;
+        if (value) {
+            try {
+                parsed = new Date(value);
+            } catch (e) {
+                console.warn(`Could not parse date from: "${value}"`);
+            }
+        }
+        return parsed || new Date();
     }
 }

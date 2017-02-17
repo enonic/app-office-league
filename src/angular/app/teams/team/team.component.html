@@ -9,10 +9,10 @@
 
     <i class="material-icons pull-left avatar">group</i>
 
-    <h4 class="list-group-item-heading">{{team.displayName}}</h4>
+    <h4 class="list-group-item-heading">{{team.name}}</h4>
 
     <p class="list-group-item-text" *ngIf="team.players">
-        <span *ngFor="let player of team.players; let isLast = last">{{player.displayName}}{{!isLast ? ' + ' : ''}}</span>
+        <span *ngFor="let player of team.players; let isLast = last">{{player.name}}{{!isLast ? ' + ' : ''}}</span>
     </p>
 
 </template>

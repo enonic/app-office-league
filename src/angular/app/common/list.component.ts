@@ -11,7 +11,7 @@ export class ListComponent extends BaseComponent {
     @Input() protected limit: number;
     @Input() protected title: string;
 
-    constructor(route: ActivatedRoute, query: string, limit: number = 10) {
+    constructor(route: ActivatedRoute, query?: string, limit: number = 10) {
         super(route, query);
         this.limit = limit;
     }

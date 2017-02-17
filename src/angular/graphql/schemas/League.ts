@@ -1,6 +1,7 @@
-import {Player} from './Player';
-import {Team} from './Team';
-import {XPCONFIG} from '../../app/app.config';
+import {ImageService} from '../../app/image.service';
+import {Game} from './Game';
+import {LeaguePlayer} from './LeaguePlayer';
+import {LeagueTeam} from './LeagueTeam';
 
 export enum LeagueSport {
     FOOS, TENNIS, DARTS
@@ -13,15 +14,16 @@ export class League {
     imageUrl: string;
     description: string;
     config: {[key: string]: string|number} = {};
-    players: Player[];
-    teams: Team[];
+    leaguePlayers: LeaguePlayer[];
+    leagueTeams: LeagueTeam[];
+    games: Game[];
 
     constructor(name: string) {
         if (!name) {
             throw new Error('League.name can not be null');
         }
         this.name = name;
-        this.imageUrl = `${XPCONFIG.baseHref}/leagues/image/${name}`;
+        this.imageUrl = ImageService.forLeague(name);
     }
 
     static fromJson(json: any): League {
@@ -33,11 +35,14 @@ export class League {
         if (json.id) {
             l.id = json.id;
         }
-        if (json.players && json.players.length > 0) {
-            l.players = json.players.map(player => Player.fromJson(player));
+        if (json.leaguePlayers && json.leaguePlayers.length > 0) {
+            l.leaguePlayers = json.leaguePlayers.map(player => LeaguePlayer.fromJson(player));
         }
-        if (json.teams && json.teams.length > 0) {
-            l.teams = json.teams.map(team => Team.fromJson(team));
+        if (json.leagueTeams && json.leagueTeams.length > 0) {
+            l.leagueTeams = json.leagueTeams.map(team => LeagueTeam.fromJson(team));
+        }
+        if (json.games && json.games.length > 0) {
+            l.games = json.games.map(game => Game.fromJson(game));
         }
         return l;
     }

@@ -16,24 +16,22 @@
                     <player-list [title]="'Top players'"
                                  [autoLoad]="false"
                                  [limit]="5"
-                                 [players]="league.players"
-                                 [leagueId]="league.name"></player-list>
+                                 [players]="leaguePlayers"></player-list>
                 </li>
 
                 <li class="col-sm-6 col-lg-12">
                     <team-list [title]="'Top teams'"
                                [autoLoad]="false"
                                [limit]="5"
-                               [teams]="league.teams"
-                               [leagueId]="league.name"></team-list>
+                               [teams]="leagueTeams"></team-list>
                 </li>
             </ul>
         </div>
 
         <div class="col-sm-12 col-lg-8 col-lg-pull-4">
             <game-list [title]="'Latest games'"
-                       [autoLoad]="true"
-                       [leagueId]="league.name"></game-list>
+                       [autoLoad]="false"
+                       [games]="league.games"></game-list>
         </div>
     </div>
 

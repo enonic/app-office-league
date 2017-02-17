@@ -3,7 +3,6 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {GraphQLService} from '../../graphql.service';
 import {League} from '../../../graphql/schemas/League';
 import {ListComponent} from '../../common/list.component';
-import {XPCONFIG} from '../../app.config';
 
 @Component({
     selector: 'league-list',
@@ -16,27 +15,14 @@ export class LeagueListComponent extends ListComponent implements OnInit {
     @Input() teamId: string;
 
     constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
-        super(route,
-            `query {
-  leagues {
-    id
-    name
-    description
-    sport
-    leaguePlayers {
-      player {
-        name
-      }
-    }
-  }
-}`);
+        super(route);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
 
         if (this.autoLoad) {
-            this.service.postJson(XPCONFIG.graphQlUrl, this.query).then((data: any) => {
+            this.service.post(this.getQuery()).then((data: any) => {
                 this.leagues = data.leagues.map(league => League.fromJson(league));
             })
         }
@@ -44,6 +30,36 @@ export class LeagueListComponent extends ListComponent implements OnInit {
 
     onLeagueClicked(league: League) {
         this.service.league = league;
-        this.router.navigate(['leagues', league.name])
+        this.router.navigate(['leagues', league.id])
+    }
+
+    private getQuery(): string {
+        return `query {
+                  leagues {
+                    id
+                    name
+                    description
+                    sport
+                    leaguePlayers {
+                      player {
+                        name
+                      }
+                      league {
+                        name
+                      }
+                    }
+                    leagueTeams {
+                      team {
+                        name
+                        players {
+                          name
+                        }
+                      }
+                      league {
+                        name
+                      }
+                    }
+                  }
+                }`
     }
 }

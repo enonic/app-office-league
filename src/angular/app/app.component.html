@@ -12,7 +12,7 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul *ngIf="auth.isAuthenticated()" class="nav navbar-nav pull-right">
-                <li class="nav"><a href="#" routerLink="/profile/{{auth.getUser().key}}">{{auth.getUser().displayName}}</a></li>
+                <li class="nav"><a href="#" routerLink="/profile/{{auth.getUser().key}}">{{auth.getUser().name}}</a></li>
                 <li class="nav"><a href="javascript:;" (click)="auth.logout()">Logout</a></li>
             </ul>
             <ul *ngIf="!auth.isAuthenticated()" class="nav navbar-nav pull-right">

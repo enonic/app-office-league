@@ -5,11 +5,12 @@ import {Team} from '../graphql/schemas/Team';
 import {Game} from '../graphql/schemas/Game';
 import {League} from '../graphql/schemas/League';
 import {Player} from '../graphql/schemas/Player';
+import {XPCONFIG} from './app.config';
 
 @Injectable()
 export class GraphQLService {
 
-    private url = 'https://powerful-plateau-26248.herokuapp.com/';
+    private url = XPCONFIG.graphQlUrl;
     game: Game;
     team: Team;
     league: League;
@@ -25,15 +26,8 @@ export class GraphQLService {
             .toPromise();
     }
 
-    getJson(url: string) {
-        return this.http.get(url)
-            .map(this.extractData)
-            .catch(this.handleError)
-            .toPromise();
-    }
-
-    postJson(url: string, query: string) {
-        return this.http.post(url, {query: query})
+    post(query: string): Promise<any> {
+        return this.http.post(this.url, {query: query})
             .map(this.extractData)
             .catch(this.handleError)
             .toPromise();

@@ -6,7 +6,7 @@ var commonConfig = require('./webpack.common.js');
 var helpers = require('./helpers');
 
 module.exports = webpackMerge(commonConfig, {
-
+    devtool: 'source-map',
     entry: {
         // 'xp': './src/main/resources/assets/js/main.js',
         'app': './src/angular/main.ts'
@@ -28,12 +28,12 @@ module.exports = webpackMerge(commonConfig, {
             template: 'src/main/resources/site/pages/pwa/pwa.ejs',
             filename: '../site/pages/pwa/pwa.html',
             inject: false
-        }),
+        })/*,
         new webpack.optimize.UglifyJsPlugin({
             minimize: true,
             compress: {
                 warnings: false
             }
-        })
+         })*/
     ]
 });

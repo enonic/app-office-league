@@ -15,7 +15,7 @@ export class PlayerComponent implements OnInit {
     @Input() playerId: string;
 
     @HostListener('click') onClick() {
-        this.router.navigate(['players', this.playerId || this.player.displayName]);
+        this.router.navigate(['players', this.playerId || this.player.name]);
     }
 
     constructor(private service: GraphQLService, private router: Router, private route: ActivatedRoute) {
@@ -26,32 +26,33 @@ export class PlayerComponent implements OnInit {
             id = this.playerId || this.route.snapshot.params['id'];
 
         if (!this.player && autoLoad && id) {
-            let query = `query{
-          player(name: "${id}") {
-            displayName, 
-            nickname, 
-            rating, 
-            previousRating
-            games{
-              id,
-              date,
-              displayName,
-              winners{
-                player{displayName},
-                goals  
-              },
-              losers{
-                player{displayName},
-                goals
-              },
-              goals{
-                player{displayName},
-                time
-              }
+            // check if the team was passed from list to spare request
+            this.player = this.service.player;
+            if (!this.player) {
+                // no team was passed because this was probably a page reload
+                let query = `query{
+                  player(name: "${id}") {
+                    id
+                    name
+                    nickname
+                    nationality
+                    handedness
+                    description
+                    teams {
+                        name
+                    }
+                    leaguePlayers {
+                        league {
+                            name
+                        }
+                        player {
+                            name
+                        }
+                    }
+                  }
+                }`;
+                this.service.post(query).then(data => this.player = Player.fromJson(data.player));
             }
-          }
-        }`;
-            this.service.get(query).then(data => this.player = Player.fromJson(data.player));
         }
     }
 
