@@ -3,7 +3,7 @@ var mustacheLib = require('/lib/xp/mustache');
 
 exports.get = function () {
     var view = resolve('./graphiql.html');
-    var assetsUrl = portalLib.assetUrl({path: ""});
+    var assetsUrl = portalLib.assetUrl({path: "graphiql"});
     var params = {
         assetsUrl: assetsUrl,
         officeGraphQlUrl: portalLib.serviceUrl({service: "graphql"})
