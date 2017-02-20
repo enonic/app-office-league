@@ -3,7 +3,7 @@ export enum Side {
 }
 
 export class SideUtil {
-    static parseSide(value: any): Side {
+    static parse(value: any): Side {
         if (typeof value === 'string') {
             return Side[value.toUpperCase()];
         }

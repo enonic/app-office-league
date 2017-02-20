@@ -19,7 +19,7 @@ export class GamePlayer extends Entity {
         let gamePlayer = new GamePlayer(json.id);
         gamePlayer.time = json.time && DateUtil.parseDate(json.time);
         gamePlayer.score = json.score;
-        gamePlayer.side = SideUtil.parseSide(json.side);
+        gamePlayer.side = SideUtil.parse(json.side);
         gamePlayer.winner = json.winner;
         gamePlayer.ratingDelta = json.ratingDelta;
         gamePlayer.player = json.player && Player.fromJson(json.player);

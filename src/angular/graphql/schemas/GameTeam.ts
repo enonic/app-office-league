@@ -19,7 +19,7 @@ export class GameTeam extends Entity {
         let gameTeam = new GameTeam(json.id);
         gameTeam.time = json.time && DateUtil.parseDate(json.time);
         gameTeam.score = json.score;
-        gameTeam.side = SideUtil.parseSide(json.side);
+        gameTeam.side = SideUtil.parse(json.side);
         gameTeam.winner = json.winner;
         gameTeam.ratingDelta = json.ratingDelta;
         gameTeam.team = json.player && Team.fromJson(json.player);

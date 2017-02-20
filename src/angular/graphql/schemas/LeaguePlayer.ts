@@ -1,34 +1,22 @@
+import {Entity} from './Entity';
 import {Player} from './Player';
 import {League} from './League';
 
 
-export class LeaguePlayer {
-
-    id: string;
-    rating: number = -1;
+export class LeaguePlayer extends Entity {
+    rating: number;
     player: Player;
     league: League;
 
-    constructor(player: Player, league: League) {
-        if (!player) {
-            throw new Error('LeaguePlayer.player can not be null');
-        }
-        if (!league) {
-            throw new Error('LeaguePlayer.league can not be null');
-        }
-        this.player = player;
-        this.league = league;
+    constructor(id: string) {
+        super(id);
     }
 
     static fromJson(json: any): LeaguePlayer {
-        let lp = new LeaguePlayer(Player.fromJson(json.player), League.fromJson(json.league));
-        if (json.id) {
-            lp.id = json.id;
-        }
-        if (json.rating) {
-            lp.rating = json.rating;
-        }
-        return lp;
+        let leaguePlayer = new LeaguePlayer(json.id);
+        leaguePlayer.rating = json.rating;
+        leaguePlayer.player = json.player && Player.fromJson(json.player);
+        leaguePlayer.league = json.league && League.fromJson(json.league);
+        return leaguePlayer;
     }
-
 }
