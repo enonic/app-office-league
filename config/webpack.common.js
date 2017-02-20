@@ -5,7 +5,7 @@ var helpers = require('./helpers');
 
 // https://angular.io/docs/ts/latest/guide/webpack.html
 module.exports = {
-    
+
     entry: {
         'polyfills': './src/angular/polyfills.ts',
         'vendor': './src/angular/vendor.ts',
@@ -72,9 +72,6 @@ module.exports = {
             $: "jquery",
             jQuery: "jquery",
             "window.jQuery": "jquery"
-        }),
-        new CopyWebpackPlugin([
-            {from: './src/angular/assets'}
-        ])
+        })
     ]
 };
