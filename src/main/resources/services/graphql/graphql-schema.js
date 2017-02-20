@@ -454,7 +454,7 @@ var leagueType = graphQlLib.createObjectType({
             }
         },
         sport: {
-            type: sportEnumType,
+            type: graphQlLib.nonNull(sportEnumType),
             data: function (env) {
                 return env.source.sport;
             }
