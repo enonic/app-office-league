@@ -1,8 +1,9 @@
+import {Entity} from './Entity';
+import {DateUtil} from './DateUtil';
 import {Player} from './Player';
 import {Side, SideUtil} from './Side';
 
-export class GamePlayer {
-    id: string;
+export class GamePlayer extends Entity {
     time: Date;
     score: number;
     side: Side;
@@ -10,41 +11,18 @@ export class GamePlayer {
     ratingDelta: number;
     player: Player;
 
-    constructor(player: Player, time?: string, score: number = 0) {
-        if (!player) {
-            throw new Error('GamePlayer.player can not be null');
-        }
-        this.player = player;
-        this.time = this.parseDate(time);
-        this.score = score;
+    constructor(id: string) {
+        super(id);
     }
 
     static fromJson(json: any) {
-        let gp = new GamePlayer(Player.fromJson(json.player), json.time, json.score);
-        gp.side = SideUtil.parseSide(json.side);
-        if (json.id) {
-            gp.id = json.id;
-        }
-        if (json.winner != undefined) {
-            gp.winner = json.winner;
-        }
-        if (json.ratingDelta) {
-            gp.ratingDelta = json.ratingDelta;
-        }
-        return gp;
-    }
-
-    
-
-    private parseDate(value: string): Date {
-        let parsed: Date;
-        if (value) {
-            try {
-                parsed = new Date(value);
-            } catch (e) {
-                console.warn(`Could not parse date from: "${value}"`);
-            }
-        }
-        return parsed || new Date();
+        let gamePlayer = new GamePlayer(json.id);
+        gamePlayer.time = json.time && DateUtil.parseDate(json.time);
+        gamePlayer.score = json.score;
+        gamePlayer.side = SideUtil.parseSide(json.side);
+        gamePlayer.winner = json.winner;
+        gamePlayer.ratingDelta = json.ratingDelta;
+        gamePlayer.player = json.player && Player.fromJson(json.player);
+        return gamePlayer;
     }
 }
