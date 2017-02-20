@@ -1,15 +1,11 @@
+import {Entity} from './Entity';
 import {League} from './League';
 import {Point} from './Point';
 import {Comment} from './Comment';
 import {GamePlayer} from './GamePlayer';
 import {GameTeam} from './GameTeam';
 
-export enum GameSide {
-    RED, BLUE
-}
-
-export class Game {
-    id: string;
+export class Game extends Entity {
     time: Date;
     finished: boolean;
     points: Point[] = [];
@@ -18,36 +14,23 @@ export class Game {
     gameTeams: GameTeam[] = [];
     league: League;
 
-    constructor(id: string, time?: string, finished: boolean = true) {
-        if (!id) {
-            throw new Error('Game.id can not be null');
-        }
-        this.id = id;
-        this.time = this.parseDate(time);
-        this.finished = finished;
+    constructor(id: string) {
+        super(id);
     }
 
     static fromJson(json: any): Game {
-        let g = new Game(json.id, json.time, json.finished);
-        if (json.points && json.points.length > 0) {
-            g.points = json.points.map(point => Point.fromJson(point));
-        }
-        if (json.comments && json.comments.length > 0) {
-            g.comments = json.comments.map(comment => Comment.fromJson(comment));
-        }
-        if (json.gamePlayers && json.gamePlayers.length > 0) {
-            g.gamePlayers = json.gamePlayers.map(gamePlayer => GamePlayer.fromJson(gamePlayer));
-        }
-        if (json.gameTeams && json.gameTeams.length > 0) {
-            g.gameTeams = json.gameTeams.map(gameTeam => GameTeam.fromJson(gameTeam));
-        }
-        if (json.league) {
-            g.league = League.fromJson(json.league);
-        }
-        return g;
+        let game = new Game(json.id);
+        game.time = json.time && Game.parseDate(json.time);
+        game.finished = json.finished;
+        game.points = json.points && json.points.map(point => Point.fromJson(point));
+        game.comments = json.comments && json.comments.map(comment => Comment.fromJson(comment));
+        game.gamePlayers = json.gamePlayers && json.gamePlayers.map(gamePlayer => GamePlayer.fromJson(gamePlayer));
+        game.gameTeams = json.gameTeams && json.gameTeams.map(gameTeam => GameTeam.fromJson(gameTeam));
+        game.league = json.league && League.fromJson(json.league);
+        return game;
     }
 
-    private parseDate(value: string): Date {
+    static parseDate(value: string): Date { //TODO Extract
         let parsed: Date;
         if (value) {
             try {

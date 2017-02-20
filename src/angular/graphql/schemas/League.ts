@@ -23,7 +23,6 @@ export class League extends NamedEntity {
     }
 
     static fromJson(json: any): League {
-        console.log('test');
         let league = new League(json.id, json.name);
         league.sport = League.parseSport(json.sport);
         league.description = json.description;

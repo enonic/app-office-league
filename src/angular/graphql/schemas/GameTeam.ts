@@ -1,11 +1,11 @@
 import {Team} from './Team';
-import {GameSide} from './Game';
+import {Side, SideUtil} from './Side';
 
 export class GameTeam {
     id: string;
     time: Date;
     score: number;
-    side: GameSide;
+    side: Side;
     winner: boolean;
     ratingDelta: number;
     team: Team;
@@ -21,7 +21,7 @@ export class GameTeam {
 
     static fromJson(json: any) {
         let gt = new GameTeam(Team.fromJson(json.team), json.time, json.score);
-        gt.side = this.parseSide(json.side);
+        gt.side = SideUtil.parseSide(json.side);
         if (json.id) {
             gt.id = json.id;
         }
@@ -32,13 +32,6 @@ export class GameTeam {
             gt.ratingDelta = json.ratingDelta;
         }
         return gt;
-    }
-
-    private static parseSide(value: any): GameSide {
-        if (typeof value === 'string') {
-            return GameSide[value.toUpperCase()];
-        }
-        return null;
     }
 
     private parseDate(value: string): Date {

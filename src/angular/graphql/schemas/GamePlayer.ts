@@ -1,11 +1,11 @@
 import {Player} from './Player';
-import {GameSide} from './Game';
+import {Side, SideUtil} from './Side';
 
 export class GamePlayer {
     id: string;
     time: Date;
     score: number;
-    side: GameSide;
+    side: Side;
     winner: boolean;
     ratingDelta: number;
     player: Player;
@@ -21,7 +21,7 @@ export class GamePlayer {
 
     static fromJson(json: any) {
         let gp = new GamePlayer(Player.fromJson(json.player), json.time, json.score);
-        gp.side = this.parseSide(json.side);
+        gp.side = SideUtil.parseSide(json.side);
         if (json.id) {
             gp.id = json.id;
         }
@@ -34,12 +34,7 @@ export class GamePlayer {
         return gp;
     }
 
-    private static parseSide(value: any): GameSide {
-        if (typeof value === 'string') {
-            return GameSide[value.toUpperCase()];
-        }
-        return null;
-    }
+    
 
     private parseDate(value: string): Date {
         let parsed: Date;
