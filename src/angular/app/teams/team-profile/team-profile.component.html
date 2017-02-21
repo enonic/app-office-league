@@ -3,9 +3,7 @@
 </template>
 <div *ngIf="team != null">
 
-    <div class="block">
-        <team [team]="team"></team>
-    </div>
+    <team [team]="team"></team>
 
     <team-players [players]="team.players"></team-players>
 

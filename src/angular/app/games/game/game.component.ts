@@ -6,6 +6,7 @@ import {GamePlayer} from '../../../graphql/schemas/GamePlayer';
 import {Player} from '../../../graphql/schemas/Player';
 import {Team} from '../../../graphql/schemas/Team';
 import {GameTeam} from '../../../graphql/schemas/GameTeam';
+import {Side} from '../../../graphql/schemas/Side';
 
 @Component({
     selector: 'game',
@@ -18,6 +19,8 @@ export class GameComponent implements OnInit, OnChanges {
 
     private winnerGoals: number = 0;
     private loserGoals: number = 0;
+    private winnerSide: string;
+    private loserSide: string;
     private winnerTeam: Team;
     private loserTeam: Team;
     private winners: Player[] = [];
@@ -97,11 +100,13 @@ export class GameComponent implements OnInit, OnChanges {
     private calcStats(game: Game) {
         game.gamePlayers.forEach((gp: GamePlayer) => {
             if (gp.winner) {
-                this.winnerGoals = gp.score;
+                this.winnerGoals += gp.score || 0;
                 this.winners.push(gp.player);
+                this.winnerSide = `side-${Side[gp.side]}`;
             } else {
-                this.loserGoals += gp.score;
+                this.loserGoals += gp.score || 0;
                 this.losers.push(gp.player);
+                this.loserSide = `side-${Side[gp.side]}`;
             }
         });
         game.gameTeams.forEach((gt: GameTeam) => {

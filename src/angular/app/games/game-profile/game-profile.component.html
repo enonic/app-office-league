@@ -3,16 +3,14 @@
 </template>
 <div *ngIf="game != null">
 
-    <div class="block">
-        <game [game]="game"></game>
-    </div>
+    <game [game]="game"></game>
 
     <ul class="row list">
         <li class="col s12 m5">
             <player-list [players]="losers" [indexed]="false" [autoLoad]="false"></player-list>
         </li>
 
-        <li class="colon block col s12 m2">
+        <li class="colon col s12 m2">
             VS
         </li>
 

@@ -30,8 +30,8 @@ export class GameListComponent extends ListComponent implements OnInit, OnChange
     ngOnChanges(changes: SimpleChanges) {
         super.ngOnChanges(changes);
 
-        let leagueIdChange = changes['leagueId'];
-        if (leagueIdChange && !!leagueIdChange.currentValue) {
+        let simpleChange = changes['leagueId'] || changes['teamId'] || changes['playerId'];
+        if (simpleChange && !!simpleChange.currentValue) {
             this.loadGames();
         }
     }
@@ -81,10 +81,6 @@ export class GameListComponent extends ListComponent implements OnInit, OnChange
                         winner
                         score
                         side
-                        ratingDelta
-                        team {
-                            name
-                        }
                     }
                     league {
                         name

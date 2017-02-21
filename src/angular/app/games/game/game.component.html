@@ -5,7 +5,7 @@
 
     <div class="results">
 
-        <ul class="losers">
+        <ul class="losers {{loserSide | lowercase}}">
             <li class="score valign-wrapper">{{loserGoals}}</li>
             <li class="team" *ngIf="loserTeam">{{loserTeam.name}}</li>
             <li *ngFor="let loser of losers">{{loser.name}}</li>
@@ -13,7 +13,7 @@
 
         <span class="colon">:</span>
 
-        <ul class="winners">
+        <ul class="winners {{winnerSide | lowercase}}">
             <li class="score valign-wrapper">{{winnerGoals}}</li>
             <li class="team" *ngIf="winnerTeam">{{winnerTeam.name}}</li>
             <li *ngFor="let winner of winners">{{winner.name}}</li>

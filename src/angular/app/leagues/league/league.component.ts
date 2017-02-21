@@ -101,14 +101,7 @@ export class LeagueComponent extends BaseComponent implements OnInit, OnChanges 
                         gameTeams {
                             score
                             winner
-                            side    
-                            ratingDelta
-                            team {
-                                name
-                                players {
-                                    name
-                                }
-                            }
+                            side
                         }
                         league {
                             name

@@ -22,7 +22,7 @@ export class GameTeam extends Entity {
         gameTeam.side = SideUtil.parse(json.side);
         gameTeam.winner = json.winner;
         gameTeam.ratingDelta = json.ratingDelta;
-        gameTeam.team = json.player && Team.fromJson(json.player);
+        gameTeam.team = json.team && Team.fromJson(json.team);
         return gameTeam;
     }
 }
