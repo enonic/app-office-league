@@ -189,30 +189,35 @@ var TYPE = {
  * @return {LeagueResponse} Leagues.
  */
 exports.getLeagues = function (start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
+    return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.LEAGUE + "'"
     });
+};
 
-    var leagues = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
+function query(params) {
+    var repoConn = newConnection();
+    var queryResult = repoConn.query({
+        start: params.start,
+        count: params.count,
+        query: params.query
+    });
+
+    var hits = [];
+    if (queryResult.count > 0) {
+        var ids = queryResult.hits.map(function (hit) {
             return hit.id;
         });
-        leagues = [].concat(repoConn.get(ids));
+        hits = [].concat(repoConn.get(ids));
     }
 
     return {
-        "total": result.total,
-        "count": result.count,
-        "hits": leagues
+        total: queryResult.total,
+        count: queryResult.count,
+        hits: hits
     };
-};
+}
 
 /**
  * Retrieve a league by its id.
