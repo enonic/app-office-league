@@ -11,4 +11,8 @@ export class ImageService {
         return `${XPCONFIG.baseHref}/leagues/image/${name}`;
     }
 
+    public static logoUrl(): string {
+        return `${XPCONFIG.assetsUrl}/img/logo.svg`;
+    }
+
 }
