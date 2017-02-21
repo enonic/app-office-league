@@ -43,7 +43,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} LeagueResponse
- * @property {League[]} leagues Array of league objects.
+ * @property {League[]} hits Array of league objects.
  * @property {number} count Total number of leagues.
  * @property {number} total Count of leagues returned.
  */
@@ -62,7 +62,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} PlayerResponse
- * @property {Player[]} players Array of player objects.
+ * @property {Player[]} hits Array of player objects.
  * @property {number} count Total number of players.
  * @property {number} total Count of players returned.
  */
@@ -79,7 +79,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} TeamResponse
- * @property {Team[]} teams Array of team objects.
+ * @property {Team[]} hits Array of team objects.
  * @property {number} count Total number of teams.
  * @property {number} total Count of teams returned.
  */
@@ -94,7 +94,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} LeaguePlayerResponse
- * @property {LeaguePlayer[]} players Array of league player objects.
+ * @property {LeaguePlayer[]} hits Array of league player objects.
  * @property {number} count Total number of players in the league.
  * @property {number} total Count of players returned.
  */
@@ -109,7 +109,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} LeagueTeamResponse
- * @property {LeagueTeam[]} teams Array of league team objects.
+ * @property {LeagueTeam[]} hits Array of league team objects.
  * @property {number} count Total number of teams in the league.
  * @property {number} total Count of teams returned.
  */
@@ -160,7 +160,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} GamesResponse
- * @property {Game[]} games Array of game objects.
+ * @property {Game[]} hits Array of game objects.
  * @property {number} count Total number of games.
  * @property {number} total Count of games returned.
  */
@@ -177,7 +177,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} CommentsResponse
- * @property {Comment[]} comments Array of game comment objects.
+ * @property {Comment[]} hits Array of game comment objects.
  * @property {number} count Total number of comments.
  * @property {number} total Count of comments returned.
  */
@@ -189,29 +189,11 @@ var TYPE = {
  * @return {LeagueResponse} Leagues.
  */
 exports.getLeagues = function (start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
+    return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.LEAGUE + "'"
     });
-
-    var leagues = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        leagues = [].concat(repoConn.get(ids));
-    }
-
-    return {
-        "total": result.total,
-        "count": result.count,
-        "leagues": leagues
-    };
 };
 
 /**
@@ -232,21 +214,9 @@ exports.getLeagueById = function (leagueId) {
  * @return {League} League object or null if not found.
  */
 exports.getLeagueByName = function (name) {
-    var repoConn = newConnection();
-
-    var result = repoConn.query({
-        start: 0,
-        count: 1,
+    return querySingleHit({
         query: "type = '" + TYPE.LEAGUE + "' AND name='" + name + "'"
     });
-
-    var league;
-    if (result.count > 0) {
-        var id = result.hits[0].id;
-        league = repoConn.get(id);
-    }
-
-    return league;
 };
 
 /**
@@ -257,30 +227,12 @@ exports.getLeagueByName = function (name) {
  * @return {LeaguePlayerResponse} League players.
  */
 exports.getLeaguePlayersByLeagueId = function (leagueId, start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
+    return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "'",
         sort: "rating DESC, name ASC"
     });
-
-    var leaguePlayers = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        leaguePlayers = [].concat(repoConn.get(ids));
-    }
-
-    return {
-        "total": result.total,
-        "count": result.count,
-        "players": leaguePlayers
-    };
 };
 
 /**
@@ -291,30 +243,12 @@ exports.getLeaguePlayersByLeagueId = function (leagueId, start, count) {
  * @return {LeaguePlayerResponse} League players.
  */
 exports.getLeaguePlayersByPlayerId = function (playerId, start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
+    return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "'",
         sort: "rating DESC, name ASC"
     });
-
-    var leaguePlayers = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        leaguePlayers = [].concat(repoConn.get(ids));
-    }
-
-    return {
-        "total": result.total,
-        "count": result.count,
-        "players": leaguePlayers
-    };
 };
 
 /**
@@ -324,27 +258,16 @@ exports.getLeaguePlayersByPlayerId = function (playerId, start, count) {
  * @return {LeaguePlayer[]} League players.
  */
 exports.getLeaguePlayersByLeagueIdAndPlayerIds = function (leagueId, playerIds) {
-    var repoConn = newConnection();
-
     playerIds = playerIds || [];
     var playersCondition = playerIds.map(function (id) {
         return "playerId='" + id + "'";
     }).join(' OR ');
-    var result = repoConn.query({
+
+    return query({
         start: 0,
         count: playerIds.length,
         query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND (" + playersCondition + ")"
     });
-
-    var leaguePlayers = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        leaguePlayers = [].concat(repoConn.get(ids));
-    }
-
-    return leaguePlayers;
 };
 
 /**
@@ -354,27 +277,17 @@ exports.getLeaguePlayersByLeagueIdAndPlayerIds = function (leagueId, playerIds) 
  * @return {LeagueTeam[]} League teams.
  */
 exports.getLeagueTeamsByLeagueIdAndTeamIds = function (leagueId, teamIds) {
-    var repoConn = newConnection();
 
     teamIds = teamIds || [];
     var teamsCondition = teamIds.map(function (id) {
         return "teamId='" + id + "'";
     }).join(' OR ');
-    var result = repoConn.query({
+
+    return query({
         start: 0,
         count: teamIds.length,
         query: "type = '" + TYPE.LEAGUE_TEAM + "' AND (" + teamsCondition + ")"
     });
-
-    var leagueTeams = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        leagueTeams = [].concat(repoConn.get(ids));
-    }
-
-    return leagueTeams;
 };
 
 /**
@@ -385,30 +298,12 @@ exports.getLeagueTeamsByLeagueIdAndTeamIds = function (leagueId, teamIds) {
  * @return {LeagueTeamResponse} League teams.
  */
 exports.getLeagueTeamsByLeagueId = function (leagueId, start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
+    return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.LEAGUE_TEAM + "' AND leagueId='" + leagueId + "'",
         sort: "rating DESC, name ASC"
     });
-
-    var leagueTeams = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        leagueTeams = [].concat(repoConn.get(ids));
-    }
-
-    return {
-        "total": result.total,
-        "count": result.count,
-        "teams": leagueTeams
-    };
 };
 
 /**
@@ -419,30 +314,12 @@ exports.getLeagueTeamsByLeagueId = function (leagueId, start, count) {
  * @return {LeagueTeamResponse} League teams.
  */
 exports.getLeagueTeamsByTeamId = function (teamId, start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
+    return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.LEAGUE_TEAM + "' AND teamId='" + teamId + "'",
         sort: "rating DESC, name ASC"
     });
-
-    var leagueTeams = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        leagueTeams = [].concat(repoConn.get(ids));
-    }
-
-    return {
-        "total": result.total,
-        "count": result.count,
-        "teams": leagueTeams
-    };
 };
 
 /**
@@ -452,29 +329,11 @@ exports.getLeagueTeamsByTeamId = function (teamId, start, count) {
  * @return {PlayerResponse} Players.
  */
 exports.getPlayers = function (start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
+    return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.PLAYER + "'"
     });
-
-    var players = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        players = [].concat(repoConn.get(ids));
-    }
-
-    return {
-        "total": result.total,
-        "count": result.count,
-        "players": players
-    };
 };
 
 /**
@@ -485,28 +344,11 @@ exports.getPlayers = function (start, count) {
  * @return {PlayerResponse} Players.
  */
 exports.findPlayers = function (searchText, start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
+    return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.PLAYER + "' AND ngram('name^5,nickname^3,description^3', '" + searchText + "', 'AND')"
     });
-    var players = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        players = [].concat(repoConn.get(ids));
-    }
-
-    return {
-        "total": result.total,
-        "count": result.count,
-        "players": players
-    };
 };
 
 /**
@@ -517,28 +359,11 @@ exports.findPlayers = function (searchText, start, count) {
  * @return {TeamResponse} Teams.
  */
 exports.findTeams = function (searchText, start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
+    return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.TEAM + "' AND ngram('name^5,description^3', '" + searchText + "', 'AND')"
     });
-    var teams = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        teams = [].concat(repoConn.get(ids));
-    }
-
-    return {
-        "total": result.total,
-        "count": result.count,
-        "teams": teams
-    };
 };
 
 /**
@@ -549,28 +374,11 @@ exports.findTeams = function (searchText, start, count) {
  * @return {LeagueResponse} Leagues.
  */
 exports.findLeagues = function (searchText, start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
+    return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.LEAGUE + "' AND ngram('name^5,description^3', '" + searchText + "', 'AND')"
     });
-    var leagues = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        leagues = [].concat(repoConn.get(ids));
-    }
-
-    return {
-        "total": result.total,
-        "count": result.count,
-        "leagues": leagues
-    };
 };
 
 /**
@@ -591,21 +399,9 @@ exports.getPlayerById = function (playerId) {
  * @return {Player} Player object or null if not found.
  */
 exports.getPlayerByName = function (name) {
-    var repoConn = newConnection();
-
-    var result = repoConn.query({
-        start: 0,
-        count: 1,
+    return querySingleHit({
         query: "type = '" + TYPE.PLAYER + "' AND name='" + name + "'"
     });
-
-    var player;
-    if (result.count > 0) {
-        var id = result.hits[0].id;
-        player = repoConn.get(id);
-    }
-
-    return player;
 };
 
 /**
@@ -615,29 +411,11 @@ exports.getPlayerByName = function (name) {
  * @return {TeamResponse} Teams.
  */
 exports.getTeams = function (start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
+    return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.TEAM + "'"
     });
-
-    var teams = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        teams = [].concat(repoConn.get(ids));
-    }
-
-    return {
-        "total": result.total,
-        "count": result.count,
-        "teams": teams
-    };
 };
 
 /**
@@ -659,21 +437,9 @@ exports.getTeamById = function (teamId) {
  * @return {Team} Team object or null if not found.
  */
 exports.getTeamByPlayerIds = function (playerId1, playerId2) {
-    var repoConn = newConnection();
-
-    var result = repoConn.query({
-        start: 0,
-        count: 1,
+    return querySingleHit({
         query: "type = '" + TYPE.TEAM + "' AND playerIds='" + playerId1 + "' AND playerIds='" + playerId2 + "'"
     });
-
-    var team;
-    if (result.count > 0) {
-        var id = result.hits[0].id;
-        team = repoConn.get(id);
-    }
-
-    return team;
 };
 
 /**
@@ -682,21 +448,9 @@ exports.getTeamByPlayerIds = function (playerId1, playerId2) {
  * @return {Team} Team object or null if not found.
  */
 exports.getTeamByName = function (name) {
-    var repoConn = newConnection();
-
-    var result = repoConn.query({
-        start: 0,
-        count: 1,
+    return querySingleHit({
         query: "type = '" + TYPE.TEAM + "' AND name='" + name + "'"
     });
-
-    var team;
-    if (result.count > 0) {
-        var id = result.hits[0].id;
-        team = repoConn.get(id);
-    }
-
-    return team;
 };
 
 /**
@@ -705,21 +459,12 @@ exports.getTeamByName = function (name) {
  * @return {Game} Game object or null if not found.
  */
 exports.getGameById = function (gameId) {
-    var repoConn = newConnection();
-
-    var result = repoConn.query({
-        start: 0,
-        count: 1,
+    var game = querySingleHit({
         query: "type = '" + TYPE.GAME + "' AND _id='" + gameId + "'"
     });
 
-    var game;
-    if (result.count > 0) {
-        var id = result.hits[0].id;
-        game = repoConn.get(id);
-    }
     if (game) {
-        getGameDetails(repoConn, game);
+        getGameDetails(newConnection(), game);
     }
 
     return game;
@@ -768,8 +513,6 @@ var getGameDetails = function (repoConn, game) {
 exports.getGamesByLeagueId = function (leagueId, start, count) {
     var repoConn = newConnection();
 
-    start = start || 0;
-    count = count || 10;
     var result = repoConn.query({
         start: start,
         count: count,
@@ -786,7 +529,7 @@ exports.getGamesByLeagueId = function (leagueId, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "games": games
+        "hits": games
     };
 };
 
@@ -800,8 +543,6 @@ exports.getGamesByLeagueId = function (leagueId, start, count) {
 exports.getLeaguesByPlayerId = function (playerId, start, count) {
     var repoConn = newConnection();
 
-    start = start || 0;
-    count = count || 10;
     var result = repoConn.query({
         start: start,
         count: count,
@@ -823,7 +564,7 @@ exports.getLeaguesByPlayerId = function (playerId, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "leagues": leagues
+        "hits": leagues
     };
 };
 
@@ -835,29 +576,11 @@ exports.getLeaguesByPlayerId = function (playerId, start, count) {
  * @return {TeamResponse} Teams.
  */
 exports.getTeamsByPlayerId = function (playerId, start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
+    return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.TEAM + "' AND playerIds = '" + playerId + "'"
     });
-
-    var teams = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        teams = [].concat(repoConn.get(ids));
-    }
-
-    return {
-        "total": result.total,
-        "count": result.count,
-        "teams": teams
-    };
 };
 
 
@@ -869,36 +592,12 @@ exports.getTeamsByPlayerId = function (playerId, start, count) {
  * @return {GamesResponse} Player games.
  */
 exports.getGamesByPlayerId = function (playerId, start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
+    return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.GAME_PLAYER + "' AND playerId = '" + playerId + "'",
         sort: "time DESC"
     });
-
-    var gamePlayers = [];
-    if (result.count > 0) {
-        gamePlayers = result.hits.map(function (hit) {
-            return hit.id;
-        });
-        gamePlayers = [].concat(repoConn.get(gamePlayers));
-    }
-    var gameIds = gamePlayers.map(function (gamePlayer) {
-        return gamePlayer.gameId;
-    });
-    var games = gameIds.map(function (gameId) {
-        return exports.getGameById(gameId);
-    });
-
-    return {
-        "total": result.total,
-        "count": result.count,
-        "games": games
-    };
 };
 
 /**
@@ -934,7 +633,7 @@ exports.getLeaguesByTeamId = function (teamId, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "leagues": leagues
+        "hits": leagues
     };
 };
 
@@ -974,7 +673,7 @@ exports.getGamesByTeamId = function (teamId, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "games": games
+        "hits": games
     };
 };
 
@@ -986,31 +685,53 @@ exports.getGamesByTeamId = function (teamId, start, count) {
  * @return {CommentsResponse} Game comments.
  */
 exports.getCommentsByGameId = function (gameId, start, count) {
-    var repoConn = newConnection();
-
-    start = start || 0;
-    count = count || 10;
-    var result = repoConn.query({
+    return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.COMMENT + "' AND gameId='" + gameId + "'",
         sort: "_timestamp DESC"
     });
+};
 
-    var comments = [];
-    if (result.count > 0) {
-        var ids = result.hits.map(function (hit) {
+function query(params) {
+    var repoConn = newConnection();
+    var queryResult = repoConn.query({
+        start: params.start,
+        count: params.count,
+        query: params.query,
+        sort: params.sort
+    });
+
+    var hits = [];
+    if (queryResult.count > 0) {
+        var ids = queryResult.hits.map(function (hit) {
             return hit.id;
         });
-        comments = [].concat(repoConn.get(ids));
+        hits = [].concat(repoConn.get(ids));
     }
 
     return {
-        total: result.total,
-        count: result.count,
-        comments: comments
+        total: queryResult.total,
+        count: queryResult.count,
+        hits: hits
     };
-};
+}
+
+function querySingleHit(params) {
+    var repoConn = newConnection();
+    var queryResult = repoConn.query({
+        start: 0,
+        count: 1,
+        query: params.query
+    });
+
+    if (queryResult.count > 0) {
+        var id = queryResult.hits[0].id;
+        return repoConn.get(id);
+    }
+
+    return null;
+}
 
 /**
  * Create a new league.

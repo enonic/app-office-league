@@ -89,7 +89,7 @@ var playerType = graphQlLib.createObjectType({
                 count: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.getTeamsByPlayerId(env.source._id, env.args.start, env.args.count).teams;
+                return storeLib.getTeamsByPlayerId(env.source._id, env.args.start, env.args.count).hits;
             }
         },
         leaguePlayers: {
@@ -99,7 +99,7 @@ var playerType = graphQlLib.createObjectType({
                 count: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.getLeaguePlayersByPlayerId(env.source._id, env.args.start, env.args.count).players;
+                return storeLib.getLeaguePlayersByPlayerId(env.source._id, env.args.start, env.args.count).hits;
             }
         }
     }
@@ -143,7 +143,7 @@ var teamType = graphQlLib.createObjectType({
                 count: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.getLeagueTeamsByTeamId(env.source._id, env.args.start, env.args.count).teams;
+                return storeLib.getLeagueTeamsByTeamId(env.source._id, env.args.start, env.args.count).hits;
             }
         }
     }
@@ -346,7 +346,7 @@ var gameType = graphQlLib.createObjectType({
                 count: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.getCommentsByGameId(env.source._id, env.args.start, env.args.count).comments;
+                return storeLib.getCommentsByGameId(env.source._id, env.args.start, env.args.count).hits;
             }
         },
         gamePlayers: {
@@ -478,7 +478,7 @@ var leagueType = graphQlLib.createObjectType({
                 count: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.getLeaguePlayersByLeagueId(env.source._id, env.args.start, env.args.count).players;
+                return storeLib.getLeaguePlayersByLeagueId(env.source._id, env.args.start, env.args.count).hits;
             }
         },
         leagueTeams: {
@@ -488,7 +488,7 @@ var leagueType = graphQlLib.createObjectType({
                 count: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.getLeagueTeamsByLeagueId(env.source._id, env.args.start, env.args.count).teams;
+                return storeLib.getLeagueTeamsByLeagueId(env.source._id, env.args.start, env.args.count).hits;
             }
         },
         games: {
@@ -498,7 +498,7 @@ var leagueType = graphQlLib.createObjectType({
                 count: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.getGamesByLeagueId(env.source._id, env.args.start, env.args.count).games;
+                return storeLib.getGamesByLeagueId(env.source._id, env.args.start, env.args.count).hits;
             }
         }
     }
@@ -533,7 +533,7 @@ var rootQueryType = graphQlLib.createObjectType({
             data: function (env) {
                 var start = env.args.start;
                 var count = env.args.count;
-                return storeLib.getPlayers(start, count).players;
+                return storeLib.getPlayers(start, count).hits;
             }
         },
         team: {
@@ -562,7 +562,7 @@ var rootQueryType = graphQlLib.createObjectType({
             data: function (env) {
                 var start = env.args.start;
                 var count = env.args.count;
-                return storeLib.getTeams(start, count).teams;
+                return storeLib.getTeams(start, count).hits;
             }
         },
         games: {
@@ -576,7 +576,7 @@ var rootQueryType = graphQlLib.createObjectType({
                 var leagueId = env.args.leagueId;
                 var start = env.args.start;
                 var count = env.args.count;
-                return storeLib.getGamesByLeagueId(leagueId, start, count).games;
+                return storeLib.getGamesByLeagueId(leagueId, start, count).hits;
             }
         },
         league: {
@@ -598,7 +598,7 @@ var rootQueryType = graphQlLib.createObjectType({
             data: function (env) {
                 var start = env.args.start;
                 var count = env.args.count;
-                return storeLib.getLeagues(start, count).leagues;
+                return storeLib.getLeagues(start, count).hits;
             }
         }
     }
