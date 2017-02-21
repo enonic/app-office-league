@@ -24,33 +24,14 @@
 </body>
 
 <script type="text/javascript">
-    var XPCONFIG = {;
-    {
-        {#user
-        }
-    }
-    {
-        {
-            {.
-            }
-        }
-    }
-    ,
-    {
-        {/
-            user
-        }
-    }
-    '{{{baseHref}}}',
-            idProvider
-    :
-    '{{{idProvider}}}',
+    var XPCONFIG = {
+        {{#user}}user: {{{.}}},{{/user}}
+        baseHref: '{{{baseHref}}}',
+        idProvider: '{{{idProvider}}}',
         assetsUrl: '{{{assetsUrl}}}',
         loginUrl: '{{{loginUrl}}}',
         logoutUrl: '{{{logoutUrl}}}',
-            graphQlUrl
-    :
-    '{{baseHref}}/api/graphql';
+        graphQlUrl: '{{baseHref}}/api/graphql'
     }
 </script>
 
