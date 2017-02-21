@@ -3,15 +3,13 @@
 </template>
 <template [ngIf]="team != null">
 
-    <rating class="pull-right" [rating]="team.rating" [previousRating]="team.previousRating"></rating>
+    <rating class="right" [rating]="team.rating" [previousRating]="team.previousRating"></rating>
 
-    <span *ngIf="index != undefined" class="pull-left index">{{index}}</span>
+    <span *ngIf="index != undefined" class="index">{{index}}</span>
 
-    <i class="material-icons pull-left avatar">group</i>
-
-    <h4 class="list-group-item-heading">{{team.name}}</h4>
-
-    <p class="list-group-item-text" *ngIf="team.players">
+    <i class="material-icons circle">group</i>
+    <span class="title">{{team.name}}</span>
+    <p *ngIf="team.players">
         <span *ngFor="let player of team.players; let isLast = last">{{player.name}}{{!isLast ? ' + ' : ''}}</span>
     </p>
 

@@ -11,6 +11,7 @@ import {ListComponent} from '../list.component';
 export class PlayerListComponent extends ListComponent implements OnInit {
 
     @Input() players: Player[];
+    @Input() indexed: boolean = true;
     @Input() leagueId: string;
     @Input() teamId: string;
 

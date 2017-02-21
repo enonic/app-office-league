@@ -1,48 +1,55 @@
-* > {
+.results {
   text-align: center;
-  vertical-align: top;
-}
 
-ul {
-  list-style: none;
-  position: relative;
-  display: inline-block;
-  min-height: 45px;
+  ul {
+    list-style: none;
+    position: relative;
+    display: inline-block;
+    min-height: 45px;
 
-  &.winners {
-    color: black;
-    padding: 0 0 0 50px;
-    text-align: left;
+    &.winners {
+      color: black;
+      padding: 0 0 0 50px;
+      text-align: left;
+
+      .score {
+        left: 0;
+        font-weight: bold;
+      }
+    }
+
+    &.losers {
+      color: #aaa;
+      padding: 0 50px 0 0;
+      text-align: right;
+
+      .score {
+        right: 0;
+      }
+    }
 
     .score {
-      left: 0;
+      font-size: 32px;
+      position: absolute;
+      height: 100%;
+    }
+
+    .team {
       font-weight: bold;
     }
   }
 
-  &.losers {
-    color: #aaa;
-    padding: 0 50px 0 0;
-    text-align: right;
-
-    .score {
-      right: 0;
-    }
-  }
-
-  .score {
+  .colon {
     font-size: 32px;
-    position: absolute;
+    font-weight: bold;
+    color: #aaa;
+    margin: 0 10px;
   }
 
-  .team {
-    font-weight: bold;
-  }
 }
 
-.colon {
-  font-size: 32px;
-  font-weight: bold;
-  color: #aaa;
-  margin: 0 10px;
+p {
+  text-align: center;
+  margin: 0;
+  color: #999;
 }

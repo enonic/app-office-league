@@ -5,7 +5,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
     selector: 'player-stats',
-    templateUrl: 'player-stats.component.html'
+    templateUrl: 'player-stats.component.html',
+    styleUrls: ['player-stats.component.less']
 })
 export class PlayerStatsComponent extends PlayerComponent implements OnInit {
 

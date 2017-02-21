@@ -3,9 +3,9 @@
 </template>
 <template [ngIf]="league != null">
 
-    <!--<i class="material-icons pull-left avatar">public</i>-->
-    <img src="{{league.imageUrl}}"/>
-    <h4 class="list-group-item-heading">{{league.name}}</h4>
-    <p class="list-group-item-text">{{league.description}}</p>
+    <img src="{{league.imageUrl}}" alt="{{league.name}}" class="circle">
+    <span class="title">{{league.name}}</span>
+    <p>{{league.description}}</p>
+    <!--    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>-->
 
 </template>

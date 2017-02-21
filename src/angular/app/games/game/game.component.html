@@ -3,12 +3,10 @@
 </template>
 <template [ngIf]="game != null">
 
-    <h4 class="list-group-item-heading">{{game.id}}</h4>
-
-    <div class="clearfix">
+    <div class="results">
 
         <ul class="losers">
-            <li class="score">{{loserGoals}}</li>
+            <li class="score valign-wrapper">{{loserGoals}}</li>
             <li class="team" *ngIf="loserTeam">{{loserTeam.name}}</li>
             <li *ngFor="let loser of losers">{{loser.name}}</li>
         </ul>
@@ -16,13 +14,13 @@
         <span class="colon">:</span>
 
         <ul class="winners">
-            <li class="score">{{winnerGoals}}</li>
+            <li class="score valign-wrapper">{{winnerGoals}}</li>
             <li class="team" *ngIf="winnerTeam">{{winnerTeam.name}}</li>
             <li *ngFor="let winner of winners">{{winner.name}}</li>
         </ul>
 
     </div>
 
-    <p class="list-group-item-text clearfix">{{game.time | date}}</p>
+    <p>{{game.time | date}}</p>
 
 </template>

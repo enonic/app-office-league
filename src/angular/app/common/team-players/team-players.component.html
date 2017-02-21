@@ -1,9 +1,10 @@
 <template [ngIf]="players == null">
     <h4>Loading...</h4>
 </template>
-<ul class="list" [class.row]="responsive" *ngIf="players != null">
-    <li class="block {{responsiveClass}}" *ngFor="let player of players">
-        <player class="list-group-item clearfix" [player]="player"></player>
+<ul *ngIf="players != null">
+    <li class="chip" *ngFor="let player of players">
+        <i class="avatar circle material-icons">face</i>
+        {{player.name}}
     </li>
 </ul>
 

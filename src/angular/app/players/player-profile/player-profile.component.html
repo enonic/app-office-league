@@ -1,21 +1,21 @@
 <template [ngIf]="player == null">
     <h4>Loading...</h4>
 </template>
-<div class="container" *ngIf="player != null">
+<div *ngIf="player != null">
 
     <div class="block row">
-        <div class="col-md-8">
+        <div class="col s12 m8">
             <player [player]="player"></player>
         </div>
     </div>
 
-    <ul class="row list">
+    <ul class="row">
 
-        <li class="col-md-4 col-md-push-8">
+        <li class="col s12 m4 push-m8">
             <player-stats [player]="player"></player-stats>
         </li>
 
-        <li class="col-md-8 col-md-pull-4">
+        <li class="col s12 m8 pull-m4">
             <game-list [games]="player.games"></game-list>
         </li>
 

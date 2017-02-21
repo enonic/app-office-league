@@ -3,14 +3,12 @@
 </template>
 <template [ngIf]="player != null">
 
-    <rating class="pull-right" [rating]="player.rating" [previousRating]="player.previousRating"></rating>
+    <rating class="right" [rating]="player.rating" [previousRating]="player.previousRating"></rating>
 
-    <span *ngIf="index != undefined" class="pull-left index">{{index}}</span>
+    <span *ngIf="index != undefined" class="index">{{index}}</span>
 
-    <i class="material-icons pull-left avatar">face</i>
-
-    <h4 class="list-group-item-heading">{{player.name}}</h4>
-
-    <p class="list-group-item-text" *ngIf="player.nickname">{{player.nickname}}</p>
+    <i class="material-icons circle">face</i>
+    <span class="title">{{player.name}}</span>
+    <p *ngIf="player.nickname">{{player.nickname}}</p>
 
 </template>

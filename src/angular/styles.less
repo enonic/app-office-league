@@ -6,33 +6,40 @@ html {
 
   body {
     background-color: #eee;
+  }
+}
 
-    #page {
-      margin-top: 80px;
+.block {
+  margin-bottom: 10px;
+}
+
+.collection {
+
+  &.list {
+    .collection-item {
+      min-height: 64px;
     }
+  }
 
-    .block {
-      margin-bottom: 20px;
-    }
+  &.indexed {
 
-    .list {
-      padding: 0;
-      list-style: none;
-      margin-bottom: 0;
-    }
+    .collection-item.avatar {
+      padding-left: 117px;
 
-    .index {
-      line-height: 48px;
-      font-size: 32px;
-      margin-right: 20px;
-      min-width: 40px;
-      color: #ccc;
-      text-align: right;
-    }
+      .index {
+        position: absolute;
+        left: 15px;
+        font-size: 18px;
+        line-height: 42px;
+        display: inline-block;
+        min-width: 30px;
+        color: #999;
+        text-align: right;
+      }
 
-    .avatar {
-      font-size: 48px;
-      margin-right: 20px;
+      .circle {
+        left: 60px;
+      }
     }
 
   }
