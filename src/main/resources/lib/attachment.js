@@ -11,10 +11,11 @@
  * @param {RepoConnection} repoConn Repository connection object.
  * @param {Object} node Node object.
  * @param {string} attachmentName Name of the attachment.
- * @param {Function} notFoundHandler Function to be called in case the attachment was not found, used to provide default content.
+ * @param {Function} [notFoundHandler] Function to be called in case the attachment was not found, used to provide default content.
+ * @param {Function} [processHandler] Function to be called for processing stream. Takes node and attachment objects as parameter, should return a new stream.
  * @returns {Object} HTTP response object.
  */
-exports.serveAttachment = function (httpRequest, repoConn, node, attachmentName, notFoundHandler) {
+exports.serveAttachment = function (httpRequest, repoConn, node, attachmentName, notFoundHandler, processHandler) {
     notFoundHandler = notFoundHandler || notFound;
 
     var attachment = findAttachment(node, attachmentName);
@@ -32,6 +33,10 @@ exports.serveAttachment = function (httpRequest, repoConn, node, attachmentName,
     });
     if (!binaryStream) {
         return notFoundHandler();
+    }
+
+    if (processHandler) {
+        binaryStream = processHandler(node, attachment);
     }
 
     return {
