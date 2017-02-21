@@ -60,13 +60,13 @@ var importLeague = function () {
 
     // add players to league
     var playersResult = storeLib.getPlayers(0, 1000);
-    playersResult.players.forEach(function (player) {
+    playersResult.hits.forEach(function (player) {
         storeLib.joinPlayerLeague(leagueNode._id, player._id);
     });
 
     // add teams to league
     var teamsResult = storeLib.getTeams(0, 1000);
-    teamsResult.teams.forEach(function (team) {
+    teamsResult.hits.forEach(function (team) {
         storeLib.joinTeamLeague(leagueNode._id, team._id);
     });
 };

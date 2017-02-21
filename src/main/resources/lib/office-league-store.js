@@ -43,7 +43,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} LeagueResponse
- * @property {League[]} leagues Array of league objects.
+ * @property {League[]} hits Array of league objects.
  * @property {number} count Total number of leagues.
  * @property {number} total Count of leagues returned.
  */
@@ -62,7 +62,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} PlayerResponse
- * @property {Player[]} players Array of player objects.
+ * @property {Player[]} hits Array of player objects.
  * @property {number} count Total number of players.
  * @property {number} total Count of players returned.
  */
@@ -79,7 +79,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} TeamResponse
- * @property {Team[]} teams Array of team objects.
+ * @property {Team[]} hits Array of team objects.
  * @property {number} count Total number of teams.
  * @property {number} total Count of teams returned.
  */
@@ -94,7 +94,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} LeaguePlayerResponse
- * @property {LeaguePlayer[]} players Array of league player objects.
+ * @property {LeaguePlayer[]} hits Array of league player objects.
  * @property {number} count Total number of players in the league.
  * @property {number} total Count of players returned.
  */
@@ -109,7 +109,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} LeagueTeamResponse
- * @property {LeagueTeam[]} teams Array of league team objects.
+ * @property {LeagueTeam[]} hits Array of league team objects.
  * @property {number} count Total number of teams in the league.
  * @property {number} total Count of teams returned.
  */
@@ -160,7 +160,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} GamesResponse
- * @property {Game[]} games Array of game objects.
+ * @property {Game[]} hits Array of game objects.
  * @property {number} count Total number of games.
  * @property {number} total Count of games returned.
  */
@@ -177,7 +177,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} CommentsResponse
- * @property {Comment[]} comments Array of game comment objects.
+ * @property {Comment[]} hits Array of game comment objects.
  * @property {number} count Total number of comments.
  * @property {number} total Count of comments returned.
  */
@@ -210,7 +210,7 @@ exports.getLeagues = function (start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "leagues": leagues
+        "hits": leagues
     };
 };
 
@@ -279,7 +279,7 @@ exports.getLeaguePlayersByLeagueId = function (leagueId, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "players": leaguePlayers
+        "hits": leaguePlayers
     };
 };
 
@@ -313,7 +313,7 @@ exports.getLeaguePlayersByPlayerId = function (playerId, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "players": leaguePlayers
+        "hits": leaguePlayers
     };
 };
 
@@ -407,7 +407,7 @@ exports.getLeagueTeamsByLeagueId = function (leagueId, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "teams": leagueTeams
+        "hits": leagueTeams
     };
 };
 
@@ -441,7 +441,7 @@ exports.getLeagueTeamsByTeamId = function (teamId, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "teams": leagueTeams
+        "hits": leagueTeams
     };
 };
 
@@ -473,7 +473,7 @@ exports.getPlayers = function (start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "players": players
+        "hits": players
     };
 };
 
@@ -505,7 +505,7 @@ exports.findPlayers = function (searchText, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "players": players
+        "hits": players
     };
 };
 
@@ -537,7 +537,7 @@ exports.findTeams = function (searchText, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "teams": teams
+        "hits": teams
     };
 };
 
@@ -569,7 +569,7 @@ exports.findLeagues = function (searchText, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "leagues": leagues
+        "hits": leagues
     };
 };
 
@@ -636,7 +636,7 @@ exports.getTeams = function (start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "teams": teams
+        "hits": teams
     };
 };
 
@@ -786,7 +786,7 @@ exports.getGamesByLeagueId = function (leagueId, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "games": games
+        "hits": games
     };
 };
 
@@ -823,7 +823,7 @@ exports.getLeaguesByPlayerId = function (playerId, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "leagues": leagues
+        "hits": leagues
     };
 };
 
@@ -856,7 +856,7 @@ exports.getTeamsByPlayerId = function (playerId, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "teams": teams
+        "hits": teams
     };
 };
 
@@ -897,7 +897,7 @@ exports.getGamesByPlayerId = function (playerId, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "games": games
+        "hits": games
     };
 };
 
@@ -934,7 +934,7 @@ exports.getLeaguesByTeamId = function (teamId, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "leagues": leagues
+        "hits": leagues
     };
 };
 
@@ -974,7 +974,7 @@ exports.getGamesByTeamId = function (teamId, start, count) {
     return {
         "total": result.total,
         "count": result.count,
-        "games": games
+        "hits": games
     };
 };
 

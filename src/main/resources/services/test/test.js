@@ -16,16 +16,16 @@ exports.get = function (req) {
             teamById: storeLib.getTeamById('cf672365-4f1b-486c-a5c8-08ec05019b9e'),
             teamByName: storeLib.getTeamByName('Crawling sombreros'),
 
-            leaguePlayers: storeLib.getLeaguePlayers('db0af7db-6a11-4242-b124-63467e58449c'),
-            leagueTeams: storeLib.getLeagueTeams('db0af7db-6a11-4242-b124-63467e58449c'),
-            leagueGames: storeLib.getLeagueGames(storeLib.getLeagueByName('Enonic Foos')._id),
+            leaguePlayers: storeLib.getLeaguePlayersByLeagueId('db0af7db-6a11-4242-b124-63467e58449c'),
+            leagueTeams: storeLib.getLeagueTeamsByLeagueId('db0af7db-6a11-4242-b124-63467e58449c'),
+            leagueGames: storeLib.getGamesByLeagueId(storeLib.getLeagueByName('Enonic Foos')._id),
 
-            playerLeagues: storeLib.getPlayerLeagues(storeLib.getPlayerByName('aro')._id),
-            playerTeams: storeLib.getPlayerTeams(storeLib.getPlayerByName('aro')._id),
-            playerGames: storeLib.getPlayerGames(storeLib.getPlayerByName('aro')._id),
+            playerLeagues: storeLib.getLeaguePlayersByPlayerId(storeLib.getPlayerByName('aro')._id),
+            //playerTeams: storeLib.getTeamsByPlayerId(storeLib.getPlayerByName('aro')._id),
+            playerGames: storeLib.getGamesByPlayerId(storeLib.getPlayerByName('aro')._id),
 
-            teamLeagues: storeLib.getTeamLeagues(storeLib.getTeamByName('Crawling sombreros')._id),
-            teamGames: storeLib.getTeamGames(storeLib.getTeamByName('Crawling sombreros')._id)
+            teamLeagues: storeLib.getLeagueTeamsByTeamId(storeLib.getTeamByName('Crawling sombreros')._id),
+            teamGames: storeLib.getGamesByTeamId(storeLib.getTeamByName('Crawling sombreros')._id)
         }
     }
 };
