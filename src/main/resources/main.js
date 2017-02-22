@@ -25,6 +25,7 @@ var player1 = storeLib.getPlayerByName('Player1');
 if (!player1) {
     player1 = storeLib.createPlayer({
         name: 'Player1',
+        userKey: 'user:system:su',
         description: 'Player One',
         handedness: 'left',
         nickname: 'The Player',
@@ -38,6 +39,7 @@ var player2 = storeLib.getPlayerByName('Player2');
 if (!player2) {
     player2 = storeLib.createPlayer({
         name: 'Player2',
+        userKey: 'user:system:myuser2',
         description: 'Player Two',
         handedness: 'right',
         nickname: 'The Other Player',
@@ -51,6 +53,7 @@ var player3 = storeLib.getPlayerByName('Player3');
 if (!player3) {
     player3 = storeLib.createPlayer({
         name: 'Player3',
+        userKey: 'user:system:myuser3',
         description: 'Player Three',
         handedness: 'left',
         nickname: 'Some Other Player',
@@ -64,6 +67,7 @@ var player4 = storeLib.getPlayerByName('Player4');
 if (!player4) {
     player4 = storeLib.createPlayer({
         name: 'Player4',
+        userKey: 'user:system:myuser4',
         description: 'Player Four',
         handedness: 'right',
         nickname: 'And Another Player',

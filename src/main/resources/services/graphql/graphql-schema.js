@@ -62,6 +62,12 @@ var playerType = graphQlLib.createObjectType({
                 return env.source._id;
             }
         },
+        userKey: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLString),
+            data: function (env) {
+                return env.source.userKey;
+            }
+        },
         name: {
             type: graphQlLib.nonNull(graphQlLib.GraphQLString),
             data: function (env) {
@@ -524,17 +530,21 @@ var rootQueryType = graphQlLib.createObjectType({
             type: playerType,
             args: {
                 id: graphQlLib.GraphQLID,
-                name: graphQlLib.GraphQLID
+                name: graphQlLib.GraphQLID,
+                userKey: graphQlLib.GraphQLID
             },
             data: function (env) {
                 var id = env.args.id;
                 var name = env.args.name;
+                var userKey = env.args.userKey;
                 if (id) {
                     return storeLib.getPlayerById(id);
                 } else if (name) {
                     return storeLib.getPlayerByName(name);
+                } else if (userKey) {
+                    return storeLib.getPlayerByUserKey(userKey);
                 }
-                return null;
+                throw "[id], [name] or [userKey] must be specified";
             }
         },
         players: {

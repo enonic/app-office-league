@@ -33,6 +33,7 @@ var TYPE = {
 
 /**
  * @typedef {Object} League
+ * @property {string} type Object type: 'league'
  * @property {string} name Name of the league.
  * @property {string} sport Sport id (e.g. 'foos')
  * @property {string} description League description text.
@@ -51,6 +52,7 @@ var TYPE = {
 /**
  * @typedef {Object} Player
  * @property {string} type Object type: 'player'
+ * @property {string} userKey User key associated to the player.
  * @property {string} name Name of the player.
  * @property {string} nickname Nickname of the player.
  * @property {string} image Attachment name of the player's image.
@@ -401,6 +403,17 @@ exports.getPlayerById = function (playerId) {
 exports.getPlayerByName = function (name) {
     return querySingleHit({
         query: "type = '" + TYPE.PLAYER + "' AND name='" + name + "'"
+    });
+};
+
+/**
+ * Retrieve a player by its user key.
+ * @param  {string} userKey User key associated to the player.
+ * @return {Player} Player object or null if not found.
+ */
+exports.getPlayerByUserKey = function (userKey) {
+    return querySingleHit({
+        query: "type = '" + TYPE.PLAYER + "' AND userKey='" + userKey + "'"
     });
 };
 
@@ -790,6 +803,7 @@ exports.createLeague = function (params) {
  * Create a new player.
  *
  * @param {object} params JSON with the player parameters.
+ * @param {string} params.userKey User key associated to the player.
  * @param {string} params.name Name of the player.
  * @param {string} [params.nickname] Nickname of the player.
  * @param {string} [params.imageStream] Stream with the player's image.
@@ -815,6 +829,7 @@ exports.createPlayer = function (params) {
         _name: prettifyName(params.name),
         _parentPath: PLAYERS_PATH,
         type: TYPE.PLAYER,
+        userKey: params.userKey,
         name: params.name,
         nickname: params.nickname,
         image: imageAttachment && imageAttachment.name,
