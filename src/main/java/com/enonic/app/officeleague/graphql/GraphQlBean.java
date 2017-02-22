@@ -1,5 +1,6 @@
 package com.enonic.app.officeleague.graphql;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -240,10 +241,11 @@ public class GraphQlBean
         return new GraphQLTypeReference( typeKey );
     }
 
-    public MapMapper execute( final GraphQLSchema schema, final String request )
+    public MapMapper execute( final GraphQLSchema schema, final String query, final ScriptValue variables )
     {
         GraphQL graphQL = new GraphQL( schema, new SimpleExecutionStrategy() );
-        final ExecutionResult executionResult = graphQL.execute( request );
+        final Map<String, Object> variablesMap = variables == null ? Collections.<String, Object>emptyMap() : variables.getMap();
+        final ExecutionResult executionResult = graphQL.execute( query, (Object) null, variablesMap );
 
         Map<String, Object> resultMap = new HashMap();
         resultMap.put( "data", executionResult.getData() );
