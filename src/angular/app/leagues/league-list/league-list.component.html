@@ -1,7 +1,28 @@
 <div class="col s12">
+    <ul class="tabs">
+        <li class="tab col s4"><a class="active" href="#myLeagues">My leagues</a></li>
+        <li class="tab col s4"><a href="#discover">Discover</a></li>
+        <li class="tab col s4"><a href="#test4">Create</a></li>
+    </ul>
+</div>
+<div class="col s12" id="myLeagues">
     <ul class="collection list" [class.with-header]="!!title">
         <li *ngIf="title" class="collection-header"><h4>{{title}}</h4></li>
-        <li href="#!" class="collection-item avatar" *ngFor="let league of leagues" (click)="onLeagueClicked(league)">
+        <li href="#!" class="collection-item avatar" *ngFor="let league of myLeagues" (click)="onLeagueClicked(league)">
+            <league [league]="league"></league>
+        </li>
+    </ul>
+
+    <div class="right">
+        <a class="btn-floating btn-large blue" (click)="onCreateClicked()">
+            <i class="material-icons">add</i>
+        </a>
+    </div>
+</div>
+<div class="col s12" id="discover">
+    <ul class="collection list" [class.with-header]="!!title">
+        <li *ngIf="title" class="collection-header"><h4>{{title}}</h4></li>
+        <li href="#!" class="collection-item avatar" *ngFor="let league of allLeagues" (click)="onLeagueClicked(league)">
             <league [league]="league"></league>
         </li>
     </ul>
