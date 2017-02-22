@@ -669,13 +669,19 @@ var rootQueryType = graphQlLib.createObjectType({
         leagues: {
             type: graphQlLib.list(leagueType),
             args: {
+                playerId: graphQlLib.GraphQLID,
                 start: graphQlLib.GraphQLInt,
                 count: graphQlLib.GraphQLInt
             },
             data: function (env) {
+                var playerId = env.args.playerId;
                 var start = env.args.start;
                 var count = env.args.count;
-                return storeLib.getLeagues(start, count).hits;
+                if (playerId) {
+                    return storeLib.getLeaguesByPlayerId(playerId, start, count).hits;
+                } else {
+                    return storeLib.getLeagues(start, count).hits;
+                }
             }
         }
     }
