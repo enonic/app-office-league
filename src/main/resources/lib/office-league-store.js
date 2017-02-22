@@ -39,6 +39,7 @@ var TYPE = {
  * @property {string} description League description text.
  * @property {string} image Attachment name of the league's image.
  * @property {Object} config League config.
+ * @property {string[]} adminPlayerIds Array with ids of the admin players.
  * @property {Attachment|Attachment[]} [attachment] League attachments.
  */
 
@@ -756,6 +757,7 @@ function querySingleHit(params) {
  * @param {string} [params.imageStream] Stream with the league's image.
  * @param {string} [params.imageType] Mime type of the league's image.
  * @param {Object} [params.config] League config.
+ * @param {string[]} [params.adminPlayerIds] Array with ids of the admin players.
  * @return {string} League id.
  */
 exports.createLeague = function (params) {
@@ -780,6 +782,7 @@ exports.createLeague = function (params) {
         image: imageAttachment && imageAttachment.name,
         description: params.description,
         config: params.config,
+        adminPlayerIds: params.adminPlayerIds || [],
         attachment: imageAttachment
     });
 
@@ -1235,6 +1238,7 @@ exports.updateTeam = function (params) {
  * @param {string} [params.imageType] New mime type of the league's image.
  * @param {string} [params.description] New description text.
  * @param {object} [params.config] New league config.
+ * @param {string[]} [params.adminPlayerIds] New array with ids of the admin players.
  * @return {League} Updated league or null if the league could not be updated.
  */
 exports.updateLeague = function (params) {
@@ -1279,6 +1283,9 @@ exports.updateLeague = function (params) {
             }
             if (params.config != null) {
                 node.config = params.config;
+            }
+            if (params.adminPlayerIds != null) {
+                node.adminPlayerIds = params.adminPlayerIds;
             }
             return node;
         }

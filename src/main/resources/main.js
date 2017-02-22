@@ -10,17 +10,6 @@ initLib.initialize();
 var playerImage = ioLib.getResource('/import/images/player.png');
 var teamImage = ioLib.getResource('/import/images/xp.png');
 
-var league = storeLib.getLeagueByName('My League');
-if (!league) {
-    league = storeLib.createLeague({
-        name: 'My League',
-        description: 'Test league',
-        sport: 'foos',
-        imageStream: teamImage.getStream(),
-        imageType: 'image/png'
-    });
-    log.info('League created');
-}
 var player1 = storeLib.getPlayerByName('Player1');
 if (!player1) {
     player1 = storeLib.createPlayer({
@@ -89,7 +78,6 @@ if (!teamA) {
     });
     log.info('Team A created');
 }
-
 var teamB = storeLib.getTeamByName('B Team');
 if (!teamB) {
     teamB = storeLib.createTeam({
@@ -100,6 +88,19 @@ if (!teamB) {
         imageType: 'image/png'
     });
     log.info('Team B created');
+}
+
+var league = storeLib.getLeagueByName('My League');
+if (!league) {
+    league = storeLib.createLeague({
+        name: 'My League',
+        description: 'Test league',
+        sport: 'foos',
+        imageStream: teamImage.getStream(),
+        imageType: 'image/png',
+        adminPlayerIds: [player1._id]
+    });
+    log.info('League created');
 }
 
 storeLib.joinPlayerLeague(league._id, player1._id);

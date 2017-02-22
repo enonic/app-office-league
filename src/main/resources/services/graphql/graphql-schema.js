@@ -487,6 +487,18 @@ var leagueType = graphQlLib.createObjectType({
                 return JSON.stringify(env.source.config);
             }
         },
+        adminPlayers: {
+            type: graphQlLib.list(playerType),
+            args: {
+                start: graphQlLib.GraphQLInt,
+                count: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                return toArray(env.source.adminPlayerIds).map(function (adminPlayerId) {
+                    return storeLib.getPlayerById(adminPlayerId); //TODO Improve
+                });
+            }
+        },
         leaguePlayers: {
             type: graphQlLib.list(leaguePlayerType),
             args: {
@@ -749,14 +761,16 @@ var rootMutationType = graphQlLib.createObjectType({
                 name: graphQlLib.nonNull(graphQlLib.GraphQLString),
                 sport: graphQlLib.nonNull(sportEnumType),
                 description: graphQlLib.GraphQLString,
-                config: graphQlLib.GraphQLString//TODO
+                config: graphQlLib.GraphQLString,//TODO
+                adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID)
             },
             data: function (env) {
                 return storeLib.createLeague({
                     name: env.args.name,
                     sport: env.args.sport,
                     description: env.args.description,
-                    config: env.args.config ? JSON.parse(env.args.config) : {} //TODO
+                    config: env.args.config ? JSON.parse(env.args.config) : {}, //TODO
+                    adminPlayerIds: env.args.adminPlayerIds
                 });
             }
         },
