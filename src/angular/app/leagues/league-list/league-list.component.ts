@@ -30,7 +30,11 @@ export class LeagueListComponent extends ListComponent implements OnInit {
 
     onLeagueClicked(league: League) {
         this.service.league = league;
-        this.router.navigate(['leagues', league.id])
+        this.router.navigate(['leagues', league.id]);
+    }
+
+    onCreateClicked() {
+        this.router.navigate(['league-create']);
     }
 
     private getQuery(): string {

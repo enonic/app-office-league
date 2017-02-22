@@ -35,7 +35,9 @@
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
       <pattern>/games(/[^/]+)?</pattern>
     </mapping>
-
+    <mapping controller="/site/pages/pwa/pwa.js" order="20">
+      <pattern>/league-create</pattern>
+    </mapping>
   </mappings>
 
 </site>

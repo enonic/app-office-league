@@ -1,0 +1,52 @@
+<div class="card">
+    <div class="card-content blue-grey-text">
+        <span class="card-title">Create League</span>
+        <form>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">label_outline</i>
+                    <input id="name" type="text" class="validate" name="name" autocomplete="off" [(ngModel)]="name">
+                    <label for="name">League Name</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">info_outline</i>
+                    <input id="description" type="text" class="validate" autocomplete="off" name="description" [(ngModel)]="description">
+                    <label for="description">Description</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s6">
+                    <label>Sport</label>
+                    <p>
+                        <input name="sport" type="radio" id="foosSport" value="foos" [(ngModel)]="sport"/>
+                        <label for="foosSport">Foosball</label>
+                    </p>
+                    <p>
+                        <input name="sport" type="radio" id="tennisSport" value="tabletennis" [(ngModel)]="sport"/>
+                        <label for="tennisSport">Table tennis</label>
+                    </p>
+                </div>
+
+                <div class="file-field input-field col s6">
+                    <div class="btn blue-grey right">
+                        <span>Image</span>
+                        <input type="file">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12">
+        <button class="btn waves-effect waves-light indigo right" type="submit" name="create" (click)="onCreateClicked()">Create
+            <i class="material-icons right">send</i>
+        </button>
+    </div>
+</div>

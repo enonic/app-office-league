@@ -8,4 +8,4 @@ exports.post = function (req) {
         contentType: 'application/json',
         body: result
     };
-}
+};
