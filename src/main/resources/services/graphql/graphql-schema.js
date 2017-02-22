@@ -1,6 +1,10 @@
 var graphQlLib = require('graphql');
 var storeLib = require('office-league-store');
 
+
+/* -----------------------------------------------------------------------
+ * Interfaces
+ ----------------------------------------------------------------------- */
 var entityType = graphQlLib.createInterfaceType({
     name: 'Entity',
     description: 'Data entity. Contains a field id with a unique value',
@@ -14,6 +18,9 @@ var entityType = graphQlLib.createInterfaceType({
     }
 });
 
+/* -----------------------------------------------------------------------
+ * Enums
+ ----------------------------------------------------------------------- */
 var handednessEnumType = graphQlLib.createEnumType({
     name: 'Handedness',
     description: 'Enumeration of handedness',
@@ -41,6 +48,9 @@ var sportEnumType = graphQlLib.createEnumType({
     }
 });
 
+/* -----------------------------------------------------------------------
+ * Object types
+ ----------------------------------------------------------------------- */
 var playerType = graphQlLib.createObjectType({
     name: 'Player',
     description: 'Domain representation of a player. A player has a link to a user',
@@ -504,6 +514,9 @@ var leagueType = graphQlLib.createObjectType({
     }
 });
 
+/* -----------------------------------------------------------------------
+ * Queries
+ ----------------------------------------------------------------------- */
 var rootQueryType = graphQlLib.createObjectType({
     name: 'RootQuery',
     fields: {
@@ -605,7 +618,10 @@ var rootQueryType = graphQlLib.createObjectType({
 });
 
 
-var pointInputType = graphQlLib.createInputObjectType({
+/* -----------------------------------------------------------------------
+ * Input types
+ ----------------------------------------------------------------------- */
+var pointCreationType = graphQlLib.createInputObjectType({
     name: 'PointCreation',
     description: 'Representation of a goal/point for game creation.',
     fields: {
@@ -621,7 +637,7 @@ var pointInputType = graphQlLib.createInputObjectType({
     }
 });
 
-var gamePlayerInputType = graphQlLib.createInputObjectType({
+var gamePlayerCreationType = graphQlLib.createInputObjectType({
     name: 'GamePlayerCreation',
     fields: {
         side: {
@@ -645,7 +661,7 @@ var gamePlayerInputType = graphQlLib.createInputObjectType({
     }
 });
 
-var gameTeamInputType = graphQlLib.createInputObjectType({
+var gameTeamCreationType = graphQlLib.createInputObjectType({
     name: 'GameTeamCreation',
     fields: {
         side: {
@@ -669,6 +685,9 @@ var gameTeamInputType = graphQlLib.createInputObjectType({
     }
 });
 
+/* -----------------------------------------------------------------------
+ * Mutations
+ ----------------------------------------------------------------------- */
 var rootMutationType = graphQlLib.createObjectType({
     name: 'RootMutation',
     fields: {
@@ -809,9 +828,9 @@ var rootMutationType = graphQlLib.createObjectType({
                 leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 time: graphQlLib.nonNull(graphQlLib.GraphQLString),
                 finished: graphQlLib.GraphQLID,
-                points: graphQlLib.list(pointInputType),
-                gamePlayers: graphQlLib.nonNull(graphQlLib.list(gamePlayerInputType)),
-                gameTeams: graphQlLib.nonNull(graphQlLib.list(gameTeamInputType))
+                points: graphQlLib.list(pointCreationType),
+                gamePlayers: graphQlLib.nonNull(graphQlLib.list(gamePlayerCreationType)),
+                gameTeams: graphQlLib.nonNull(graphQlLib.list(gameTeamCreationType))
             },
             data: function (env) {
                 return storeLib.createGame({
