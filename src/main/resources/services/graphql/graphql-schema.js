@@ -592,6 +592,48 @@ var rootQueryType = graphQlLib.createObjectType({
                 return storeLib.getGamesByLeagueId(leagueId, start, count).hits;
             }
         },
+        leaguePlayers: {
+            type: graphQlLib.list(leaguePlayerType),
+            args: {
+                leagueId: graphQlLib.GraphQLID,
+                playerId: graphQlLib.GraphQLID,
+                start: graphQlLib.GraphQLInt,
+                count: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                var leagueId = env.args.leagueId;
+                var playerId = env.args.playerId;
+                var start = env.args.start;
+                var count = env.args.count;
+                if (leagueId) {
+                    return storeLib.getLeaguePlayersByLeagueId(leagueId, start, count).hits;
+                } else if (playerId) {
+                    return storeLib.getLeaguePlayersByPlayerId(playerId, start, count).hits;
+                }
+                throw "[leagueId] or [playerId] must be specified";
+            }
+        },
+        leagueTeams: {
+            type: graphQlLib.list(leagueTeamType),
+            args: {
+                leagueId: graphQlLib.GraphQLID,
+                teamId: graphQlLib.GraphQLID,
+                start: graphQlLib.GraphQLInt,
+                count: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                var leagueId = env.args.leagueId;
+                var teamId = env.args.teamId;
+                var start = env.args.start;
+                var count = env.args.count;
+                if (leagueId) {
+                    return storeLib.getLeagueTeamsByLeagueId(leagueId, start, count).hits;
+                } else if (playerId) {
+                    return storeLib.getLeagueTeamsByTeamId(teamId, start, count).hits;
+                }
+                throw "[leagueId] or [teamId] must be specified";
+            }
+        },
         league: {
             type: leagueType,
             args: {
