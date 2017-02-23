@@ -10,8 +10,7 @@ import {ListComponent} from '../../common/list.component';
 })
 export class LeagueListComponent extends ListComponent implements OnInit {
 
-    @Input() myLeagues: League[] = [];
-    @Input() allLeagues: League[];
+    @Input() leagues: League[];
     @Input() playerId: string;
     @Input() teamId: string;
 
@@ -23,8 +22,8 @@ export class LeagueListComponent extends ListComponent implements OnInit {
         super.ngOnInit();
 
         if (this.autoLoad) {
-            this.service.post(this.getAllLeaguesQuery()).then((data: any) => {
-                this.allLeagues = data.leagues.map(league => League.fromJson(league));
+            this.service.post(this.getQuery()).then((data: any) => {
+                this.leagues = data.leagues.map(league => League.fromJson(league));
             })
         }
     }
@@ -38,7 +37,7 @@ export class LeagueListComponent extends ListComponent implements OnInit {
         this.router.navigate(['league-create']);
     }
 
-    private getAllLeaguesQuery(): string {
+    private getQuery(): string {
         return `query {
                   leagues {
                     id
