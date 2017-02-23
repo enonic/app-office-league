@@ -5,7 +5,7 @@ import {LeagueComponent} from '../league/league.component';
 import {XPCONFIG} from '../../app.config';
 import {Http, Headers, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {Sport} from '../../../graphql/schemas/Sport';
+import {Sport, SportUtil} from '../../../graphql/schemas/Sport';
 
 @Component({
     selector: 'league-create',
@@ -17,7 +17,8 @@ export class LeagueCreateComponent extends LeagueComponent implements OnInit {
 
     name: string;
     description: string;
-    sport: string = Sport.FOOS.toString().toLowerCase();
+    sport: string = Sport[Sport.FOOS].toLowerCase();
+    nameClasses: {} = {invalid: false};
 
     static readonly CreateLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $playerId: ID) {
   createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: [$playerId]) {
@@ -34,7 +35,16 @@ export class LeagueCreateComponent extends LeagueComponent implements OnInit {
         super.ngOnInit();
     }
 
+    private validate(): boolean {
+        this.nameClasses['invalid'] = !this.name
+        return !!this.name && SportUtil.parse(this.sport) != null;
+    }
+
     onCreateClicked() {
+        if (!this.validate()) {
+            return;
+        }
+
         this.service.post(LeagueCreateComponent.CreateLeagueMutation, this.getMutationVariables()).then(data => {
             return data && data.createLeague;
         }).then(createLeague => {
@@ -88,7 +98,7 @@ export class LeagueCreateComponent extends LeagueComponent implements OnInit {
     private getMutationVariables(): {[key: string]: string} {
         return {
             name: this.name,
-            description: this.description,
+            description: this.description || '',
             sport: this.sport,
             playerId: XPCONFIG.user.playerId
         }
