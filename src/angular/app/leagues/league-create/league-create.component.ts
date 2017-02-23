@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {GraphQLService} from '../../graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {LeagueComponent} from '../league/league.component';
+import {XPCONFIG} from '../../app.config';
 
 @Component({
     selector: 'league-create',
@@ -33,8 +34,8 @@ export class LeagueCreateComponent extends LeagueComponent implements OnInit {
     }
 
     private getMutation(): string {
-        return `mutation ($name: String!, $description: String!, $sport: Sport!) {
-  createLeague(name: $name, description: $description, sport: $sport) {
+        return `mutation ($name: String!, $description: String!, $sport: Sport!, $playerId: ID) {
+  createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: [$playerId]) {
     id
     name
   }
@@ -45,7 +46,8 @@ export class LeagueCreateComponent extends LeagueComponent implements OnInit {
         return {
             name: this.name,
             description: this.description,
-            sport: this.sport
+            sport: this.sport,
+            playerId: XPCONFIG.user.playerId
         }
 
     }

@@ -1,6 +1,7 @@
 var portalLib = require('/lib/xp/portal');
 var authLib = require('/lib/xp/auth');
 var mustacheLib = require('/lib/xp/mustache');
+var storeLib = require('/lib/office-league-store');
 var view = resolve('pwa.html');
 
 exports.get = function (req) {
@@ -14,6 +15,10 @@ exports.get = function (req) {
             key: user.key,
             displayName: user.displayName
         };
+    if (user) {
+        var player = storeLib.getPlayerByUserKey(user.key);
+        userObj.playerId = player && player._id;
+    }
 
     var params = {
         user: userObj && JSON.stringify(userObj),
