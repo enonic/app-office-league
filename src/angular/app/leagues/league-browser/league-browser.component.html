@@ -1,9 +1,9 @@
 <div class="col s12">
     <ul class="tabs">
         <li class="tab col s4"><a (click)="selectTab('myLeagues')">My leagues</a></li>
-        <li class="tab col s4"><a (click)="selectTab('discover')">Discover</a></li>
+        <li class="tab col s4"><a class="active" (click)="selectTab('allLeagues')">Discover</a></li>
         <li class="tab col s4"><a routerLink="/league-create">Create</a></li>
     </ul>
 </div>
-<league-list id="myLeagues" [leagues]="allLeagues"></league-list>
-<league-list id="discover" [leagues]="myLeagues"></league-list>
+<league-list *ngIf="selectedTab === 'myLeagues'" [leagues]="myLeagues"></league-list>
+<league-list *ngIf="selectedTab === 'allLeagues'" [leagues]="allLeagues"></league-list>

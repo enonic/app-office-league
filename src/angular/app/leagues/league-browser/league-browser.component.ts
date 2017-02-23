@@ -14,7 +14,7 @@ export class LeagueBrowserComponent extends ListComponent implements OnInit {
     @Input() allLeagues: League[];
     @Input() playerId: string;
     @Input() teamId: string;
-    test: string = "active";
+    selectedTab: string = "allLeagues";
 
     constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
         super(route);
@@ -27,6 +27,10 @@ export class LeagueBrowserComponent extends ListComponent implements OnInit {
                 this.allLeagues = data.leagues.map(league => League.fromJson(league));
             })
         }
+    }
+
+    selectTab(tab: string) {
+        this.selectedTab = tab;
     }
 
     private getAllLeaguesQuery(): string {
