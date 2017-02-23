@@ -26,7 +26,8 @@ exports.get = function (req) {
         assetsUrl: portalLib.assetUrl({path: ""}),
         loginUrl: portalLib.loginUrl({redirect: baseHref}),
         logoutUrl: portalLib.logoutUrl({redirect: baseHref}),
-        idProvider: portalLib.idProviderUrl()
+        idProvider: portalLib.idProviderUrl(),
+        setImageUrl: portalLib.serviceUrl({service: "set-image"})
     };
     var body = mustacheLib.render(view, params);
 

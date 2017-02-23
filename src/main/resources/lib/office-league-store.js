@@ -1163,6 +1163,7 @@ exports.updatePlayer = function (params) {
                 node.image = imageAttachment.name;
                 node.attachment = imageAttachment;
             }
+            node._timestamp = valueLib.instant(new Date().toISOString())
             return node;
         }
     });
@@ -1221,6 +1222,7 @@ exports.updateTeam = function (params) {
                 node.image = imageAttachment.name;
                 node.attachment = imageAttachment;
             }
+            node._timestamp = valueLib.instant(new Date().toISOString())
             return node;
         }
     });
@@ -1287,6 +1289,7 @@ exports.updateLeague = function (params) {
             if (params.adminPlayerIds != null) {
                 node.adminPlayerIds = params.adminPlayerIds;
             }
+            node._timestamp = valueLib.instant(new Date().toISOString())
             return node;
         }
     });
@@ -1321,6 +1324,7 @@ exports.updatePlayerLeagueRating = function (leagueId, playerId, ratingDelta) {
         key: result.hits[0].id,
         editor: function (node) {
             node.rating = (node.rating || 0) + ratingDelta;
+            node._timestamp = valueLib.instant(new Date().toISOString())
             return node;
         }
     });
@@ -1353,6 +1357,7 @@ exports.updateTeamLeagueRating = function (leagueId, teamId, ratingDelta) {
         key: result.hits[0].id,
         editor: function (node) {
             node.rating = (node.rating || 0) + ratingDelta;
+            node._timestamp = valueLib.instant(new Date().toISOString())
             return node;
         }
     });
@@ -1389,6 +1394,7 @@ exports.updateGame = function (params) {
                 if (params.points != null) {
                     node.points = params.points;
                 }
+                node._timestamp = valueLib.instant(new Date().toISOString())
                 return node;
             }
         });
@@ -1424,6 +1430,7 @@ exports.updateGame = function (params) {
                         if (gp.ratingDelta != null) {
                             node.ratingDelta = gp.ratingDelta;
                         }
+                        node._timestamp = valueLib.instant(new Date().toISOString())
                         return node;
                     }
                 });
@@ -1456,6 +1463,7 @@ exports.updateGame = function (params) {
                         if (gt.ratingDelta != null) {
                             node.ratingDelta = gt.ratingDelta;
                         }
+                        node._timestamp = valueLib.instant(new Date().toISOString())
                         return node;
                     }
                 });

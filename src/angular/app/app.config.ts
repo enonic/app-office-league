@@ -11,6 +11,7 @@ export interface Config {
     loginUrl: string;
     logoutUrl: string;
     graphQlUrl: string;
+    setImageUrl: string;
     user: ConfigUser
 }
 
