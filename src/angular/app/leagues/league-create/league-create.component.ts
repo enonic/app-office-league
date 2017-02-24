@@ -20,12 +20,12 @@ export class LeagueCreateComponent extends BaseComponent {
     sport: string = Sport[Sport.FOOS].toLowerCase();
     nameClasses: {} = {invalid: false};
 
-    static readonly CreateLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $playerId: ID) {
-  createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: [$playerId]) {
-    id
-    name
-  }
-}`;
+    private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $playerId: ID) {
+        createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: [$playerId]) {
+            id
+            name
+        }
+    }`;
 
     constructor(private http: Http, private service: GraphQLService, route: ActivatedRoute, private router: Router) {
         super(route);
@@ -45,7 +45,7 @@ export class LeagueCreateComponent extends BaseComponent {
             return;
         }
 
-        this.service.post(LeagueCreateComponent.CreateLeagueMutation, this.getMutationVariables()).then(data => {
+        this.service.post(LeagueCreateComponent.createLeagueMutation, this.getMutationVariables()).then(data => {
             return data && data.createLeague;
         }).then(createLeague => {
             this.uploadImage(createLeague.id).then(uploadResp => {

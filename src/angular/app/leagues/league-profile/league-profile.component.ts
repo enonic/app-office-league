@@ -17,7 +17,7 @@ export class LeagueProfileComponent extends BaseComponent {
     private leaguePlayers: Player[];
     private leagueTeams: Team[];
 
-    constructor(protected service: GraphQLService, protected route: ActivatedRoute, protected router: Router) {
+    constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private router: Router) {
         super(route);
     }
 
@@ -27,7 +27,7 @@ export class LeagueProfileComponent extends BaseComponent {
         let id = this.route.snapshot.params['id'];
 
         if (!this.league && this.autoLoad && id) {
-            this.service.post(this.getQuery(id)).then(data => {
+            this.graphQLService.post(this.getQuery(id)).then(data => {
                 this.league = League.fromJson(data.league);
                 this.calcStats(this.league);
             });
