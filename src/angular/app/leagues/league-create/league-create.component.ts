@@ -1,7 +1,7 @@
 import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {LeagueComponent} from '../league/league.component';
+import {BaseComponent} from '../../common/base.component';
 import {XPCONFIG} from '../../app.config';
 import {Http, Headers, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
@@ -11,7 +11,7 @@ import {Sport, SportUtil} from '../../../graphql/schemas/Sport';
     selector: 'league-create',
     templateUrl: 'league-create.component.html'
 })
-export class LeagueCreateComponent extends LeagueComponent implements OnInit {
+export class LeagueCreateComponent extends BaseComponent {
 
     @ViewChild('fileInput') inputEl: ElementRef;
 
@@ -27,8 +27,8 @@ export class LeagueCreateComponent extends LeagueComponent implements OnInit {
   }
 }`;
 
-    constructor(private http: Http, service: GraphQLService, route: ActivatedRoute, router: Router) {
-        super(service, route, router);
+    constructor(private http: Http, private service: GraphQLService, route: ActivatedRoute, private router: Router) {
+        super(route);
     }
 
     ngOnInit(): void {

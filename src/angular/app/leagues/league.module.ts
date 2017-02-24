@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {CommonModule} from '../common/common.module';
-import {LeagueComponent} from './league/league.component';
+import {LeagueSummaryComponent} from './league-summary/league-summary.component';
 import {LeagueBrowserComponent} from './league-browser/league-browser.component';
 import {LeagueListComponent} from './league-list/league-list.component';
 import {GamesModule} from '../games/games.module';
@@ -18,7 +18,7 @@ const leagueRoutes: Routes = [
 
 @NgModule({
     declarations: [
-        LeagueComponent,
+        LeagueSummaryComponent,
         LeagueBrowserComponent,
         LeagueListComponent,
         LeagueProfileComponent,

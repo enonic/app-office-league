@@ -7,11 +7,11 @@ import {Player} from '../../../graphql/schemas/Player';
 import {Team} from '../../../graphql/schemas/Team';
 
 @Component({
-    selector: 'league',
-    templateUrl: 'league.component.html',
-    styleUrls: ['league.component.less']
+    selector: 'league-summary',
+    templateUrl: 'league-summary.component.html',
+    styleUrls: ['league-summary.component.less']
 })
-export class LeagueComponent extends BaseComponent {
+export class LeagueSummaryComponent extends BaseComponent {
 
     @Input() league: League;
 

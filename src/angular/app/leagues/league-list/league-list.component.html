@@ -2,7 +2,7 @@
     <ul class="collection list" [class.with-header]="!!title">
         <li *ngIf="title" class="collection-header"><h4>{{title}}</h4></li>
         <li href="#!" class="collection-item avatar" *ngFor="let league of leagues" (click)="onLeagueClicked(league)">
-            <league [league]="league"></league>
+            <league-summary [league]="league"></league-summary>
         </li>
     </ul>
 </div>
