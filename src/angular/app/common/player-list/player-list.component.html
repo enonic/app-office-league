@@ -1,6 +1,6 @@
 <ul class="collection list" [class.indexed]="indexed" [class.with-header]="!!title">
     <li *ngIf="title" class="collection-header"><h4>{{title}}</h4></li>
     <li href="#!" class="collection-item avatar" *ngFor="let player of players; let i = index;" (click)="onPlayerClicked(player.name)">
-        <player [player]="player" [index]="indexed ? i + 1 : undefined"></player>
+        <player-summary [player]="player" [index]="indexed ? i + 1 : undefined"></player-summary>
     </li>
 </ul>

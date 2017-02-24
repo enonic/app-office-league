@@ -1,15 +1,16 @@
-import {Component, OnInit, Input, SimpleChanges} from '@angular/core';
+import {Component, Input, SimpleChanges} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
+import {BaseComponent} from '../../common/base.component';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../graphql.service';
-import {ListComponent} from '../list.component';
 
 @Component({
     selector: 'player-list',
     templateUrl: 'player-list.component.html'
 })
-export class PlayerListComponent extends ListComponent implements OnInit {
+export class PlayerListComponent extends BaseComponent {
 
+    @Input() title: string;
     @Input() players: Player[];
     @Input() indexed: boolean = true;
     @Input() leagueId: string;

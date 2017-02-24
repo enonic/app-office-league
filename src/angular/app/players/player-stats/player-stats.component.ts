@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import {PlayerComponent} from '../../common/player/player.component';
+import {Component, Input} from '@angular/core';
+import {BaseComponent} from '../../common/base.component';
+import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 
@@ -8,13 +9,11 @@ import {ActivatedRoute, Router} from '@angular/router';
     templateUrl: 'player-stats.component.html',
     styleUrls: ['player-stats.component.less']
 })
-export class PlayerStatsComponent extends PlayerComponent implements OnInit {
+export class PlayerStatsComponent extends BaseComponent {
 
-    constructor(service: GraphQLService, route: ActivatedRoute, router: Router) {
-        super(service, router, route);
+    @Input() player: Player;
+
+    constructor(route: ActivatedRoute) {
+        super(route);
     }
-
-    ngOnInit() {
-    }
-
 }
