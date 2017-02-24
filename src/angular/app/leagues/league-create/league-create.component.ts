@@ -13,19 +13,18 @@ import {Sport, SportUtil} from '../../../graphql/schemas/Sport';
 })
 export class LeagueCreateComponent extends BaseComponent {
 
-    @ViewChild('fileInput') inputEl: ElementRef;
-
-    name: string;
-    description: string;
-    sport: string = Sport[Sport.FOOS].toLowerCase();
-    nameClasses: {} = {invalid: false};
-
     private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $playerId: ID) {
         createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: [$playerId]) {
             id
             name
         }
     }`;
+    
+    @ViewChild('fileInput') inputEl: ElementRef;
+    name: string;
+    description: string;
+    sport: string = Sport[Sport.FOOS].toLowerCase();
+    nameClasses: {} = {invalid: false};
 
     constructor(private http: Http, private service: GraphQLService, route: ActivatedRoute, private router: Router) {
         super(route);

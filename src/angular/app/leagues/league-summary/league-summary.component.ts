@@ -15,7 +15,7 @@ export class LeagueSummaryComponent extends BaseComponent {
 
     @Input() league: League;
 
-    constructor(protected service: GraphQLService, protected route: ActivatedRoute, protected router: Router) {
+    constructor(route: ActivatedRoute) {
         super(route);
     }
 }

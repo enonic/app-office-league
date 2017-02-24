@@ -12,8 +12,67 @@ import {Team} from '../../../graphql/schemas/Team';
 })
 export class LeagueProfileComponent extends BaseComponent {
 
+    private static readonly getLeagueQuery = `query ($id: ID!) {
+        league(id: $id) {
+            name
+            leaguePlayers {
+                player {
+                    name
+                }
+                league {
+                    name
+                }
+            }
+            leagueTeams {
+                team {
+                    name
+                    players {
+                        name
+                    }
+                }
+                league {
+                    name
+                }
+            }
+            games{
+                id
+                time
+                finished
+                points {
+                    player {
+                        name
+                    }
+                    time
+                    against
+                }
+                comments {
+                    author {
+                        name
+                    }
+                    text
+                }
+                gamePlayers {
+                    score
+                    winner
+                    side
+                    ratingDelta
+                    player {
+                        name
+                    }
+                }
+                gameTeams {
+                    score
+                    winner
+                    side
+                }
+                league {
+                    name
+                }
+            }
+        }
+    }`;
+    
     @Input() league: League;
-
     private leaguePlayers: Player[];
     private leagueTeams: Team[];
 
@@ -27,7 +86,7 @@ export class LeagueProfileComponent extends BaseComponent {
         let id = this.route.snapshot.params['id'];
 
         if (!this.league && this.autoLoad && id) {
-            this.graphQLService.post(this.getQuery(id)).then(data => {
+            this.graphQLService.post(LeagueProfileComponent.getLeagueQuery, {id: id}).then(data => {
                 this.league = League.fromJson(data.league);
                 this.calcStats(this.league);
             });
@@ -43,71 +102,8 @@ export class LeagueProfileComponent extends BaseComponent {
         }
     }
 
-    private calcStats(league: League) {
+    private calcStats(league: League) { //TODO Fix
         this.leaguePlayers = league.leaguePlayers.map(lp => lp.player);
         this.leagueTeams = league.leagueTeams.map(lt => lt.team);
     }
-
-    private getQuery(id: string) {
-        return `query{
-                  league(id: "${id}") {
-                    name
-                    leaguePlayers {
-                        player {
-                            name
-                        }
-                        league {
-                            name
-                        }
-                    }
-                    leagueTeams {
-                        team {
-                            name
-                            players {
-                                name
-                            }
-                        }
-                        league {
-                            name
-                        }
-                    }
-                    games{
-                        id
-                        time
-                        finished
-                        points {
-                            player {
-                                name
-                            }
-                            time
-                            against
-                        }
-                        comments {
-                            author {
-                                name
-                            }
-                            text
-                        }
-                        gamePlayers {
-                            score
-                            winner
-                            side
-                            ratingDelta
-                            player {
-                                name
-                            }
-                        }
-                        gameTeams {
-                            score
-                            winner
-                            side
-                        }
-                        league {
-                            name
-                        }
-                    }
-                  }
-                }`;
-    }
-
 }
