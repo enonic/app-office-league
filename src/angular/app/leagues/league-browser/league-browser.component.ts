@@ -1,6 +1,7 @@
 import {Component, OnInit, Input, ElementRef} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {GraphQLService} from '../../graphql.service';
+import {AuthService} from '../../auth.service';
 import {League} from '../../../graphql/schemas/League';
 import {ListComponent} from '../../common/list.component';
 //import * as jQuery from 'jquery';
@@ -18,7 +19,8 @@ export class LeagueBrowserComponent extends ListComponent implements OnInit {
     @Input() teamId: string;
     selectedTab: string = "myLeagues";
 
-    constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute, private elementRef: ElementRef) {
+    constructor(private router: Router, private service: GraphQLService, private authService: AuthService, route: ActivatedRoute,
+                private elementRef: ElementRef) {
         super(route);
 
 
@@ -29,7 +31,14 @@ export class LeagueBrowserComponent extends ListComponent implements OnInit {
         if (this.autoLoad) {
             this.service.post(this.getAllLeaguesQuery()).then((data: any) => {
                 this.allLeagues = data.leagues.map(league => League.fromJson(league));
-            })
+            });
+
+            let playerId = this.authService.getUser().playerId;
+            if (playerId) {
+                this.service.post(this.getMyLeaguesQuery(), {playerId: playerId}).then((data: any) => {
+                    this.myLeagues = data.leagues.map(league => League.fromJson(league));
+                });
+            }
         }
 
         $(this.elementRef.nativeElement).find('ul.tabs').tabs();
@@ -39,9 +48,39 @@ export class LeagueBrowserComponent extends ListComponent implements OnInit {
         this.selectedTab = tab;
     }
 
-    private getAllLeaguesQuery(): string {
+    private getAllLeaguesQuery(): string { //TODO THis query is not correct. League component should retrieve its own data
         return `query {
                   leagues {
+                    id
+                    name
+                    description
+                    sport
+                    leaguePlayers {
+                      player {
+                        name
+                      }
+                      league {
+                        name
+                      }
+                    }
+                    leagueTeams {
+                      team {
+                        name
+                        players {
+                          name
+                        }
+                      }
+                      league {
+                        name
+                      }
+                    }
+                  }
+                }`
+    }
+
+    private getMyLeaguesQuery(): string {
+        return `query($playerId: ID) {
+                  leagues(playerId:$playerId) {
                     id
                     name
                     description
