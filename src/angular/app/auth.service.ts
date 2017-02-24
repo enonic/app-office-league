@@ -20,7 +20,7 @@ export class AuthService {
         return !!this.user;
     }
 
-    public getUser(): any {
+    public getUser(): ConfigUser {
         return this.user;
     }
 

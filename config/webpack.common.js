@@ -16,6 +16,10 @@ module.exports = {
         extensions: ['.ts', '.js', 'less']
     },
 
+    externals: {
+        jquery: 'jQuery'
+    },
+
     module: {
         rules: [
             {

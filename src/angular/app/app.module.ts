@@ -12,6 +12,7 @@ import {AuthRouteGuard} from './auth.route.guard';
 import {AuthService} from './auth.service';
 import {HomeComponent} from './home.component';
 import {CommonModule} from './common/common.module';
+import {MaterializeModule} from 'angular2-materialize/dist/index';
 
 const appRoutes: Routes = [
     {path: '', component: HomeComponent},
@@ -25,6 +26,7 @@ const appRoutes: Routes = [
     ],
     imports: [
         CommonModule,
+        MaterializeModule,
         RouterModule.forRoot(appRoutes),
         FormsModule,
         HttpModule,
