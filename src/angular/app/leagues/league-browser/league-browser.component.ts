@@ -1,10 +1,10 @@
 import {Component, OnInit, Input, ElementRef} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
+import {ConfigUser} from '../../app.config';
 import {GraphQLService} from '../../graphql.service';
 import {AuthService} from '../../auth.service';
 import {League} from '../../../graphql/schemas/League';
 import {ListComponent} from '../../common/list.component';
-//import * as jQuery from 'jquery';
 declare var $: any;
 
 @Component({
@@ -19,23 +19,22 @@ export class LeagueBrowserComponent extends ListComponent implements OnInit {
     @Input() teamId: string;
     selectedTab: string = "myLeagues";
 
-    constructor(private router: Router, private service: GraphQLService, private authService: AuthService, route: ActivatedRoute,
-                private elementRef: ElementRef) {
+    constructor(route: ActivatedRoute, private service: GraphQLService, private authService: AuthService, private elementRef: ElementRef) {
         super(route);
-
-
     }
 
     ngOnInit(): void {
         super.ngOnInit();
+        console.log('LeagueBrowserComponent.ngOnInit');
+        console.log('autoLoad:' + this.autoLoad);
         if (this.autoLoad) {
             this.service.post(this.getAllLeaguesQuery()).then((data: any) => {
                 this.allLeagues = data.leagues.map(league => League.fromJson(league));
             });
 
-            let playerId = this.authService.getUser().playerId;
-            if (playerId) {
-                this.service.post(this.getMyLeaguesQuery(), {playerId: playerId}).then((data: any) => {
+            let user: ConfigUser = this.authService.getUser();
+            if (user) {
+                this.service.post(this.getMyLeaguesQuery(), {playerId: user.playerId}).then((data: any) => {
                     this.myLeagues = data.leagues.map(league => League.fromJson(league));
                 });
             }
