@@ -1,5 +1,31 @@
 h1 {
   text-align: center;
+  font-weight: 100;
+
+  span {
+    font-weight: 400;
+  }
+}
+
+ul {
+  text-align: justify;
+  font-size: 18px;
+  margin-bottom: 74px; // to prevent bottom-sticked footer from overflowing
+
+  li {
+    margin-bottom: 10px;
+  }
+}
+
+.bg {
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff url("assets/img/bg.png") no-repeat top center;
+  opacity: .4;
 }
 
 .footer {

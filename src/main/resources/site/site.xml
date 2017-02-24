@@ -22,6 +22,10 @@
       <pattern>/api/graphql</pattern>
     </mapping>
 
+    <mapping controller="/site/controllers/assets.js" order="10">
+      <pattern>/assets/.*</pattern>
+    </mapping>
+
     <!-- mappings for routes handled in Angular -->
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
       <pattern>/teams(/[^/]+)?</pattern>

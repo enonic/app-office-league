@@ -38,7 +38,7 @@
     <template [ngIf]="auth.isAuthenticated()">
         <li class="user-profile"><a href="#" routerLink="/players/{{auth.getUser().key}}">
             <i class="material-icons medium">face</i>
-            <span class="user-name">{{auth.getUser().displayName}}</span>
+            <span>{{auth.getUser().displayName}}</span>
         </a></li>
         <li class="divider"></li>
     </template>

@@ -22,7 +22,7 @@ exports.get = function (req) {
 
     var params = {
         user: userObj && JSON.stringify(userObj),
-        baseHref: baseHref,
+        baseHref: baseHref + '/',   // trailing slash for relative urls to be correct
         assetsUrl: portalLib.assetUrl({path: ""}),
         loginUrl: portalLib.loginUrl({redirect: baseHref}),
         logoutUrl: portalLib.logoutUrl({redirect: baseHref}),

@@ -50,13 +50,13 @@ module.exports = {
                 exclude: helpers.root('src', 'angular', 'app'),
                 loader: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
-                    use: 'css-loader!less-loader'
+                    use: 'css-loader?url=false!less-loader'
                 })
             },
             {
                 test: /\.(less|css)$/,
                 include: helpers.root('src', 'angular', 'app'),
-                loader: 'to-string-loader!css-loader!less-loader'
+                loader: 'to-string-loader!css-loader?url=false!less-loader'
             }
         ]
     },
@@ -71,6 +71,9 @@ module.exports = {
         ),
         new webpack.optimize.CommonsChunkPlugin({
             name: ['app', 'vendor', 'polyfills']
-        })
+        }),
+        new CopyWebpackPlugin([
+            {from: './src/angular/assets'}
+        ])
     ]
 };
