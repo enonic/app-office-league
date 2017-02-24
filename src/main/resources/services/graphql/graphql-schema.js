@@ -542,8 +542,8 @@ var rootQueryType = graphQlLib.createObjectType({
             type: playerType,
             args: {
                 id: graphQlLib.GraphQLID,
-                name: graphQlLib.GraphQLID,
-                userKey: graphQlLib.GraphQLID
+                name: graphQlLib.GraphQLString,
+                userKey: graphQlLib.GraphQLString
             },
             data: function (env) {
                 var id = env.args.id;
