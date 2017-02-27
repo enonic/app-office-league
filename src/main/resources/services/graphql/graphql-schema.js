@@ -117,6 +117,16 @@ var playerType = graphQlLib.createObjectType({
             data: function (env) {
                 return storeLib.getLeaguePlayersByPlayerId(env.source._id, env.args.start, env.args.count).hits;
             }
+        },
+        gamePlayers: {
+            type: graphQlLib.list(graphQlLib.reference('GamePlayer')),
+            args: {
+                start: graphQlLib.GraphQLInt,
+                count: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                return storeLib.getGamePlayersByPlayerId(env.source._id, env.args.start, env.args.count).hits;
+            }
         }
     }
 });
@@ -160,6 +170,16 @@ var teamType = graphQlLib.createObjectType({
             },
             data: function (env) {
                 return storeLib.getLeagueTeamsByTeamId(env.source._id, env.args.start, env.args.count).hits;
+            }
+        },
+        gameTeams: {
+            type: graphQlLib.list(graphQlLib.reference('GameTeam')),
+            args: {
+                start: graphQlLib.GraphQLInt,
+                count: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                return storeLib.getGameTeamsByTeamId(env.source._id, env.args.start, env.args.count).hits;
             }
         }
     }
@@ -212,6 +232,12 @@ var gamePlayerType = graphQlLib.createObjectType({
             data: function (env) {
                 return storeLib.getPlayerById(env.source.playerId);
             }
+        },
+        game: {
+            type: graphQlLib.reference('Game'),
+            data: function (env) {
+                return storeLib.getGameById(env.source.gameId);
+            }
         }
     }
 });
@@ -262,6 +288,12 @@ var gameTeamType = graphQlLib.createObjectType({
             type: teamType,
             data: function (env) {
                 return storeLib.getTeamById(env.source.teamId);
+            }
+        },
+        game: {
+            type: graphQlLib.reference('Game'),
+            data: function (env) {
+                return storeLib.getGameById(env.source.gameId);
             }
         }
     }

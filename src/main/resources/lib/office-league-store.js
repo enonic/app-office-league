@@ -169,6 +169,20 @@ var TYPE = {
  */
 
 /**
+ * @typedef {Object} GameTeamsResponse
+ * @property {GameTeam[]} hits Array of GameTeam objects.
+ * @property {number} count Total number of games.
+ * @property {number} total Count of games returned.
+ */
+
+/**
+ * @typedef {Object} GamePlayersResponse
+ * @property {GamePlayer[]} hits Array of GamePlayer objects.
+ * @property {number} count Total number of games.
+ * @property {number} total Count of games returned.
+ */
+
+/**
  * @typedef {Object} Comment
  * @property {string} type Object type: 'comment'
  * @property {string} text Comment text.
@@ -603,9 +617,9 @@ exports.getTeamsByPlayerId = function (playerId, start, count) {
  * @param  {string} playerId Player id.
  * @param  {number} [start=0] First index of the league games.
  * @param  {number} [count=10] Number of games to fetch.
- * @return {GamesResponse} Player games.
+ * @return {GamePlayersResponse} Player games.
  */
-exports.getGamesByPlayerId = function (playerId, start, count) {
+exports.getGamePlayersByPlayerId = function (playerId, start, count) {
     return query({
         start: start,
         count: count,
@@ -689,6 +703,22 @@ exports.getGamesByTeamId = function (teamId, start, count) {
         "count": result.count,
         "hits": games
     };
+};
+
+/**
+ * Retrieve a list of games for a team.
+ * @param  {string} teamId Team id.
+ * @param  {number} [start=0] First index of the league games.
+ * @param  {number} [count=10] Number of games to fetch.
+ * @return {GameTeamsResponse} Team games.
+ */
+exports.getGameTeamsByTeamId = function (teamId, start, count) {
+    return query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.GAME_TEAM + "' AND teamId = '" + teamId + "'",
+        sort: "time DESC"
+    });
 };
 
 /**

@@ -22,7 +22,7 @@ exports.get = function (req) {
 
             playerLeagues: storeLib.getLeaguePlayersByPlayerId(storeLib.getPlayerByName('aro')._id),
             //playerTeams: storeLib.getTeamsByPlayerId(storeLib.getPlayerByName('aro')._id),
-            playerGames: storeLib.getGamesByPlayerId(storeLib.getPlayerByName('aro')._id),
+            playerGames: storeLib.getGamePlayersByPlayerId(storeLib.getPlayerByName('aro')._id),
 
             teamLeagues: storeLib.getLeagueTeamsByTeamId(storeLib.getTeamByName('Crawling sombreros')._id),
             teamGames: storeLib.getGamesByTeamId(storeLib.getTeamByName('Crawling sombreros')._id)
