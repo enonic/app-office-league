@@ -11,6 +11,10 @@ export class ImageService {
         return `${XPCONFIG.baseHref}/leagues/image/${name}`;
     }
 
+    public static forPlayer(name: string): string {
+        return `${XPCONFIG.baseHref}/players/image/${name}`;
+    }
+
     public static logoUrl(): string {
         return `${XPCONFIG.assetsUrl}/img/logo.svg`;
     }

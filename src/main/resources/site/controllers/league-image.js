@@ -7,7 +7,7 @@ var defaultImage = ioLib.getResource('/site/controllers/default-images/8-tournam
 var defaultImageType = 'image/svg+xml';
 
 exports.get = function (req) {
-    var leagueName = req.url.substr(req.url.lastIndexOf('/') + 1);
+    var leagueName = req.path.substr(req.path.lastIndexOf('/') + 1);
 
     var league = storeLib.getLeagueByName(leagueName);
     if (!league) {

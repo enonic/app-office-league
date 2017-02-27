@@ -1,11 +1,12 @@
 var imageLib = require('/lib/image');
 var contextLib = require('/lib/xp/context');
 
-exports.processImage = function (node, attachment) {
+exports.processImage = function (node, attachment, params) {
     if (!isProcessableImage(attachment.mimeType)) {
         return null;
     }
 
+    var size = params.size || 42;
     return contextLib.run({
         repository: 'office-league',
         branch: 'master'
@@ -14,7 +15,7 @@ exports.processImage = function (node, attachment) {
         return imageLib.processImage({
             id: node._id,
             name: attachment.binary,
-            scale: 'square(42)',
+            scale: 'square(' + size + ')',
             mimeType: attachment.mimeType
         })
     });

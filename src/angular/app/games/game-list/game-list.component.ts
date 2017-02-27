@@ -11,7 +11,7 @@ import {ListComponent} from '../../common/list.component';
 export class GameListComponent extends ListComponent implements OnInit, OnChanges {
 
     @Input() games: Game[];
-    @Input() leagueId: string = "554211b7-ae6a-4815-8edb-0edd49e50478";
+    @Input() leagueId: string;
     @Input() teamId: string;
     @Input() playerId: string;
 
@@ -33,6 +33,8 @@ export class GameListComponent extends ListComponent implements OnInit, OnChange
         let simpleChange = changes['leagueId'] || changes['teamId'] || changes['playerId'];
         if (simpleChange && !!simpleChange.currentValue) {
             this.loadGames();
+        } else if (changes['games']) {
+            this.games = changes['games'].currentValue;
         }
     }
 

@@ -5,20 +5,50 @@
 
     <div class="row">
         <div class="col s12 m8">
-            <player-summary [player]="player"></player-summary>
+            <div class="player-header">
+                <img src="{{player.imageUrl}}?size=96" alt="{{player.name}}" class="circle">
+                <h2 class="header light-blue-text text-darken-4">{{player.name}}</h2>
+            </div>
+
+            <form>
+                <div>
+                    <label>Nickname</label>
+                    <span>{{player.nickname}}</span>
+                    <div>
+                        <label>About</label>
+                        <span>{{player.description}}</span>
+                    </div>
+                    <div *ngIf="player.nationality != null">
+                        <label>Nationality</label>
+                        <span class="flag-icon flag-icon-{{player.nationality}}"></span>
+                        <span>{{getNationality()}}</span>
+                    </div>
+                    <div>
+                        <label>Handedness</label>
+                        <span>{{getHandedness()}}</span>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
     <ul class="row">
 
-        <li class="col s12 m4 push-m8">
-            <player-stats [player]="player"></player-stats>
-        </li>
+        <!--<li class="col s12 m4 push-m8">-->
+            <!--<player-stats [player]="player"></player-stats>-->
+        <!--</li>-->
 
-        <li class="col s12 m8 pull-m4">
-            <game-list [playerId]="player.id"></game-list>
+        <li class="col s12 m8">
+            <game-list [games]="games" [autoLoad]="false"></game-list>
         </li>
 
     </ul>
 
 </div>
+<!--Game list summary (link to game view)-->
+<!--Teams-->
+
+<!--Create a new team button-->
+
+<!--Leagues (show player rank in that league)-->
+<!--Edit button-->

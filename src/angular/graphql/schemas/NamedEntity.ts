@@ -5,9 +5,6 @@ export class NamedEntity extends Entity {
 
     constructor(id: string, name: string) {
         super(id);
-        if (!name) {
-            throw new Error('[name] cannot be null');
-        }
         this.name = name;
     }
 }

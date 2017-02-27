@@ -36,7 +36,7 @@ exports.serveAttachment = function (httpRequest, repoConn, node, attachmentName,
     }
 
     if (processHandler) {
-        binaryStream = processHandler(node, attachment) || binaryStream;
+        binaryStream = processHandler(node, attachment, httpRequest.params) || binaryStream;
     }
 
     return {

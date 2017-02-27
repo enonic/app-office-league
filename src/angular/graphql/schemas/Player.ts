@@ -1,4 +1,5 @@
 import {NamedEntity} from './NamedEntity';
+import {ImageService} from '../../app/image.service';
 import {Handedness, HandednessUtil} from './Handedness';
 import {Team} from './Team';
 import {LeaguePlayer} from './LeaguePlayer';
@@ -11,9 +12,11 @@ export class Player extends NamedEntity {
     description: string;
     teams: Team[] = [];
     leaguePlayers: LeaguePlayer[] = [];
+    imageUrl: string;
 
     constructor(id: string, name: string) {
         super(id, name);
+        this.imageUrl = ImageService.forPlayer(name);
     }
 
     static fromJson(json: any): Player {
@@ -22,7 +25,7 @@ export class Player extends NamedEntity {
         player.nationality = json.nationality;
         player.handedness = HandednessUtil.parse(json.handedness);
         player.description = json.description;
-        player.description = json.teams && json.teams.map((team) => Team.fromJson(team));
+        player.teams = json.teams ? json.teams.map((team) => Team.fromJson(team)) : [];
         return player;
     }
 }

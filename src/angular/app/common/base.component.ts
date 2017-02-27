@@ -15,8 +15,6 @@ export class BaseComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
-        console.log('BaseComponent.ngOnInit()');
-
         if (this.autoLoad == undefined) {
             this.autoLoad = this.route.snapshot.data['autoLoad'] == true;
         }
