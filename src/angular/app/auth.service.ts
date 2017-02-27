@@ -14,6 +14,7 @@ export class AuthService {
 
     public login() {
         this.navigateToUrl(XPCONFIG.loginUrl);
+        return false;
     }
 
     public isAuthenticated() {
@@ -26,6 +27,7 @@ export class AuthService {
 
     public logout() {
         this.navigateToUrl(XPCONFIG.logoutUrl);
+        return false;
     }
 
     private navigateToUrl(url: string) {
