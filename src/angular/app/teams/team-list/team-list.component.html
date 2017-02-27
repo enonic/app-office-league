@@ -3,4 +3,7 @@
     <li href="#!" class="collection-item avatar" *ngFor="let team of teams; let i = index" (click)="onTeamClicked(team)">
         <team [team]="team" [index]="i + 1"></team>
     </li>
+    <li *ngIf="teams?.length == 0" class="collection-item empty">
+        <h5>No teams</h5>
+    </li>
 </ul>

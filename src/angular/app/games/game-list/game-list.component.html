@@ -3,4 +3,7 @@
     <li href="#!" class="collection-item" *ngFor="let game of games" (click)="onGameClicked(game)">
         <game [game]="game"></game>
     </li>
+    <li *ngIf="games?.length == 0" class="collection-item empty">
+        <h5>No games</h5>
+    </li>
 </ul>

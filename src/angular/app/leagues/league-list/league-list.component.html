@@ -3,5 +3,8 @@
     <li href="#!" class="collection-item avatar" *ngFor="let league of leagues" (click)="onLeagueClicked(league)">
         <league-summary [league]="league"></league-summary>
     </li>
+    <li *ngIf="leagues?.length == 0" class="collection-item empty">
+        <h5>No leagues</h5>
+    </li>
 </ul>
 
