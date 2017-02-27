@@ -1,13 +1,15 @@
-<div *ngIf="authService.isAuthenticated()" class="col s12">
-    <ul class="tabs">
+<div class="col s12">
+    <ul class="tabs" *ngIf="authService.isAuthenticated()">
         <li class="tab col s4">
-            <a (click)="selectTab('myLeagues')">My leagues</a>
+            <a href="#myLeagues">My leagues</a>
         </li>
         <li class="tab col s4">
-            <a (click)="selectTab('allLeagues')">Discover</a>
+            <a href="#allLeagues">Discover</a>
         </li>
-        <li class="tab col s4"><a routerLink="/league-create">Create</a></li>
     </ul>
+    <league-list id="myLeagues" [leagues]="myLeagues" class="no-margin" *ngIf="authService.isAuthenticated()"></league-list>
+    <league-list id="allLeagues" [leagues]="allLeagues" class="no-margin"></league-list>
 </div>
-<league-list *ngIf="selectedTab === 'myLeagues'" [leagues]="myLeagues"></league-list>
-<league-list *ngIf="selectedTab === 'allLeagues'" [leagues]="allLeagues"></league-list>
+<div class="fixed-action-btn" *ngIf="authService.isAuthenticated()">
+    <a class="btn-floating btn-large waves-effect waves-light red" routerLink="/league-create"><i class="material-icons">add</i></a>
+</div>

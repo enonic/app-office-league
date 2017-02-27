@@ -5,8 +5,13 @@
 
             <a routerLink="/" href="#" class="brand-logo"><img src="{{logoUrl}}" height="40px">Office League</a>
 
-            <a materialize="sideNav" href="#" data-activates="mobile-side-nav" class="button-collapse right"><i
-                    class="material-icons">menu</i></a>
+            <a href="#"
+               materialize="sideNav"
+               [materializeParams]="[{closeOnClick: true}]"
+               data-activates="mobile-side-nav"
+               class="button-collapse right">
+                <i class="material-icons">menu</i>
+            </a>
 
             <ul class="right hide-on-med-and-down">
                 <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>

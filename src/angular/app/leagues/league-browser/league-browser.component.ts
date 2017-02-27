@@ -1,5 +1,5 @@
-import {Component, Input, ElementRef} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Component, Input, ElementRef, AfterViewInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {ConfigUser} from '../../app.config';
 import {GraphQLService} from '../../graphql.service';
 import {AuthService} from '../../auth.service';
@@ -11,7 +11,7 @@ declare var $: any;
     selector: 'league-browser',
     templateUrl: 'league-browser.component.html'
 })
-export class LeagueBrowserComponent extends BaseComponent {
+export class LeagueBrowserComponent extends BaseComponent implements AfterViewInit {
 
     private static readonly myLeaguesQuery: string = `query($playerId: ID) {
         leagues(playerId:$playerId){
@@ -33,12 +33,10 @@ export class LeagueBrowserComponent extends BaseComponent {
     @Input() allLeagues: League[];
     @Input() playerId: string;
     @Input() teamId: string;
-    selectedTab: string;
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private authService: AuthService,
                 private elementRef: ElementRef) {
         super(route);
-        this.selectedTab = authService.isAuthenticated() ? 'myLeagues' : 'allLeagues';
     }
 
     ngOnInit(): void {
@@ -55,11 +53,9 @@ export class LeagueBrowserComponent extends BaseComponent {
                 });
             }
         }
-
-        $(this.elementRef.nativeElement).find('ul.tabs').tabs();
     }
 
-    selectTab(tab: string) {
-        this.selectedTab = tab;
+    ngAfterViewInit(): void {
+        $(this.elementRef.nativeElement).find('ul.tabs').tabs();
     }
 }
