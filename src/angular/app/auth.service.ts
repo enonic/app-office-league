@@ -8,7 +8,7 @@ export class AuthService {
 
     private user: ConfigUser;
 
-    constructor(private activatedRoute: ActivatedRoute, private location: Location) {
+    constructor(private activatedRoute: ActivatedRoute) {
         this.user = XPCONFIG.user;
     }
 
@@ -29,8 +29,7 @@ export class AuthService {
     }
 
     private navigateToUrl(url: string) {
-        console.log(`Going away to url: ${url}`);
-        this.location.go(url, 'redirect=' + this.getCurrentUrl());
+        window.location.href = url;
     }
 
     private getCurrentUrl(): string {
