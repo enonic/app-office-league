@@ -33,11 +33,12 @@ export class LeagueBrowserComponent extends BaseComponent {
     @Input() allLeagues: League[];
     @Input() playerId: string;
     @Input() teamId: string;
-    selectedTab: string = 'myLeagues';
+    selectedTab: string;
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private authService: AuthService,
                 private elementRef: ElementRef) {
         super(route);
+        this.selectedTab = authService.isAuthenticated() ? 'myLeagues' : 'allLeagues';
     }
 
     ngOnInit(): void {
