@@ -1156,8 +1156,6 @@ exports.joinTeamLeague = function (leagueId, teamId, rating) {
         rating: rating
     });
 
-    log.info('leagueTeam: ' + JSON.stringify(leagueTeam, null, 2));
-
     return leagueTeam;
 };
 
