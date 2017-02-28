@@ -1,10 +1,7 @@
 import {Component, Input} from '@angular/core';
-import {GraphQLService} from '../../graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
-import {Player} from '../../../graphql/schemas/Player';
-import {Team} from '../../../graphql/schemas/Team';
 
 @Component({
     selector: 'league-summary',
@@ -14,8 +11,30 @@ import {Team} from '../../../graphql/schemas/Team';
 export class LeagueSummaryComponent extends BaseComponent {
 
     @Input() league: League;
+    @Input() rating: number = 0;
+    @Input() ranking: number = 0;
 
     constructor(route: ActivatedRoute) {
         super(route);
     }
+
+    rankingText(): string {
+        return this.ordinal(this.ranking);
+    }
+
+    private ordinal(value: number) {
+        if (!value) {
+            return '';
+        }
+        switch (value) {
+        case 1:
+            return '1st';
+        case 2:
+            return '2nd';
+        case 3:
+            return '3rd';
+        default:
+            return value + 'th';
+        }
+    };
 }

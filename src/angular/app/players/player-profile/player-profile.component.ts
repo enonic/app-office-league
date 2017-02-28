@@ -8,6 +8,8 @@ import {Countries} from '../../common/countries';
 import {Game} from '../../../graphql/schemas/Game';
 import {League} from '../../../graphql/schemas/League';
 import {Team} from '../../../graphql/schemas/Team';
+import {XPCONFIG} from '../../app.config';
+import {LeaguePlayer} from '../../../graphql/schemas/LeaguePlayer';
 
 @Component({
     selector: 'player-profile',
@@ -17,9 +19,10 @@ import {Team} from '../../../graphql/schemas/Team';
 export class PlayerProfileComponent extends BaseComponent {
 
     @Input() player: Player;
-    @Input() games: Game[] = [];
-    @Input() leagues: League[] = [];
-    @Input() teams: Team[] = [];
+    games: Game[] = [];
+    leaguePlayers: League[] = [];
+    teams: Team[] = [];
+    editable: boolean;
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService) {
         super(route);
@@ -41,11 +44,19 @@ export class PlayerProfileComponent extends BaseComponent {
         this.player = Player.fromJson(data.player);
         this.games = data.player.gamePlayers.map((gm) => Game.fromJson(gm.game));
         if (data.player.leaguePlayers) {
-            this.leagues = data.player.leaguePlayers.map((lp) => League.fromJson(lp.league));
+            this.leaguePlayers = data.player.leaguePlayers.map((lp) => {
+                let leaguePlayer = new LeaguePlayer(lp.id);
+                leaguePlayer.league = League.fromJson(lp.league);
+                leaguePlayer.ranking = lp.ranking;
+                leaguePlayer.rating = lp.rating;
+                return leaguePlayer;
+            });
         }
         if (data.player.teams) {
             this.teams = data.player.teams.map((t) => Team.fromJson(t));
         }
+        let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
+        this.editable = this.player.id === currentPlayerId;
     }
 
     getNationality(): string {
@@ -64,6 +75,10 @@ export class PlayerProfileComponent extends BaseComponent {
         default:
             return 'N/A';
         }
+    }
+
+    onEditClicked() {
+        console.log('TODO: Edit player');
     }
 
     //TODO search by id is more efficient
@@ -122,6 +137,7 @@ export class PlayerProfileComponent extends BaseComponent {
             
             leaguePlayers {
               rating
+              ranking
               league {
                 id
                 name

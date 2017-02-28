@@ -5,6 +5,7 @@
 
     <img src="{{league.imageUrl}}" alt="{{league.name}}" class="circle">
     <span class="title">{{league.name}}</span>
+    <div *ngIf="ranking > 0" class="chip right blue lighten-2 white-text" title="{{rating}}">{{rankingText()}}</div>
     <p>{{league.description}}</p>
 
 </template>

@@ -71,7 +71,7 @@ function required(params, name) {
         throw "Parameter '" + name + "' is required";
     }
     return value;
-};
+}
 
 function optional(params, name) {
     var value = params[name];
@@ -79,5 +79,5 @@ function optional(params, name) {
         return null;
     }
     return value;
-};
+}
 

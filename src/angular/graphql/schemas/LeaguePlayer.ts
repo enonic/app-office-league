@@ -5,6 +5,7 @@ import {League} from './League';
 
 export class LeaguePlayer extends Entity {
     rating: number;
+    ranking: number;
     player: Player;
     league: League;
 
@@ -15,6 +16,7 @@ export class LeaguePlayer extends Entity {
     static fromJson(json: any): LeaguePlayer {
         let leaguePlayer = new LeaguePlayer(json.id);
         leaguePlayer.rating = json.rating;
+        leaguePlayer.ranking = json.ranking;
         leaguePlayer.player = json.player && Player.fromJson(json.player);
         leaguePlayer.league = json.league && League.fromJson(json.league);
         return leaguePlayer;

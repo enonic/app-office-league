@@ -4,6 +4,7 @@ import {CommonModule} from '../common/common.module';
 import {LeagueSummaryComponent} from './league-summary/league-summary.component';
 import {LeagueBrowserComponent} from './league-browser/league-browser.component';
 import {LeagueListComponent} from './league-list/league-list.component';
+import {LeaguePlayerListComponent} from './league-player-list/league-player-list.component';
 import {GamesModule} from '../games/games.module';
 import {TeamsModule} from '../teams/team.module';
 import {LeagueProfileComponent} from './league-profile/league-profile.component';
@@ -21,6 +22,7 @@ const leagueRoutes: Routes = [
         LeagueSummaryComponent,
         LeagueBrowserComponent,
         LeagueListComponent,
+        LeaguePlayerListComponent,
         LeagueProfileComponent,
         LeagueCreateComponent
     ],
@@ -31,7 +33,7 @@ const leagueRoutes: Routes = [
         TeamsModule,
         RouterModule.forChild(leagueRoutes)
     ],
-    exports: [LeagueListComponent],
+    exports: [LeagueListComponent, LeaguePlayerListComponent],
     providers: [],
     bootstrap: []
 })

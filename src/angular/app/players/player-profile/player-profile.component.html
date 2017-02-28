@@ -4,12 +4,18 @@
 <div *ngIf="player != null">
 
     <div class="row">
-        <div class="col s12 m8">
+        <div class="col s10">
             <div class="player-header">
                 <img src="{{player.imageUrl}}?size=96" alt="{{player.name}}" class="circle">
                 <h2 class="header light-blue-text text-darken-4">{{player.name}}</h2>
             </div>
-
+        </div>
+        <div *ngIf="editable" class="col s2" (click)="onEditClicked()">
+            <a class="btn-floating btn-large waves-effect waves-light light-blue darken-4"><i class="material-icons">edit</i></a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
             <form>
                 <div>
                     <label>Nickname</label>
@@ -34,16 +40,12 @@
 
     <ul class="row">
 
-        <!--<li class="col s12 m4 push-m8">-->
-        <!--<player-stats [player]="player"></player-stats>-->
-        <!--</li>-->
-
         <li class="col s12 m8">
             <game-list [games]="games" [title]="'Latest games'" [autoLoad]="false"></game-list>
         </li>
 
         <li class="col s12 m8">
-            <league-list [leagues]="leagues" [title]="'Leagues'"></league-list>
+            <league-player-list [leaguePlayers]="leaguePlayers" [title]="'Leagues'"></league-player-list>
         </li>
 
         <li class="col s12 m8">
@@ -53,6 +55,4 @@
     </ul>
 
 </div>
-<!--Create a new team button-->
-<!--Leagues (show player rank in that league)-->
-<!--Edit button-->
+<!--TODO Create a new team button-->

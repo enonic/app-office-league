@@ -65,7 +65,7 @@ var playerType = graphQlLib.createObjectType({
         userKey: {
             type: graphQlLib.nonNull(graphQlLib.GraphQLString),
             data: function (env) {
-                return env.source.userKey;
+                return env.source.userKey || '';
             }
         },
         name: {
