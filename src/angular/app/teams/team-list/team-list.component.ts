@@ -32,6 +32,8 @@ export class TeamListComponent extends ListComponent implements OnInit, OnChange
         let leagueIdChanges = changes['leagueId'];
         if (leagueIdChanges && leagueIdChanges.currentValue) {
             this.loadTeams(leagueIdChanges.currentValue)
+        } else if (changes['teams']) {
+            this.teams = changes['teams'].currentValue;
         }
     }
 

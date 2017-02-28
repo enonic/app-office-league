@@ -1,6 +1,5 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
-import {GraphQLService} from '../../graphql.service';
 import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
 

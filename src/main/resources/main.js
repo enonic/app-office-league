@@ -214,7 +214,7 @@ var createRandomGame = function (player1Id, player2Id, player3Id, player4Id, tea
     });
     var leaguePlayers = storeLib.getLeaguePlayersByLeagueIdAndPlayerIds(game.leagueId, playerIds);
     var leagueTeams = storeLib.getLeagueTeamsByLeagueIdAndTeamIds(game.leagueId, teamIds);
-    ratingLib.calculateGameRatings(game, leaguePlayers, leagueTeams);
+    ratingLib.calculateGameRatings(game, leaguePlayers.hits, leagueTeams.hits);
     for (var j = 0; j < game.gamePlayers.length; j++) {
         storeLib.updatePlayerLeagueRating(game.leagueId, game.gamePlayers[j].playerId, game.gamePlayers[j].ratingDelta);
     }

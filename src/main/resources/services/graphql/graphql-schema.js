@@ -433,7 +433,13 @@ var leaguePlayerType = graphQlLib.createObjectType({
         rating: {
             type: graphQlLib.GraphQLInt,
             data: function (env) {
-                return env.source.rating;
+                return toInt(env.source.rating);
+            }
+        },
+        ranking: {
+            type: graphQlLib.GraphQLInt,
+            data: function (env) {
+                return toInt(storeLib.getRankingForPlayerLeague(env.source.playerId, env.source.leagueId));
             }
         },
         player: {
@@ -979,3 +985,6 @@ function toArray(object) {
     return [object];
 }
 
+function toInt(number) {
+    return number.intValue();
+}

@@ -35,20 +35,24 @@
     <ul class="row">
 
         <!--<li class="col s12 m4 push-m8">-->
-            <!--<player-stats [player]="player"></player-stats>-->
+        <!--<player-stats [player]="player"></player-stats>-->
         <!--</li>-->
 
         <li class="col s12 m8">
-            <game-list [games]="games" [autoLoad]="false"></game-list>
+            <game-list [games]="games" [title]="'Latest games'" [autoLoad]="false"></game-list>
+        </li>
+
+        <li class="col s12 m8">
+            <league-list [leagues]="leagues" [title]="'Leagues'"></league-list>
+        </li>
+
+        <li class="col s12 m8">
+            <team-list [teams]="teams" [title]="'Teams'" [autoLoad]="false"></team-list>
         </li>
 
     </ul>
 
 </div>
-<!--Game list summary (link to game view)-->
-<!--Teams-->
-
 <!--Create a new team button-->
-
 <!--Leagues (show player rank in that league)-->
 <!--Edit button-->

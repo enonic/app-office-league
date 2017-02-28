@@ -737,6 +737,38 @@ exports.getCommentsByGameId = function (gameId, start, count) {
     });
 };
 
+/**
+ * Get the ranking position for a player in a league.
+ * @param  {string} playerId Player id.
+ * @param  {string} leagueId League id.
+ * @return {number} Ranking position.
+ */
+exports.getRankingForPlayerLeague = function (playerId, leagueId) {
+    var result = query({
+        start: 0,
+        count: -1,
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "'",
+        sort: "rating DESC"
+    });
+
+    if (result.count === 0) {
+        return -1;
+    }
+
+    var ranking = 0, prevRating = 0;
+    for (var i = 0; i < result.hits.length; i++) {
+        if (prevRating != result.hits[i].rating) {
+            ranking++;
+        }
+        if (result.hits[i].playerId === playerId) {
+            return ranking;
+        }
+        prevRating = result.hits[i].rating;
+    }
+
+    return -1;
+};
+
 function query(params) {
     var repoConn = newConnection();
     var queryResult = repoConn.query({

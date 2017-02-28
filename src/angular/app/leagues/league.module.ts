@@ -31,7 +31,7 @@ const leagueRoutes: Routes = [
         TeamsModule,
         RouterModule.forChild(leagueRoutes)
     ],
-    exports: [],
+    exports: [LeagueListComponent],
     providers: [],
     bootstrap: []
 })
