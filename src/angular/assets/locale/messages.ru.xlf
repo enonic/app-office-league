@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="4ef95cbd26198bdb4dd04036961832078f361cba" datatype="html">
+        <source>No games</source>
+        <target>Нет игр</target>
+        <note priority="1" from="description">Games list empty message</note>
+        <note priority="1" from="meaning">No games</note>
+      </trans-unit>
+      <trans-unit id="169b6de9291e059efce7fc4ab89a6423212f269e" datatype="html">
+        <source>My leagues</source>
+        <target>Мои лиги</target>
+        <note priority="1" from="description">My leagues tab caption</note>
+        <note priority="1" from="meaning">My leagues</note>
+      </trans-unit>
+      <trans-unit id="17d4ea421a067c3fe69910040fdb555592348aaf" datatype="html">
+        <source>Discover</source>
+        <target>Все лиги</target>
+        <note priority="1" from="description">All leagues tab caption</note>
+        <note priority="1" from="meaning">Discover</note>
+      </trans-unit>
+      <trans-unit id="028685bab0927fb8180ab33796b5d51b30ade96f" datatype="html">
+        <source>Welcome to<x id="LINE_BREAK" ctype="lb"/><x id="START_TAG_SPAN" ctype="x-span"/>Office League<x id="CLOSE_TAG_SPAN" ctype="x-span"/></source>
+        <target>Добро пожаловать в<x id="LINE_BREAK" ctype="lb"/><x id="START_TAG_SPAN" ctype="x-span"/>Оффисную лигу<x id="CLOSE_TAG_SPAN" ctype="x-span"/></target>
+        <note priority="1" from="description">Home screen welcome message</note>
+        <note priority="1" from="meaning">Welcome</note>
+      </trans-unit>
+      <trans-unit id="9ea3f8c59ff1a003db7b83701f8a56c8d15fa7cf" datatype="html">
+        <source>Browse leagues</source>
+        <target>Выбрать лигу</target>
+        <note priority="1" from="description">Home screen browse leagues button</note>
+        <note priority="1" from="meaning">Browse leagues</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -15,5 +15,8 @@
       "./node_modules/@types"
     ],
     "allowSyntheticDefaultImports": true
+  },
+  "angularCompilerOptions": {
+    "genDir": "src/angular/assets/locale"
   }
 }

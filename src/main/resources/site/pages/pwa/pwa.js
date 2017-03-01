@@ -21,6 +21,7 @@ exports.get = function (req) {
     }
 
     var params = {
+        locale: req.params.locale || 'en',
         user: userObj && JSON.stringify(userObj),
         baseHref: baseHref + '/',   // trailing slash for relative urls to be correct
         assetsUrl: portalLib.assetUrl({path: ""}),

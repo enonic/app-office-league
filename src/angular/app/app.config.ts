@@ -5,6 +5,7 @@ export interface ConfigUser {
 }
 
 export interface Config {
+    locale: string;
     baseHref: string;
     idProvider: string;
     assetsUrl: string;

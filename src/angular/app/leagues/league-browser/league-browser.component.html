@@ -1,10 +1,10 @@
 <div class="col s12">
     <ul class="tabs" *ngIf="authService.isAuthenticated()">
         <li class="tab col s4">
-            <a href="#myLeagues">My leagues</a>
+            <a href="#myLeagues" i18n="My leagues|My leagues tab caption">My leagues</a>
         </li>
         <li class="tab col s4">
-            <a href="#allLeagues">Discover</a>
+            <a href="#allLeagues" i18n="Discover|All leagues tab caption">Discover</a>
         </li>
     </ul>
     <league-list id="myLeagues" [leagues]="myLeagues" class="no-margin" *ngIf="authService.isAuthenticated()"></league-list>
