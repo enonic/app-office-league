@@ -14,6 +14,7 @@ export class LeagueProfileComponent extends BaseComponent {
 
     private static readonly getLeagueQuery = `query ($id: ID!, $count:Int, $sort: String) {
         league(id: $id) {
+            id
             name
             leaguePlayers(count:$count, sort:$sort) {
                 player {

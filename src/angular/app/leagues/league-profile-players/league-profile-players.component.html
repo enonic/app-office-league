@@ -1,0 +1,24 @@
+<template [ngIf]="league == null">
+    <h4>Loading...</h4>
+</template>
+<template [ngIf]="league != null">
+
+    <div class="row">
+        <div class="col s12 l8">
+            <league-summary [league]="league"></league-summary>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col s12 l4 push-l8 no-margin">
+            <ul class="row list">
+                <li class="col s12 m6 l12">
+                    <player-list [title]="'Top players'"
+                                 [autoLoad]="false"
+                                 [players]="leaguePlayers"></player-list>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</template>

@@ -8,12 +8,14 @@ import {LeaguePlayerListComponent} from './league-player-list/league-player-list
 import {GamesModule} from '../games/games.module';
 import {TeamsModule} from '../teams/team.module';
 import {LeagueProfileComponent} from './league-profile/league-profile.component';
+import {LeagueProfilePlayersComponent} from './league-profile-players/league-profile-players.component';
 import {LeagueCreateComponent} from './league-create/league-create.component';
 import {FormsModule} from '@angular/forms';
 
 const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, data: {autoLoad: true}},
     {path: 'leagues/:id', component: LeagueProfileComponent, data: {autoLoad: true}},
+    {path: 'leagues/:id/players', component: LeagueProfilePlayersComponent, data: {autoLoad: true}},
     {path: 'league-create', component: LeagueCreateComponent, data: {autoLoad: true}},
 ];
 
@@ -24,6 +26,7 @@ const leagueRoutes: Routes = [
         LeagueListComponent,
         LeaguePlayerListComponent,
         LeagueProfileComponent,
+        LeagueProfilePlayersComponent,
         LeagueCreateComponent
     ],
     imports: [
