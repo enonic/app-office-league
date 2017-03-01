@@ -16,7 +16,7 @@
                     <player-list [title]="'Top players'"
                                  [autoLoad]="false"
                                  [players]="leaguePlayers"
-                                 [detailsPath]="['leagues', league.id, 'players']"></player-list>
+                                 [detailsPath]="['leagues', league.name.toLowerCase(), 'players']"></player-list>
                 </li>
                 <li class="col s12 m6 l12">
                     <team-list [title]="'Top teams'"

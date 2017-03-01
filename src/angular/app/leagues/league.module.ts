@@ -14,8 +14,8 @@ import {FormsModule} from '@angular/forms';
 
 const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, data: {autoLoad: true}},
-    {path: 'leagues/:id', component: LeagueProfileComponent, data: {autoLoad: true}},
-    {path: 'leagues/:id/players', component: LeagueProfilePlayersComponent, data: {autoLoad: true}},
+    {path: 'leagues/:name', component: LeagueProfileComponent, data: {autoLoad: true}},
+    {path: 'leagues/:name/players', component: LeagueProfilePlayersComponent, data: {autoLoad: true}},
     {path: 'league-create', component: LeagueCreateComponent, data: {autoLoad: true}},
 ];
 

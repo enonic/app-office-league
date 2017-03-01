@@ -699,11 +699,18 @@ var rootQueryType = graphQlLib.createObjectType({
         league: {
             type: leagueType,
             args: {
-                id: graphQlLib.nonNull(graphQlLib.GraphQLID)
+                id: graphQlLib.GraphQLID,
+                name: graphQlLib.GraphQLString
             },
-            data: function (env) {
+            data: function (env) { 
                 var id = env.args.id;
-                return storeLib.getLeagueById(id);
+                var name = env.args.name;
+                if (id) {
+                    return storeLib.getLeagueById(id);
+                } else if (name) {
+                    return storeLib.getLeagueByName(name);
+                } 
+                throw "[id] or [name] must be specified";
             }
         },
         leagues: {
