@@ -16,6 +16,6 @@ export class LeaguePlayerListComponent extends BaseComponent implements OnInit {
     }
 
     onLeagueClicked(leaguePlayer: LeaguePlayer) {
-        this.router.navigate(['leagues', leaguePlayer.league.id]);
+        this.router.navigate(['leagues', leaguePlayer.league.name.toLowerCase()]);
     }
 }

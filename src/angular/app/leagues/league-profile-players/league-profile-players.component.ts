@@ -27,6 +27,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
     }`;
     
     @Input() league: League;
+    players: Player[];
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private router: Router) {
         super(route);
@@ -40,6 +41,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
         if (!this.league && this.autoLoad && name) {
             this.graphQLService.post(LeagueProfilePlayersComponent.getLeagueQuery, {name: name, count:-1, sort:'rating DESC, name ASC'}).then(data => {
                 this.league = League.fromJson(data.league);
+                this.players = data.league.leaguePlayers.map(leaguePlayer => Player.fromJson(leaguePlayer.player));
             });
         }
     }
