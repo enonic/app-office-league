@@ -3,12 +3,13 @@ buildscript {
         mavenLocal()
         jcenter()
         maven {
-            url 'http://repo.enonic.com/public'
+            url 'https://repo.enonic.com/public'
         }
     }
 
     dependencies {
         classpath "com.enonic.xp:gradle-plugin:${xpVersion}"
+        classpath 'com.enonic.gradle:gradle-defaults:1.0.1'
     }
 }
 
@@ -16,8 +17,9 @@ plugins {
     id "com.moowork.node" version "1.1.1"
 }
 
-apply plugin: 'maven'
 apply plugin: 'com.enonic.xp.app'
+apply plugin: 'com.enonic.defaults'
+apply plugin: 'maven'
 
 app {
     name = project.appName
@@ -46,7 +48,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        url 'http://repo.enonic.com/public'
+        url 'https://repo.enonic.com/public'
     }
 }
 
@@ -56,11 +58,3 @@ task runWebpackBuild( type: NpmTask ) {
 
 runWebpackBuild.dependsOn 'npmInstall'
 jar.dependsOn runWebpackBuild
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository( url: 'http://repo.enonic.com/artifactory/public' )
-        }
-    }
-}
