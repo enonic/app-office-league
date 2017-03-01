@@ -12,10 +12,10 @@ import {Team} from '../../../graphql/schemas/Team';
 })
 export class LeagueProfileComponent extends BaseComponent {
 
-    private static readonly getLeagueQuery = `query ($id: ID!) {
+    private static readonly getLeagueQuery = `query ($id: ID!, $count:Int, $sort: String) {
         league(id: $id) {
             name
-            leaguePlayers {
+            leaguePlayers(count:$count, sort:$sort) {
                 player {
                     name
                 }
@@ -23,7 +23,7 @@ export class LeagueProfileComponent extends BaseComponent {
                     name
                 }
             }
-            leagueTeams {
+            leagueTeams(count:$count, sort:$sort) {
                 team {
                     name
                     players {
@@ -86,7 +86,7 @@ export class LeagueProfileComponent extends BaseComponent {
         let id = this.route.snapshot.params['id'];
 
         if (!this.league && this.autoLoad && id) {
-            this.graphQLService.post(LeagueProfileComponent.getLeagueQuery, {id: id}).then(data => {
+            this.graphQLService.post(LeagueProfileComponent.getLeagueQuery, {id: id, count:3, sort:'rating DESC, name ASC'}).then(data => {
                 this.league = League.fromJson(data.league);
                 this.calcStats(this.league);
             });

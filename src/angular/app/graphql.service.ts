@@ -26,7 +26,7 @@ export class GraphQLService {
             .toPromise();
     }
 
-    post(query: string, variables?: {[key: string]: string}): Promise<any> {
+    post(query: string, variables?: {[key: string]: any}): Promise<any> {
         return this.http.post(this.url, {query: query, variables: variables})
             .map(this.extractData)
             .catch(this.handleError)

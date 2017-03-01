@@ -65,7 +65,7 @@ var playerType = graphQlLib.createObjectType({
         userKey: {
             type: graphQlLib.nonNull(graphQlLib.GraphQLString),
             data: function (env) {
-                return env.source.userKey || '';
+                return env.source.userKey || '';
             }
         },
         name: {
@@ -541,20 +541,22 @@ var leagueType = graphQlLib.createObjectType({
             type: graphQlLib.list(leaguePlayerType),
             args: {
                 start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                count: graphQlLib.GraphQLInt,
+                sort: graphQlLib.GraphQLString
             },
             data: function (env) {
-                return storeLib.getLeaguePlayersByLeagueId(env.source._id, env.args.start, env.args.count).hits;
+                return storeLib.getLeaguePlayersByLeagueId(env.source._id, env.args.start, env.args.count, env.args.sort).hits;
             }
         },
         leagueTeams: {
             type: graphQlLib.list(leagueTeamType),
             args: {
                 start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                count: graphQlLib.GraphQLInt,
+                sort: graphQlLib.GraphQLString
             },
             data: function (env) {
-                return storeLib.getLeagueTeamsByLeagueId(env.source._id, env.args.start, env.args.count).hits;
+                return storeLib.getLeagueTeamsByLeagueId(env.source._id, env.args.start, env.args.count, env.args.sort).hits;
             }
         },
         games: {

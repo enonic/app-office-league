@@ -243,12 +243,12 @@ exports.getLeagueByName = function (name) {
  * @param  {number} [count=10] Number of players to fetch.
  * @return {LeaguePlayerResponse} League players.
  */
-exports.getLeaguePlayersByLeagueId = function (leagueId, start, count) {
+exports.getLeaguePlayersByLeagueId = function (leagueId, start, count, sort) {
     return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "'",
-        sort: "rating DESC, name ASC"
+        sort: sort || "rating DESC, name ASC"
     });
 };
 
@@ -259,12 +259,12 @@ exports.getLeaguePlayersByLeagueId = function (leagueId, start, count) {
  * @param  {number} [count=10] Number of players to fetch.
  * @return {LeaguePlayerResponse} League players.
  */
-exports.getLeaguePlayersByPlayerId = function (playerId, start, count) {
+exports.getLeaguePlayersByPlayerId = function (playerId, start, count, sort) {
     return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "'",
-        sort: "rating DESC, name ASC"
+        sort: sort || "rating DESC, name ASC"
     });
 };
 
@@ -314,12 +314,12 @@ exports.getLeagueTeamsByLeagueIdAndTeamIds = function (leagueId, teamIds) {
  * @param  {number} [count=10] Number of teams to fetch.
  * @return {LeagueTeamResponse} League teams.
  */
-exports.getLeagueTeamsByLeagueId = function (leagueId, start, count) {
+exports.getLeagueTeamsByLeagueId = function (leagueId, start, count, sort) {
     return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.LEAGUE_TEAM + "' AND leagueId='" + leagueId + "'",
-        sort: "rating DESC, name ASC"
+        sort: sort || "rating DESC, name ASC"
     });
 };
 
@@ -330,12 +330,12 @@ exports.getLeagueTeamsByLeagueId = function (leagueId, start, count) {
  * @param  {number} [count=10] Number of teams to fetch.
  * @return {LeagueTeamResponse} League teams.
  */
-exports.getLeagueTeamsByTeamId = function (teamId, start, count) {
+exports.getLeagueTeamsByTeamId = function (teamId, start, count, sort) {
     return query({
         start: start,
         count: count,
         query: "type = '" + TYPE.LEAGUE_TEAM + "' AND teamId='" + teamId + "'",
-        sort: "rating DESC, name ASC"
+        sort: sort || "rating DESC, name ASC"
     });
 };
 
