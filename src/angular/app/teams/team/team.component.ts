@@ -17,15 +17,15 @@ export class TeamComponent implements OnInit {
 
     ngOnInit(): void {
         let autoLoad = this.route.snapshot.data['autoLoad'],
-            id = this.route.snapshot.params['id'];
+            name = this.route.snapshot.params['name'];
 
-        if (!this.team && autoLoad && id) {
+        if (!this.team && autoLoad && name) {
             // check if the team was passed from list to spare request
             this.team = this.service.team;
             if (!this.team) {
                 // no team was passed because this was probably a page reload
                 let query = `query {
-                    team(name: "${id}") {
+                    team(name: "${name}") {
                         id,
                         name,
                         description,

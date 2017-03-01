@@ -29,10 +29,9 @@ export class PlayerProfileComponent extends BaseComponent {
     }
 
     ngOnInit(): void {
-        let id = this.route.snapshot.params['id'];
+        let name = this.route.snapshot.params['name'];
 
-        //TODO Player name defined as player id. Fix
-        this.graphQLService.post(PlayerProfileComponent.getPlayerQuery, {name: id}).then(
+        this.graphQLService.post(PlayerProfileComponent.getPlayerQuery, {name: name}).then(
             data => this.handleResponse(data));
     }
 
@@ -81,7 +80,6 @@ export class PlayerProfileComponent extends BaseComponent {
         console.log('TODO: Edit player');
     }
 
-    //TODO search by id is more efficient
     private static readonly getPlayerQuery = `query($name: String){
         player(name: $name) {
             id

@@ -39,7 +39,7 @@ export class TeamListComponent extends ListComponent implements OnInit, OnChange
 
     onTeamClicked(team: Team) {
         this.service.team = team;
-        this.router.navigate(['teams', team.name])
+        this.router.navigate(['teams', team.name.toLowerCase()])
     }
 
     private teamSorter(first: Team, second: Team): number {
