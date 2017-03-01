@@ -1450,7 +1450,7 @@ exports.updateTeamLeagueRating = function (leagueId, teamId, ratingDelta) {
         key: result.hits[0].id,
         editor: function (node) {
             node.rating = (node.rating || 0) + ratingDelta;
-            node._timestamp = valueLib.instant(new Date().toISOString())
+            node._timestamp = valueLib.instant(new Date().toISOString());
             return node;
         }
     });

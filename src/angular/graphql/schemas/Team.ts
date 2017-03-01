@@ -1,4 +1,5 @@
 import {NamedEntity} from './NamedEntity';
+import {ImageService} from '../../app/image.service';
 import {Player} from './Player';
 import {LeagueTeam} from './LeagueTeam';
 
@@ -6,9 +7,11 @@ export class Team extends NamedEntity {
     description: string;
     players: Player[] = [];
     leagueTeams: LeagueTeam[] = [];
+    imageUrl: string;
 
     constructor(id: string, name: string) {
         super(id, name);
+        this.imageUrl = ImageService.forTeam(name);
     }
 
     static fromJson(json: any): Team {

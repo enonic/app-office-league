@@ -7,7 +7,7 @@
 
     <span *ngIf="index != undefined" class="index">{{index}}</span>
 
-    <i class="material-icons circle">group</i>
+    <img src="{{team.imageUrl}}?size=42" alt="{{team.name}}" class="circle">
     <span class="title">{{team.name}}</span>
     <p *ngIf="team.players">
         <span *ngFor="let player of team.players; let isLast = last">{{player.name}}{{!isLast ? ' + ' : ''}}</span>

@@ -370,7 +370,7 @@ var findTeamContentByName = function (teamContentName) {
     var results = contentLib.query({
         start: 0,
         count: 1,
-        query: "_name = '" + teamContentName + "'",
+        query: "displayName = '" + teamContentName + "'",
         branch: "draft",
         contentTypes: [LEGACY_APP_NAME + ":team"]
     });
