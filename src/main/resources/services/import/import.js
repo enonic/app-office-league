@@ -62,12 +62,22 @@ var importLeague = function () {
     var playersResult = storeLib.getPlayers(0, 1000);
     playersResult.hits.forEach(function (player) {
         storeLib.joinPlayerLeague(leagueNode._id, player._id);
+        storeLib.refresh();
+        var contentPlayer = findPlayerContentByName(player.name);
+        if (contentPlayer) {
+            storeLib.setPlayerLeagueRating(leagueNode._id, player._id, contentPlayer.data.rating);
+        }
     });
 
     // add teams to league
     var teamsResult = storeLib.getTeams(0, 1000);
     teamsResult.hits.forEach(function (team) {
         storeLib.joinTeamLeague(leagueNode._id, team._id);
+        storeLib.refresh();
+        var contentTeam = findTeamContentByName(team.name);
+        if (contentTeam) {
+            storeLib.setTeamLeagueRating(leagueNode._id, team._id, contentTeam.data.rating);
+        }
     });
 };
 
@@ -342,4 +352,28 @@ var findPlayerNodeById = function (playerContentId) {
 
     var result = storeLib.getPlayerByName(p.displayName);
     return result && result._id;
+};
+
+var findPlayerContentByName = function (playerContentName) {
+    var results = contentLib.query({
+        start: 0,
+        count: 1,
+        query: "_name = '" + playerContentName + "'",
+        branch: "draft",
+        contentTypes: [LEGACY_APP_NAME + ":player"]
+    });
+
+    return results.count > 0 ? results.hits[0] : null;
+};
+
+var findTeamContentByName = function (teamContentName) {
+    var results = contentLib.query({
+        start: 0,
+        count: 1,
+        query: "_name = '" + teamContentName + "'",
+        branch: "draft",
+        contentTypes: [LEGACY_APP_NAME + ":team"]
+    });
+
+    return results.count > 0 ? results.hits[0] : null;
 };

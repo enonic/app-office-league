@@ -1392,6 +1392,39 @@ exports.updatePlayerLeagueRating = function (leagueId, playerId, ratingDelta) {
 };
 
 /**
+ * Set player rating in an existing league.
+ *
+ * @param {string} leagueId Id of the league.
+ * @param {string} playerId Id of the player.
+ * @param {number} rating Rating points.
+ * @return {LeaguePlayer} Updated leaguePlayer.
+ */
+exports.setPlayerLeagueRating = function (leagueId, playerId, rating) {
+    var repoConn = newConnection();
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "' AND leagueId='" + leagueId + "'"
+    });
+
+    if (result.count === 0) {
+        log.info('League player not found for playerId=[' + playerId + '] and leagueId=[' + leagueId + ']');
+        return null;
+    }
+
+    var leaguePlayerNode = repoConn.modify({
+        key: result.hits[0].id,
+        editor: function (node) {
+            node.rating = rating;
+            node._timestamp = valueLib.instant(new Date().toISOString())
+            return node;
+        }
+    });
+    return leaguePlayerNode;
+};
+
+/**
  * Add or decrease team rating in an existing league.
  *
  * @param {string} leagueId Id of the league.
@@ -1417,6 +1450,40 @@ exports.updateTeamLeagueRating = function (leagueId, teamId, ratingDelta) {
         key: result.hits[0].id,
         editor: function (node) {
             node.rating = (node.rating || 0) + ratingDelta;
+            node._timestamp = valueLib.instant(new Date().toISOString())
+            return node;
+        }
+    });
+
+    return leagueTeamNode;
+};
+
+/**
+ * Set team rating in an existing league.
+ *
+ * @param {string} leagueId Id of the league.
+ * @param {string} teamId Id of the team.
+ * @param {number} rating Rating points.
+ * @return {LeagueTeam} Updated leagueTeam.
+ */
+exports.setTeamLeagueRating = function (leagueId, teamId, rating) {
+    var repoConn = newConnection();
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND teamId='" + teamId + "' AND leagueId='" + leagueId + "'"
+    });
+
+    if (result.count === 0) {
+        log.info('League team not found for teamId=[' + teamId + '] and leagueId=[' + leagueId + ']');
+        return null;
+    }
+
+    var leagueTeamNode = repoConn.modify({
+        key: result.hits[0].id,
+        editor: function (node) {
+            node.rating = rating;
             node._timestamp = valueLib.instant(new Date().toISOString())
             return node;
         }
