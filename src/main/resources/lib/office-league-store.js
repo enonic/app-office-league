@@ -1417,7 +1417,7 @@ exports.setPlayerLeagueRating = function (leagueId, playerId, rating) {
         key: result.hits[0].id,
         editor: function (node) {
             node.rating = rating;
-            node._timestamp = valueLib.instant(new Date().toISOString())
+            node._timestamp = valueLib.instant(new Date().toISOString());
             return node;
         }
     });
