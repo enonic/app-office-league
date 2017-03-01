@@ -1,5 +1,6 @@
 import {Component, Input, SimpleChanges} from '@angular/core';
 import {GraphQLService} from '../../graphql.service';
+import {AuthService} from '../../auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
@@ -29,7 +30,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
     @Input() league: League;
     players: Player[];
 
-    constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private router: Router) {
+    constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private authService: AuthService, private router: Router) {
         super(route);
     }
 
@@ -44,5 +45,9 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
                 this.players = data.league.leaguePlayers.map(leaguePlayer => Player.fromJson(leaguePlayer.player));
             });
         }
+    }
+    
+    addPlayer(): void {
+        console.log('addPlayer');
     }
 }

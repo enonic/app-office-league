@@ -31,4 +31,8 @@
         </div>
     </div>
 
+    <div class="fixed-action-btn" *ngIf="authService.isAuthenticated()">
+        <a class="btn-floating btn-large waves-effect waves-light red" (click)="addPlayer()"><i class="material-icons">add</i></a>
+    </div>
+
 </template>
