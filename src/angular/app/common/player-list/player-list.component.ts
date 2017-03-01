@@ -37,8 +37,8 @@ export class PlayerListComponent extends BaseComponent {
         }
     }
 
-    onPlayerClicked(id: string) {
-        this.router.navigate(['players', id]);
+    onPlayerClicked(player: Player) {
+        this.router.navigate(['players', player.name.toLowerCase()]);
     }
 
     private playerSorter(first: Player, second: Player): number {
