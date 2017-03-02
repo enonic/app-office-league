@@ -206,7 +206,7 @@ var gamePlayerType = graphQlLib.createObjectType({
         score: {
             type: graphQlLib.GraphQLInt,
             data: function (env) {
-                return env.source.score;
+                return toInt(env.source.score);
             }
         },
         side: {
@@ -224,7 +224,7 @@ var gamePlayerType = graphQlLib.createObjectType({
         ratingDelta: {
             type: graphQlLib.GraphQLInt,
             data: function (env) {
-                return env.source.ratingDelta;
+                return toInt(env.source.ratingDelta);
             }
         },
         player: {
@@ -263,7 +263,7 @@ var gameTeamType = graphQlLib.createObjectType({
         score: {
             type: graphQlLib.GraphQLInt,
             data: function (env) {
-                return env.source.score;
+                return toInt(env.source.score);
             }
         },
         side: {
@@ -281,7 +281,7 @@ var gameTeamType = graphQlLib.createObjectType({
         ratingDelta: {
             type: graphQlLib.GraphQLInt,
             data: function (env) {
-                return env.source.ratingDelta;
+                return toInt(env.source.ratingDelta);
             }
         },
         team: {
@@ -472,7 +472,7 @@ var leagueTeamType = graphQlLib.createObjectType({
         rating: {
             type: graphQlLib.GraphQLInt,
             data: function (env) {
-                return env.source.rating;
+                return toInt(env.source.rating);
             }
         },
         team: {
