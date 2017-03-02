@@ -1,0 +1,13 @@
+<template [ngIf]="players == null">
+    <h4>Loading...</h4>
+</template>
+<template [ngIf]="players != null">
+    <ul class="player-list">
+        <li class="player-item" *ngFor="let player of players;" (click)="onPlayerClicked(player)">
+            <div class="player-item-details">
+                <img src="{{player.imageUrl}}?size=200" alt="{{player.name}}">
+                <span class="title">{{player.name}}</span>
+            </div>
+        </li>
+    </ul>
+</template>

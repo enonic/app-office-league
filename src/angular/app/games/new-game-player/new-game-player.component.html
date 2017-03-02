@@ -1,0 +1,19 @@
+<template [ngIf]="player == null">
+    <div class="player" (click)="onClicked()">
+        <img src="{{questionMarkImg()}}" class="circle" alt="Select a player">
+        <span class="title">Select a player</span>
+    </div>
+</template>
+
+<template [ngIf]="player != null">
+    <div class="player" (click)="onClicked()">
+        <img src="{{player.imageUrl}}?size=200" class="circle" alt="{{player.name}}">
+        <span class="title">{{player.name}}</span>
+    </div>
+</template>
+<div class="modal center" [ngStyle]="{'display': modalOpen ? 'block' : 'none'}">
+    <div class="modal-content">
+        <h4 class="center">{{modalTitle}}</h4>
+        <player-select [leagueId]="leagueId" [enabled]="playerSelectEnabled" (playerSelected)="onSelected($event)"></player-select>
+    </div>
+</div>

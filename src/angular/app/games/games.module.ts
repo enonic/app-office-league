@@ -4,6 +4,9 @@ import {GameComponent} from './game/game.component';
 import {GameListComponent} from './game-list/game-list.component';
 import {CommonModule} from '../common/common.module';
 import {GameProfileComponent} from './game-profile/game-profile.component';
+import {NewGameComponent} from './new-game/new-game.component';
+import {NewGamePlayerComponent} from './new-game-player/new-game-player.component';
+import {PlayerSelectComponent} from './player-select/player-select.component';
 
 const gameRoutes: Routes = [
     {
@@ -17,17 +20,25 @@ const gameRoutes: Routes = [
         // canActivate: [AuthRouteGuard],
         data: {autoLoad: true}
     },
+    {
+        path: 'games/:leagueId/new-game',
+        component: NewGameComponent,
+        data: {}
+    },
 ];
 
 @NgModule({
     declarations: [
         GameListComponent,
         GameProfileComponent,
-        GameComponent
+        GameComponent,
+        NewGameComponent,
+        NewGamePlayerComponent,
+        PlayerSelectComponent
     ],
     imports: [
         CommonModule,
-        RouterModule.forChild(gameRoutes),
+        RouterModule.forChild(gameRoutes)
     ],
     exports: [GameListComponent],
     providers: [],

@@ -16,6 +16,7 @@ export class LeagueProfileComponent extends BaseComponent {
         league(name: $name) {
             id
             name
+            description
             leaguePlayers(count:$count, sort:$sort) {
                 player {
                     name
@@ -72,10 +73,11 @@ export class LeagueProfileComponent extends BaseComponent {
             }
         }
     }`;
-    
+
     @Input() league: League;
-    private leaguePlayers: Player[];
-    private leagueTeams: Team[];
+    leaguePlayers: Player[];
+    leagueTeams: Team[];
+    playerInLeague: boolean;
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private router: Router) {
         super(route);
@@ -89,6 +91,7 @@ export class LeagueProfileComponent extends BaseComponent {
         if (!this.league && this.autoLoad && name) {
             this.graphQLService.post(LeagueProfileComponent.getLeagueQuery, {name: name, count:3, sort:'rating DESC, name ASC'}).then(data => {
                 this.league = League.fromJson(data.league);
+                this.playerInLeague = true; //TODO XPCONFIG.user.playerId
                 this.calcStats(this.league);
             });
         }
@@ -101,6 +104,10 @@ export class LeagueProfileComponent extends BaseComponent {
         if (leagueChange && leagueChange.currentValue) {
             this.calcStats(leagueChange.currentValue);
         }
+    }
+
+    onPlayClicked() {
+        this.router.navigate(['games', this.league.id, 'new-game']);
     }
 
     private calcStats(league: League) { //TODO Fix
