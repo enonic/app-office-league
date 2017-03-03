@@ -2,6 +2,7 @@ import {Component, OnInit, Input, Output, OnChanges, SimpleChanges, SimpleChange
 import {ActivatedRoute, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
 import {XPCONFIG} from '../../app.config';
+import {MaterializeDirective, MaterializeAction} from 'angular2-materialize/dist/index';
 
 @Component({
     selector: 'new-game-player',
@@ -9,12 +10,12 @@ import {XPCONFIG} from '../../app.config';
     styleUrls: ['new-game-player.component.less']
 })
 export class NewGamePlayerComponent implements OnInit, OnChanges {
+    materializeActions = new EventEmitter<string|MaterializeAction>();
 
     @Input() player: Player;
     @Input() leagueId: string;
-    @Input() excludePlayerIds: {[id:string]:boolean} = {};
+    @Input() excludePlayerIds: {[id: string]: boolean} = {};
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
-    private modalOpen: boolean;
     playerSelectEnabled: boolean;
     private modalTitle: string = 'Select a player';
 
@@ -39,13 +40,13 @@ export class NewGamePlayerComponent implements OnInit, OnChanges {
     }
 
     public showModal(): void {
-        this.modalOpen = true;
+        this.materializeActions.emit({action: "modal", params: ['open']});
         this.playerSelectEnabled = true;
     }
 
     public hideModal(): void {
         this.playerSelectEnabled = false;
-        this.modalOpen = false;
+        this.materializeActions.emit({action: "modal", params: ['close']});
     }
 
     questionMarkImg(): string {

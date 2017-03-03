@@ -11,7 +11,7 @@
         <span class="title">{{player.name}}</span>
     </div>
 </template>
-<div class="modal center player-select-modal" [ngStyle]="{'display': modalOpen ? 'block' : 'none'}">
+<div class="modal center player-select-modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="materializeActions">
     <div class="modal-content">
         <h4 class="center">{{modalTitle}}</h4>
         <player-select [leagueId]="leagueId" [enabled]="playerSelectEnabled" [excludePlayerIds]="excludePlayerIds"
