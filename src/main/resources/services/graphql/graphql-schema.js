@@ -559,6 +559,17 @@ var leagueType = graphQlLib.createObjectType({
                 return storeLib.getLeagueTeamsByLeagueId(env.source._id, env.args.start, env.args.count, env.args.sort).hits;
             }
         },
+        nonMemberPlayers: {
+            type: graphQlLib.list(playerType),
+            args: {
+                start: graphQlLib.GraphQLInt,
+                count: graphQlLib.GraphQLInt,
+                sort: graphQlLib.GraphQLString
+            },
+            data: function (env) {
+                return storeLib.getPlayersByNotLeagueId(env.source._id, env.args.start, env.args.count, env.args.sort).hits;
+            }
+        },
         games: {
             type: graphQlLib.list(gameType),
             args: {

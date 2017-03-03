@@ -354,6 +354,42 @@ exports.getPlayers = function (start, count) {
 };
 
 /**
+ * Retrieve a list of players not member of a league.
+ * @param  {number} leagueId League id.
+ * @param  {number} [start=0] First index of the players.
+ * @param  {number} [count=10] Number of players to fetch.
+ * @return {PlayerResponse} Players.
+ */
+exports.getPlayersByNotLeagueId = function (leagueId, start, count, sort) {
+    var repoConn = newConnection();
+    var leaguePlayers = repoConn.query({
+        count: -1,
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "'"
+    });
+
+    var memberPlayerIds = [];
+    if (leaguePlayers.count > 0) {
+        memberPlayerIds = leaguePlayers.hits.map(function (leaguePlayer) {
+            return repoConn.get(leaguePlayer.id).playerId;
+        });        
+    }
+
+    return query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.PLAYER + "' AND _id NOT IN " + toQueryList(memberPlayerIds),
+        sort: sort
+    });
+};
+
+function toQueryList(list) {
+    if (!list) {
+        return '()';
+    }
+    return "('" + list.join("','") + "')";
+}
+
+/**
  * Search for players.
  * @param  {string} searchText Text search.
  * @param  {number} [start=0] First index of the players.
