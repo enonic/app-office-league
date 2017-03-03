@@ -25,18 +25,16 @@ export class NewGamePlayerComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.log('NewGamePlayerComponent.ngOnChanges()', changes);
+
     }
 
     onClicked() {
         this.showModal();
-        setTimeout(() => this.hideModal(), 30000);
     }
 
     onSelected(p: Player) {
-        this.player = p;
         this.hideModal();
-        this.playerSelected.emit(this.player);
+        this.playerSelected.emit(p);
     }
 
     public showModal(): void {

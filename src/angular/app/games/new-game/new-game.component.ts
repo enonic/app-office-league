@@ -44,22 +44,30 @@ export class NewGameComponent implements OnInit {
 
     onBluePlayer1Selected(p: Player) {
         console.log('Blue player 1 selected', p);
-        this.bluePlayer1 = p;
+        if (p) {
+            this.bluePlayer1 = p;
+        }
     }
 
     onBluePlayer2Selected(p: Player) {
         console.log('Blue player 2 selected', p);
-        this.bluePlayer2 = p;
+        if (p) {
+            this.bluePlayer2 = p;
+        }
     }
 
     onRedPlayer1Selected(p: Player) {
         console.log('Red player 1 selected', p);
-        this.redPlayer1 = p;
+        if (p) {
+            this.redPlayer1 = p;
+        }
     }
 
     onRedPlayer2Selected(p: Player) {
         console.log('Red player 2 selected', p);
-        this.redPlayer2 = p;
+        if (p) {
+            this.redPlayer2 = p;
+        }
     }
 
     private static readonly getPlayerLeagueQuery = `query ($playerId: ID!, $leagueId: ID!) {

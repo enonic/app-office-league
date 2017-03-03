@@ -9,6 +9,7 @@ import {GraphQLService} from '../../graphql.service';
     styleUrls: ['player-select.component.less'],
     host: {
         '(document:click)': 'handlePageClick($event)',
+        '(document:keydown)': 'handleKeyboardEvent($event)',
     },
 })
 export class PlayerSelectComponent implements OnInit, OnChanges {
@@ -70,6 +71,12 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
             clickedComponent = clickedComponent.parentNode;
         } while (clickedComponent);
         if (!inside) {
+            this.cancel();
+        }
+    }
+
+    handleKeyboardEvent(event) {
+        if (this.ready && event.keyCode === 27) {
             this.cancel();
         }
     }
