@@ -14,6 +14,7 @@ export class TeamListComponent extends BaseComponent {
     @Input() teams: Team[];
     @Input() leagueId: string;
     @Input() playerId: string;
+    @Input() detailsPath: string[];
 
     constructor(route: ActivatedRoute, private router: Router, private service: GraphQLService) {
         super(route);
@@ -41,6 +42,10 @@ export class TeamListComponent extends BaseComponent {
     onTeamClicked(team: Team) {
         this.service.team = team;
         this.router.navigate(['teams', team.name.toLowerCase()])
+    }
+
+    onDetailsClicked() {
+        this.router.navigate(this.detailsPath);
     }
 
     private teamSorter(first: Team, second: Team): number {

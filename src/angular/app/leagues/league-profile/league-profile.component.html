@@ -24,7 +24,8 @@
                 <li class="col s12 m6 l12">
                     <team-list [title]="'Top teams'"
                                [autoLoad]="false"
-                               [teams]="leagueTeams"></team-list>
+                               [teams]="leagueTeams"
+                               [detailsPath]="['leagues', league.name.toLowerCase(), 'teams']"></team-list>
                 </li>
             </ul>
         </div>
