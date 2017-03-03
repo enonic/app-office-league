@@ -17,7 +17,7 @@ export class Team extends NamedEntity {
     static fromJson(json: any): Team {
         let team = new Team(json.id, json.name);
         team.description = json.description;
-        team.players = json.players && json.players.map((player) => Player.fromJson(player));
+        team.players = json.members && json.members.map((player) => Player.fromJson(player));
         team.leagueTeams = json.leagueTeams && json.leagueTeams.map((leagueTeam) => LeagueTeam.fromJson(leagueTeam));
         return team;
     }

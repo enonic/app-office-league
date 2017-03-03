@@ -52,7 +52,7 @@ export class PlayerListComponent extends BaseComponent {
 
     private loadPlayers(leagueId: string) {
         this.service.post(this.getQuery(leagueId)).then((data: any) => {
-            this.players = data.players.map(player => Player.fromJson(player)).sort(this.playerSorter.bind(this));
+            this.players = data.members.map(player => Player.fromJson(player)).sort(this.playerSorter.bind(this));
         });
     }
 

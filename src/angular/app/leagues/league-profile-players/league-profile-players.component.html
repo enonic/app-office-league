@@ -25,7 +25,7 @@
                 <li class="col s12 m6 l12">
                     <player-list [title]="'Player ranking'"
                                  [autoLoad]="false"
-                                 [players]="players"></player-list>
+                                 [players]="members"></player-list>
                 </li>
             </ul>
         </div>
@@ -38,7 +38,7 @@
     <!-- Modal Structure -->
     <div id="addPlayerModal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="materializeActions">
         <div class="modal-content">
-            <img *ngFor="let player of players;" src="{{player.imageUrl}}?size=42" alt="{{player.name}}" class="circle">
+            <img *ngFor="let player of members;" src="{{player.imageUrl}}?size=42" alt="{{player.name}}" class="circle">
         </div>
     </div>
 
