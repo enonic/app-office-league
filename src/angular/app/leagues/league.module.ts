@@ -11,6 +11,7 @@ import {LeagueProfileComponent} from './league-profile/league-profile.component'
 import {LeagueProfilePlayersComponent} from './league-profile-players/league-profile-players.component';
 import {LeagueCreateComponent} from './league-create/league-create.component';
 import {FormsModule} from '@angular/forms';
+import {MaterializeModule} from 'angular2-materialize/dist/index';
 
 const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, data: {autoLoad: true}},
@@ -30,6 +31,7 @@ const leagueRoutes: Routes = [
         LeagueCreateComponent
     ],
     imports: [
+        MaterializeModule,
         FormsModule,
         CommonModule,
         GamesModule,
