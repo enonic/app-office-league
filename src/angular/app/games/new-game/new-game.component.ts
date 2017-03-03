@@ -21,6 +21,7 @@ export class NewGameComponent implements OnInit {
 
     league: League;
     title: string;
+    playerSelectionReady: boolean;
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router) {
     }
@@ -42,10 +43,19 @@ export class NewGameComponent implements OnInit {
         }
     }
 
+    onPlayClicked() {
+
+    }
+
+    onShuffleClicked() {
+
+    }
+
     onBluePlayer1Selected(p: Player) {
         console.log('Blue player 1 selected', p);
         if (p) {
             this.bluePlayer1 = p;
+            this.updatePlayerSelectionState();
         }
     }
 
@@ -53,6 +63,7 @@ export class NewGameComponent implements OnInit {
         console.log('Blue player 2 selected', p);
         if (p) {
             this.bluePlayer2 = p;
+            this.updatePlayerSelectionState();
         }
     }
 
@@ -60,6 +71,7 @@ export class NewGameComponent implements OnInit {
         console.log('Red player 1 selected', p);
         if (p) {
             this.redPlayer1 = p;
+            this.updatePlayerSelectionState();
         }
     }
 
@@ -67,7 +79,14 @@ export class NewGameComponent implements OnInit {
         console.log('Red player 2 selected', p);
         if (p) {
             this.redPlayer2 = p;
+            this.updatePlayerSelectionState();
         }
+    }
+
+    private updatePlayerSelectionState() {
+        let singlesGameReady = !!(this.bluePlayer1 && this.redPlayer1 && !this.bluePlayer2 && !this.redPlayer2);
+        let doublesGameReady = !!(this.bluePlayer1 && this.redPlayer1 && this.bluePlayer2 && this.redPlayer2);
+        this.playerSelectionReady = singlesGameReady || doublesGameReady;
     }
 
     private static readonly getPlayerLeagueQuery = `query ($playerId: ID!, $leagueId: ID!) {

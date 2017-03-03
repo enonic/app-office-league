@@ -1,6 +1,12 @@
+@import "../../z-index";
+
 img {
-  width: 10vw;
-  height: 10vw;
+  width: 16vw;
+  height: 16vw;
+}
+
+img.player-squared {
+  border-radius: 5px;
 }
 
 .player {
@@ -20,4 +26,5 @@ img {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: @z-index-modal;
 }
