@@ -26,6 +26,9 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
                     name
                 }
             }
+            nonMemberPlayers {
+                name
+            }
         }
     }`;
     

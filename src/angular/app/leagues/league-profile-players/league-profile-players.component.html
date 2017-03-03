@@ -38,7 +38,7 @@
     <!-- Modal Structure -->
     <div id="addPlayerModal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="materializeActions">
         <div class="modal-content">
-            <img *ngFor="let player of members;" src="{{player.imageUrl}}?size=42" alt="{{player.name}}" class="circle">
+            <img *ngFor="let player of league.nonMemberPlayers;" src="{{player.imageUrl}}?size=42" alt="{{player.name}}" class="circle">
         </div>
     </div>
 

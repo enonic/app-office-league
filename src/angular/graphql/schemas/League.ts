@@ -3,6 +3,7 @@ import {NamedEntity} from './NamedEntity';
 import {Sport, SportUtil} from './Sport';
 import {Game} from './Game';
 import {LeaguePlayer} from './LeaguePlayer';
+import {Player} from './Player';
 import {LeagueTeam} from './LeagueTeam';
 
 export class League extends NamedEntity {
@@ -11,6 +12,7 @@ export class League extends NamedEntity {
     config: {[key: string]: any} = {};
     leaguePlayers: LeaguePlayer[];
     leagueTeams: LeagueTeam[];
+    nonMemberPlayers: Player[];
     games: Game[];
     imageUrl: string;
 
@@ -26,6 +28,7 @@ export class League extends NamedEntity {
         //TODO Config
         league.leaguePlayers = json.leaguePlayers && json.leaguePlayers.map(leaguePlayer => LeaguePlayer.fromJson(leaguePlayer));
         league.leagueTeams = json.leagueTeams && json.leagueTeams.map(leagueTeam => LeagueTeam.fromJson(leagueTeam));
+        league.nonMemberPlayers = json.nonMemberPlayers && json.nonMemberPlayers.map(nonMemberPlayer => Player.fromJson(nonMemberPlayer));
         league.games = json.games && json.games.map(game => Game.fromJson(game));
         return league;
     }
