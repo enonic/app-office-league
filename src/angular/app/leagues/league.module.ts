@@ -9,6 +9,7 @@ import {GamesModule} from '../games/games.module';
 import {TeamsModule} from '../teams/team.module';
 import {LeagueProfileComponent} from './league-profile/league-profile.component';
 import {LeagueProfilePlayersComponent} from './league-profile-players/league-profile-players.component';
+import {LeagueProfileTeamsComponent} from './league-profile-teams/league-profile-teams.component';
 import {LeagueCreateComponent} from './league-create/league-create.component';
 import {FormsModule} from '@angular/forms';
 import {MaterializeModule} from 'angular2-materialize/dist/index';
@@ -17,6 +18,7 @@ const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, data: {autoLoad: true}},
     {path: 'leagues/:name', component: LeagueProfileComponent, data: {autoLoad: true}},
     {path: 'leagues/:name/players', component: LeagueProfilePlayersComponent, data: {autoLoad: true}},
+    {path: 'leagues/:name/teams', component: LeagueProfileTeamsComponent, data: {autoLoad: true}},
     {path: 'league-create', component: LeagueCreateComponent, data: {autoLoad: true}},
 ];
 
@@ -28,6 +30,7 @@ const leagueRoutes: Routes = [
         LeaguePlayerListComponent,
         LeagueProfileComponent,
         LeagueProfilePlayersComponent,
+        LeagueProfileTeamsComponent,
         LeagueCreateComponent
     ],
     imports: [

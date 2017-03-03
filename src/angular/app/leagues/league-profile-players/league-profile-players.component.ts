@@ -61,7 +61,6 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
     
     refreshData(leagueName: String): void {
         this.graphQLService.post(LeagueProfilePlayersComponent.getLeagueQuery, {name: leagueName, count:-1, sort:'rating DESC, name ASC'}).then(data => {
-            console.log('data: '+ JSON.stringify(data, null, 2));
             this.league = League.fromJson(data.league);
             this.members = data.league.leaguePlayers.map(leaguePlayer => Player.fromJson(leaguePlayer.player));
         });
