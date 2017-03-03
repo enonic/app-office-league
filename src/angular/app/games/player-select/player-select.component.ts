@@ -16,6 +16,7 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
 
     @Input() leagueId: string;
     @Input() enabled: boolean;
+    @Input() excludePlayerIds: {[id: string]: boolean} = {};
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
     players: Player[] = [];
     private selectedPlayer: Player;
@@ -42,7 +43,8 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
         this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {leagueId: this.leagueId, count: 20, sort: 'name ASC'}).then(
             data => {
                 if (data.league && data.league.leaguePlayers) {
-                    this.players = data.league.leaguePlayers.map(lp => Player.fromJson(lp.player));
+                    this.players =
+                        data.league.leaguePlayers.filter(lp => !this.excludePlayerIds[lp.player.id]) .map(lp => Player.fromJson(lp.player));
                 }
                 this.ready = true;
             });

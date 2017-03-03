@@ -6,7 +6,7 @@
         <li class="player-item" *ngFor="let player of players;" (click)="onPlayerClicked(player)">
             <div class="player-item-details">
                 <img src="{{player.imageUrl}}?size=200" alt="{{player.name}}">
-                <span class="title">{{player.name}}</span>
+                <div class="title">{{player.name}}</div>
             </div>
         </li>
     </ul>

@@ -14,6 +14,7 @@
 <div class="modal center player-select-modal" [ngStyle]="{'display': modalOpen ? 'block' : 'none'}">
     <div class="modal-content">
         <h4 class="center">{{modalTitle}}</h4>
-        <player-select [leagueId]="leagueId" [enabled]="playerSelectEnabled" (playerSelected)="onSelected($event)"></player-select>
+        <player-select [leagueId]="leagueId" [enabled]="playerSelectEnabled" [excludePlayerIds]="excludePlayerIds"
+                       (playerSelected)="onSelected($event)"></player-select>
     </div>
 </div>

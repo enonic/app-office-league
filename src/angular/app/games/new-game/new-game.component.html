@@ -7,22 +7,22 @@
 
         <div class="side side-blue">
             <div class="player">
-                <new-game-player [player]="bluePlayer1" [leagueId]="leagueId"
+                <new-game-player [player]="bluePlayer1" [leagueId]="leagueId" [excludePlayerIds]="excludePlayerIds"
                                  (playerSelected)="onBluePlayer1Selected($event)"></new-game-player>
             </div>
             <div class="player">
-                <new-game-player [player]="bluePlayer2" [leagueId]="leagueId"
+                <new-game-player [player]="bluePlayer2" [leagueId]="leagueId" [excludePlayerIds]="excludePlayerIds"
                                  (playerSelected)="onBluePlayer2Selected($event)"></new-game-player>
             </div>
         </div>
 
         <div class="side side-red">
             <div class="player">
-                <new-game-player [player]="redPlayer1" [leagueId]="leagueId"
+                <new-game-player [player]="redPlayer1" [leagueId]="leagueId" [excludePlayerIds]="excludePlayerIds"
                                  (playerSelected)="onRedPlayer1Selected($event)"></new-game-player>
             </div>
             <div class="player">
-                <new-game-player [player]="redPlayer2" [leagueId]="leagueId"
+                <new-game-player [player]="redPlayer2" [leagueId]="leagueId" [excludePlayerIds]="excludePlayerIds"
                                  (playerSelected)="onRedPlayer2Selected($event)"></new-game-player>
             </div>
         </div>

@@ -18,6 +18,7 @@ export class NewGameComponent implements OnInit {
     bluePlayer2: Player;
     redPlayer1: Player;
     redPlayer2: Player;
+    excludePlayerIds: {[id: string]: boolean} = {};
 
     league: League;
     title: string;
@@ -33,12 +34,14 @@ export class NewGameComponent implements OnInit {
             return;
         }
 
-        let playerId = XPCONFIG.user.playerId;
+        let playerId = XPCONFIG.user && XPCONFIG.user.playerId;
         if (playerId) {
             this.graphQLService.post(NewGameComponent.getPlayerLeagueQuery, {playerId: playerId, leagueId: this.leagueId}).then(data => {
                 this.bluePlayer1 = Player.fromJson(data.player);
                 this.league = League.fromJson(data.league);
                 this.title = this.league.name;
+
+                this.updatePlayerSelectionState();
             });
         }
     }
@@ -87,6 +90,10 @@ export class NewGameComponent implements OnInit {
         let singlesGameReady = !!(this.bluePlayer1 && this.redPlayer1 && !this.bluePlayer2 && !this.redPlayer2);
         let doublesGameReady = !!(this.bluePlayer1 && this.redPlayer1 && this.bluePlayer2 && this.redPlayer2);
         this.playerSelectionReady = singlesGameReady || doublesGameReady;
+
+        this.excludePlayerIds = {};
+        [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2].filter((p) => !!p).forEach(
+            (p) => this.excludePlayerIds[p.id] = true);
     }
 
     private static readonly getPlayerLeagueQuery = `query ($playerId: ID!, $leagueId: ID!) {
