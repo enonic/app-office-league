@@ -17,6 +17,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
     
     private static readonly getLeagueQuery = `query ($name: String, $count:Int, $sort: String) {
         league(name: $name) {
+            id
             name
             leaguePlayers(count:$count, sort:$sort) {
                 player {
@@ -27,6 +28,15 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
                 }
             }
             nonMemberPlayers {
+                id
+                name
+            }
+        }
+    }`;
+
+    private static readonly joinPlayerLeagueQuery = `mutation ($playerId: ID!, $leagueId:ID!) {
+        joinPlayerLeague(playerId: $playerId, leagueId: $leagueId) {
+            player {
                 name
             }
         }
@@ -45,18 +55,31 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
         let name = this.route.snapshot.params['name'];
 
         if (!this.league && this.autoLoad && name) {
-            this.graphQLService.post(LeagueProfilePlayersComponent.getLeagueQuery, {name: name, count:-1, sort:'rating DESC, name ASC'}).then(data => {
-                this.league = League.fromJson(data.league);
-                this.members = data.league.leaguePlayers.map(leaguePlayer => Player.fromJson(leaguePlayer.player));
-            });
+            this.refreshData(name);   
         }
+    }
+    
+    refreshData(leagueName: String): void {
+        this.graphQLService.post(LeagueProfilePlayersComponent.getLeagueQuery, {name: leagueName, count:-1, sort:'rating DESC, name ASC'}).then(data => {
+            console.log('data: '+ JSON.stringify(data, null, 2));
+            this.league = League.fromJson(data.league);
+            this.members = data.league.leaguePlayers.map(leaguePlayer => Player.fromJson(leaguePlayer.player));
+        });
     }
 
     openAddPlayerModal(): void {
         this.materializeActions.emit({action:"modal",params:['open']});
     }
 
-    closeAddPlayerModal() {
+    closeAddPlayerModal(): void {
         this.materializeActions.emit({action:"modal",params:['close']});
+    }
+    
+    addPlayer(player: Player): void {
+        console.log('add ' + player.name);
+        this.graphQLService.post(LeagueProfilePlayersComponent.joinPlayerLeagueQuery, {playerId: player.id, leagueId: this.league.id}).then(data => {
+            this.refreshData(this.league.name);
+        });
+        this.closeAddPlayerModal();
     }
 }

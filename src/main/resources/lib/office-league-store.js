@@ -371,9 +371,8 @@ exports.getPlayersByNotLeagueId = function (leagueId, start, count, sort) {
     if (leaguePlayers.count > 0) {
         memberPlayerIds = leaguePlayers.hits.map(function (leaguePlayer) {
             return repoConn.get(leaguePlayer.id).playerId;
-        });        
+        });
     }
-
     return query({
         start: start,
         count: count,
@@ -1149,6 +1148,8 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
         rating: rating
     });
 
+    repoConn.refresh('SEARCH');
+
     return leaguePlayer;
 };
 
@@ -1191,6 +1192,8 @@ exports.joinTeamLeague = function (leagueId, teamId, rating) {
         leagueId: leagueId,
         rating: rating
     });
+
+    repoConn.refresh('SEARCH');
 
     return leagueTeam;
 };
