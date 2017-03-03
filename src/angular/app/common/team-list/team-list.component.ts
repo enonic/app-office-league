@@ -1,4 +1,5 @@
 import {Component, OnInit, Input, SimpleChanges, OnChanges} from '@angular/core';
+import {BaseComponent} from '../../common/base.component';
 import {Router, ActivatedRoute} from '@angular/router';
 import {GraphQLService} from '../../graphql.service';
 import {Team} from '../../../graphql/schemas/Team';
@@ -8,13 +9,13 @@ import {ListComponent} from '../../common/list.component';
     selector: 'team-list',
     templateUrl: 'team-list.component.html'
 })
-export class TeamListComponent extends ListComponent implements OnInit, OnChanges {
+export class TeamListComponent extends BaseComponent {
 
     @Input() teams: Team[];
     @Input() leagueId: string;
     @Input() playerId: string;
 
-    constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
+    constructor(route: ActivatedRoute, private router: Router, private service: GraphQLService) {
         super(route);
     }
 

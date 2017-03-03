@@ -5,6 +5,8 @@ import {BaseComponent} from './base.component';
 import {RatingComponent} from './rating/rating.component';
 import {PlayerSummaryComponent} from './player-summary/player-summary.component';
 import {PlayerListComponent} from './player-list/player-list.component';
+import {TeamSummaryComponent} from './team-summary/team-summary.component';
+import {TeamListComponent} from './team-list/team-list.component';
 import {TeamPlayersComponent} from './team-players/team-players.component';
 
 
@@ -13,6 +15,8 @@ import {TeamPlayersComponent} from './team-players/team-players.component';
         RatingComponent,
         PlayerSummaryComponent,
         PlayerListComponent,
+        TeamSummaryComponent,
+        TeamListComponent,
         TeamPlayersComponent,
         BaseComponent,
         ListComponent
@@ -25,6 +29,8 @@ import {TeamPlayersComponent} from './team-players/team-players.component';
         RatingComponent,
         PlayerSummaryComponent,
         PlayerListComponent,
+        TeamSummaryComponent,
+        TeamListComponent,
         TeamPlayersComponent,
         BaseComponent,
         ListComponent
