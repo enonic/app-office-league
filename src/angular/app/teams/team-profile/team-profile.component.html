@@ -7,6 +7,7 @@
         <div class="col s10">
             <div class="team-header">
                 <img src="{{team.imageUrl}}?size=96" alt="{{team.name}}" class="circle">
+
                 <h2 class="header light-blue-text text-darken-4">{{team.name}}</h2>
             </div>
         </div>
@@ -17,7 +18,7 @@
     <div class="row">
         <div class="col s12">
             <form>
-                <div>                   
+                <div>
                     <div>
                         <label>About</label>
                         <span>{{team.description}}</span>
@@ -34,7 +35,7 @@
         </li>
 
         <li class="col s12 m8">
-            <league-team-list [leagueTeams]="team.leagueTeams" [title]="'Leagues'"></league-team-list>
+            <league-team-list [leagueTeams]="team.leagueTeams" displayLeagues="true" title="Leagues"></league-team-list>
         </li>
 
         <li class="col s12 m8">

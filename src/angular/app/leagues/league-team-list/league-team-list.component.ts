@@ -19,8 +19,12 @@ export class LeagueTeamListComponent extends BaseComponent implements OnInit {
         super(route);
     }
 
-    onLeagueClicked(leagueTeam: LeagueTeam) {
-        this.router.navigate(['leagues', leagueTeam.league.name.toLowerCase()]);
+    onLeagueTeamClicked(leagueTeam: LeagueTeam) {
+        if (this.displayLeagues) {
+            this.router.navigate(['leagues', leagueTeam.league.name.toLowerCase()]);
+        } else if (this.displayTeams) {
+            this.router.navigate(['teams', leagueTeam.team.name.toLowerCase()]);
+        }
     }
 
     onDetailsClicked() {
