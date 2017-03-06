@@ -17,7 +17,7 @@ import {LeaguePlayer} from '../../../graphql/schemas/LeaguePlayer';
     styleUrls: ['player-profile.component.less']
 })
 export class PlayerProfileComponent extends BaseComponent {
-    private static readonly getPlayerQuery = `query($name: ID){
+    private static readonly getPlayerQuery = `query($name: String){
         player(name: $name) {
             id
             name
