@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col s12 game-top-bar grey lighten-2">
+        <div class="game-top-bar-items">
+            <h4 class="time">0:00</h4>
+            <div class="actions">
+                <i class="medium material-icons">pause</i>
+                <i class="medium material-icons">stop</i>
+                <i class="medium material-icons">replay</i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12 sides">
+
+        <div class="side side-blue">
+            <div class="players">
+                <div class="player">
+                    <div class="player" (click)="onClicked()">
+                        <img src="{{bluePlayer1?.imageUrl}}?size=200" class="player-squared" alt="{{bluePlayer1?.name}}">
+                        <span class="title">{{bluePlayer1?.name}}</span>
+                    </div>
+                </div>
+                <div class="player">
+                    <div class="player" (click)="onClicked()">
+                        <img src="{{bluePlayer2?.imageUrl}}?size=200" class="player-squared" alt="{{bluePlayer2?.name}}">
+                        <span class="title">{{bluePlayer2?.name}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="team-score center">
+                <h1>{{blueScore}}</h1>
+            </div>
+        </div>
+
+        <div class="side side-red">
+            <div class="team-score center">
+                <h1>{{redScore}}</h1>
+            </div>
+            <div class="players">
+                <div class="player">
+                    <div class="player" (click)="onClicked()">
+                        <img src="{{redPlayer1?.imageUrl}}?size=200" class="player-squared" alt="{{redPlayer1?.name}}">
+                        <span class="title">{{redPlayer1?.name}}</span>
+                    </div>
+                </div>
+                <div class="player">
+                    <div class="player" (click)="onClicked()">
+                        <img src="{{redPlayer2?.imageUrl}}?size=200" class="player-squared" alt="{{redPlayer2?.name}}">
+                        <span class="title">{{redPlayer2?.name}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

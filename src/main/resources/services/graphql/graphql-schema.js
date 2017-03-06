@@ -614,12 +614,18 @@ var rootQueryType = graphQlLib.createObjectType({
             type: graphQlLib.list(playerType),
             args: {
                 start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                count: graphQlLib.GraphQLInt,
+                ids: graphQlLib.list(graphQlLib.GraphQLID)
             },
             data: function (env) {
                 var start = env.args.start;
                 var count = env.args.count;
-                return storeLib.getPlayers(start, count).hits;
+                var ids = env.args.ids;
+                if (ids) {
+                    return storeLib.getPlayersById(ids);
+                } else {
+                    return storeLib.getPlayers(start, count).hits;
+                }
             }
         },
         team: {
@@ -643,12 +649,18 @@ var rootQueryType = graphQlLib.createObjectType({
             type: graphQlLib.list(teamType),
             args: {
                 start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                count: graphQlLib.GraphQLInt,
+                ids: graphQlLib.list(graphQlLib.GraphQLID)
             },
             data: function (env) {
                 var start = env.args.start;
                 var count = env.args.count;
-                return storeLib.getTeams(start, count).hits;
+                var ids = env.args.ids;
+                if (ids) {
+                    return storeLib.getTeamsById(ids);
+                } else {
+                    return storeLib.getTeams(start, count).hits;
+                }
             }
         },
         games: {
@@ -713,14 +725,14 @@ var rootQueryType = graphQlLib.createObjectType({
                 id: graphQlLib.GraphQLID,
                 name: graphQlLib.GraphQLString
             },
-            data: function (env) { 
+            data: function (env) {
                 var id = env.args.id;
                 var name = env.args.name;
                 if (id) {
                     return storeLib.getLeagueById(id);
                 } else if (name) {
                     return storeLib.getLeagueByName(name);
-                } 
+                }
                 throw "[id] or [name] must be specified";
             }
         },

@@ -8,6 +8,7 @@ import {NewGameComponent} from './new-game/new-game.component';
 import {NewGamePlayerComponent} from './new-game-player/new-game-player.component';
 import {PlayerSelectComponent} from './player-select/player-select.component';
 import {MaterializeModule} from 'angular2-materialize/dist/index';
+import {GamePlayComponent} from './game-play/game-play.component';
 
 const gameRoutes: Routes = [
     {
@@ -26,6 +27,11 @@ const gameRoutes: Routes = [
         component: NewGameComponent,
         data: {}
     },
+    {
+        path: 'games/:leagueId/game-play',
+        component: GamePlayComponent,
+        data: {}
+    },
 ];
 
 @NgModule({
@@ -35,7 +41,8 @@ const gameRoutes: Routes = [
         GameComponent,
         NewGameComponent,
         NewGamePlayerComponent,
-        PlayerSelectComponent
+        PlayerSelectComponent,
+        GamePlayComponent
     ],
     imports: [
         CommonModule,

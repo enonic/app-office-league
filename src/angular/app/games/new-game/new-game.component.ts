@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
 import {XPCONFIG} from '../../app.config';
 import {League} from '../../../graphql/schemas/League';
+import {GameParameters} from '../GameParameters';
 
 @Component({
     selector: 'new-game',
@@ -47,7 +48,14 @@ export class NewGameComponent implements OnInit {
     }
 
     onPlayClicked() {
-
+        let gameParams: GameParameters = {
+            leagueId: this.leagueId,
+            bluePlayer1: this.bluePlayer1 && this.bluePlayer1.id,
+            bluePlayer2: this.bluePlayer2 && this.bluePlayer2.id,
+            redPlayer1: this.redPlayer1 && this.redPlayer1.id,
+            redPlayer2: this.redPlayer2 && this.redPlayer2.id
+        };
+        this.router.navigate(['games', this.leagueId, 'game-play'], {queryParams: gameParams});
     }
 
     onShuffleClicked() {

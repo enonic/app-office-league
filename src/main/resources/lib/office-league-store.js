@@ -446,6 +446,20 @@ exports.getPlayerById = function (playerId) {
 };
 
 /**
+ * Retrieve multiple players by their ids.
+ * @param  {string[]} playerIds Ids of the players.
+ * @return {Player[]} Array of Player objects found.
+ */
+exports.getPlayersById = function (playerIds) {
+    var repoConn = newConnection();
+
+    var obj = repoConn.get(playerIds);
+    return obj && [].concat(obj).filter(function (obj) {
+            return obj.type === TYPE.PLAYER;
+        });
+};
+
+/**
  * Retrieve a player by its name.
  * @param  {string} name Name of the player.
  * @return {Player} Player object or null if not found.
@@ -491,6 +505,20 @@ exports.getTeamById = function (teamId) {
 
     var obj = repoConn.get(teamId);
     return obj && (obj.type === TYPE.TEAM) ? obj : null;
+};
+
+/**
+ * Retrieve multiple teams by their ids.
+ * @param  {string[]} teamIds Ids of the teams.
+ * @return {Team[]} Array of Team objects found.
+ */
+exports.getTeamsById = function (teamIds) {
+    var repoConn = newConnection();
+
+    var obj = repoConn.get(teamIds);
+    return obj && [].concat(obj).filter(function (obj) {
+            return obj.type === TYPE.TEAM;
+        });
 };
 
 /**
