@@ -10,6 +10,25 @@ import {Team} from '../../../graphql/schemas/Team';
 })
 export class TeamProfileComponent extends BaseComponent {
 
+    private static readonly getTeamQuery = `query($name:ID) {
+        team(name: $name) {
+            id,
+            name,
+            description,
+            players {
+                name
+            },
+            leagueTeams {
+                league {
+                    name
+                },
+                team {
+                    name
+                }
+            }
+        }
+    }`;
+    
     @Input() team: Team;
     @Input() index: number;
     
@@ -21,32 +40,9 @@ export class TeamProfileComponent extends BaseComponent {
         super.ngOnInit();
         
         let name = this.route.snapshot.params['name'];
-
         if (!this.team && name) {
-            // check if the team was passed from list to spare request
-            this.team = this.service.team;
-            if (!this.team) {
-                // no team was passed because this was probably a page reload
-                let query = `query {
-                    team(name: "${name}") {
-                        id,
-                        name,
-                        description,
-                        players {
-                            name
-                        },
-                        leagueTeams {
-                            league {
-                                name
-                            },
-                            team {
-                                name
-                            }
-                        }
-                    }
-                }`;
-                this.service.post(query).then(data => this.team = Team.fromJson(data.team));
-            }
+            this.service.post(TeamProfileComponent.getTeamQuery, {name:name}).
+                then(data => this.team = Team.fromJson(data.team));            
         }
     }
 
