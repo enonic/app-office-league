@@ -54,7 +54,6 @@ export class TeamSummaryComponent extends BaseComponent {
 
     //TODO Extract
     rankingText(): string {
-        console.log('ranking', this.ranking);
         return this.ordinal(this.ranking);
     }
 

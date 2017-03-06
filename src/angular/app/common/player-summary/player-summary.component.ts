@@ -28,9 +28,6 @@ export class PlayerSummaryComponent extends BaseComponent {
     ngOnInit(): void {
         super.ngOnInit();
 
-
-        console.log('ranking2', this.ranking);
-
         let id = this.playerId || this.route.snapshot.params['id'];
 
         if (!this.player && id) {
@@ -66,7 +63,6 @@ export class PlayerSummaryComponent extends BaseComponent {
 
     //TODO Extract
     rankingText(): string {
-        console.log('ranking', this.ranking);
         return this.ordinal(this.ranking);
     }
 
