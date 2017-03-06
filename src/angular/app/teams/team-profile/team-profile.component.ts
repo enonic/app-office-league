@@ -79,6 +79,7 @@ export class TeamProfileComponent extends BaseComponent {
             }
             
             players {
+                id
                 name
             }
         }
@@ -107,10 +108,10 @@ export class TeamProfileComponent extends BaseComponent {
         this.team = Team.fromJson(data.team);
         this.games = data.team.gameTeams.map((gm) => Game.fromJson(gm.game));
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
-        this.editable = this.team.id === currentPlayerId; //TODO
+        this.editable = this.team.players[0].id === currentPlayerId || this.team.players[1].id === currentPlayerId;
     }
 
     onEditClicked() {
-        console.log('TODO: Edit player');
+        console.log('TODO: Edit team');
     }    
 }
