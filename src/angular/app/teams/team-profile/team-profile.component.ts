@@ -105,7 +105,6 @@ export class TeamProfileComponent extends BaseComponent {
 
     private handleResponse(data) {
         this.team = Team.fromJson(data.team);
-        console.log('Team:', this.team);
         this.games = data.team.gameTeams.map((gm) => Game.fromJson(gm.game));
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
         this.editable = this.team.id === currentPlayerId; //TODO

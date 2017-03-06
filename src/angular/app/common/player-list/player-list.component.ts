@@ -27,7 +27,6 @@ export class PlayerListComponent extends BaseComponent {
     ngOnInit(): void {
         super.ngOnInit();
 
-        console.log('this.players' + this.players);
         if (this.players === undefined) {
             this.loadPlayers();
         }
