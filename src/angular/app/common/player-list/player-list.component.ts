@@ -18,7 +18,6 @@ export class PlayerListComponent extends BaseComponent {
     
     @Input() title: string;
     @Input() players: Player[];
-    @Input() detailsPath: string[];
 
     constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
         super(route);
@@ -34,10 +33,6 @@ export class PlayerListComponent extends BaseComponent {
 
     onPlayerClicked(player: Player) {
         this.router.navigate(['players', player.name.toLowerCase()]);
-    }
-    
-    onDetailsClicked() {
-        this.router.navigate(this.detailsPath);
     }
 
     private loadPlayers() {

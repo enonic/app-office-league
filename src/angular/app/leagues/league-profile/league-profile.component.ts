@@ -18,6 +18,7 @@ export class LeagueProfileComponent extends BaseComponent {
             name
             description
             leaguePlayers(count:$count, sort:$sort) {
+                ranking
                 player {
                     name
                 }
@@ -26,6 +27,7 @@ export class LeagueProfileComponent extends BaseComponent {
                 }
             }
             leagueTeams(count:$count, sort:$sort) {
+                ranking
                 team {
                     name
                     players {
@@ -75,7 +77,6 @@ export class LeagueProfileComponent extends BaseComponent {
     }`;
 
     @Input() league: League;
-    leaguePlayers: Player[];
     leagueTeams: Team[];
     playerInLeague: boolean;
 
@@ -110,8 +111,7 @@ export class LeagueProfileComponent extends BaseComponent {
         this.router.navigate(['games', this.league.id, 'new-game']);
     }
 
-    private calcStats(league: League) { //TODO Fix
-        this.leaguePlayers = league.leaguePlayers.map(lp => lp.player);
+    private calcStats(league: League) { //TODO Remove
         this.leagueTeams = league.leagueTeams.map(lt => lt.team);
     }
 }

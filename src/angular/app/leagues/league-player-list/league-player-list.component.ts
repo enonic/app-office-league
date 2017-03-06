@@ -13,6 +13,7 @@ export class LeaguePlayerListComponent extends BaseComponent implements OnInit {
     @Input() leaguePlayers: LeaguePlayer[];
     @Input() displayPlayers: boolean;
     @Input() displayLeagues: boolean;
+    @Input() detailsPath: string[];
 
     constructor(route: ActivatedRoute, private router: Router) {
         super(route);
@@ -20,5 +21,9 @@ export class LeaguePlayerListComponent extends BaseComponent implements OnInit {
 
     onLeagueClicked(leaguePlayer: LeaguePlayer) {
         this.router.navigate(['leagues', leaguePlayer.league.name.toLowerCase()]);
+    }
+
+    onDetailsClicked() {
+        this.router.navigate(this.detailsPath);
     }
 }

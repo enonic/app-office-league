@@ -27,7 +27,10 @@ export class PlayerSummaryComponent extends BaseComponent {
 
     ngOnInit(): void {
         super.ngOnInit();
-        
+
+
+        console.log('ranking2', this.ranking);
+
         let id = this.playerId || this.route.snapshot.params['id'];
 
         if (!this.player && id) {
@@ -58,6 +61,28 @@ export class PlayerSummaryComponent extends BaseComponent {
                 }`;
                 this.graphQLService.post(query).then(data => this.player = Player.fromJson(data.player));
             }
+        }
+    }
+
+    //TODO Extract
+    rankingText(): string {
+        console.log('ranking', this.ranking);
+        return this.ordinal(this.ranking);
+    }
+
+    private ordinal(value: number) {
+        if (!value) {
+            return '';
+        }
+        switch (value) {
+        case 1:
+            return '1st';
+        case 2:
+            return '2nd';
+        case 3:
+            return '3rd';
+        default:
+            return value + 'th';
         }
     }
 

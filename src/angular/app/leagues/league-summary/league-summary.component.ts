@@ -18,6 +18,7 @@ export class LeagueSummaryComponent extends BaseComponent {
         super(route);
     }
 
+    //TODO Extract
     rankingText(): string {
         return this.ordinal(this.ranking);
     }
@@ -36,5 +37,5 @@ export class LeagueSummaryComponent extends BaseComponent {
         default:
             return value + 'th';
         }
-    };
+    }
 }

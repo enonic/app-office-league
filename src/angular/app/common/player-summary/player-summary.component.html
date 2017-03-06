@@ -10,5 +10,5 @@
     <img src="{{player.imageUrl}}?size=42" alt="{{player.name}}" class="circle">
     <span class="title">{{player.name}}</span>
     <p *ngIf="player.nickname">{{player.nickname}}</p>
-
+    <div *ngIf="ranking > 0" class="chip right blue lighten-2 white-text" title="{{rating}}">{{rankingText()}}</div>
 </template>
