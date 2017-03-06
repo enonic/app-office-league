@@ -11,10 +11,17 @@ import {ListComponent} from '../../common/list.component';
 })
 export class TeamListComponent extends BaseComponent {
 
+    private static readonly getTeamQuery = `query {
+        teams(count:-1) {
+            name
+            players {
+                name
+            }
+        }
+    }`;
+    
     @Input() title: string;
     @Input() teams: Team[];
-    @Input() leagueId: string;
-    @Input() playerId: string;
     @Input() detailsPath: string[];
 
     constructor(route: ActivatedRoute, private router: Router, private service: GraphQLService) {
@@ -25,18 +32,7 @@ export class TeamListComponent extends BaseComponent {
         super.ngOnInit();
 
         if (this.teams == undefined) {
-            this.loadTeams(this.leagueId);
-        }
-    }
-
-    ngOnChanges(changes: SimpleChanges) {
-        super.ngOnChanges(changes);
-
-        let leagueIdChanges = changes['leagueId'];
-        if (leagueIdChanges && leagueIdChanges.currentValue) {
-            this.loadTeams(leagueIdChanges.currentValue)
-        } else if (changes['teams']) {
-            this.teams = changes['teams'].currentValue;
+            this.loadTeams();
         }
     }
 
@@ -49,35 +45,10 @@ export class TeamListComponent extends BaseComponent {
         this.router.navigate(this.detailsPath);
     }
 
-    private teamSorter(first: Team, second: Team): number {
-        return second.name.localeCompare(first.name);
-    }
 
-
-    private loadTeams(leagueId: string) {
-        this.service.post(this.getQuery(leagueId)).then((data: any) => {
-            this.teams = data.teams.map(team => Team.fromJson(team)).sort(this.teamSorter.bind(this));
+    private loadTeams() {
+        this.service.post(TeamListComponent.getTeamQuery).then((data: any) => {
+            this.teams = data.teams.map(team => Team.fromJson(team));
         })
-    }
-
-    private getQuery(leagueId: string): string {
-        return `query{
-                  teams{
-                    id,
-                    name, 
-                    description,
-                    players{
-                      name
-                    },
-                    leagueTeams {
-                        team {
-                            name
-                        },
-                        league {
-                            name
-                        }
-                    }
-                  }
-                }`
     }
 }
