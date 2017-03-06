@@ -9,7 +9,10 @@ import {LeaguePlayer} from '../../../graphql/schemas/LeaguePlayer';
 })
 export class LeaguePlayerListComponent extends BaseComponent implements OnInit {
 
+    @Input() title: String;
     @Input() leaguePlayers: LeaguePlayer[];
+    @Input() displayPlayers: boolean;
+    @Input() displayLeagues: boolean;
 
     constructor(route: ActivatedRoute, private router: Router) {
         super(route);

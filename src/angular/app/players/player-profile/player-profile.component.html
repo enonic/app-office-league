@@ -7,6 +7,7 @@
         <div class="col s10">
             <div class="player-header">
                 <img src="{{player.imageUrl}}?size=96" alt="{{player.name}}" class="circle">
+
                 <h2 class="header light-blue-text text-darken-4">{{player.name}}</h2>
             </div>
         </div>
@@ -20,6 +21,7 @@
                 <div>
                     <label>Nickname</label>
                     <span>{{player.nickname}}</span>
+
                     <div>
                         <label>About</label>
                         <span>{{player.description}}</span>
@@ -45,7 +47,7 @@
         </li>
 
         <li class="col s12 m8">
-            <league-player-list [leaguePlayers]="player.leaguePlayers" [title]="'Leagues'"></league-player-list>
+            <league-player-list [leaguePlayers]="player.leaguePlayers" displayLeagues="true" title="Leagues"></league-player-list>
         </li>
 
         <li class="col s12 m8">

@@ -14,6 +14,8 @@ export class PlayerSummaryComponent extends BaseComponent {
     @Input() player: Player;
     @Input() index: number;
     @Input() playerId: string;
+    @Input() rating: number = 0;
+    @Input() ranking: number = 0;
 
     @HostListener('click') onClick() {
         this.router.navigate(['players', this.playerId || this.player.name]);
