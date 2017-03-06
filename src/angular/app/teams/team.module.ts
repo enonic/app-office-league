@@ -4,6 +4,7 @@ import {CommonModule} from '../common/common.module';
 import {TeamProfileComponent} from './team-profile/team-profile.component';
 import {GamesModule} from '../games/games.module';
 import {TeamListComponent} from '../common/team-list/team-list.component';
+import {LeaguesModule} from '../leagues/league.module';
 
 const teamRoutes: Routes = [
     {path: 'teams', component: TeamListComponent, data: {}},
@@ -17,6 +18,7 @@ const teamRoutes: Routes = [
     imports: [
         CommonModule,
         GamesModule,
+        LeaguesModule,
         RouterModule.forChild(teamRoutes)
     ],
     exports: [],

@@ -1,0 +1,9 @@
+<ul class="collection list" [class.with-header]="!!title">
+    <li *ngIf="title" class="collection-header"><h4>{{title}}</h4></li>
+    <li href="#!" class="collection-item avatar" *ngFor="let leagueTeam of leagueTeams" (click)="onLeagueClicked(leagueTeam)">
+        <league-summary [league]="leagueTeam.league" [rating]="leagueTeam.rating" [ranking]="leagueTeam.ranking"></league-summary>
+    </li>
+    <li *ngIf="leagueTeams?.length == 0" class="collection-item empty">
+        <h5>No leagues</h5>
+    </li>
+</ul>

@@ -5,6 +5,7 @@ import {LeagueSummaryComponent} from './league-summary/league-summary.component'
 import {LeagueBrowserComponent} from './league-browser/league-browser.component';
 import {LeagueListComponent} from './league-list/league-list.component';
 import {LeaguePlayerListComponent} from './league-player-list/league-player-list.component';
+import {LeagueTeamListComponent} from './league-team-list/league-team-list.component';
 import {GamesModule} from '../games/games.module';
 import {TeamsModule} from '../teams/team.module';
 import {LeagueProfileComponent} from './league-profile/league-profile.component';
@@ -28,6 +29,7 @@ const leagueRoutes: Routes = [
         LeagueBrowserComponent,
         LeagueListComponent,
         LeaguePlayerListComponent,
+        LeagueTeamListComponent,
         LeagueProfileComponent,
         LeagueProfilePlayersComponent,
         LeagueProfileTeamsComponent,
@@ -38,10 +40,9 @@ const leagueRoutes: Routes = [
         FormsModule,
         CommonModule,
         GamesModule,
-        TeamsModule,
         RouterModule.forChild(leagueRoutes)
     ],
-    exports: [LeagueListComponent, LeaguePlayerListComponent],
+    exports: [LeagueListComponent, LeaguePlayerListComponent,LeagueTeamListComponent],
     providers: [],
     bootstrap: []
 })
