@@ -54,7 +54,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
 
         let name = this.route.snapshot.params['name'];
 
-        if (!this.league && this.autoLoad && name) {
+        if (!this.league && name) {
             this.refreshData(name);   
         }
     }

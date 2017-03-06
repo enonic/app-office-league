@@ -30,10 +30,9 @@ export class GameComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
-        let autoLoad = this.route.snapshot.data['autoLoad'],
-            id = this.route.snapshot.params['id'];
+        let id = this.route.snapshot.params['id'];
 
-        if (!this.game && autoLoad && id) {
+        if (!this.game && id) {
             // check if the game was passed from list to spare request
             this.game = this.service.game;
             if (!this.game) {

@@ -21,7 +21,7 @@ export class TeamSummaryComponent extends BaseComponent {
         super.ngOnInit();
         let name = this.route.snapshot.params['name'];
 
-        if (!this.team && this.autoLoad && name) {
+        if (!this.team && name) {
             // check if the team was passed from list to spare request
             this.team = this.service.team;
             if (!this.team) {

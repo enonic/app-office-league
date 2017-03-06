@@ -15,11 +15,11 @@ import {FormsModule} from '@angular/forms';
 import {MaterializeModule} from 'angular2-materialize/dist/index';
 
 const leagueRoutes: Routes = [
-    {path: 'leagues', component: LeagueBrowserComponent, data: {autoLoad: true}},
-    {path: 'leagues/:name', component: LeagueProfileComponent, data: {autoLoad: true}},
-    {path: 'leagues/:name/players', component: LeagueProfilePlayersComponent, data: {autoLoad: true}},
-    {path: 'leagues/:name/teams', component: LeagueProfileTeamsComponent, data: {autoLoad: true}},
-    {path: 'league-create', component: LeagueCreateComponent, data: {autoLoad: true}},
+    {path: 'leagues', component: LeagueBrowserComponent, data: {}},
+    {path: 'leagues/:name', component: LeagueProfileComponent, data: {}},
+    {path: 'leagues/:name/players', component: LeagueProfilePlayersComponent, data: {}},
+    {path: 'leagues/:name/teams', component: LeagueProfileTeamsComponent, data: {}},
+    {path: 'league-create', component: LeagueCreateComponent, data: {}},
 ];
 
 @NgModule({

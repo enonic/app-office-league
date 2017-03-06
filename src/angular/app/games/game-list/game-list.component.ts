@@ -22,7 +22,7 @@ export class GameListComponent extends ListComponent implements OnInit, OnChange
     ngOnInit(): void {
         super.ngOnInit();
 
-        if (this.autoLoad) {
+        if (this.games == undefined) {
             this.loadGames();
         }
     }

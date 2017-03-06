@@ -6,8 +6,8 @@ import {GamesModule} from '../games/games.module';
 import {TeamListComponent} from '../common/team-list/team-list.component';
 
 const teamRoutes: Routes = [
-    {path: 'teams', component: TeamListComponent, data: {autoLoad: true}},
-    {path: 'teams/:name', component: TeamProfileComponent, data: {autoLoad: true}},
+    {path: 'teams', component: TeamListComponent, data: {}},
+    {path: 'teams/:name', component: TeamProfileComponent, data: {}},
 ];
 
 @NgModule({

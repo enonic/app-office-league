@@ -13,13 +13,13 @@ const gameRoutes: Routes = [
     {
         path: 'games',
         component: GameListComponent,
-        data: {autoLoad: true}
+        data: {}
     },
     {
         path: 'games/:id',
         component: GameProfileComponent,
         // canActivate: [AuthRouteGuard],
-        data: {autoLoad: true}
+        data: {}
     },
     {
         path: 'games/:leagueId/new-game',

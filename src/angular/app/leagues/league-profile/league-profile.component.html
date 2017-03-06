@@ -17,13 +17,11 @@
             <ul class="row list">
                 <li class="col s12 m6 l12">
                     <player-list [title]="'Top players'"
-                                 [autoLoad]="false"
                                  [players]="leaguePlayers"
                                  [detailsPath]="['leagues', league.name.toLowerCase(), 'players']"></player-list>
                 </li>
                 <li class="col s12 m6 l12">
                     <team-list [title]="'Top teams'"
-                               [autoLoad]="false"
                                [teams]="leagueTeams"
                                [detailsPath]="['leagues', league.name.toLowerCase(), 'teams']"></team-list>
                 </li>
@@ -31,7 +29,6 @@
         </div>
         <div class="col s12 l8 pull-l4">
             <game-list [title]="'Latest games'"
-                       [autoLoad]="false"
                        [games]="league.games"></game-list>
         </div>
     </div>

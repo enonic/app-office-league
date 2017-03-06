@@ -26,7 +26,7 @@ export class PlayerSummaryComponent extends BaseComponent {
     ngOnInit(): void {
         let id = this.playerId || this.route.snapshot.params['id'];
 
-        if (!this.player && this.autoLoad && id) {
+        if (!this.player && id) {
             // check if the team was passed from list to spare request
             this.player = this.graphQLService.player;
             if (!this.player) {

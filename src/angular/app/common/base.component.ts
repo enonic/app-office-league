@@ -7,7 +7,6 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class BaseComponent implements OnInit, OnChanges {
 
-    @Input() protected autoLoad: boolean;
     protected query: string;
 
     constructor(protected route: ActivatedRoute, query?: string) {
@@ -15,9 +14,6 @@ export class BaseComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
-        if (this.autoLoad == undefined) {
-            this.autoLoad = this.route.snapshot.data['autoLoad'] == true;
-        }
     }
 
     ngOnChanges(changes: SimpleChanges): void {

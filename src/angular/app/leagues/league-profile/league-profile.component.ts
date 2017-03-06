@@ -88,7 +88,7 @@ export class LeagueProfileComponent extends BaseComponent {
 
         let name = this.route.snapshot.params['name'];
 
-        if (!this.league && this.autoLoad && name) {
+        if (!this.league && name) {
             this.graphQLService.post(LeagueProfileComponent.getLeagueQuery, {name: name, count:3, sort:'rating DESC, name ASC'}).then(data => {
                 this.league = League.fromJson(data.league);
                 this.playerInLeague = true; //TODO XPCONFIG.user.playerId
