@@ -11,7 +11,7 @@ import {ListComponent} from '../../common/list.component';
 })
 export class TeamListComponent extends BaseComponent {
 
-    private static readonly getTeamQuery = `query {
+    private static readonly getTeamsQuery = `query {
         teams(count:-1) {
             name
             players {
@@ -47,7 +47,7 @@ export class TeamListComponent extends BaseComponent {
 
 
     private loadTeams() {
-        this.service.post(TeamListComponent.getTeamQuery).then((data: any) => {
+        this.service.post(TeamListComponent.getTeamsQuery).then((data: any) => {
             this.teams = data.teams.map(team => Team.fromJson(team));
         })
     }

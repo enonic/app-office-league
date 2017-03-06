@@ -10,11 +10,14 @@ import {GraphQLService} from '../../graphql.service';
 })
 export class PlayerListComponent extends BaseComponent {
 
+    private static readonly getPlayersQuery = `query {
+        players(count:-1) {
+            name
+        }
+    }`;
+    
     @Input() title: string;
     @Input() players: Player[];
-    @Input() indexed: boolean = true;
-    @Input() leagueId: string;
-    @Input() teamId: string;
     @Input() detailsPath: string[];
 
     constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
@@ -25,16 +28,7 @@ export class PlayerListComponent extends BaseComponent {
         super.ngOnInit();
 
         if (this.players === undefined) {
-            this.loadPlayers(this.leagueId);
-        }
-    }
-
-    ngOnChanges(changes: SimpleChanges) {
-        super.ngOnChanges(changes);
-
-        let leagueIdChanges = changes['leagueId'];
-        if (leagueIdChanges && leagueIdChanges.currentValue) {
-            this.loadPlayers(leagueIdChanges.currentValue)
+            this.loadPlayers();
         }
     }
 
@@ -46,37 +40,9 @@ export class PlayerListComponent extends BaseComponent {
         this.router.navigate(this.detailsPath);
     }
 
-    private playerSorter(first: Player, second: Player): number {
-        return second.name.localeCompare(first.name);
-    }
-
-    private loadPlayers(leagueId: string) {
-        this.service.post(this.getQuery(leagueId)).then((data: any) => {
-            this.players = data.members.map(player => Player.fromJson(player)).sort(this.playerSorter.bind(this));
+    private loadPlayers() {
+        this.service.post(PlayerListComponent.getPlayersQuery).then((data: any) => {
+            this.players = data.players.map(player => Player.fromJson(player));
         });
-    }
-
-    private getQuery(leagueId: string): string {
-        return `query{
-                  players{
-                    id,
-                    name, 
-                    nickname, 
-                    nationality, 
-                    handedness,
-                    description,
-                    teams {
-                        name
-                    },
-                    leaguePlayers {
-                        league {
-                            name
-                        },
-                        player {
-                            name
-                        }
-                    }
-                  }
-                }`
     }
 }

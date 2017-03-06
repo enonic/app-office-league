@@ -1,7 +1,7 @@
-<ul class="collection list indexed" [class.with-header]="!!title">
+<ul class="collection list" [class.with-header]="!!title">
     <li *ngIf="title" class="collection-header"><h4>{{title}}</h4></li>
-    <li href="#!" class="collection-item avatar" *ngFor="let team of teams; let i = index" (click)="onTeamClicked(team)">
-        <team-summary [team]="team" [index]="i + 1"></team-summary>
+    <li href="#!" class="collection-item avatar" *ngFor="let team of teams;" (click)="onTeamClicked(team)">
+        <team-summary [team]="team"></team-summary>
     </li>
     <li *ngIf="teams?.length == 0" class="collection-item empty">
         <h5>No teams</h5>
