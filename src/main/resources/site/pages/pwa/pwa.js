@@ -18,6 +18,7 @@ exports.get = function (req) {
     if (user) {
         var player = storeLib.getPlayerByUserKey(user.key);
         userObj.playerId = player && player._id;
+        userObj.playerName = player && player.name;
     }
 
     var params = {
