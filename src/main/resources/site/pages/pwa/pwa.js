@@ -5,16 +5,22 @@ var storeLib = require('/lib/office-league-store');
 var view = resolve('pwa.html');
 
 exports.get = function (req) {
-
     var content = portalLib.getContent();
     var baseHref = portalLib.pageUrl({
         path: content.path
     });
+    
+    var createdPlayer = createPlayerOnDemand();
+    if (createdPlayer) {
+        return {
+            redirect: baseHref + '/players/' + createdPlayer.name.toLowerCase()
+        }
+    }
+
+    
+    
     var user = authLib.getUser();
-    var userObj = user && {
-            key: user.key,
-            displayName: user.displayName
-        };
+    var userObj = user && {key: user.key};
     if (user) {
         var player = storeLib.getPlayerByUserKey(user.key);
         userObj.playerId = player && player._id;
@@ -38,3 +44,22 @@ exports.get = function (req) {
         body: body
     };
 };
+
+function createPlayerOnDemand() {
+    var user = authLib.getUser();
+
+    if (user) {
+        var player = storeLib.getPlayerByUserKey(user.key);
+        if (!player) {            
+            var createdPlayer = storeLib.createPlayer({
+                userKey: user.key,
+                name: user.displayName
+            });
+            if (createdPlayer) {
+                log.info('Created player [' + createdPlayer.name + ']');
+                storeLib.refresh();
+                return createdPlayer;
+            }
+        }
+    }
+}

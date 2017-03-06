@@ -1,7 +1,7 @@
 export interface ConfigUser {
     key: string;
-    displayName: string;
     playerId: string;
+    playerName: string;
 }
 
 export interface Config {
