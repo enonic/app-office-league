@@ -77,7 +77,6 @@ export class LeagueProfileComponent extends BaseComponent {
     }`;
 
     @Input() league: League;
-    leagueTeams: Team[];
     playerInLeague: boolean;
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private router: Router) {
@@ -93,25 +92,11 @@ export class LeagueProfileComponent extends BaseComponent {
             this.graphQLService.post(LeagueProfileComponent.getLeagueQuery, {name: name, count:3, sort:'rating DESC, name ASC'}).then(data => {
                 this.league = League.fromJson(data.league);
                 this.playerInLeague = true; //TODO XPCONFIG.user.playerId
-                this.calcStats(this.league);
             });
-        }
-    }
-
-    ngOnChanges(changes: SimpleChanges) {
-        super.ngOnChanges(changes);
-
-        let leagueChange = changes['league'];
-        if (leagueChange && leagueChange.currentValue) {
-            this.calcStats(leagueChange.currentValue);
         }
     }
 
     onPlayClicked() {
         this.router.navigate(['games', this.league.id, 'new-game']);
-    }
-
-    private calcStats(league: League) { //TODO Remove
-        this.leagueTeams = league.leagueTeams.map(lt => lt.team);
     }
 }

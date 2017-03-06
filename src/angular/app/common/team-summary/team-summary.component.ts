@@ -12,6 +12,8 @@ export class TeamSummaryComponent extends BaseComponent {
 
     @Input() team: Team;
     @Input() index: number;
+    @Input() rating: number = 0;
+    @Input() ranking: number = 0;
 
     constructor(route: ActivatedRoute, protected service: GraphQLService, protected router: Router) {
         super(route);
@@ -47,6 +49,28 @@ export class TeamSummaryComponent extends BaseComponent {
                 }`;
                 this.service.post(query).then(data => this.team = Team.fromJson(data.team));
             }
+        }
+    }
+
+    //TODO Extract
+    rankingText(): string {
+        console.log('ranking', this.ranking);
+        return this.ordinal(this.ranking);
+    }
+
+    private ordinal(value: number) {
+        if (!value) {
+            return '';
+        }
+        switch (value) {
+        case 1:
+            return '1st';
+        case 2:
+            return '2nd';
+        case 3:
+            return '3rd';
+        default:
+            return value + 'th';
         }
     }
 

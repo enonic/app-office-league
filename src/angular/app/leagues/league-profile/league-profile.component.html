@@ -16,14 +16,14 @@
         <div class="col s12 l4 push-l8 no-margin">
             <ul class="row list">
                 <li class="col s12 m6 l12">
-                    <league-player-list title="Top players"
-                                 [leaguePlayers]="league.leaguePlayers" displayPlayers="true"
+                    <league-player-list title="Top players" displayPlayers="true"
+                                 [leaguePlayers]="league.leaguePlayers"
                                  [detailsPath]="['leagues', league.name.toLowerCase(), 'players']"></league-player-list>
                 </li>
                 <li class="col s12 m6 l12">
-                    <team-list [title]="'Top teams'"
-                               [teams]="leagueTeams"
-                               [detailsPath]="['leagues', league.name.toLowerCase(), 'teams']"></team-list>
+                    <league-team-list title="Top teams" displayTeams="true"
+                               [leagueTeams]="league.leagueTeams"
+                               [detailsPath]="['leagues', league.name.toLowerCase(), 'teams']"></league-team-list>
                 </li>
             </ul>
         </div>

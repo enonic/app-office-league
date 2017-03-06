@@ -12,5 +12,6 @@
     <p *ngIf="team.players">
         <span *ngFor="let player of team.players; let isLast = last">{{player.name}}{{!isLast ? ' + ' : ''}}</span>
     </p>
+    <div *ngIf="ranking > 0" class="chip right blue lighten-2 white-text" title="{{rating}}">{{rankingText()}}</div>
 
 </template>
