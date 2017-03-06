@@ -789,43 +789,7 @@ var gamePlayerCreationType = graphQlLib.createInputObjectType({
         side: {
             type: graphQlLib.nonNull(sideEnumType)
         },
-        winner: {
-            type: graphQlLib.GraphQLBoolean
-        },
-        score: {
-            type: graphQlLib.GraphQLInt
-        },
-        scoreAgainst: {
-            type: graphQlLib.GraphQLInt
-        },
-        ratingDelta: {
-            type: graphQlLib.GraphQLInt
-        },
         playerId: {
-            type: graphQlLib.nonNull(graphQlLib.GraphQLID)
-        }
-    }
-});
-
-var gameTeamCreationType = graphQlLib.createInputObjectType({
-    name: 'GameTeamCreation',
-    fields: {
-        side: {
-            type: graphQlLib.nonNull(sideEnumType)
-        },
-        winner: {
-            type: graphQlLib.GraphQLBoolean
-        },
-        score: {
-            type: graphQlLib.GraphQLInt
-        },
-        scoreAgainst: {
-            type: graphQlLib.GraphQLInt
-        },
-        ratingDelta: {
-            type: graphQlLib.GraphQLInt
-        },
-        teamId: {
             type: graphQlLib.nonNull(graphQlLib.GraphQLID)
         }
     }
@@ -974,20 +938,16 @@ var rootMutationType = graphQlLib.createObjectType({
             type: gameType,
             args: {
                 leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
-                time: graphQlLib.nonNull(graphQlLib.GraphQLString),
-                finished: graphQlLib.GraphQLID,
                 points: graphQlLib.list(pointCreationType),
-                gamePlayers: graphQlLib.nonNull(graphQlLib.list(gamePlayerCreationType)),
-                gameTeams: graphQlLib.nonNull(graphQlLib.list(gameTeamCreationType))
+                gamePlayers: graphQlLib.nonNull(graphQlLib.list(gamePlayerCreationType))
             },
             data: function (env) {
-                return storeLib.createGame({
+                var createGameParams = storeLib.generateCreateGameParams({
                     leagueId: env.args.leagueId,
-                    time: env.args.time,
-                    points: env.args.points,
-                    gamePlayers: env.args.gamePlayers,
-                    gameTeams: env.args.gameTeams
+                    points: env.args.points || [],
+                    gamePlayers: env.args.gamePlayers
                 });
+                return storeLib.createGame(createGameParams);
             }
         },
         createComment: {

@@ -1044,6 +1044,138 @@ exports.createTeam = function (params) {
 };
 
 /**
+ * Generates a new game creation params based on the minimal properties needed.
+ *
+ * @param {object} params JSON with the game parameters.
+ * @param {string} params.leagueId League id.
+ * @param {Point[]} [params.points] Array of points scored during the game.
+ * @param {GamePlayer[]} params.gamePlayers Array with the players and its properties for this game.
+ * @return {object} Create game object.
+ */
+exports.generateCreateGameParams = function (params) {
+    params.points = params.points || [];
+
+    var singlesGame = params.gamePlayers.length === 2;
+    var time = new Date().toISOString();
+    var blueScore = 0, redScore = 0;
+    var playerData = {};
+    var blueTeamPlayerIds = [], redTeamPlayerIds = [];
+
+    // init gamePlayer objects
+    var p, gamePlayer;
+    for (p = 0; p < params.gamePlayers.length; p++) {
+        gamePlayer = params.gamePlayers[p];
+        playerData[gamePlayer.playerId] = {
+            score: 0,
+            scoreAgainst: 0,
+            side: gamePlayer.side,
+            playerId: gamePlayer.playerId,
+            winner: false,
+            ratingDelta: 0
+        };
+        if (gamePlayer.side === 'red') {
+            redTeamPlayerIds.push(gamePlayer.playerId);
+        } else {
+            blueTeamPlayerIds.push(gamePlayer.playerId);
+        }
+    }
+
+    // init gameTeam objects
+    var teams = {}, redTeam, blueTeam;
+    if (!singlesGame) {
+        redTeam = exports.getTeamByPlayerIds(redTeamPlayerIds[0], redTeamPlayerIds[1]);
+        blueTeam = exports.getTeamByPlayerIds(blueTeamPlayerIds[0], blueTeamPlayerIds[1]);
+
+        if (!redTeam) {
+            redTeam = exports.createTeam({
+                name: 'Team ' + Math.floor((Math.random() * 900000) + 100000),
+                description: exports.getPlayerById(redTeamPlayerIds[0]).name + ' & ' + exports.getPlayerById(redTeamPlayerIds[1]).name,
+                playerIds: redTeamPlayerIds
+            });
+        }
+        if (!blueTeam) {
+            blueTeam = exports.createTeam({
+                name: 'Team ' + Math.floor((Math.random() * 900000) + 100000),
+                description: exports.getPlayerById(blueTeamPlayerIds[0]).name + ' & ' + exports.getPlayerById(blueTeamPlayerIds[1]).name,
+                playerIds: blueTeamPlayerIds
+            });
+        }
+        teams['red'] = {
+            score: 0,
+            scoreAgainst: 0,
+            side: 'red',
+            teamId: redTeam._id,
+            winner: false,
+            ratingDelta: 0
+        };
+        teams['blue'] = {
+            score: 0,
+            scoreAgainst: 0,
+            side: 'blue',
+            teamId: blueTeam._id,
+            winner: false,
+            ratingDelta: 0
+        };
+    }
+
+    // process points
+    var point, side;
+    for (p = 0; p < params.points.length; p++) {
+        point = params.points[p];
+        side = playerData[point.playerId].side;
+        if (side === 'red') {
+            if (!point.against) {
+                redScore++;
+            } else {
+                blueScore++;
+            }
+        } else {
+            if (!point.against) {
+                blueScore++;
+            } else {
+                redScore++;
+            }
+        }
+
+        if (point.against) {
+            playerData[point.playerId].scoreAgainst++;
+            if (teams[side]) {
+                teams[side].scoreAgainst++;
+            }
+        } else {
+            playerData[point.playerId].score++;
+            if (teams[side]) {
+                teams[side].score++;
+            }
+        }
+    }
+    var finished = blueScore >= 10 || redScore >= 10 && (Math.abs(blueScore - redScore) >= 2);
+    var winnerSide = blueScore > redScore ? 'blue' : 'red';
+    var gamePlayers = [];
+    for (p = 0; p < params.gamePlayers.length; p++) {
+        gamePlayer = params.gamePlayers[p];
+        if (finished && (playerData[gamePlayer.playerId].side === winnerSide)) {
+            playerData[gamePlayer.playerId].winner = true;
+        }
+        gamePlayers.push(playerData[gamePlayer.playerId]);
+    }
+
+    if (winnerSide && teams.red && teams.blue) {
+        teams[winnerSide].winner = true;
+    }
+    var gameTeams = teams.red && teams.blue ? [teams.red, teams.blue] : [];
+
+    return {
+        leagueId: params.leagueId,
+        time: time,
+        finished: finished,
+        gamePlayers: gamePlayers,
+        gameTeams: gameTeams,
+        points: params.points
+    };
+};
+
+/**
  * Create a new game.
  *
  * @param {object} params JSON with the game parameters.

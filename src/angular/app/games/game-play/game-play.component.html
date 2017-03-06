@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col s12 game-top-bar grey lighten-2">
         <div class="game-top-bar-items">
-            <h4 class="time">0:00</h4>
+            <h4 class="time">{{elapsedTime}}</h4>
             <div class="actions">
                 <i class="medium material-icons">pause</i>
                 <i class="medium material-icons">stop</i>
@@ -10,48 +10,57 @@
         </div>
     </div>
 
-    <div class="col s12 sides">
+    <template [ngIf]="bluePlayer1 == null">
+        <h4>Loading...</h4>
+    </template>
+    <template [ngIf]="bluePlayer1 != null">
+        <div class="col s12 sides">
 
-        <div class="side side-blue">
-            <div class="players">
-                <div class="player">
-                    <div class="player" (click)="onClicked()">
-                        <img src="{{bluePlayer1?.imageUrl}}?size=200" class="player-squared" alt="{{bluePlayer1?.name}}">
-                        <span class="title">{{bluePlayer1?.name}}</span>
+            <div class="side side-blue">
+                <div class="players">
+                    <div class="player">
+                        <div class="player" (click)="onClicked(bluePlayer1)">
+                            <img src="{{bluePlayer1?.imageUrl}}?size=200" class="player-squared" alt="{{bluePlayer1?.name}}">
+                            <span class="title">{{bluePlayer1?.name}}</span>
+                        </div>
                     </div>
+                    <template [ngIf]="bluePlayer2 != null">
+                        <div class="player">
+                            <div class="player" (click)="onClicked(bluePlayer2)">
+                                <img src="{{bluePlayer2?.imageUrl}}?size=200" class="player-squared" alt="{{bluePlayer2?.name}}">
+                                <span class="title">{{bluePlayer2?.name}}</span>
+                            </div>
+                        </div>
+                    </template>
                 </div>
-                <div class="player">
-                    <div class="player" (click)="onClicked()">
-                        <img src="{{bluePlayer2?.imageUrl}}?size=200" class="player-squared" alt="{{bluePlayer2?.name}}">
-                        <span class="title">{{bluePlayer2?.name}}</span>
-                    </div>
+                <div class="team-score center">
+                    <h1>{{blueScore}}</h1>
                 </div>
             </div>
-            <div class="team-score center">
-                <h1>{{blueScore}}</h1>
+
+            <div class="side side-red">
+                <div class="team-score center">
+                    <h1>{{redScore}}</h1>
+                </div>
+                <div class="players">
+                    <div class="player">
+                        <div class="player" (click)="onClicked(redPlayer1)">
+                            <img src="{{redPlayer1?.imageUrl}}?size=200" class="player-squared" alt="{{redPlayer1?.name}}">
+                            <span class="title">{{redPlayer1?.name}}</span>
+                        </div>
+                    </div>
+                    <template [ngIf]="redPlayer2 != null">
+                        <div class="player">
+                            <div class="player" (click)="onClicked(redPlayer2)">
+                                <img src="{{redPlayer2?.imageUrl}}?size=200" class="player-squared" alt="{{redPlayer2?.name}}">
+                                <span class="title">{{redPlayer2?.name}}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
             </div>
+
         </div>
-
-        <div class="side side-red">
-            <div class="team-score center">
-                <h1>{{redScore}}</h1>
-            </div>
-            <div class="players">
-                <div class="player">
-                    <div class="player" (click)="onClicked()">
-                        <img src="{{redPlayer1?.imageUrl}}?size=200" class="player-squared" alt="{{redPlayer1?.name}}">
-                        <span class="title">{{redPlayer1?.name}}</span>
-                    </div>
-                </div>
-                <div class="player">
-                    <div class="player" (click)="onClicked()">
-                        <img src="{{redPlayer2?.imageUrl}}?size=200" class="player-squared" alt="{{redPlayer2?.name}}">
-                        <span class="title">{{redPlayer2?.name}}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
+    </template>
 
 </div>
