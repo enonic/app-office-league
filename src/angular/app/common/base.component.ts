@@ -17,7 +17,7 @@ export class BaseComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.log('BaseComponent.ngOnChanges()', changes);
+        //console.log('BaseComponent.ngOnChanges()', changes);
     }
 
 }

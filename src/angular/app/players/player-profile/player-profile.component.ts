@@ -17,72 +17,7 @@ import {LeaguePlayer} from '../../../graphql/schemas/LeaguePlayer';
     styleUrls: ['player-profile.component.less']
 })
 export class PlayerProfileComponent extends BaseComponent {
-
-    @Input() player: Player;
-    games: Game[] = [];
-    leaguePlayers: League[] = [];
-    teams: Team[] = [];
-    editable: boolean;
-
-    constructor(route: ActivatedRoute, private graphQLService: GraphQLService) {
-        super(route);
-    }
-
-    ngOnInit(): void {
-        super.ngOnInit();
-        
-        let name = this.route.snapshot.params['name'];
-
-        this.graphQLService.post(PlayerProfileComponent.getPlayerQuery, {name: name}).then(
-            data => this.handleResponse(data));
-    }
-
-    private handleResponse(data) {
-        if (data.errors) {
-            console.error(data);
-            return;
-        }
-        this.player = Player.fromJson(data.player);
-        this.games = data.player.gamePlayers.map((gm) => Game.fromJson(gm.game));
-        if (data.player.leaguePlayers) {
-            this.leaguePlayers = data.player.leaguePlayers.map((lp) => {
-                let leaguePlayer = new LeaguePlayer(lp.id);
-                leaguePlayer.league = League.fromJson(lp.league);
-                leaguePlayer.ranking = lp.ranking;
-                leaguePlayer.rating = lp.rating;
-                return leaguePlayer;
-            });
-        }
-        if (data.player.teams) {
-            this.teams = data.player.teams.map((t) => Team.fromJson(t));
-        }
-        let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
-        this.editable = this.player.id === currentPlayerId;
-    }
-
-    getNationality(): string {
-        return Countries.getCountryName(this.player.nationality);
-    }
-
-    getHandedness(): string {
-        const h = this.player && this.player.handedness;
-        switch (h) {
-        case Handedness.RIGHT:
-            return 'Right';
-        case Handedness.LEFT:
-            return 'Left';
-        case  Handedness.AMBIDEXTERTERITY:
-            return 'Ambidextrous';
-        default:
-            return 'N/A';
-        }
-    }
-
-    onEditClicked() {
-        console.log('TODO: Edit player');
-    }
-
-    private static readonly getPlayerQuery = `query($name: String){
+    private static readonly getPlayerQuery = `query($name: ID){
         player(name: $name) {
             id
             name
@@ -157,4 +92,64 @@ export class PlayerProfileComponent extends BaseComponent {
             }
         }
     }`;
+    
+    @Input() player: Player;
+    games: Game[] = [];
+    leaguePlayers: League[] = [];
+    teams: Team[] = [];
+    editable: boolean;
+
+    constructor(route: ActivatedRoute, private graphQLService: GraphQLService) {
+        super(route);
+    }
+
+    ngOnInit(): void {
+        super.ngOnInit();
+        
+        let name = this.route.snapshot.params['name'];
+
+        this.graphQLService.post(PlayerProfileComponent.getPlayerQuery, {name: name}).then(
+            data => this.handleResponse(data));
+    }
+
+    private handleResponse(data) {
+        this.player = Player.fromJson(data.player);
+        this.games = data.player.gamePlayers.map((gm) => Game.fromJson(gm.game));
+        if (data.player.leaguePlayers) {
+            this.leaguePlayers = data.player.leaguePlayers.map((lp) => {
+                let leaguePlayer = new LeaguePlayer(lp.id);
+                leaguePlayer.league = League.fromJson(lp.league);
+                leaguePlayer.ranking = lp.ranking;
+                leaguePlayer.rating = lp.rating;
+                return leaguePlayer;
+            });
+        }
+        if (data.player.teams) {
+            this.teams = data.player.teams.map((t) => Team.fromJson(t));
+        }
+        let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
+        this.editable = this.player.id === currentPlayerId;
+    }
+
+    getNationality(): string {
+        return Countries.getCountryName(this.player.nationality);
+    }
+
+    getHandedness(): string {
+        const h = this.player && this.player.handedness;
+        switch (h) {
+        case Handedness.RIGHT:
+            return 'Right';
+        case Handedness.LEFT:
+            return 'Left';
+        case  Handedness.AMBIDEXTERTERITY:
+            return 'Ambidextrous';
+        default:
+            return 'N/A';
+        }
+    }
+
+    onEditClicked() {
+        console.log('TODO: Edit player');
+    }    
 }

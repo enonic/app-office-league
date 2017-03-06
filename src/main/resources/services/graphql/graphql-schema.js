@@ -475,6 +475,12 @@ var leagueTeamType = graphQlLib.createObjectType({
                 return toInt(env.source.rating);
             }
         },
+        ranking: {
+            type: graphQlLib.GraphQLInt,
+            data: function (env) {
+                return toInt(storeLib.getRankingForTeamLeague(env.source.teamId, env.source.leagueId));
+            }
+        },
         team: {
             type: teamType,
             data: function (env) {
@@ -632,7 +638,7 @@ var rootQueryType = graphQlLib.createObjectType({
             type: teamType,
             args: {
                 id: graphQlLib.GraphQLID,
-                name: graphQlLib.GraphQLID
+                name: graphQlLib.GraphQLString
             },
             data: function (env) {
                 var id = env.args.id;

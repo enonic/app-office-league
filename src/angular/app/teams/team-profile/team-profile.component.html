@@ -3,10 +3,45 @@
 </template>
 <div *ngIf="team != null">
 
-    <team-summary [team]="team"></team-summary>
+    <div class="row">
+        <div class="col s10">
+            <div class="team-header">
+                <img src="{{team.imageUrl}}?size=96" alt="{{team.name}}" class="circle">
+                <h2 class="header light-blue-text text-darken-4">{{team.name}}</h2>
+            </div>
+        </div>
+        <div *ngIf="editable" class="col s2" (click)="onEditClicked()">
+            <a class="btn-floating btn-large waves-effect waves-light light-blue darken-4"><i class="material-icons">edit</i></a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <form>
+                <div>                   
+                    <div>
+                        <label>About</label>
+                        <span>{{team.description}}</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <team-players [players]="team.players"></team-players>
+    <ul class="row">
 
-    <game-list [teamId]="team.id"></game-list>
+        <li class="col s12 m8">
+            <game-list [games]="games" [title]="'Latest games'"></game-list>
+        </li>
+
+        <!--li class="col s12 m8">
+            <league-player-list [leaguePlayers]="leaguePlayers" [title]="'Leagues'"></league-player-list>
+        </li-->
+
+        <li class="col s12 m8">
+            <player-list [players]="team.players" [title]="'Players'"></player-list>
+        </li>
+
+    </ul>
 
 </div>
+<!--TODO Create a new team button-->
