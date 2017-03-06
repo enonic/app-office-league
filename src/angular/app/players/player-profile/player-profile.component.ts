@@ -95,7 +95,6 @@ export class PlayerProfileComponent extends BaseComponent {
     
     @Input() player: Player;
     games: Game[] = [];
-    leaguePlayers: League[] = [];
     editable: boolean;
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService) {
@@ -114,15 +113,6 @@ export class PlayerProfileComponent extends BaseComponent {
     private handleResponse(data) {
         this.player = Player.fromJson(data.player);
         this.games = data.player.gamePlayers.map((gm) => Game.fromJson(gm.game));
-        if (data.player.leaguePlayers) {
-            this.leaguePlayers = data.player.leaguePlayers.map((lp) => {
-                let leaguePlayer = new LeaguePlayer(lp.id);
-                leaguePlayer.league = League.fromJson(lp.league);
-                leaguePlayer.ranking = lp.ranking;
-                leaguePlayer.rating = lp.rating;
-                return leaguePlayer;
-            });
-        }
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
         this.editable = this.player.id === currentPlayerId;
     }

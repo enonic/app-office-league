@@ -26,6 +26,7 @@ export class Player extends NamedEntity {
         player.handedness = HandednessUtil.parse(json.handedness);
         player.description = json.description;
         player.teams = json.teams ? json.teams.map((team) => Team.fromJson(team)) : [];
+        player.leaguePlayers = json.leaguePlayers ? json.leaguePlayers.map((leaguePlayer) => LeaguePlayer.fromJson(leaguePlayer)) : [];
         return player;
     }
 }
