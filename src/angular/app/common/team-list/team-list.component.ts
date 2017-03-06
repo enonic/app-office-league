@@ -11,6 +11,7 @@ import {ListComponent} from '../../common/list.component';
 })
 export class TeamListComponent extends BaseComponent {
 
+    @Input() title: string;
     @Input() teams: Team[];
     @Input() leagueId: string;
     @Input() playerId: string;
