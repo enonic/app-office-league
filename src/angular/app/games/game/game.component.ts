@@ -30,6 +30,7 @@ export class GameComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
+        
         let id = this.route.snapshot.params['id'];
 
         if (!this.game && id) {

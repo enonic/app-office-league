@@ -19,6 +19,7 @@ export class TeamSummaryComponent extends BaseComponent {
 
     ngOnInit(): void {
         super.ngOnInit();
+        
         let name = this.route.snapshot.params['name'];
 
         if (!this.team && name) {

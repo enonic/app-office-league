@@ -24,6 +24,8 @@ export class PlayerSummaryComponent extends BaseComponent {
     }
 
     ngOnInit(): void {
+        super.ngOnInit();
+        
         let id = this.playerId || this.route.snapshot.params['id'];
 
         if (!this.player && id) {

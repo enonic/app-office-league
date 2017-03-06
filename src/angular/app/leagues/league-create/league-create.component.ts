@@ -30,10 +30,6 @@ export class LeagueCreateComponent extends BaseComponent {
         super(route);
     }
 
-    ngOnInit(): void {
-        super.ngOnInit();
-    }
-
     private validate(): boolean {
         this.nameClasses['invalid'] = !this.name;
         return !!this.name && SportUtil.parse(this.sport) != null;

@@ -41,6 +41,7 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
 
     ngOnInit(): void {
         super.ngOnInit();
+        
         if (this.allLeagues === undefined) {
             this.graphQLService.post(LeagueBrowserComponent.allLeaguesQuery).then((data: any) => {
                 this.allLeagues = data.leagues.map(league => League.fromJson(league));
