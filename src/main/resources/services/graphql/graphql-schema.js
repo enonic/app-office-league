@@ -683,6 +683,16 @@ var rootQueryType = graphQlLib.createObjectType({
                 return storeLib.getGamesByLeagueId(leagueId, start, count).hits;
             }
         },
+        game: {
+            type: gameType,
+            args: {
+                id: graphQlLib.nonNull(graphQlLib.GraphQLID)
+            },
+            data: function (env) {
+                var gameId = env.args.id;
+                return storeLib.getGameById(gameId);
+            }
+        },
         leaguePlayers: {
             type: graphQlLib.list(leaguePlayerType),
             args: {
@@ -947,6 +957,7 @@ var rootMutationType = graphQlLib.createObjectType({
                     points: env.args.points || [],
                     gamePlayers: env.args.gamePlayers
                 });
+                // TODO update ranking
                 return storeLib.createGame(createGameParams);
             }
         },

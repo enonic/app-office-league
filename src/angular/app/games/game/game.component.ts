@@ -26,64 +26,22 @@ export class GameComponent implements OnInit, OnChanges {
     private winners: Player[] = [];
     private losers: Player[] = [];
 
-    constructor(private service: GraphQLService, private route: ActivatedRoute, private router: Router) {
+    constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router) {
     }
 
     ngOnInit(): void {
-        
-        let id = this.route.snapshot.params['id'];
+        let gameId = this.route.snapshot.params['id'];
 
-        if (!this.game && id) {
+        if (!this.game && gameId) {
             // check if the game was passed from list to spare request
-            this.game = this.service.game;
+            this.game = this.graphQLService.game;
             if (!this.game) {
-                // no game was passed because this was probably a page reload
-                let query = `query{
-                  game(id: "${id}") {
-                    id
-                    time
-                    finished
-                    points {
-                        player {
-                            name
-                        }
-                        time
-                        against
-                    }
-                    comments {
-                        author {
-                            name
-                        }
-                        text
-                    }
-                    gamePlayers {
-                        score
-                        winner
-                        side
-                        ratingDelta
-                        player {
-                            name
-                        }
-                    }
-                    gameTeams {
-                        score
-                        winner
-                        side    
-                        ratingDelta
-                        team {
-                            name
-                            players {
-                                name
-                            }
-                        }
-                    }
-                    league {
-                        name
-                    }
-                  }
-                }`;
-                // Uncomment when there's game by id qraphQL query
-                //this.service.post(query).then(data => this.game = Game.fromJson(data.game));
+                this.graphQLService.post(GameComponent.getGameQuery,
+                    {gameId: gameId}).then(
+                    data => {
+                        this.game = Game.fromJson(data.game);
+                        this.calcStats(this.game);
+                    });
             } else {
                 this.calcStats(this.game);
             }
@@ -118,4 +76,48 @@ export class GameComponent implements OnInit, OnChanges {
         });
     }
 
+    private static readonly getGameQuery = `query ($gameId: ID!) {
+      game(id: $gameId) {
+        id
+        time
+        finished
+        points {
+            player {
+                name
+            }
+            time
+            against
+        }
+        comments {
+            author {
+                name
+            }
+            text
+        }
+        gamePlayers {
+            score
+            winner
+            side
+            ratingDelta
+            player {
+                name
+            }
+        }
+        gameTeams {
+            score
+            winner
+            side    
+            ratingDelta
+            team {
+                name
+                players {
+                    name
+                }
+            }
+        }
+        league {
+            name
+        }
+      }
+    }`
 }
