@@ -1,23 +1,26 @@
-h1 {
+.home__welcome {
   text-align: center;
   font-weight: 100;
-
-  span {
-    font-weight: 400;
-  }
 }
 
-ul {
-  text-align: justify;
-  font-size: 18px;
+.home__title {
+  font-weight: 400;
+  font-family: Lobster, Roboto, sans-serif;
+}
+
+.home__description {
+  margin-top: 0.5rem;
   margin-bottom: 74px; // to prevent bottom-sticked footer from overflowing
+  text-align: justify;
+  font-size: 1.5rem;
+  font-weight: 300;
 
-  li {
-    margin-bottom: 10px;
+  .keynote {
+    font-weight: 300;
   }
 }
 
-.bg {
+.home__background {
   position: fixed;
   z-index: -1;
   top: 0;
@@ -28,16 +31,17 @@ ul {
   opacity: .4;
 }
 
-.footer {
+.home__footer {
   position: absolute;
   bottom: 0;
+  margin-left: 10px;
+}
 
-  button {
-    display: block;
-    width: 100%;
+.home__login, .home__browse {
+  display: block;
+  width: 100%;
+}
 
-    &.login {
-      margin-top: 10px;
-    }
-  }
+.home__login {
+  margin-top: 10px;
 }

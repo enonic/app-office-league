@@ -1,5 +1,5 @@
 <div class="navbar-fixed">
-    <nav class="blue accent-2">
+    <nav class="blue-grey">
         <div class="nav-wrapper">
             <a href="#" (click)="location.back()" class="button-back hide-on-large-only"><i class="material-icons">arrow_back</i></a>
 
@@ -27,7 +27,7 @@
                         <i class="material-icons right">arrow_drop_down</i></a>
                 </li>
                 <li *ngIf="!auth.isAuthenticated()">
-                    <a href="#!" (click)="auth.login()">Login</a>
+                    <a href="#!" (click)="auth.login()">Sign in</a>
                 </li>
             </ul>
         </div>
