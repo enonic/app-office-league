@@ -40,7 +40,7 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
     }
 
     private loadPlayers() {
-        this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {leagueId: this.leagueId, count: 20, sort: 'name ASC'}).then(
+        this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {leagueId: this.leagueId, count: -1, sort: 'name ASC'}).then(
             data => {
                 if (data.league && data.league.leaguePlayers) {
                     this.players =

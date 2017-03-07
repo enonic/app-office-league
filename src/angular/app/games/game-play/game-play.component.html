@@ -14,6 +14,14 @@
         <h4>Loading...</h4>
     </template>
     <template [ngIf]="bluePlayer1 != null">
+        <div class="col s12 game-score blue-grey lighten-3">
+            <div class="team-score center">
+                <h1>{{blueScore}}</h1>
+            </div>
+            <div class="team-score center">
+                <h1>{{redScore}}</h1>
+            </div>
+        </div>
         <div class="col s12 sides">
 
             <div class="side side-blue">
@@ -33,15 +41,9 @@
                         </div>
                     </template>
                 </div>
-                <div class="team-score center">
-                    <h1>{{blueScore}}</h1>
-                </div>
             </div>
 
             <div class="side side-red">
-                <div class="team-score center">
-                    <h1>{{redScore}}</h1>
-                </div>
                 <div class="players">
                     <div class="player">
                         <div class="player" (click)="onClicked(redPlayer1)">
