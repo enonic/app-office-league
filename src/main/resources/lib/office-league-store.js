@@ -1011,7 +1011,7 @@ exports.createPlayer = function (params) {
  * @param {string} [params.imageType] Mime type of the team's image.
  * @param {string} [params.description] Description text.
  * @param {string[]} params.playerIds Array with ids of the team players.
- * @return {string} Created team.
+ * @return {Team} Created team.
  */
 exports.createTeam = function (params) {
     var repoConn = newConnection();
@@ -1041,6 +1041,25 @@ exports.createTeam = function (params) {
     });
 
     return teamNode;
+};
+
+/**
+ * Creates a default team from 2 existing players.
+ *
+ * @param {string} playerId1 Player 1.
+ * @param {string} playerId2 Player 2.
+ * @return {Team} Created Team object.
+ */
+var createDefaultTeamForPlayers = function (playerId1, playerId2) {
+    var p1 = exports.getPlayerById(playerId1);
+    var p2 = exports.getPlayerById(playerId2);
+    var team = exports.createTeam({
+        name: 'Team ' + p1.name + '-' + p2.name,
+        description: p1.name + ' & ' + p2.name,
+        playerIds: [playerId1, playerId2]
+    });
+
+    return team;
 };
 
 /**
@@ -1087,18 +1106,10 @@ exports.generateCreateGameParams = function (params) {
         blueTeam = exports.getTeamByPlayerIds(blueTeamPlayerIds[0], blueTeamPlayerIds[1]);
 
         if (!redTeam) {
-            redTeam = exports.createTeam({
-                name: 'Team ' + Math.floor((Math.random() * 900000) + 100000),
-                description: exports.getPlayerById(redTeamPlayerIds[0]).name + ' & ' + exports.getPlayerById(redTeamPlayerIds[1]).name,
-                playerIds: redTeamPlayerIds
-            });
+            redTeam = createDefaultTeamForPlayers(redTeamPlayerIds[0], redTeamPlayerIds[1]);
         }
         if (!blueTeam) {
-            blueTeam = exports.createTeam({
-                name: 'Team ' + Math.floor((Math.random() * 900000) + 100000),
-                description: exports.getPlayerById(blueTeamPlayerIds[0]).name + ' & ' + exports.getPlayerById(blueTeamPlayerIds[1]).name,
-                playerIds: blueTeamPlayerIds
-            });
+            blueTeam = createDefaultTeamForPlayers(blueTeamPlayerIds[0], blueTeamPlayerIds[1]);
         }
         teams['red'] = {
             score: 0,

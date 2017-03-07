@@ -90,7 +90,8 @@ export class GamePlayComponent implements OnInit {
             this.stopGameTimer();
             this.gameState = GameState.Finished;
             this.createGame().then((gameId) => {
-                console.log('Game created: ' + gameId)
+                console.log('Game created: ' + gameId);
+                this.router.navigate(['games', gameId]);
             });
         }
     }

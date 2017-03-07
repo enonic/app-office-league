@@ -957,8 +957,10 @@ var rootMutationType = graphQlLib.createObjectType({
                     points: env.args.points || [],
                     gamePlayers: env.args.gamePlayers
                 });
+                var createdGame = storeLib.createGame(createGameParams);
+                storeLib.refresh();
                 // TODO update ranking
-                return storeLib.createGame(createGameParams);
+                return createdGame;
             }
         },
         createComment: {
