@@ -13,6 +13,9 @@
         <div *ngIf="authService.isAuthenticated() && !playerInLeague" class="col s6 m4" (click)="onJoinClicked()">
             <a class="waves-effect waves-light btn green">Join</a>
         </div>
+        <div *ngIf="adminInLeague" class="col s6 m4" (click)="onEditClicked()">
+            <a class="waves-effect waves-light btn green">Edit</a>
+        </div>
     </div>
 
     <div class="row">

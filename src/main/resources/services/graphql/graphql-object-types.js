@@ -514,6 +514,15 @@ exports.leagueType = graphQlLib.createObjectType({
                 });
             }
         },
+        isAdmin: {
+            type: graphQlLib.GraphQLBoolean,
+            args: {
+                playerId: graphQlLib.nonNull(graphQlLib.GraphQLID)
+            },
+            data: function (env) {
+                return graphQlUtilLib.toArray(env.source.adminPlayerIds).indexOf(env.args.playerId) > -1;
+            }
+        },
         leaguePlayer: {
             type: exports.leaguePlayerType,
             args: {

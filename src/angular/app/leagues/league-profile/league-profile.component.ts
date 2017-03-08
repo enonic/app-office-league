@@ -18,6 +18,7 @@ export class LeagueProfileComponent extends BaseComponent {
             id
             name
             description
+            isAdmin(playerId:$playerId)
             myLeaguePlayer: leaguePlayer(playerId:$playerId) {
                 id
             }
@@ -88,6 +89,7 @@ export class LeagueProfileComponent extends BaseComponent {
 
     @Input() league: League;
     playerInLeague: boolean;
+    adminInLeague: boolean;
 
     constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService, private router: Router) {
         super(route);
@@ -104,16 +106,21 @@ export class LeagueProfileComponent extends BaseComponent {
     }
 
     refreshData(leagueName: String): void {
-        let playerId = this.authService.isAuthenticated() ? this.authService.getUser().playerId : '0';
+        let playerId = this.authService.isAuthenticated() ? this.authService.getUser().playerId : '-1';
         this.graphQLService.post(LeagueProfileComponent.getLeagueQuery, {name: leagueName, count:3, sort:'rating DESC, name ASC', playerId: playerId}).
             then(data => {
                 this.league = League.fromJson(data.league);
                 this.playerInLeague = !!data.league.myLeaguePlayer;
+                this.adminInLeague = data.league.isAdmin;
             });
     }
 
     onPlayClicked() {
         this.router.navigate(['games', this.league.id, 'new-game']);
+    }
+
+    onEditClicked() {
+        this.router.navigate(['leagues', this.league.name.toLowerCase(), 'edit']);
     }
 
     onJoinClicked() {
