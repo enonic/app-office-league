@@ -6,13 +6,10 @@ import {GameParameters} from '../GameParameters';
 import {League} from '../../../graphql/schemas/League';
 import {Point} from '../../../graphql/schemas/Point';
 import {XPCONFIG} from '../../app.config';
+import {Side, SideUtil} from '../../../graphql/schemas/Side';
 
 enum GameState {
     NotStarted, Playing, Paused, Finished
-}
-
-enum TeamSide {
-    Red, Blue
 }
 
 enum PlayerPosition {
@@ -73,7 +70,6 @@ export class GamePlayComponent implements OnInit {
         if (this.gameState !== GameState.Playing) {
             return;
         }
-        console.log('Player selected: ' + p.name, TeamSide[this.getPlayerSide(p)]);
 
         this.pauseGame();
 
@@ -147,7 +143,12 @@ export class GamePlayComponent implements OnInit {
         this.secondsBeforePause = 0;
         this.elapsedTime = '';
         this.gameState = GameState.Playing;
-        this.points = [];
+        if (this.gameId && this.points) {
+            this.replayPoints();
+            this.secondsBeforePause = this.points.length > 0 ? this.points[this.points.length - 1].time : 0;
+        } else {
+            this.points = [];
+        }
 
         this.updateElapsedTime();
         this.startGameTimer();
@@ -192,7 +193,7 @@ export class GamePlayComponent implements OnInit {
         point.against = against;
         this.points.push(point);
 
-        if (side === TeamSide.Red) {
+        if (side === Side.RED) {
             if (against) {
                 this.blueScore++;
             } else {
@@ -218,7 +219,7 @@ export class GamePlayComponent implements OnInit {
             });
         } else {
             this.saveGame().then((gameId) => {
-                // TODO
+                // TODO show point feedback
             }).catch((ex) => {
                 console.log('Could not update game. Offline mode On.');
                 this.onlineMode = false;
@@ -231,6 +232,46 @@ export class GamePlayComponent implements OnInit {
     }
 
     private loadGameData(gameParams: GameParameters) {
+        if (gameParams.gameId) {
+            // load existing game data
+            return this.graphQLService.post(GamePlayComponent.getGamePlayersLeagueQuery,
+                {gameId: gameParams.gameId}).then(
+                data => {
+                    this.gameId = gameParams.gameId;
+                    this.league = League.fromJson(data.game.league);
+                    let playerMap: {[id: string]: Player} = {};
+
+                    data.game.gamePlayers.forEach((gp) => {
+                        const p = Player.fromJson(gp.player);
+                        playerMap[p.id] = p;
+                        const side = SideUtil.parse(gp.side);
+                        if (side === Side.BLUE) {
+                            if (this.bluePlayer1) {
+                                this.bluePlayer2 = p;
+                            } else {
+                                this.bluePlayer1 = p;
+                            }
+                        } else if (side === Side.RED) {
+                            if (this.redPlayer1) {
+                                this.redPlayer2 = p;
+                            } else {
+                                this.redPlayer1 = p;
+                            }
+                        }
+                    });
+
+                    this.points = [];
+                    data.game.points.map((p) => {
+                        const point = new Point();
+                        point.time = p.time;
+                        point.against = p.against;
+                        point.player = playerMap[p.player.id];
+                        this.points.push(point);
+                    });
+                });
+        }
+
+        // load league and players for new game
         let playerIds = [gameParams.bluePlayer1, gameParams.redPlayer1, gameParams.bluePlayer2, gameParams.redPlayer2].filter((p) => !!p);
         return this.graphQLService.post(GamePlayComponent.getPlayersLeagueQuery,
             {playerIds: playerIds, leagueId: gameParams.leagueId}).then(
@@ -255,7 +296,7 @@ export class GamePlayComponent implements OnInit {
 
     private buildSaveGameParams(): {[key: string]: any} {
         let players = [this.bluePlayer1, this.redPlayer1, this.bluePlayer2, this.redPlayer2].filter((p) => !!p).map((p) => {
-            return {"playerId": p.id, "side": TeamSide[this.getPlayerSide(p)].toLowerCase()};
+            return {"playerId": p.id, "side": Side[this.getPlayerSide(p)].toLowerCase()};
         });
         let points = this.points.map((p) => {
             return {time: p.time, playerId: p.player.id, against: p.against}
@@ -281,6 +322,27 @@ export class GamePlayComponent implements OnInit {
                 console.log('Game updated', data);
                 return data.updateGame.id;
             });
+    }
+
+    private replayPoints() {
+        this.blueScore = 0;
+        this.redScore = 0;
+        this.points.forEach((point) => {
+            let side = this.getPlayerSide(point.player);
+            if (side === Side.RED) {
+                if (point.against) {
+                    this.blueScore++;
+                } else {
+                    this.redScore++;
+                }
+            } else {
+                if (point.against) {
+                    this.redScore++;
+                } else {
+                    this.blueScore++;
+                }
+            }
+        });
     }
 
     private startGameTimer() {
@@ -320,12 +382,12 @@ export class GamePlayComponent implements OnInit {
         return (hoursStr === '00') ? minutesStr + ':' + secondsStr : hoursStr + ':' + minutesStr + ':' + secondsStr;
     };
 
-    private getPlayerSide(p: Player): TeamSide {
+    private getPlayerSide(p: Player): Side {
         if (p.id === this.bluePlayer1.id || (this.bluePlayer2 && (p.id === this.bluePlayer2.id))) {
-            return TeamSide.Blue;
+            return Side.BLUE;
         }
         if (p.id === this.redPlayer1.id || (this.redPlayer2 && (p.id === this.redPlayer2.id))) {
-            return TeamSide.Red;
+            return Side.RED;
         }
         return null;
     }
@@ -377,7 +439,37 @@ export class GamePlayComponent implements OnInit {
         }
     }`;
 
-    private static readonly createGameMutation = `mutation ($leagueId: ID!, $points: [PointCreation], $players: [GamePlayerCreation]!) {
+    private static readonly getGamePlayersLeagueQuery = `query ($gameId: ID!) {
+      game(id: $gameId) {
+        id
+        finished
+        points {
+          time
+          against
+          player {
+            id
+          }
+        }
+        gamePlayers {
+          side
+          player {
+            id
+            name
+            nickname
+            nationality
+            handedness
+            description
+          }
+        }
+        league {
+          id
+          name
+          description
+        }
+      }
+    }`;
+
+    static readonly createGameMutation = `mutation ($leagueId: ID!, $points: [PointCreation], $players: [GamePlayerCreation]!) {
         createGame(leagueId: $leagueId, points: $points, gamePlayers: $players) {
             id
         }

@@ -5,6 +5,7 @@ import {Player} from '../../../graphql/schemas/Player';
 import {XPCONFIG} from '../../app.config';
 import {League} from '../../../graphql/schemas/League';
 import {GameParameters} from '../GameParameters';
+import {GamePlayComponent} from '../game-play/game-play.component';
 
 @Component({
     selector: 'new-game',
@@ -55,7 +56,15 @@ export class NewGameComponent implements OnInit {
             redPlayer1: this.redPlayer1 && this.redPlayer1.id,
             redPlayer2: this.redPlayer2 && this.redPlayer2.id
         };
-        this.router.navigate(['games', this.leagueId, 'game-play'], {queryParams: gameParams});
+
+        this.createGame().then((gameId) => {
+            console.log('Initial game created: ' + gameId);
+            gameParams.gameId = gameId;
+            this.router.navigate(['games', this.leagueId, 'game-play'], {queryParams: gameParams});
+        }).catch((ex) => {
+            console.log('Could not create game');
+            this.router.navigate(['games', this.leagueId, 'game-play'], {queryParams: gameParams});
+        });
     }
 
     onShuffleClicked() {
@@ -72,7 +81,6 @@ export class NewGameComponent implements OnInit {
     }
 
     onBluePlayer1Selected(p: Player) {
-        console.log('Blue player 1 selected', p);
         if (p) {
             this.bluePlayer1 = p;
             this.updatePlayerSelectionState();
@@ -80,7 +88,6 @@ export class NewGameComponent implements OnInit {
     }
 
     onBluePlayer2Selected(p: Player) {
-        console.log('Blue player 2 selected', p);
         if (p) {
             this.bluePlayer2 = p;
             this.updatePlayerSelectionState();
@@ -88,7 +95,6 @@ export class NewGameComponent implements OnInit {
     }
 
     onRedPlayer1Selected(p: Player) {
-        console.log('Red player 1 selected', p);
         if (p) {
             this.redPlayer1 = p;
             this.updatePlayerSelectionState();
@@ -96,11 +102,27 @@ export class NewGameComponent implements OnInit {
     }
 
     onRedPlayer2Selected(p: Player) {
-        console.log('Red player 2 selected', p);
         if (p) {
             this.redPlayer2 = p;
             this.updatePlayerSelectionState();
         }
+    }
+
+    private createGame(): Promise<string> {
+        let players = [this.bluePlayer1, this.redPlayer1, this.bluePlayer2, this.redPlayer2].filter((p) => !!p).map((p) => {
+            return {"playerId": p.id, "side": ( p === this.bluePlayer1 || p === this.bluePlayer2 ? 'blue' : 'red')};
+        });
+        let createGameParams = {
+            points: [],
+            players: players,
+            leagueId: this.leagueId
+        };
+        createGameParams['leagueId'] = this.league.id;
+        return this.graphQLService.post(GamePlayComponent.createGameMutation, createGameParams).then(
+            data => {
+                console.log('Game created', data);
+                return data.createGame.id;
+            });
     }
 
     private updatePlayerSelectionState() {

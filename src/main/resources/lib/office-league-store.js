@@ -1762,7 +1762,7 @@ exports.updateGame = function (params) {
     var result = repoConn.query({
         start: 0,
         count: 1,
-        query: "type = '" + TYPE.GAME + "' AND gameId='" + params.gameId + "'"
+        query: "type = '" + TYPE.GAME + "' AND _id='" + params.gameId + "'"
     });
 
     if (result.count > 0) {

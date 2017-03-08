@@ -277,7 +277,7 @@ exports.pointType = graphQlLib.createObjectType({
         time: {
             type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
             data: function (env) {
-                return env.source.time;
+                return graphQlUtilLib.toInt(env.source.time);
             }
         },
         against: {
