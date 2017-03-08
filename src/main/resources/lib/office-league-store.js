@@ -269,10 +269,22 @@ exports.getLeaguePlayersByPlayerId = function (playerId, start, count, sort) {
 };
 
 /**
+ * Retrieve a LeaguePlayer
+ * @param  {string} leagueId League id.
+ * @param  {string} playerId Player id.
+ * @return {LeaguePlayer} League player.
+ */
+exports.getLeaguePlayerByLeagueIdAndPlayerId = function (leagueId, playerId) {
+    return querySingleHit({
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND playerId='" + playerId + "'"
+    });
+};
+
+/**
  * Retrieve a list of league players and their rating points in the ranking.
  * @param  {string} leagueId League id.
  * @param  {string[]} playerIds Player ids.
- * @return {LeaguePlayer[]} League players.
+ * @return {LeaguePlayerResponse} League players.
  */
 exports.getLeaguePlayersByLeagueIdAndPlayerIds = function (leagueId, playerIds) {
     playerIds = playerIds || [];

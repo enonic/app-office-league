@@ -1,5 +1,6 @@
 import {Component, Input, SimpleChanges} from '@angular/core';
 import {GraphQLService} from '../../graphql.service';
+import {AuthService} from '../../auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
@@ -12,11 +13,14 @@ import {Team} from '../../../graphql/schemas/Team';
 })
 export class LeagueProfileComponent extends BaseComponent {
 
-    private static readonly getLeagueQuery = `query ($name: String, $count:Int, $sort: String) {
+    private static readonly getLeagueQuery = `query ($name: String, $count:Int, $sort: String, $playerId: ID!) {
         league(name: $name) {
             id
             name
             description
+            myLeaguePlayer: leaguePlayer(playerId:$playerId) {
+                id
+            }
             leaguePlayers(count:$count, sort:$sort) {
                 ranking
                 player {
@@ -76,10 +80,16 @@ export class LeagueProfileComponent extends BaseComponent {
         }
     }`;
 
+    private static readonly joinPlayerLeagueQuery = `mutation ($playerId: ID!, $leagueId:ID!) {
+        joinPlayerLeague(playerId: $playerId, leagueId: $leagueId) {
+            id
+        }
+    }`;
+
     @Input() league: League;
     playerInLeague: boolean;
 
-    constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private router: Router) {
+    constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService, private router: Router) {
         super(route);
     }
 
@@ -89,14 +99,30 @@ export class LeagueProfileComponent extends BaseComponent {
         let name = this.route.snapshot.params['name'];
 
         if (!this.league && name) {
-            this.graphQLService.post(LeagueProfileComponent.getLeagueQuery, {name: name, count:3, sort:'rating DESC, name ASC'}).then(data => {
-                this.league = League.fromJson(data.league);
-                this.playerInLeague = true; //TODO XPCONFIG.user.playerId
-            });
+            this.refreshData(name);
         }
+    }
+
+    refreshData(leagueName: String): void {
+        let playerId = this.authService.isAuthenticated() ? this.authService.getUser().playerId : '0';
+        this.graphQLService.post(LeagueProfileComponent.getLeagueQuery, {name: leagueName, count:3, sort:'rating DESC, name ASC', playerId: playerId}).
+            then(data => {
+                this.league = League.fromJson(data.league);
+                this.playerInLeague = !!data.league.myLeaguePlayer;
+            });
     }
 
     onPlayClicked() {
         this.router.navigate(['games', this.league.id, 'new-game']);
+    }
+
+    onJoinClicked() {
+        if (this.authService.isAuthenticated() && !this.playerInLeague) {
+            let playerId = this.authService.getUser().playerId;
+            this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery, {playerId: playerId, leagueId: this.league.id}).
+                then(data => {
+                    this.refreshData(this.league.name);
+                }); 
+        }
     }
 }

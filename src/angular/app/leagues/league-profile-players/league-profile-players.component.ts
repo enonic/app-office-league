@@ -36,9 +36,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
 
     private static readonly joinPlayerLeagueQuery = `mutation ($playerId: ID!, $leagueId:ID!) {
         joinPlayerLeague(playerId: $playerId, leagueId: $leagueId) {
-            player {
-                name
-            }
+            id
         }
     }`;
     
