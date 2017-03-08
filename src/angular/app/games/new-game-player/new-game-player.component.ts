@@ -15,6 +15,7 @@ export class NewGamePlayerComponent implements OnInit, OnChanges {
     @Input() player: Player;
     @Input() leagueId: string;
     @Input() excludePlayerIds: {[id: string]: boolean} = {};
+    @Input() sideClass: string;
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
     playerSelectEnabled: boolean;
     private modalTitle: string = 'Select a player';

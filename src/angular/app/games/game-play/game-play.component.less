@@ -2,8 +2,9 @@
 
 .sides {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
+  align-content: center;
 }
 
 .col.sides {
@@ -13,13 +14,13 @@
 
 .side {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
   flex: 1;
 
   .players {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
     flex: 1;
   }
@@ -27,11 +28,17 @@
 }
 
 .side-blue {
-  background-color: @blue-team-color;
+  img {
+    border: solid 3px @blue-team-color;
+    box-shadow: 0 0 3px @blue-team-color;
+  }
 }
 
 .side-red {
-  background-color: @red-team-color;
+  img {
+    border: solid 3px @red-team-color;
+    box-shadow: 0 0 3px @red-team-color;
+  }
 }
 
 .player {
@@ -43,9 +50,19 @@
   padding-top: 2vh;
   padding-bottom: 2vh;
 
+  &.selected {
+    opacity: 1;
+    img {
+      border-width: 2px;
+    }
+  }
+  &.unselected {
+    opacity: 0.25;
+  }
+
   img {
-    width: 20vh;
-    height: 20vh;
+    width: 18vh;
+    height: 18vh;
   }
 }
 
@@ -78,14 +95,52 @@ img.player-squared {
 .team-score {
   flex: 1;
 
-  h1 {
+  h4 {
     margin-top: 0;
     margin-bottom: 0;
   }
 }
 
 .game-score {
+  flex: 1;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
 }
+
+.blue-score {
+  color: @blue-team-color;
+  padding-right: 2px;
+}
+
+.red-score {
+  color: @red-team-color;
+  padding-left: 2px;
+}
+
+.field {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  flex: 1;
+  padding-right: 0;
+  padding-left: 0;
+  height: 26vh;
+  img {
+    height: 26vh;
+    object-fit: cover;
+  }
+
+  &.enabled {
+    .field-red {
+      box-shadow: 0 0 10px @red-team-color;
+    }
+
+    .field-blue {
+      box-shadow: 0 0 10px @blue-team-color;
+    }
+  }
+}
+

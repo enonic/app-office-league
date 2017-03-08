@@ -1,3 +1,5 @@
+@import "../../colors";
+
 img {
   width: 20vh;
   height: 20vh;
@@ -21,4 +23,18 @@ img.player-squared {
 
 .player-select-modal {
   overflow-y: hidden;
+}
+
+.side-blue {
+  img {
+    border: solid 3px @blue-team-color;
+    box-shadow: 0 0 3px @blue-team-color;
+  }
+}
+
+.side-red {
+  img {
+    border: solid 3px @red-team-color;
+    box-shadow: 0 0 3px @red-team-color;
+  }
 }

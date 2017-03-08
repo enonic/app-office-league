@@ -7,22 +7,22 @@
 
         <div class="side side-blue">
             <div class="player">
-                <new-game-player [player]="bluePlayer1" [leagueId]="leagueId" [excludePlayerIds]="excludePlayerIds"
+                <new-game-player [player]="bluePlayer1" [leagueId]="leagueId" [sideClass]="'side-blue'" [excludePlayerIds]="excludePlayerIds"
                                  (playerSelected)="onBluePlayer1Selected($event)"></new-game-player>
             </div>
             <div class="player">
-                <new-game-player [player]="bluePlayer2" [leagueId]="leagueId" [excludePlayerIds]="excludePlayerIds"
+                <new-game-player [player]="bluePlayer2" [leagueId]="leagueId" [sideClass]="'side-blue'" [excludePlayerIds]="excludePlayerIds"
                                  (playerSelected)="onBluePlayer2Selected($event)"></new-game-player>
             </div>
         </div>
 
         <div class="side side-red">
             <div class="player">
-                <new-game-player [player]="redPlayer1" [leagueId]="leagueId" [excludePlayerIds]="excludePlayerIds"
+                <new-game-player [player]="redPlayer1" [leagueId]="leagueId" [sideClass]="'side-red'" [excludePlayerIds]="excludePlayerIds"
                                  (playerSelected)="onRedPlayer1Selected($event)"></new-game-player>
             </div>
             <div class="player">
-                <new-game-player [player]="redPlayer2" [leagueId]="leagueId" [excludePlayerIds]="excludePlayerIds"
+                <new-game-player [player]="redPlayer2" [leagueId]="leagueId" [sideClass]="'side-red'" [excludePlayerIds]="excludePlayerIds"
                                  (playerSelected)="onRedPlayer2Selected($event)"></new-game-player>
             </div>
         </div>
@@ -32,7 +32,7 @@
 
 <div class="row" *ngIf="playerSelectionReady">
     <div class="col s12 new-game-actions">
-        <a class="waves-effect waves-light btn purple" (click)="onShuffleClicked()">Shuffle</a>
+        <a class="waves-effect waves-light btn light-blue accent-4" (click)="onShuffleClicked()">Shuffle</a>
         <a class="waves-effect waves-light btn green" (click)="onPlayClicked()">Play</a>
     </div>
 </div>

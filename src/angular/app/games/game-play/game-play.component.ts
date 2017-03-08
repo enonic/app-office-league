@@ -5,6 +5,7 @@ import {GraphQLService} from '../../graphql.service';
 import {GameParameters} from '../GameParameters';
 import {League} from '../../../graphql/schemas/League';
 import {Point} from '../../../graphql/schemas/Point';
+import {XPCONFIG} from '../../app.config';
 
 enum GameState {
     NotStarted, Playing, Paused, Finished
@@ -12,6 +13,10 @@ enum GameState {
 
 enum TeamSide {
     Red, Blue
+}
+
+enum PlayerPosition {
+    Blue1, Blue2, Red1, Red2
 }
 
 @Component({
@@ -30,11 +35,21 @@ export class GamePlayComponent implements OnInit {
 
     blueScore: number = 0;
     redScore: number = 0;
-    startTime: Date;
+    baseTime: Date;
+    secondsBeforePause: number;
     elapsedTime: string;
     timerId: number;
     gameState: GameState = GameState.NotStarted;
+    showPlay: boolean;
+    showUndo: boolean;
 
+    playerSelected: PlayerPosition;
+
+    nameClassesBlue1: {} = {selected: false, unselected: false};
+    nameClassesBlue2: {} = {selected: false, unselected: false};
+    nameClassesRed1: {} = {selected: false, unselected: false};
+    nameClassesRed2: {} = {selected: false, unselected: false};
+    nameClassesField: {} = {enabled: false};
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router) {
 
@@ -47,18 +62,87 @@ export class GamePlayComponent implements OnInit {
         });
     }
 
-    onClicked(p: Player) {
+    onPlayerClicked(p: Player) {
+        if (this.gameState === GameState.Paused && this.playerSelected === this.getPlayerPosition(p)) {
+            this.unselectAll();
+            this.resumeGame();
+            return;
+        }
         if (this.gameState !== GameState.Playing) {
             return;
         }
         console.log('Player selected: ' + p.name, TeamSide[this.getPlayerSide(p)]);
-        this.handlePointScored(p);
+
+        this.pauseGame();
+
+        this.playerSelected = this.getPlayerPosition(p);
+        this.nameClassesBlue1['selected'] = this.playerSelected === PlayerPosition.Blue1;
+        this.nameClassesBlue2['selected'] = this.playerSelected === PlayerPosition.Blue2;
+        this.nameClassesRed1['selected'] = this.playerSelected === PlayerPosition.Red1;
+        this.nameClassesRed2['selected'] = this.playerSelected === PlayerPosition.Red2;
+        this.nameClassesBlue1['unselected'] = this.playerSelected !== PlayerPosition.Blue1;
+        this.nameClassesBlue2['unselected'] = this.playerSelected !== PlayerPosition.Blue2;
+        this.nameClassesRed1['unselected'] = this.playerSelected !== PlayerPosition.Red1;
+        this.nameClassesRed2['unselected'] = this.playerSelected !== PlayerPosition.Red2;
+
+        this.nameClassesField['enabled'] = true;
+    }
+
+    private unselectAll() {
+        this.nameClassesBlue1['selected'] = false;
+        this.nameClassesBlue2['selected'] = false;
+        this.nameClassesRed1['selected'] = false;
+        this.nameClassesRed2['selected'] = false;
+        this.nameClassesBlue1['unselected'] = false;
+        this.nameClassesBlue2['unselected'] = false;
+        this.nameClassesRed1['unselected'] = false;
+        this.nameClassesRed2['unselected'] = false;
+        this.nameClassesField['enabled'] = false;
+    }
+
+    onPauseClicked() {
+        this.unselectAll();
+        this.pauseGame();
+    }
+
+    onPlayClicked() {
+        this.unselectAll();
+        this.resumeGame();
+    }
+
+    onUndoClicked() {
+
+    }
+
+    onBlueFieldClick() {
+        if (this.gameState !== GameState.Paused || (this.playerSelected == null)) {
+            return;
+        }
+
+        const p = this.getPlayerByPosition(this.playerSelected);
+        const blueTeamScoring = this.playerSelected === PlayerPosition.Blue1 || this.playerSelected === PlayerPosition.Blue2;
+        this.handlePointScored(p, blueTeamScoring);
+        this.unselectAll();
+        this.resumeGame();
+    }
+
+    onRedFieldClick() {
+        if (this.gameState !== GameState.Paused || (this.playerSelected == null)) {
+            return;
+        }
+
+        const p = this.getPlayerByPosition(this.playerSelected);
+        const redTeamScoring = this.playerSelected === PlayerPosition.Red1 || this.playerSelected === PlayerPosition.Red2;
+        this.handlePointScored(p, redTeamScoring);
+        this.unselectAll();
+        this.resumeGame();
     }
 
     private startGame() {
         this.blueScore = 0;
         this.redScore = 0;
-        this.startTime = new Date();
+        this.baseTime = new Date();
+        this.secondsBeforePause = 0;
         this.elapsedTime = '';
         this.gameState = GameState.Playing;
         this.points = [];
@@ -68,22 +152,44 @@ export class GamePlayComponent implements OnInit {
 
     private pauseGame() {
         this.gameState = GameState.Paused;
+        this.showPlay = true;
+        this.stopGameTimer();
+
+        this.secondsBeforePause = this.getElapsedSeconds(new Date());
+        this.baseTime = null;
         this.updateElapsedTime();
     }
 
-    private handlePointScored(p: Player) {
+    private resumeGame() {
+        this.gameState = GameState.Playing;
+        this.showPlay = false;
+
+        this.baseTime = new Date();
+        this.updateElapsedTime();
+        this.startGameTimer();
+    }
+
+    private handlePointScored(p: Player, against: boolean) {
         let now = new Date();
         let side = this.getPlayerSide(p);
         let point = new Point();
         point.player = p;
         point.time = this.getElapsedSeconds(now);
-        point.against = false;
+        point.against = against;
         this.points.push(point);
 
         if (side === TeamSide.Red) {
-            this.redScore++;
+            if (against) {
+                this.blueScore++;
+            } else {
+                this.redScore++;
+            }
         } else {
-            this.blueScore++;
+            if (against) {
+                this.redScore++;
+            } else {
+                this.blueScore++;
+            }
         }
 
         if (this.hasGameEnded()) {
@@ -143,23 +249,23 @@ export class GamePlayComponent implements OnInit {
         if (this.gameState === GameState.NotStarted) {
             this.elapsedTime = '';
         } else {
-            this.elapsedTime = this.formatTimeDiff(this.startTime, new Date());
+            this.elapsedTime = this.formatTimeDiff(this.getElapsedSeconds(new Date()));
         }
     }
 
     private getElapsedSeconds(t: Date): number {
-        return Math.abs(t.getTime() - this.startTime.getTime());
+        const msSinceBase = this.baseTime ? Math.abs(t.getTime() - this.baseTime.getTime()) : 0;
+        return this.secondsBeforePause + Math.floor(msSinceBase / 1000);
     }
 
-    private formatTimeDiff(from: Date, to: Date) {
-        let delta = Math.abs(to.getTime() - from.getTime()) / 1000;
-        let days = Math.floor(delta / 86400);
-        delta -= days * 86400;
-        let hours = Math.floor(delta / 3600) % 24;
-        delta -= hours * 3600;
-        let minutes = Math.floor(delta / 60) % 60;
-        delta -= minutes * 60;
-        let seconds = Math.floor(delta % 60);
+    private formatTimeDiff(totalSeconds: number) {
+        let days = Math.floor(totalSeconds / 86400);
+        totalSeconds -= days * 86400;
+        let hours = Math.floor(totalSeconds / 3600) % 24;
+        totalSeconds -= hours * 3600;
+        let minutes = Math.floor(totalSeconds / 60) % 60;
+        totalSeconds -= minutes * 60;
+        let seconds = Math.floor(totalSeconds % 60);
 
         let hoursStr = (hours < 10) ? "0" + String(hours) : String(hours);
         let minutesStr = (minutes < 10) ? "0" + String(minutes) : String(minutes);
@@ -173,6 +279,36 @@ export class GamePlayComponent implements OnInit {
         }
         if (p.id === this.redPlayer1.id || (this.redPlayer2 && (p.id === this.redPlayer2.id))) {
             return TeamSide.Red;
+        }
+        return null;
+    }
+
+    private getPlayerPosition(p: Player): PlayerPosition {
+        if (p.id === this.bluePlayer1.id) {
+            return PlayerPosition.Blue1;
+        }
+        if (p.id === this.redPlayer1.id) {
+            return PlayerPosition.Red1;
+        }
+        if (this.bluePlayer2 && (p.id === this.bluePlayer2.id)) {
+            return PlayerPosition.Blue2;
+        }
+        if (this.redPlayer2 && (p.id === this.redPlayer2.id)) {
+            return PlayerPosition.Red2;
+        }
+        return null;
+    }
+
+    private getPlayerByPosition(playerPosition: PlayerPosition): Player {
+        switch (playerPosition) {
+        case PlayerPosition.Blue1:
+            return this.bluePlayer1;
+        case PlayerPosition.Red1:
+            return this.redPlayer1;
+        case PlayerPosition.Blue2:
+            return this.bluePlayer2;
+        case PlayerPosition.Red2:
+            return this.redPlayer2;
         }
         return null;
     }
@@ -200,4 +336,11 @@ export class GamePlayComponent implements OnInit {
         }
     }`;
 
+    leftFieldImgUrl(): string {
+        return `${XPCONFIG.assetsUrl}/img/foostable.svg`;
+    }
+
+    rightFieldImgUrl(): string {
+        return `${XPCONFIG.assetsUrl}/img/foostable2.svg`;
+    }
 }

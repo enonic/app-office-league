@@ -1,12 +1,12 @@
 <template [ngIf]="player == null">
-    <div class="player" (click)="onClicked()">
+    <div class="player {{sideClass}}" (click)="onClicked()">
         <img src="{{questionMarkImg()}}" class="circle" alt="Select a player">
         <span class="title">Select a player</span>
     </div>
 </template>
 
 <template [ngIf]="player != null">
-    <div class="player" (click)="onClicked()">
+    <div class="player {{sideClass}}" (click)="onClicked()">
         <img src="{{player.imageUrl}}?size=200" class="player-squared" alt="{{player.name}}">
         <span class="title">{{player.name}}</span>
     </div>
