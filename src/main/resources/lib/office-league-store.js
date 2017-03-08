@@ -1775,7 +1775,7 @@ exports.updateGame = function (params) {
                 if (params.points != null) {
                     node.points = params.points;
                 }
-                node._timestamp = valueLib.instant(new Date().toISOString())
+                node._timestamp = valueLib.instant(new Date().toISOString());
                 return node;
             }
         });

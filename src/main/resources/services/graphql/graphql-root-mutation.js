@@ -155,8 +155,38 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 });
                 var createdGame = storeLib.createGame(createGameParams);
                 storeLib.refresh();
-                // TODO update ranking
+                if (createGameParams.finished) {
+                    // TODO update ranking
+                }
                 return createdGame;
+            }
+        },
+        updateGame: {
+            type: graphQlObjectTypesLib.gameType,
+            args: {
+                gameId: graphQlLib.nonNull(graphQlLib.GraphQLID),
+                points: graphQlLib.list(graphQlInputTypesLib.pointCreationType),
+                gamePlayers: graphQlLib.nonNull(graphQlLib.list(graphQlInputTypesLib.gamePlayerCreationType))
+            },
+            data: function (env) {
+                var createGameParams = storeLib.generateCreateGameParams({
+                    leagueId: '',
+                    points: env.args.points || [],
+                    gamePlayers: env.args.gamePlayers
+                });
+                storeLib.updateGame({
+                    gameId: env.args.gameId,
+                    finished: createGameParams.finished,
+                    gamePlayers: createGameParams.gamePlayers,
+                    gameTeams: createGameParams.gameTeams,
+                    points: createGameParams.points
+                });
+
+                storeLib.refresh();
+                if (createGameParams.finished) {
+                    // TODO update ranking
+                }
+                return storeLib.getGameById(env.args.gameId);
             }
         },
         createComment: {

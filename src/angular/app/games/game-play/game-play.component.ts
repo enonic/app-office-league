@@ -32,6 +32,8 @@ export class GamePlayComponent implements OnInit {
     redPlayer2: Player;
     league: League;
     points: Point[];
+    gameId: string;
+    onlineMode: boolean;
 
     blueScore: number = 0;
     redScore: number = 0;
@@ -146,8 +148,20 @@ export class GamePlayComponent implements OnInit {
         this.elapsedTime = '';
         this.gameState = GameState.Playing;
         this.points = [];
+
         this.updateElapsedTime();
         this.startGameTimer();
+
+        if (!this.gameId) {
+            this.createGame().then((gameId) => {
+                console.log('Initial game created: ' + gameId);
+                this.gameId = gameId;
+                this.onlineMode = true;
+            }).catch((ex) => {
+                console.log('Could not create game. Offline mode On.');
+                this.onlineMode = false;
+            });
+        }
     }
 
     private pauseGame() {
@@ -195,9 +209,19 @@ export class GamePlayComponent implements OnInit {
         if (this.hasGameEnded()) {
             this.stopGameTimer();
             this.gameState = GameState.Finished;
-            this.createGame().then((gameId) => {
+            this.saveGame().then((gameId) => {
                 console.log('Game created: ' + gameId);
                 this.router.navigate(['games', gameId]);
+            }).catch((ex) => {
+                console.warn('Could not save final game. TODO: Save data in local storage');
+                this.onlineMode = false;
+            });
+        } else {
+            this.saveGame().then((gameId) => {
+                // TODO
+            }).catch((ex) => {
+                console.log('Could not update game. Offline mode On.');
+                this.onlineMode = false;
             });
         }
     }
@@ -221,18 +245,41 @@ export class GamePlayComponent implements OnInit {
             });
     }
 
-    private createGame(): Promise<string> {
+    private saveGame(): Promise<string> {
+        if (this.gameId) {
+            return this.updateGame();
+        } else {
+            return this.createGame();
+        }
+    }
+
+    private buildSaveGameParams(): {[key: string]: any} {
         let players = [this.bluePlayer1, this.redPlayer1, this.bluePlayer2, this.redPlayer2].filter((p) => !!p).map((p) => {
             return {"playerId": p.id, "side": TeamSide[this.getPlayerSide(p)].toLowerCase()};
         });
         let points = this.points.map((p) => {
             return {time: p.time, playerId: p.player.id, against: p.against}
         });
-        return this.graphQLService.post(GamePlayComponent.createGameMutation,
-            {leagueId: this.league.id, points: points, players: players}).then(
+        return {points: points, players: players};
+    }
+
+    private createGame(): Promise<string> {
+        let createGameParams = this.buildSaveGameParams();
+        createGameParams['leagueId'] = this.league.id;
+        return this.graphQLService.post(GamePlayComponent.createGameMutation, createGameParams).then(
             data => {
                 console.log('Game created', data);
                 return data.createGame.id;
+            });
+    }
+
+    private updateGame(): Promise<string> {
+        let updateGameParams = this.buildSaveGameParams();
+        updateGameParams['gameId'] = this.gameId;
+        return this.graphQLService.post(GamePlayComponent.updateGameMutation, updateGameParams).then(
+            data => {
+                console.log('Game updated', data);
+                return data.updateGame.id;
             });
     }
 
@@ -332,6 +379,12 @@ export class GamePlayComponent implements OnInit {
 
     private static readonly createGameMutation = `mutation ($leagueId: ID!, $points: [PointCreation], $players: [GamePlayerCreation]!) {
         createGame(leagueId: $leagueId, points: $points, gamePlayers: $players) {
+            id
+        }
+    }`;
+
+    private static readonly updateGameMutation = `mutation ($gameId: ID!, $points: [PointCreation], $players: [GamePlayerCreation]!) {
+        updateGame(gameId: $gameId, points: $points, gamePlayers: $players) {
             id
         }
     }`;
