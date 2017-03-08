@@ -59,7 +59,16 @@ export class NewGameComponent implements OnInit {
     }
 
     onShuffleClicked() {
-
+        let players: Player[] = [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2];
+        this.bluePlayer1 = this.randomPlayer(players);
+        this.bluePlayer2 = this.randomPlayer(players);
+        this.redPlayer1 = this.randomPlayer(players);
+        this.redPlayer2 = this.randomPlayer(players);
+        this.updatePlayerSelectionState();
+    }
+    
+    private randomPlayer(players: Player[]) {
+        return players.splice(Math.floor(Math.random() * players.length), 1)[0];
     }
 
     onBluePlayer1Selected(p: Player) {
