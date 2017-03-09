@@ -102,6 +102,18 @@ exports.playerType = graphQlLib.createObjectType({
     }
 });
 
+exports.playersConnection = graphQlLib.createObjectType({
+    name: 'PlayersConnection',
+    fields: {
+        totalCount: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
+            data: function (env) {
+                return env.source.total;
+            }
+        }
+    }
+});
+
 exports.teamType = graphQlLib.createObjectType({
     name: 'Team',
     description: 'Domain representation of a team. A team is composed of two player',

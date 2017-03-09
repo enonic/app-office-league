@@ -48,6 +48,24 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 }
             }
         },
+        playersConnection: {
+            type: graphQlObjectTypesLib.playersConnection,
+            args: {
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt,
+                search: graphQlLib.GraphQLString
+            },
+            data: function (env) {
+                var offset = env.args.offset;
+                var first = env.args.first;
+                var search = env.args.search;
+                if (search) {
+                    return storeLib.findPlayers(search, offset, first);
+                } else {
+                    return storeLib.getPlayers(offset, first);
+                }
+            }
+        },
         team: {
             type: graphQlObjectTypesLib.teamType,
             args: {
