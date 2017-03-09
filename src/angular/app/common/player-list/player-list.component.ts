@@ -51,6 +51,9 @@ export class PlayerListComponent extends BaseComponent {
     }
 
     setCurrentPage(page) {
+        if (page < 1 || page > this.pages.length) {
+            return;
+        }
         this.currentPage = page;
         this.refreshData();
     }
