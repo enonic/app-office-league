@@ -25,7 +25,7 @@ export class PlayerListComponent extends BaseComponent {
 
     @Input() title: string;
     @Input() players: Player[];
-    searchValue: string
+    searchValue: string;
     private currentPage = 1;
     private pages = [1, 2, 3, 4, 5];
 
@@ -46,6 +46,12 @@ export class PlayerListComponent extends BaseComponent {
     }
 
     onSearchFieldModified() {
+        this.currentPage = 1;
+        this.refreshData();
+    }
+
+    setCurrentPage(page) {
+        this.currentPage = page;
         this.refreshData();
     }
 
