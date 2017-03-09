@@ -25,6 +25,7 @@ export class PlayerListComponent extends BaseComponent {
 
     @Input() title: string;
     @Input() players: Player[];
+    @Input() hideSearchField: boolean;
     private searchValue: string;
     private currentPage = 1;
     private pages = [1];

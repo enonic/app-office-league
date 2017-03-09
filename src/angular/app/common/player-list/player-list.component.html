@@ -1,4 +1,4 @@
-<div class="input-field col s12">
+<div *ngIf="!hideSearchField" class="input-field col s12">
     <i class="material-icons prefix">search</i>
     <input [(ngModel)]="searchValue" (input)="onSearchFieldModified()" id="searchField" type="text">
     <label for="searchField">Search</label>
@@ -11,7 +11,7 @@
     <li *ngIf="players?.length == 0" class="collection-item empty">
         <h5>No players</h5>
     </li>
-    <li *ngIf="players?.length > 0">
+    <li *ngIf="pages?.length > 1">
         <ul class="pagination center">
             <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i class="material-icons">chevron_left</i></a></li>
             <li *ngFor="let page of pages;" [class.active]="page === currentPage" class="waves-effect"><a (click)="setCurrentPage(page)">{{page}}</a></li>
