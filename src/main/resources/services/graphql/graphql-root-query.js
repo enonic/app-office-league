@@ -52,18 +52,18 @@ exports.rootQueryType = graphQlLib.createObjectType({
         playersConnection: {
             type: graphQlConnectionLib.createConnectionType ('Player', graphQlObjectTypesLib.playerType),
             args: {
-                offset: graphQlLib.GraphQLInt,
+                after: graphQlLib.GraphQLInt, //TODO Change for base64
                 first: graphQlLib.GraphQLInt,
                 search: graphQlLib.GraphQLString
             },
             data: function (env) {
-                var offset = env.args.offset;
+                var after = env.args.after;
                 var first = env.args.first;
                 var search = env.args.search;
                 if (search) {
-                    return storeLib.findPlayers(search, offset, first);
+                    return storeLib.findPlayers(search, after? (after+1) : 0, first);
                 } else {
-                    return storeLib.getPlayers(offset, first);
+                    return storeLib.getPlayers(after? (after+1) : 0, first);
                 }
             }
         },
