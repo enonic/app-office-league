@@ -15,11 +15,11 @@ import {MaterializeDirective,MaterializeAction} from "angular2-materialize/dist/
 export class LeagueProfilePlayersComponent extends BaseComponent {
     materializeActions = new EventEmitter<string|MaterializeAction>();
     
-    private static readonly getLeagueQuery = `query ($name: String, $count:Int, $sort: String) {
+    private static readonly getLeagueQuery = `query ($name: String, $first:Int, $sort: String) {
         league(name: $name) {
             id
             name
-            leaguePlayers(count:$count, sort:$sort) {
+            leaguePlayers(first:$first, sort:$sort) {
                 player {
                     name
                 }
@@ -58,7 +58,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
     }
     
     refreshData(leagueName: String): void {
-        this.graphQLService.post(LeagueProfilePlayersComponent.getLeagueQuery, {name: leagueName, count:-1, sort:'rating DESC, name ASC'}).then(data => {
+        this.graphQLService.post(LeagueProfilePlayersComponent.getLeagueQuery, {name: leagueName, first:-1, sort:'rating DESC, name ASC'}).then(data => {
             this.league = League.fromJson(data.league);
             this.members = data.league.leaguePlayers.map(leaguePlayer => Player.fromJson(leaguePlayer.player));
         });

@@ -40,7 +40,7 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
     }
 
     private loadPlayers() {
-        this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {leagueId: this.leagueId, count: -1, sort: 'name ASC'}).then(
+        this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {leagueId: this.leagueId, first: -1, sort: 'name ASC'}).then(
             data => {
                 if (data.league && data.league.leaguePlayers) {
                     this.players =
@@ -88,9 +88,9 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
         this.notifySelected();
     }
 
-    private static readonly GetPlayersQuery = `query ($leagueId: ID, $count:Int, $sort: String) {
+    private static readonly GetPlayersQuery = `query ($leagueId: ID, $first:Int, $sort: String) {
         league(id: $leagueId) {
-            leaguePlayers(count: $count, sort: $sort) {
+            leaguePlayers(first: $first, sort: $sort) {
                 player {
                     id
                     name

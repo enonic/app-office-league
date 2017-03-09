@@ -26,7 +26,7 @@ export class PlayerProfileComponent extends BaseComponent {
             handedness
             description
 
-            gamePlayers(count: 5) {
+            gamePlayers(first: 5) {
               game {
                 id
                 time
@@ -81,7 +81,7 @@ export class PlayerProfileComponent extends BaseComponent {
               }
             }
             
-            teams(count: 5) {
+            teams(first: 5) {
                 id
                 name
                 description

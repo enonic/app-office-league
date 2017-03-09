@@ -13,7 +13,7 @@ import {Team} from '../../../graphql/schemas/Team';
 })
 export class LeagueProfileComponent extends BaseComponent {
 
-    private static readonly getLeagueQuery = `query ($name: String, $count:Int, $sort: String, $playerId: ID!) {
+    private static readonly getLeagueQuery = `query ($name: String, $first:Int, $sort: String, $playerId: ID!) {
         league(name: $name) {
             id
             name
@@ -22,7 +22,7 @@ export class LeagueProfileComponent extends BaseComponent {
             myLeaguePlayer: leaguePlayer(playerId:$playerId) {
                 id
             }
-            leaguePlayers(count:$count, sort:$sort) {
+            leaguePlayers(first:$first, sort:$sort) {
                 ranking
                 player {
                     name
@@ -31,7 +31,7 @@ export class LeagueProfileComponent extends BaseComponent {
                     name
                 }
             }
-            leagueTeams(count:$count, sort:$sort) {
+            leagueTeams(first:$first, sort:$sort) {
                 ranking
                 team {
                     name
@@ -107,7 +107,7 @@ export class LeagueProfileComponent extends BaseComponent {
 
     refreshData(leagueName: String): void {
         let playerId = this.authService.isAuthenticated() ? this.authService.getUser().playerId : '-1';
-        this.graphQLService.post(LeagueProfileComponent.getLeagueQuery, {name: leagueName, count:3, sort:'rating DESC, name ASC', playerId: playerId}).
+        this.graphQLService.post(LeagueProfileComponent.getLeagueQuery, {name: leagueName, first:3, sort:'rating DESC, name ASC', playerId: playerId}).
             then(data => {
                 this.league = League.fromJson(data.league);
                 this.playerInLeague = !!data.league.myLeaguePlayer;

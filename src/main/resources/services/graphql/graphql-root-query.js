@@ -3,7 +3,7 @@ var graphQlObjectTypesLib = require('./graphql-object-types');
 var storeLib = require('office-league-store');
 
 exports.rootQueryType = graphQlLib.createObjectType({
-    name: 'RootQuery',
+    name: 'Query',
     fields: {
         player: {
             type: graphQlObjectTypesLib.playerType,
@@ -29,18 +29,18 @@ exports.rootQueryType = graphQlLib.createObjectType({
         players: {
             type: graphQlLib.list(graphQlObjectTypesLib.playerType),
             args: {
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt,
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt,
                 ids: graphQlLib.list(graphQlLib.GraphQLID)
             },
             data: function (env) {
-                var start = env.args.start;
-                var count = env.args.count;
+                var offset = env.args.offset;
+                var first = env.args.first;
                 var ids = env.args.ids;
                 if (ids) {
                     return storeLib.getPlayersById(ids);
                 } else {
-                    return storeLib.getPlayers(start, count).hits;
+                    return storeLib.getPlayers(offset, first).hits;
                 }
             }
         },
@@ -64,18 +64,18 @@ exports.rootQueryType = graphQlLib.createObjectType({
         teams: {
             type: graphQlLib.list(graphQlObjectTypesLib.teamType),
             args: {
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt,
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt,
                 ids: graphQlLib.list(graphQlLib.GraphQLID)
             },
             data: function (env) {
-                var start = env.args.start;
-                var count = env.args.count;
+                var offset = env.args.offset;
+                var first = env.args.first;
                 var ids = env.args.ids;
                 if (ids) {
                     return storeLib.getTeamsById(ids);
                 } else {
-                    return storeLib.getTeams(start, count).hits;
+                    return storeLib.getTeams(offset, first).hits;
                 }
             }
         },
@@ -83,14 +83,14 @@ exports.rootQueryType = graphQlLib.createObjectType({
             type: graphQlLib.list(graphQlObjectTypesLib.gameType),
             args: {
                 leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
             },
             data: function (env) {
                 var leagueId = env.args.leagueId;
-                var start = env.args.start;
-                var count = env.args.count;
-                return storeLib.getGamesByLeagueId(leagueId, start, count).hits;
+                var offset = env.args.offset;
+                var first = env.args.first;
+                return storeLib.getGamesByLeagueId(leagueId, offset, first).hits;
             }
         },
         game: {
@@ -108,18 +108,18 @@ exports.rootQueryType = graphQlLib.createObjectType({
             args: {
                 leagueId: graphQlLib.GraphQLID,
                 playerId: graphQlLib.GraphQLID,
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
             },
             data: function (env) {
                 var leagueId = env.args.leagueId;
                 var playerId = env.args.playerId;
-                var start = env.args.start;
-                var count = env.args.count;
+                var offset = env.args.offset;
+                var first = env.args.first;
                 if (leagueId) {
-                    return storeLib.getLeaguePlayersByLeagueId(leagueId, start, count).hits;
+                    return storeLib.getLeaguePlayersByLeagueId(leagueId, offset, first).hits;
                 } else if (playerId) {
-                    return storeLib.getLeaguePlayersByPlayerId(playerId, start, count).hits;
+                    return storeLib.getLeaguePlayersByPlayerId(playerId, offset, first).hits;
                 }
                 throw "[leagueId] or [playerId] must be specified";
             }
@@ -129,18 +129,18 @@ exports.rootQueryType = graphQlLib.createObjectType({
             args: {
                 leagueId: graphQlLib.GraphQLID,
                 teamId: graphQlLib.GraphQLID,
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
             },
             data: function (env) {
                 var leagueId = env.args.leagueId;
                 var teamId = env.args.teamId;
-                var start = env.args.start;
-                var count = env.args.count;
+                var offset = env.args.offset;
+                var first = env.args.first;
                 if (leagueId) {
-                    return storeLib.getLeagueTeamsByLeagueId(leagueId, start, count).hits;
+                    return storeLib.getLeagueTeamsByLeagueId(leagueId, offset, first).hits;
                 } else if (playerId) {
-                    return storeLib.getLeagueTeamsByTeamId(teamId, start, count).hits;
+                    return storeLib.getLeagueTeamsByTeamId(teamId, offset, first).hits;
                 }
                 throw "[leagueId] or [teamId] must be specified";
             }
@@ -166,17 +166,17 @@ exports.rootQueryType = graphQlLib.createObjectType({
             type: graphQlLib.list(graphQlObjectTypesLib.leagueType),
             args: {
                 playerId: graphQlLib.GraphQLID,
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
             },
             data: function (env) {
                 var playerId = env.args.playerId;
-                var start = env.args.start;
-                var count = env.args.count;
+                var offset = env.args.offset;
+                var first = env.args.first;
                 if (playerId) {
-                    return storeLib.getLeaguesByPlayerId(playerId, start, count).hits;
+                    return storeLib.getLeaguesByPlayerId(playerId, offset, first).hits;
                 } else {
-                    return storeLib.getLeagues(start, count).hits;
+                    return storeLib.getLeagues(offset, first).hits;
                 }
             }
         }

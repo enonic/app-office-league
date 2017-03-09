@@ -5,7 +5,7 @@ var graphQlInputTypesLib = require('./graphql-input-types');
 var storeLib = require('office-league-store');
 
 exports.rootMutationType = graphQlLib.createObjectType({
-    name: 'RootMutation',
+    name: 'Mutation',
     fields: {
         createLeague: {
             type: graphQlObjectTypesLib.leagueType,

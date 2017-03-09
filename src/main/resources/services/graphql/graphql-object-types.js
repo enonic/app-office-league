@@ -72,31 +72,31 @@ exports.playerType = graphQlLib.createObjectType({
         teams: {
             type: graphQlLib.list(graphQlLib.reference('Team')),
             args: {
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.getTeamsByPlayerId(env.source._id, env.args.start, env.args.count).hits;
+                return storeLib.getTeamsByPlayerId(env.source._id, env.args.offset, env.args.first).hits;
             }
         },
         leaguePlayers: {
             type: graphQlLib.list(graphQlLib.reference('LeaguePlayer')),
             args: {
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.getLeaguePlayersByPlayerId(env.source._id, env.args.start, env.args.count).hits;
+                return storeLib.getLeaguePlayersByPlayerId(env.source._id, env.args.offset, env.args.first).hits;
             }
         },
         gamePlayers: {
             type: graphQlLib.list(graphQlLib.reference('GamePlayer')),
             args: {
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.getGamePlayersByPlayerId(env.source._id, env.args.start, env.args.count).hits;
+                return storeLib.getGamePlayersByPlayerId(env.source._id, env.args.offset, env.args.first).hits;
             }
         }
     }
@@ -136,21 +136,21 @@ exports.teamType = graphQlLib.createObjectType({
         leagueTeams: {
             type: graphQlLib.list(graphQlLib.reference('LeagueTeam')),
             args: {
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.getLeagueTeamsByTeamId(env.source._id, env.args.start, env.args.count).hits;
+                return storeLib.getLeagueTeamsByTeamId(env.source._id, env.args.offset, env.args.first).hits;
             }
         },
         gameTeams: {
             type: graphQlLib.list(graphQlLib.reference('GameTeam')),
             args: {
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.getGameTeamsByTeamId(env.source._id, env.args.start, env.args.count).hits;
+                return storeLib.getGameTeamsByTeamId(env.source._id, env.args.offset, env.args.first).hits;
             }
         }
     }
@@ -361,11 +361,11 @@ exports.gameType = graphQlLib.createObjectType({
         comments: {
             type: graphQlLib.list(exports.commentType),
             args: {
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.getCommentsByGameId(env.source._id, env.args.start, env.args.count).hits;
+                return storeLib.getCommentsByGameId(env.source._id, env.args.offset, env.args.first).hits;
             }
         },
         gamePlayers: {
@@ -505,8 +505,8 @@ exports.leagueType = graphQlLib.createObjectType({
         adminPlayers: {
             type: graphQlLib.list(exports.playerType),
             args: {
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
             },
             data: function (env) {
                 return graphQlUtilLib.toArray(env.source.adminPlayerIds).map(function (adminPlayerId) {
@@ -535,44 +535,44 @@ exports.leagueType = graphQlLib.createObjectType({
         leaguePlayers: {
             type: graphQlLib.list(exports.leaguePlayerType),
             args: {
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt,
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt,
                 sort: graphQlLib.GraphQLString
             },
             data: function (env) {
-                return storeLib.getLeaguePlayersByLeagueId(env.source._id, env.args.start, env.args.count, env.args.sort).hits;
+                return storeLib.getLeaguePlayersByLeagueId(env.source._id, env.args.offset, env.args.first, env.args.sort).hits;
             }
         },
         leagueTeams: {
             type: graphQlLib.list(exports.leagueTeamType),
             args: {
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt,
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt,
                 sort: graphQlLib.GraphQLString
             },
             data: function (env) {
-                return storeLib.getLeagueTeamsByLeagueId(env.source._id, env.args.start, env.args.count, env.args.sort).hits;
+                return storeLib.getLeagueTeamsByLeagueId(env.source._id, env.args.offset, env.args.first, env.args.sort).hits;
             }
         },
         nonMemberPlayers: {
             type: graphQlLib.list(exports.playerType),
             args: {
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt,
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt,
                 sort: graphQlLib.GraphQLString
             },
             data: function (env) {
-                return storeLib.getPlayersByNotLeagueId(env.source._id, env.args.start, env.args.count, env.args.sort).hits;
+                return storeLib.getPlayersByNotLeagueId(env.source._id, env.args.offset, env.args.first, env.args.sort).hits;
             }
         },
         games: {
             type: graphQlLib.list(exports.gameType),
             args: {
-                start: graphQlLib.GraphQLInt,
-                count: graphQlLib.GraphQLInt
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.getGamesByLeagueId(env.source._id, env.args.start, env.args.count).hits;
+                return storeLib.getGamesByLeagueId(env.source._id, env.args.offset, env.args.first).hits;
             }
         }
     }

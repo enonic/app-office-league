@@ -23,7 +23,7 @@ export class TeamProfileComponent extends BaseComponent {
             name
             description
 
-            gameTeams(count: 5) {
+            gameTeams(first: 5) {
               game {
                 id
                 time

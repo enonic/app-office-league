@@ -11,7 +11,7 @@ import {GraphQLService} from '../../graphql.service';
 export class PlayerListComponent extends BaseComponent {
 
     private static readonly getPlayersQuery = `query {
-        players(count:-1) {
+        players(first:-1) {
             name
         }
     }`;

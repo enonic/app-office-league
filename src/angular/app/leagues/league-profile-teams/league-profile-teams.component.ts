@@ -12,11 +12,11 @@ import {Team} from '../../../graphql/schemas/Team';
 })
 export class LeagueProfileTeamsComponent extends BaseComponent {
     
-    private static readonly getLeagueQuery = `query ($name: String, $count:Int, $sort: String) {
+    private static readonly getLeagueQuery = `query ($name: String, $first:Int, $sort: String) {
         league(name: $name) {
             id
             name
-            leagueTeams(count:$count, sort:$sort) {
+            leagueTeams(first:$first, sort:$sort) {
                 team {
                     name
                 }
@@ -45,7 +45,7 @@ export class LeagueProfileTeamsComponent extends BaseComponent {
     }
     
     refreshData(leagueName: String): void {
-        this.graphQLService.post(LeagueProfileTeamsComponent.getLeagueQuery, {name: leagueName, count:-1, sort:'rating DESC, name ASC'}).then(data => {
+        this.graphQLService.post(LeagueProfileTeamsComponent.getLeagueQuery, {name: leagueName, first:-1, sort:'rating DESC, name ASC'}).then(data => {
             this.league = League.fromJson(data.league);
             this.members = data.league.leagueTeams.map(leagueTeam => Team.fromJson(leagueTeam.team));
         });

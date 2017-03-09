@@ -12,7 +12,7 @@ import {ListComponent} from '../../common/list.component';
 export class TeamListComponent extends BaseComponent {
 
     private static readonly getTeamsQuery = `query {
-        teams(count:-1) {
+        teams(first:-1) {
             name
             players {
                 name
