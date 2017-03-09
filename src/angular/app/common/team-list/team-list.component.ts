@@ -26,6 +26,7 @@ export class TeamListComponent extends BaseComponent {
     @Input() title: string;
     @Input() teams: Team[];
     @Input() detailsPath: string[];
+    @Input() hideSearchField: boolean;
     private searchValue: string;
     private currentPage = 1;
     private pages = [1];
