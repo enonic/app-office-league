@@ -11,8 +11,8 @@ import {ListComponent} from '../../common/list.component';
 })
 export class TeamListComponent extends BaseComponent {
 
-    private static readonly getTeamsQuery = `query {
-        teams(first:-1) {
+    private static readonly getTeamsQuery = `query($search:String) {
+        teams(first:-1, search:$search) {
             name
             players {
                 name
@@ -23,6 +23,7 @@ export class TeamListComponent extends BaseComponent {
     @Input() title: string;
     @Input() teams: Team[];
     @Input() detailsPath: string[];
+    searchValue: string;
 
     constructor(route: ActivatedRoute, private router: Router, private service: GraphQLService) {
         super(route);
@@ -32,7 +33,7 @@ export class TeamListComponent extends BaseComponent {
         super.ngOnInit();
 
         if (this.teams == undefined) {
-            this.loadTeams();
+            this.refreshData();
         }
     }
 
@@ -45,9 +46,13 @@ export class TeamListComponent extends BaseComponent {
         this.router.navigate(this.detailsPath);
     }
 
+    onSearchFieldModified() {
+        this.refreshData();
+    }
 
-    private loadTeams() {
-        this.service.post(TeamListComponent.getTeamsQuery).then((data: any) => {
+
+    private refreshData() {
+        this.service.post(TeamListComponent.getTeamsQuery, {search:this.searchValue}).then((data: any) => {
             this.teams = data.teams.map(team => Team.fromJson(team));
         })
     }
