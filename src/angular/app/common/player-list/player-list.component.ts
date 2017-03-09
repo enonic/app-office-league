@@ -25,9 +25,9 @@ export class PlayerListComponent extends BaseComponent {
 
     @Input() title: string;
     @Input() players: Player[];
-    searchValue: string;
+    private searchValue: string;
     private currentPage = 1;
-    private pages = [1, 2, 3, 4, 5];
+    private pages = [1];
 
     constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
         super(route);

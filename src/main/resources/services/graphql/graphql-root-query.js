@@ -106,6 +106,24 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 }
             }
         },
+        teamsConnection: {
+            type: graphQlConnectionLib.createConnectionType ('Team', graphQlObjectTypesLib.teamType),
+            args: {
+                after: graphQlLib.GraphQLInt, //TODO Change for base64
+                first: graphQlLib.GraphQLInt,
+                search: graphQlLib.GraphQLString
+            },
+            data: function (env) {
+                var after = env.args.after;
+                var first = env.args.first;
+                var search = env.args.search;
+                if (search) {
+                    return storeLib.findTeams(search, after? (after+1) : 0, first);
+                } else {
+                    return storeLib.getTeams(after? (after+1) : 0, first);
+                }
+            }
+        },
         games: {
             type: graphQlLib.list(graphQlObjectTypesLib.gameType),
             args: {

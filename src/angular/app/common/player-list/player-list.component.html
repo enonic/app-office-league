@@ -13,7 +13,7 @@
     </li>
     <li *ngIf="players?.length > 0">
         <ul class="pagination center">
-            <li [class.disabled]="currentPage === 1"><a (click)="setCurrentPage(currentPage - 1)"><i class="material-icons">chevron_left</i></a></li>
+            <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i class="material-icons">chevron_left</i></a></li>
             <li *ngFor="let page of pages;" [class.active]="page === currentPage" class="waves-effect"><a (click)="setCurrentPage(page)">{{page}}</a></li>
             <li [class.disabled]="currentPage === pages.length" class="waves-effect"><a (click)="setCurrentPage(currentPage + 1)"><i class="material-icons">chevron_right</i></a></li>
         </ul>
