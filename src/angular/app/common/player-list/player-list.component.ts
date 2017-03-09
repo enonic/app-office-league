@@ -50,13 +50,15 @@ export class PlayerListComponent extends BaseComponent {
     }
 
     private refreshData() {
-        this.service.post(PlayerListComponent.getPlayersQuery, {first: PlayerListComponent.paging, search: this.searchValue}).then((data: any) => {
-            this.players = data.playersConnection.edges.map(edge => Player.fromJson(edge.node));
-            this.pages = [];
-            let pagesCount = data.playersConnection.totalCount / PlayerListComponent.paging + 1;
-            for (var i = 1; i <= pagesCount; i++) {
-                this.pages.push(i);
-            }
-        });
+        let after = this.currentPage > 1 ? ((this.currentPage - 1) * PlayerListComponent.paging - 1) : undefined;
+        this.service.post(PlayerListComponent.getPlayersQuery,{after: after,first: PlayerListComponent.paging, search: this.searchValue}).
+            then((data: any) => {
+                this.players = data.playersConnection.edges.map(edge => Player.fromJson(edge.node));
+                this.pages = [];
+                let pagesCount = data.playersConnection.totalCount / PlayerListComponent.paging + 1;
+                for (var i = 1; i <= pagesCount; i++) {
+                    this.pages.push(i);
+                }
+            });
     }
 }
