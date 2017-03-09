@@ -895,6 +895,7 @@ function query(params) {
 
     return {
         total: queryResult.total,
+        start: params.start || 0,
         count: queryResult.count,
         hits: hits
     };

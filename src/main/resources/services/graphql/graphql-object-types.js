@@ -102,6 +102,25 @@ exports.playerType = graphQlLib.createObjectType({
     }
 });
 
+exports.playerEdgeType = graphQlLib.createObjectType({
+   name: 'PlayerEdge',
+   fields: {
+        node: {
+            type: graphQlLib.nonNull(exports.playerType),
+            data: function (env) {
+                return env.source.node;
+            }
+        },
+        cursor: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt), //TODO Replace by base64
+            data: function (env) {
+                log.info('env:' + JSON.stringify(env, null, 2));
+                return graphQlUtilLib.toInt(env.source.cursor);
+            }
+        }
+    }
+});
+
 exports.playersConnection = graphQlLib.createObjectType({
     name: 'PlayersConnection',
     fields: {
@@ -109,6 +128,21 @@ exports.playersConnection = graphQlLib.createObjectType({
             type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
             data: function (env) {
                 return env.source.total;
+            }
+        },
+        edges: {
+            type: graphQlLib.list(exports.playerEdgeType),
+            data: function (env) {
+                var hits = env.source.hits;
+                var edges = [];
+                for (var i = 0; i < hits.length; i++) {
+                    log.info('env.source.start + i:' + (env.source.start + i));
+                    edges.push({
+                        node: hits[i],
+                        cursor: env.source.start + i
+                    });  
+                }
+                return edges;
             }
         }
     }
