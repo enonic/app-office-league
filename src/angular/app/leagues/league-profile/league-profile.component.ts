@@ -4,8 +4,6 @@ import {AuthService} from '../../auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
-import {Player} from '../../../graphql/schemas/Player';
-import {Team} from '../../../graphql/schemas/Team';
 
 @Component({
     selector: 'league-profile',

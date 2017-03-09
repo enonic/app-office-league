@@ -17,13 +17,36 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID)
             },
             data: function (env) {
-                return storeLib.createLeague({
+                var createdLeague = storeLib.createLeague({
                     name: env.args.name,
                     sport: env.args.sport,
                     description: env.args.description,
                     config: env.args.config ? JSON.parse(env.args.config) : {}, //TODO
                     adminPlayerIds: env.args.adminPlayerIds
                 });
+                storeLib.refresh();
+                return createdLeague;
+            }
+        },
+        updateLeague: {
+            type: graphQlObjectTypesLib.leagueType,
+            args: {
+                id: graphQlLib.nonNull(graphQlLib.GraphQLID),
+                name: graphQlLib.GraphQLString,
+                description: graphQlLib.GraphQLString,
+                config: graphQlLib.GraphQLString,//TODO
+                adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID)
+            },
+            data: function (env) {
+                var updatedLeague = storeLib.updateLeague({
+                    leagueId: env.args.id,
+                    name: env.args.name,
+                    description: env.args.description,
+                    config: env.args.config ? JSON.parse(env.args.config) : {}, //TODO
+                    adminPlayerIds: env.args.adminPlayerIds
+                });
+                storeLib.refresh();
+                return updatedLeague;
             }
         },
         createPlayer: {

@@ -1,6 +1,11 @@
 <div class="card">
     <div class="card-content blue-grey-text">
-        <span class="card-title">Create League</span>
+        <template [ngIf]="editMode">
+            <span class="card-title">Edit League</span>
+        </template>
+        <template [ngIf]="!editMode">
+            <span class="card-title">Create League</span>
+        </template>
         <form>
             <div class="row">
                 <div class="input-field col s12">
@@ -31,13 +36,12 @@
                     </p>
                 </div>
 
-                <div class="file-field input-field col s6">
-                    <div class="btn blue-grey right">
-                        <span>Image</span>
-                        <input type="file" #fileInput>
-                    </div>
-                    <div class="file-path-wrapper">
-                        <input class="file-path validate" type="text">
+                <div class="col s6">
+                    <div class="right">
+                        <input type="file" accept="image/*" #fileInput style="display:none;">
+                        <div class="league-icon-frame">
+                            <img src="{{leagueImageUrl}}?size=64" alt="League Icon" class="league-icon circle" (click)="fileInput.click()">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -47,8 +51,15 @@
 
 <div class="row">
     <div class="col s12">
-        <button class="btn waves-effect waves-light indigo right" type="submit" name="create" (click)="onCreateClicked()">Create
-            <i class="material-icons right">send</i>
-        </button>
+        <template [ngIf]="!editMode">
+            <button class="btn waves-effect waves-light indigo right" type="submit" name="create" (click)="onCreateClicked()">Create
+                <i class="material-icons right">send</i>
+            </button>
+        </template>
+        <template [ngIf]="editMode">
+            <button class="btn waves-effect waves-light indigo right" type="submit" name="create" (click)="onUpdateClicked()">Update
+                <i class="material-icons right">send</i>
+            </button>
+        </template>
     </div>
 </div>
