@@ -102,6 +102,31 @@ exports.playerType = graphQlLib.createObjectType({
     }
 });
 
+exports.pageInfoType = graphQlLib.createObjectType({
+    name: 'PageInfo',
+    fields: {
+        startCursor: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt), //TODO Replace by base64
+            data: function (env) {
+                return graphQlUtilLib.toInt(env.source.startCursor);
+            }
+        },
+        endCursor: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt), //TODO Replace by base64
+            data: function (env) {
+                return graphQlUtilLib.toInt(env.source.endCursor);
+            }
+        },
+        hasNext: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLBoolean),
+            data: function (env) {
+                return env.source.hasNext;
+            }
+        }
+    }
+});
+
+
 exports.playerEdgeType = graphQlLib.createObjectType({
    name: 'PlayerEdge',
    fields: {
@@ -114,7 +139,6 @@ exports.playerEdgeType = graphQlLib.createObjectType({
         cursor: {
             type: graphQlLib.nonNull(graphQlLib.GraphQLInt), //TODO Replace by base64
             data: function (env) {
-                log.info('env:' + JSON.stringify(env, null, 2));
                 return graphQlUtilLib.toInt(env.source.cursor);
             }
         }
@@ -136,13 +160,22 @@ exports.playersConnection = graphQlLib.createObjectType({
                 var hits = env.source.hits;
                 var edges = [];
                 for (var i = 0; i < hits.length; i++) {
-                    log.info('env.source.start + i:' + (env.source.start + i));
                     edges.push({
                         node: hits[i],
                         cursor: env.source.start + i
                     });  
                 }
                 return edges;
+            }
+        },
+        pageInfo: {
+            type: exports.pageInfoType,
+            data: function (env) {
+                return {
+                    startCursor: env.source.start,
+                    endCursor: env.source.start + (env.source.count == 0 ? 0 : (env.source.count - 1)),
+                    hasNext: (env.source.start + env.source.count) <  env.source.total
+                }
             }
         }
     }
