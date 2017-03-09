@@ -12,9 +12,14 @@ import {MaterializeDirective} from 'angular2-materialize/dist/index';
 export class PlayerListComponent extends BaseComponent {
 
     private static readonly paging = 10;
-    private static readonly getPlayersQuery = `query($first:Int, $search:String) {
-        players(first:$first, search:$search) {
-            name
+    private static readonly getPlayersQuery = `query($after:Int,$first:Int, $search:String) {
+        playersConnection(after:$after, first:$first, search:$search) {
+            totalCount
+            edges {
+                node {
+                  name
+                }
+            }
         }
     }`;
 
@@ -46,7 +51,12 @@ export class PlayerListComponent extends BaseComponent {
 
     private refreshData() {
         this.service.post(PlayerListComponent.getPlayersQuery, {first: PlayerListComponent.paging, search: this.searchValue}).then((data: any) => {
-            this.players = data.players.map(player => Player.fromJson(player));
+            this.players = data.playersConnection.edges.map(edge => Player.fromJson(edge.node));
+            this.pages = [];
+            let pagesCount = data.playersConnection.totalCount / PlayerListComponent.paging + 1;
+            for (var i = 1; i <= pagesCount; i++) {
+                this.pages.push(i);
+            }
         });
     }
 }
