@@ -1,4 +1,16 @@
-import {Component, OnInit, Input, Output, OnChanges, SimpleChanges, SimpleChange, EventEmitter} from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    Output,
+    OnChanges,
+    SimpleChanges,
+    SimpleChange,
+    EventEmitter,
+    ElementRef,
+    AfterViewInit,
+    HostListener
+} from '@angular/core';
 import {ActivatedRoute, Router, Params} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../graphql.service';
@@ -21,7 +33,7 @@ enum PlayerPosition {
     templateUrl: 'game-play.component.html',
     styleUrls: ['game-play.component.less']
 })
-export class GamePlayComponent implements OnInit {
+export class GamePlayComponent implements OnInit, AfterViewInit {
 
     bluePlayer1: Player;
     bluePlayer2: Player;
@@ -50,8 +62,7 @@ export class GamePlayComponent implements OnInit {
     nameClassesRed2: {} = {selected: false, unselected: false};
     nameClassesField: {} = {enabled: false};
 
-    constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router) {
-
+    constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router, private elRef: ElementRef) {
     }
 
     ngOnInit(): void {
@@ -59,6 +70,15 @@ export class GamePlayComponent implements OnInit {
             let gameParams: GameParameters = <GameParameters> params;
             this.loadGameData(gameParams).then(() => this.startGame());
         });
+    }
+
+    ngAfterViewInit() {
+        setTimeout(() => this.handleResize(), 500);
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        this.handleResize();
     }
 
     onPlayerClicked(p: Player) {
@@ -422,6 +442,15 @@ export class GamePlayComponent implements OnInit {
         return null;
     }
 
+    private handleResize() {
+        let imgRed = this.elRef.nativeElement.querySelector('.field-red');
+        let divRed = this.elRef.nativeElement.querySelector('.field-overlay-red');
+        let imgBlue = this.elRef.nativeElement.querySelector('.field-blue');
+        let divBlue = this.elRef.nativeElement.querySelector('.field-overlay-blue');
+        divRed.style.width = imgRed.width + 'px';
+        divBlue.style.width = imgBlue.width + 'px';
+    }
+
     private static readonly getPlayersLeagueQuery = `query ($leagueId: ID!, $playerIds: [ID]!) {
         league(id: $leagueId) {
             id
@@ -482,10 +511,10 @@ export class GamePlayComponent implements OnInit {
     }`;
 
     leftFieldImgUrl(): string {
-        return `${XPCONFIG.assetsUrl}/img/foostable.svg`;
+        return `${XPCONFIG.assetsUrl}/img/foostable-v2.svg`;
     }
 
     rightFieldImgUrl(): string {
-        return `${XPCONFIG.assetsUrl}/img/foostable2.svg`;
+        return `${XPCONFIG.assetsUrl}/img/foostable-v2-rev.svg`;
     }
 }

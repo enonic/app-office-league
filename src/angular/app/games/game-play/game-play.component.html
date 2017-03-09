@@ -2,7 +2,8 @@
     <div class="col s12 game-top-bar blue-grey lighten-3">
         <div class="game-top-bar-items">
             <h4 class="time">{{elapsedTime}}</h4>
-            <div class="game-score"><h4 class="blue-score">{{blueScore}}</h4> <span> &mdash; </span> <h4 class="red-score">{{redScore}}</h4></div>
+            <div class="game-score"><h4 class="red-score">{{redScore}}</h4> <span> &mdash; </span> <h4 class="blue-score">{{blueScore}}</h4>
+            </div>
             <div class="actions">
                 <i class="medium material-icons green-text" [ngClass]="{hide: !showPlay}" (click)="onPlayClicked()">play_arrow</i>
                 <i class="medium material-icons indigo-text text-darken-2" [ngClass]="{hide: showPlay}" (click)="onPauseClicked()">pause</i>
@@ -31,8 +32,14 @@
                 </div>
             </div>
             <div class="col s12 field" [ngClass]="nameClassesField">
-                <img class="field-red" src="{{leftFieldImgUrl()}}" (click)="onRedFieldClick()"/>
-                <img class="field-blue" src="{{rightFieldImgUrl()}}" (click)="onBlueFieldClick()"/>
+                <div class="field-container field-container-left">
+                    <div class="field-overlay field-overlay-red" (click)="onRedFieldClick()"><span>{{redScore}}</span></div>
+                    <img class="field-red" src="{{leftFieldImgUrl()}}" (click)="onRedFieldClick()"/>
+                </div>
+                <div class="field-container field-container-right">
+                    <div class="field-overlay field-overlay-blue" (click)="onBlueFieldClick()"><span>{{blueScore}}</span></div>
+                    <img class="field-blue" src="{{rightFieldImgUrl()}}" (click)="onBlueFieldClick()"/>
+                </div>
             </div>
             <div class="side side-red">
                 <div class="players">
