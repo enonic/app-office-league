@@ -31,14 +31,18 @@ exports.rootQueryType = graphQlLib.createObjectType({
             args: {
                 offset: graphQlLib.GraphQLInt,
                 first: graphQlLib.GraphQLInt,
-                ids: graphQlLib.list(graphQlLib.GraphQLID)
+                ids: graphQlLib.list(graphQlLib.GraphQLID),
+                search: graphQlLib.GraphQLString
             },
             data: function (env) {
                 var offset = env.args.offset;
                 var first = env.args.first;
                 var ids = env.args.ids;
+                var search = env.args.search;
                 if (ids) {
                     return storeLib.getPlayersById(ids);
+                } else if (search) {
+                    return storeLib.findPlayers(search, offset, first).hits;
                 } else {
                     return storeLib.getPlayers(offset, first).hits;
                 }

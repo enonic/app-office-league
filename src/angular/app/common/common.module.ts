@@ -1,4 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
+import {FormsModule} from '@angular/forms';
 import {NgModule} from '@angular/core';
 import {ListComponent} from './list.component';
 import {BaseComponent} from './base.component';
@@ -22,7 +23,8 @@ import {TeamPlayersComponent} from './team-players/team-players.component';
         ListComponent
     ],
     imports: [
-        BrowserModule
+        BrowserModule,
+        FormsModule
     ],
     exports: [
         BrowserModule,

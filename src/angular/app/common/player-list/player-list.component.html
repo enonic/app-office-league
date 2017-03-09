@@ -1,3 +1,9 @@
+
+<div class="input-field col s12">
+    <i class="material-icons prefix">search</i>
+    <input [(ngModel)]="searchValue" (input)="onSearchFieldModified()" id="searchField" type="text">
+    <label for="searchField">Search</label>
+</div>
 <ul class="collection list" [class.with-header]="!!title">
     <li *ngIf="title" class="collection-header"><h4>{{title}}</h4></li>
     <li href="#!" class="collection-item avatar" *ngFor="let player of players;" (click)="onPlayerClicked(player)">

@@ -3,6 +3,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../graphql.service';
+import {MaterializeDirective} from 'angular2-materialize/dist/index';
 
 @Component({
     selector: 'player-list',
@@ -10,14 +11,15 @@ import {GraphQLService} from '../../graphql.service';
 })
 export class PlayerListComponent extends BaseComponent {
 
-    private static readonly getPlayersQuery = `query {
-        players(first:-1) {
+    private static readonly getPlayersQuery = `query($search:String) {
+        players(first:-1, search:$search) {
             name
         }
     }`;
-    
+
     @Input() title: string;
     @Input() players: Player[];
+    searchValue: string
 
     constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
         super(route);
@@ -27,7 +29,7 @@ export class PlayerListComponent extends BaseComponent {
         super.ngOnInit();
 
         if (this.players === undefined) {
-            this.loadPlayers();
+            this.refreshData();
         }
     }
 
@@ -35,8 +37,12 @@ export class PlayerListComponent extends BaseComponent {
         this.router.navigate(['players', player.name.toLowerCase()]);
     }
 
-    private loadPlayers() {
-        this.service.post(PlayerListComponent.getPlayersQuery).then((data: any) => {
+    onSearchFieldModified() {
+        this.refreshData();
+    }
+
+    private refreshData() {
+        this.service.post(PlayerListComponent.getPlayersQuery, {search: this.searchValue}).then((data: any) => {
             this.players = data.players.map(player => Player.fromJson(player));
         });
     }
