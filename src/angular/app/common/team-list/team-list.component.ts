@@ -52,6 +52,7 @@ export class TeamListComponent extends BaseComponent {
     }
 
     onSearchFieldModified() {
+        this.currentPage = 1;
         this.refreshData();
     }
 
