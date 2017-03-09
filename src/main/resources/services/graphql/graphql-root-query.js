@@ -1,5 +1,6 @@
 var graphQlLib = require('graphql');
 var graphQlObjectTypesLib = require('./graphql-object-types');
+var graphQlConnectionLib = require('./graphql-connection');
 var storeLib = require('office-league-store');
 
 exports.rootQueryType = graphQlLib.createObjectType({
@@ -49,7 +50,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
             }
         },
         playersConnection: {
-            type: graphQlObjectTypesLib.playersConnection,
+            type: graphQlConnectionLib.createConnectionType ('Player', graphQlObjectTypesLib.playerType),
             args: {
                 offset: graphQlLib.GraphQLInt,
                 first: graphQlLib.GraphQLInt,
