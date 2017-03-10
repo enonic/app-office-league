@@ -33,10 +33,13 @@
                 </div>
                 <div class="row">
                     <div class="col s12">
-                        <label>Nationality</label>
+                        <i class="material-icons prefix">language</i>
+                        <label class="nationality">Nationality</label>
                         <select class="browser-default" [(ngModel)]="nationality" name="nationality">
                             <option [value]="" disabled>Choose your nationality</option>
-                            <option *ngFor="let country of countries;" [value]="country.code" [selected]="country.code == nationality">{{country.name}}</option>
+                            <option *ngFor="let country of countries;" [value]="country.code" [selected]="country.code == nationality">
+                                {{country.name}}
+                            </option>
                         </select>
                     </div>
                 </div>
