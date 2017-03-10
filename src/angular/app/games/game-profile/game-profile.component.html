@@ -6,17 +6,17 @@
     <game [game]="game"></game>
 
     <ul class="row list">
-        <li class="col s12 m5">
+        <li class="col s12 m5 l3 offset-l2">
             <player-list [players]="losers" hideSearchField="true"></player-list>
         </li>
 
-        <li class="colon col s12 m2">
-            VS
-        </li>
+        <li class="colon col s12 m2 l2">vs</li>
 
-        <li class="col s12 m5">
+        <li class="col s12 m5 l3">
             <player-list [players]="winners" hideSearchField="true"></player-list>
         </li>
     </ul>
+
+    <game-points [game]="game"></game-points>
 
 </div>

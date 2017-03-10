@@ -1,0 +1,16 @@
+<template [ngIf]="game == null">
+    <div class="empty-text blue-grey-text">Loading...</div>
+</template>
+<template [ngIf]="game != null">
+    <div class="row list">
+        <div class="col s12 m12 l8 offset-l2">
+            <ul class="card game-points">
+                <li *ngFor="let point of game.points" class="point">
+                    <div class="time">{{point.time}}</div>
+                    <!--{{point.player.name}} : {{point.time}} {{point.against}}-->
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</template>

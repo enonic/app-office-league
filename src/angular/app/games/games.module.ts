@@ -9,6 +9,7 @@ import {NewGamePlayerComponent} from './new-game-player/new-game-player.componen
 import {PlayerSelectComponent} from './player-select/player-select.component';
 import {MaterializeModule} from 'angular2-materialize/dist/index';
 import {GamePlayComponent} from './game-play/game-play.component';
+import {GamePointsComponent} from './game-points/game-points.component';
 
 const gameRoutes: Routes = [
     {
@@ -42,7 +43,8 @@ const gameRoutes: Routes = [
         NewGameComponent,
         NewGamePlayerComponent,
         PlayerSelectComponent,
-        GamePlayComponent
+        GamePlayComponent,
+        GamePointsComponent
     ],
     imports: [
         CommonModule,
