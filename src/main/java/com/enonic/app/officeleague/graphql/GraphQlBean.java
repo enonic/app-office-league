@@ -2,6 +2,7 @@ package com.enonic.app.officeleague.graphql;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -247,9 +248,13 @@ public class GraphQlBean
         final Map<String, Object> variablesMap = variables == null ? Collections.<String, Object>emptyMap() : variables.getMap();
         final ExecutionResult executionResult = graphQL.execute( query, (Object) null, variablesMap );
 
+        final List<Map<String, Object>> errors = executionResult.getErrors().isEmpty()
+            ? null
+            : executionResult.getErrors().stream().map( GraphQlBean::toMap ).collect( Collectors.toList() );
         Map<String, Object> resultMap = new HashMap();
         resultMap.put( "data", executionResult.getData() );
-        resultMap.put( "errors", executionResult.getErrors().stream().map( GraphQlBean::toMap ).collect( Collectors.toList() ) );
+        resultMap.put( "errors", errors);
+        
         return new MapMapper( resultMap );
     }
 
