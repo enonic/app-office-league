@@ -16,17 +16,27 @@
 
         <div class="teams">
             <div class="side side--loser {{loserSide | lowercase}}">
-                <div class="team" *ngIf="loserTeam">{{loserTeam.name}}</div>
-                <ul class="players">
-                    <li *ngFor="let loser of losers">{{loser.name}}</li>
-                </ul>
+                <template [ngIf]="loserTeam">
+                    <div class="team">{{loserTeam.name}}</div>
+                    <ul class="players">
+                        <li *ngFor="let loser of losers">{{loser.name}}</li>
+                    </ul>
+                </template>
+                <template [ngIf]="!loserTeam">
+                    <div class="team">{{losers[0].name}}</div>
+                </template>
             </div>
 
             <div class="side side--winner {{winnerSide | lowercase}}">
-                <div class="team" *ngIf="winnerTeam">{{winnerTeam.name}}</div>
-                <ul class="players">
-                    <li *ngFor="let winner of winners">{{winner.name}}</li>
-                </ul>
+                <template [ngIf]="winnerTeam">
+                    <div class="team">{{winnerTeam.name}}</div>
+                    <ul class="players">
+                        <li *ngFor="let winner of winners">{{winner.name}}</li>
+                    </ul>
+                </template>
+                <template [ngIf]="!winnerTeam">
+                    <div class="team">{{winners[0].name}}</div>
+                </template>
             </div>
         </div>
 
