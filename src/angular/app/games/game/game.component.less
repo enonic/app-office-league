@@ -1,59 +1,83 @@
+.game {
+  font-family: "Roboto Mono", monospace;
+}
+
+.results, .teams {
+  display: flex;
+  justify-content: center;
+}
+
 .results {
-  text-align: center;
+  align-items: center;
 
-  ul {
-    list-style: none;
-    position: relative;
-    display: inline-block;
-    min-height: 45px;
+  .logo {
+    width: 4rem;
+    height: 4rem;
+  }
 
-    &.side-red {
-      color: lightcoral;
-    }
+  .score {
+    width: 3rem;
+    font-size: 2.5rem;
+    font-weight: bold;
 
-    &.side-blue {
-      color: royalblue;
-    }
-
-    &.winners {
-      padding: 0 0 0 50px;
-      text-align: left;
-
-      .score {
-        left: 0;
-      }
-    }
-
-    &.losers {
-      padding: 0 50px 0 0;
+    &--loser {
       text-align: right;
-
-      .score {
-        right: 0;
-      }
+      margin-left: 1rem;
     }
 
-    .score {
-      font-size: 32px;
-      position: absolute;
-      height: 100%;
-    }
-
-    .team {
-      font-weight: bold;
+    &--winner {
+      text-align: left;
+      margin-right: 1rem;
     }
   }
 
   .colon {
-    font-size: 32px;
+    width: 2.8rem;
+    text-align: center;
+    font-size: 2rem;
     font-weight: bold;
     color: #aaa;
-    margin: 0 10px;
   }
-
 }
 
-p {
+.teams {
+  margin: 0.25rem 0;
+
+  .side {
+    &--loser, &--winner {
+      flex-basis: 50%;
+    }
+
+    &--loser {
+      text-align: right;
+      padding-right: 1.5rem;
+    }
+
+    &--winner {
+      text-align: left;
+      padding-left: 1.5rem;
+    }
+
+    .team {
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    .players {
+      margin: 0.25rem 0 0;
+    }
+  }
+}
+
+.side-red {
+  color: #f44336;
+}
+
+.side-blue {
+  color: #329ef4;
+}
+
+.date {
   text-align: center;
   margin: 0;
   color: #999;

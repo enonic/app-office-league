@@ -2,25 +2,35 @@
     <loading></loading>
 </template>
 <template [ngIf]="game != null">
+    <div class="game">
 
-    <div class="results">
+        <div class="results">
+            <img *ngIf="loserTeam" src="{{loserTeam.imageUrl}}?size=96" alt="{{loserTeam.name}}" class="logo circle">
+                <img *ngIf="!loserTeam" src="{{losers[0].imageUrl}}?size=96" alt="{{losers[0].name}}" class="logo circle">
+            <div class="score score--loser {{loserSide | lowercase}}">{{loserGoals}}</div>
+            <span class="colon">:</span>
+            <div class="score score--winner {{winnerSide | lowercase}}">{{winnerGoals}}</div>
+            <img *ngIf="winnerTeam" src="{{winnerTeam.imageUrl}}?size=96" alt="{{winnerTeam.name}}" class="logo circle">
+                <img *ngIf="!winnerTeam" src="{{winners[0].imageUrl}}?size=96" alt="{{winners[0].name}}" class="logo circle">
+        </div>
 
-        <ul class="losers {{loserSide | lowercase}}">
-            <li class="score valign-wrapper">{{loserGoals}}</li>
-            <li class="team" *ngIf="loserTeam">{{loserTeam.name}}</li>
-            <li *ngFor="let loser of losers">{{loser.name}}</li>
-        </ul>
+        <div class="teams">
+            <div class="side side--loser {{loserSide | lowercase}}">
+                <div class="team" *ngIf="loserTeam">{{loserTeam.name}}</div>
+                <ul class="players">
+                    <li *ngFor="let loser of losers">{{loser.name}}</li>
+                </ul>
+            </div>
 
-        <span class="colon">:</span>
+            <div class="side side--winner {{winnerSide | lowercase}}">
+                <div class="team" *ngIf="winnerTeam">{{winnerTeam.name}}</div>
+                <ul class="players">
+                    <li *ngFor="let winner of winners">{{winner.name}}</li>
+                </ul>
+            </div>
+        </div>
 
-        <ul class="winners {{winnerSide | lowercase}}">
-            <li class="score valign-wrapper">{{winnerGoals}}</li>
-            <li class="team" *ngIf="winnerTeam">{{winnerTeam.name}}</li>
-            <li *ngFor="let winner of winners">{{winner.name}}</li>
-        </ul>
-
+        <div class="date">{{game.time | date}}</div>
     </div>
-
-    <p>{{game.time | date}}</p>
 
 </template>
