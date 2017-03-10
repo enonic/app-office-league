@@ -11,7 +11,7 @@
             <a class="waves-effect waves-light btn green"><i class="material-icons left">play_arrow</i>Play Game</a>
         </div>
         <div *ngIf="authService.isAuthenticated() && !playerInLeague" class="col s6 m4" (click)="onJoinClicked()">
-            <a class="waves-effect waves-light btn green">Join</a>
+            <a class="waves-effect waves-light btn green"><i class="material-icons left">person_add</i>Join</a>
         </div>
         <div *ngIf="adminInLeague" class="col s5" (click)="onEditClicked()">
             <a class="waves-effect waves-light btn light-blue darken-3"><i class="material-icons left">mode_edit</i>Edit</a>
