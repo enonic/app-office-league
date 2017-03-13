@@ -1,4 +1,4 @@
-import {Component, Input, ElementRef, ViewChild} from '@angular/core';
+import {Component, Input, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../graphql.service';
@@ -12,7 +12,7 @@ import {Team} from '../../../graphql/schemas/Team';
     templateUrl: 'team-edit.component.html',
     styleUrls: ['team-edit.component.less']
 })
-export class TeamEditComponent extends BaseComponent {
+export class TeamEditComponent extends BaseComponent implements AfterViewInit {
 
     name: string;
     id: string;
@@ -31,6 +31,11 @@ export class TeamEditComponent extends BaseComponent {
 
         let name = this.route.snapshot.params['name'];
         this.loadTeam(name);
+    }
+
+    ngAfterViewInit(): void {
+        let inputEl: HTMLInputElement = this.inputEl.nativeElement;
+        inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
     }
 
     private loadTeam(name) {
@@ -105,6 +110,17 @@ export class TeamEditComponent extends BaseComponent {
     private validate(): boolean {
         this.nameClasses['invalid'] = !this.name;
         return !!this.name;
+    }
+
+    private onFileInputChange(input: HTMLInputElement) {
+        let preview = document.getElementsByClassName('preview')[0];
+        if (input.files && input.files[0]) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                preview.setAttribute('src', (<any>e.target).result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
     }
 
     private static readonly getTeamQuery = `query($name: String){

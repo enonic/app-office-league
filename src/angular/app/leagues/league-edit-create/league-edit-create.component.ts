@@ -1,4 +1,4 @@
-import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
+import {Component, OnInit, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
 import {GraphQLService} from '../../graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
@@ -14,7 +14,7 @@ import {AuthService} from '../../auth.service';
     templateUrl: 'league-edit-create.component.html',
     styleUrls: ['league-edit-create.component.less']
 })
-export class LeagueEditCreateComponent extends BaseComponent {
+export class LeagueEditCreateComponent extends BaseComponent implements AfterViewInit {
 
     @ViewChild('fileInput') inputEl: ElementRef;
     name: string;
@@ -39,6 +39,11 @@ export class LeagueEditCreateComponent extends BaseComponent {
         if (this.editMode) {
             this.loadLeague(name);
         }
+    }
+
+    ngAfterViewInit(): void {
+        let inputEl: HTMLInputElement = this.inputEl.nativeElement;
+        inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
     }
 
     private validate(): boolean {
@@ -131,6 +136,17 @@ export class LeagueEditCreateComponent extends BaseComponent {
 
     getLeagueImageUrl(): string {
         return new League('1', this.name || '_').imageUrl;
+    }
+
+    private onFileInputChange(input: HTMLInputElement) {
+        let preview = document.getElementsByClassName('preview')[0];
+        if (input.files && input.files[0]) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                preview.setAttribute('src', (<any>e.target).result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
     }
 
     private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $playerId: ID) {
