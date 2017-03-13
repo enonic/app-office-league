@@ -11,7 +11,7 @@
                         <i class="material-icons prefix">fingerprint</i>
                         <input id="name" type="text" class="validate" name="name" autocomplete="off" [(ngModel)]="name" required=""
                                aria-required="true" [ngClass]="nameClasses">
-                        <label for="name">Player Name</label>
+                        <label class="active" for="name">Player Name</label>
                     </div>
                 </div>
                 <div class="row">
@@ -20,7 +20,7 @@
                         <input id="nickname" type="text" name="nickname" autocomplete="off" [(ngModel)]="nickname"
                                required=""
                                aria-required="true">
-                        <label for="name">Nickname</label>
+                        <label class="active" for="name">Nickname</label>
                     </div>
                 </div>
                 <div class="row">
@@ -28,7 +28,7 @@
                         <i class="material-icons prefix">info_outline</i>
                         <textarea id="description" class="materialize-textarea" autocomplete="off" spellcheck="false" name="description"
                                   [(ngModel)]="description"></textarea>
-                        <label for="description">About</label>
+                        <label class="active" for="description">About</label>
                     </div>
                 </div>
                 <div class="row">
