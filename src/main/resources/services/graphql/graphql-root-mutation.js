@@ -59,13 +59,15 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 description: graphQlLib.GraphQLString
             },
             data: function (env) {
-                return storeLib.createPlayer({
+                var createdPlayer = storeLib.createPlayer({
                     name: env.args.name,
                     nickname: env.args.nickname,
                     nationality: env.args.nationality,
                     handedness: env.args.handedness,
                     description: env.args.description
                 });
+                storeLib.refresh();
+                return createdPlayer;
             }
         },
         updatePlayer: {
@@ -79,7 +81,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 description: graphQlLib.GraphQLString
             },
             data: function (env) {
-                return storeLib.updatePlayer({
+                var updatedPlayer = storeLib.updatePlayer({
                     playerId: env.args.id,
                     name: env.args.name,
                     nickname: env.args.nickname,
@@ -87,6 +89,8 @@ exports.rootMutationType = graphQlLib.createObjectType({
                     handedness: env.args.handedness,
                     description: env.args.description
                 });
+                storeLib.refresh();
+                return updatedPlayer;
             }
         },
         createTeam: {
@@ -114,11 +118,13 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 description: graphQlLib.GraphQLString
             },
             data: function (env) {
-                return storeLib.updateTeam({
+                var updatedTeam = storeLib.updateTeam({
                     teamId: env.args.id,
                     name: env.args.name,
                     description: env.args.description
                 });
+                storeLib.refresh();
+                return updatedTeam;
             }
         },
         joinPlayerLeague: {
