@@ -15,6 +15,9 @@ exports.post = function (req) {
     case 'league':
         setImageLeague(id);
         break;
+    case 'player':
+        setImagePlayer(id);
+        break;
     }
 
     return {
@@ -47,6 +50,19 @@ var setImageLeague = function (id) {
 
     storeLib.updateLeague({
         leagueId: id,
+        imageStream: stream,
+        imageType: contentType
+    });
+    storeLib.refresh();
+};
+
+var setImagePlayer = function (id) {
+    var stream = portalLib.getMultipartStream('image');
+    var part = portalLib.getMultipartItem('image');
+    var contentType = part && part.contentType;
+
+    storeLib.updatePlayer({
+        playerId: id,
         imageStream: stream,
         imageType: contentType
     });

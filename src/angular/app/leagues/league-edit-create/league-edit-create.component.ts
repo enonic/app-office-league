@@ -129,24 +129,6 @@ export class LeagueEditCreateComponent extends BaseComponent {
         return Promise.resolve();
     }
 
-    private extractData(res: Response) {
-        let json = res.json();
-        return json.data || {};
-    }
-
-    private handleError(error: Response | any) {
-        let errMsg: string;
-        if (error instanceof Response) {
-            const body = error.json() || '';
-            const err = body.error || JSON.stringify(body);
-            errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-        } else {
-            errMsg = error.message ? error.message : error.toString();
-        }
-        console.error(errMsg);
-        return Observable.throw(errMsg);
-    }
-
     getLeagueImageUrl(): string {
         return new League('1', this.name || '_').imageUrl;
     }

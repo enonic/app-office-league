@@ -7,6 +7,8 @@ import {GraphQLService} from '../../graphql.service';
 import {Countries} from '../../common/countries';
 import {MaterializeDirective} from 'angular2-materialize/dist/index';
 import {Country} from '../../common/country';
+import {Http, Headers, RequestOptions, Response} from '@angular/http';
+import {XPCONFIG} from '../../app.config';
 
 @Component({
     selector: 'player-edit',
@@ -23,11 +25,11 @@ export class PlayerEditComponent extends BaseComponent {
     description: string;
     imageUrl: string;
 
-    countries: Country[]=[];
+    countries: Country[] = [];
     @ViewChild('fileInput') inputEl: ElementRef;
     nameClasses: {} = {invalid: false};
 
-    constructor(route: ActivatedRoute, private graphQLService: GraphQLService) {
+    constructor(private http: Http, route: ActivatedRoute, private graphQLService: GraphQLService, private router: Router) {
         super(route);
     }
 
@@ -61,7 +63,53 @@ export class PlayerEditComponent extends BaseComponent {
     }
 
     onSaveClicked() {
+        if (!this.validate()) {
+            return;
+        }
 
+        const updatePlayerParams = {
+            playerId: this.id,
+            name: this.name,
+            description: this.description || '',
+            nickname: this.nickname || '',
+            nationality: this.nationality || '',
+            handedness: this.handedness || Handedness[Handedness.RIGHT],
+        };
+        this.graphQLService.post(PlayerEditComponent.updatePlayerMutation, updatePlayerParams).then(data => {
+            return data && data.updatePlayer;
+        }).then(updatedPlayer => {
+            this.uploadImage(updatedPlayer.id).then(uploadResp => {
+                this.router.navigate(['players', updatedPlayer.name]);
+            });
+        });
+    }
+
+    private uploadImage(id: string): Promise<any> {
+        let inputEl: HTMLInputElement = this.inputEl.nativeElement;
+        let fileCount: number = inputEl.files.length;
+        let formData = new FormData();
+
+        if (fileCount > 0) {
+            for (let i = 0; i < fileCount; i++) {
+                formData.append('image', inputEl.files.item(i));
+            }
+            formData.append('type', 'player');
+            formData.append('id', id);
+
+            let headers = new Headers();
+            headers.append('Accept', 'application/json');
+            let options = new RequestOptions({headers: headers});
+            return this.http.post(XPCONFIG.setImageUrl, formData, options)
+                .map(this.extractData)
+                .catch(this.handleError)
+                .toPromise();
+        }
+        return Promise.resolve();
+    }
+
+    private validate(): boolean {
+        this.nameClasses['invalid'] = !this.name;
+        return !!this.name;
     }
 
     private static readonly getPlayerQuery = `query($name: String){
@@ -72,6 +120,13 @@ export class PlayerEditComponent extends BaseComponent {
             nationality
             handedness
             description
+        }
+    }`;
+
+    private static readonly updatePlayerMutation = `mutation ($playerId: ID!, $name: String, $nickname: String, $description: String, $nationality: String, $handedness: Handedness) {
+        updatePlayer(id: $playerId, name: $name, nickname: $nickname, description: $description, nationality: $nationality, handedness: $handedness) {
+            id
+            name
         }
     }`;
 }

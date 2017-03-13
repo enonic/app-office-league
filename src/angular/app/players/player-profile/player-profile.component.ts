@@ -50,7 +50,7 @@ export class PlayerProfileComponent extends BaseComponent {
             return 'Right';
         case Handedness.LEFT:
             return 'Left';
-        case  Handedness.AMBIDEXTERTERITY:
+        case  Handedness.AMBIDEXTERITY:
             return 'Ambidextrous';
         default:
             return 'N/A';

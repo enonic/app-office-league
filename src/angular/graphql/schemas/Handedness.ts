@@ -1,5 +1,5 @@
 export enum Handedness {
-    RIGHT, LEFT, AMBIDEXTERTERITY
+    RIGHT, LEFT, AMBIDEXTERITY
 }
 
 export class HandednessUtil {

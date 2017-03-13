@@ -97,11 +97,13 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 playerIds: graphQlLib.nonNull(graphQlLib.list(graphQlLib.GraphQLID))
             },
             data: function (env) {
-                return storeLib.createTeam({
+                var createdTeam = storeLib.createTeam({
                     name: env.args.name,
                     description: env.args.description,
                     playerIds: env.args.playerIds
                 });
+                storeLib.refresh();
+                return createdTeam;
             }
         },
         updateTeam: {
