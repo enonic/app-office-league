@@ -1,4 +1,4 @@
-import {Component, Input, SimpleChanges} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {GraphQLService} from '../../graphql.service';
 import {AuthService} from '../../auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -78,6 +78,9 @@ export class LeagueProfileComponent extends BaseComponent {
                   team {
                     id
                     name
+                    players {
+                        name
+                    }
                   }
                 }
                 league {
