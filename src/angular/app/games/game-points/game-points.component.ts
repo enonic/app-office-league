@@ -53,7 +53,8 @@ export class GamePointsComponent implements OnInit, OnChanges {
     }
 
     private calcPoints(game: Game) {
-        const parseTime = (value: number) => `${Math.floor(value/60)}'${value%60}"`;
+        const zerofill = (value: number) => value > 9 ? value : `0${value}`;
+        const parseTime = (value: number) => `${Math.floor(value/60)}'${zerofill(value%60)}"`;
 
         const teamMap: GameTeamMap = {};
         game.gameTeams.forEach((gt: GameTeam) => {
