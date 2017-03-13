@@ -67,6 +67,16 @@ export class PlayerEditComponent extends BaseComponent {
             return;
         }
 
+        this.checkPlayerNameInUse(this.name).then(playerNameInUse => {
+            if (playerNameInUse) {
+                this.nameClasses['invalid'] = true;
+            } else {
+                this.savePlayer();
+            }
+        });
+    }
+
+    savePlayer() {
         const updatePlayerParams = {
             playerId: this.id,
             name: this.name,
@@ -81,6 +91,12 @@ export class PlayerEditComponent extends BaseComponent {
             this.uploadImage(updatedPlayer.id).then(uploadResp => {
                 this.router.navigate(['players', updatedPlayer.name]);
             });
+        });
+    }
+
+    private checkPlayerNameInUse(name: string): Promise<boolean> {
+        return this.graphQLService.post(PlayerEditComponent.getPlayerNameInUseQuery, {name: name}).then(data => {
+            return data && data.player ? data.player.id !== this.id : false;
         });
     }
 
@@ -120,6 +136,12 @@ export class PlayerEditComponent extends BaseComponent {
             nationality
             handedness
             description
+        }
+    }`;
+
+    private static readonly getPlayerNameInUseQuery = `query($name: String){
+        player(name: $name) {
+            id
         }
     }`;
 
