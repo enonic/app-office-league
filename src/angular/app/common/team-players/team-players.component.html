@@ -1,5 +1,5 @@
 <template [ngIf]="players == null">
-    <h4>Loading...</h4>
+    <loading></loading>
 </template>
 <ul *ngIf="players != null">
     <li class="chip" *ngFor="let player of players">
