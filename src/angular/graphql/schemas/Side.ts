@@ -9,4 +9,12 @@ export class SideUtil {
         }
         return null;
     }
+
+    static getColor(side: Side): string {
+        switch (side) {
+        case Side.BLUE: return 'blue';
+        case Side.RED: return 'red';
+        default: return '';
+        }
+    }
 }

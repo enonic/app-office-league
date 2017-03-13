@@ -1,27 +1,165 @@
-.game-points {
-  padding: 1rem 0;
+@white-color: #fff;
+@border-color: #e0e0e0; // .grey.lighten-2
+@unimportant-color: #616161; // .grey.darken-2
+@team-none: #f5f5f5; //.grey.lighten-4
+@team-red: #e57373; // .red.lighten-2
+@team-blue: #64b5f6; // .blue.lighten-2
 
-  &:before {
-    display: block;
+.header {
+  font-size: 2rem;
+  color: #aaa;
+  text-align: center;
+}
+
+.timeline {
+  position: relative;
+  box-sizing: border-box;
+  padding: 2rem 0 1px;
+  font-family: Roboto, sans-serif;
+
+  &::before {
+    content: '';
     position: absolute;
-    content: ' ';
+    top: 0;
+    left: 2rem;
     height: 100%;
-    width: 2px;
-    left: 50%;
-    margin: 0 0 0 -1px;
-    background: #aaa;
+    width: 4px;
+    background: @border-color;
   }
+}
 
-  .point {
-    text-align: center;
+.block {
+  margin: 0 0 2rem 0;
+  position: relative;
+}
+
+.time {
+  position: absolute;
+  width: 4.2rem;
+  height: 4.2rem;
+  line-height: 3.8rem;
+  text-align: center;
+  font-family: "Roboto Mono", monospace;
+  font-weight: bold;
+  // background: @team-none;
+  background: @white-color;
+  border-radius: 50%;
+  border: 4px solid @border-color;
+  box-sizing: border-box;
+  cursor: default;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+  .fix {
+    margin-right: -.5rem;
   }
+}
 
+.description {
+  margin-left: 5rem;
+  padding: 0.76rem 1rem 0.01rem;
+  box-sizing: border-box;
+  // border: 4px solid @white-color;
+  border-radius: 4px;
+  background: @white-color;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2), -8px 0px 15px -5px rgba(0,0,0,0.2);
+  &::before {
+    content: '';
+    position: absolute;
+    top: 1.6rem;
+    left: 5rem;
+    height: 0;
+    width: 0;
+    margin: 2px 0 0 -14px;
+    border: 7px solid transparent;
+    border-right: 7px solid @white-color;
+  }
+  .name {
+    font-size: 1.5em;
+  }
+  .team, .comment, .score {
+    margin-bottom: 0.75rem;
+  }
+  .team {
+    margin-top: 0.25rem;
+    color: @unimportant-color;
+    font-size: 1.0em;
+  }
+  .score {
+    font-family: "Roboto Mono", monospace;
+    font-weight: bold;
+  }
+}
+
+.team-red {
   .time {
-    width: 3rem;
-    height: 3rem;
-    border: 2px solid #aaa;
-    border-radius: 50%;
-    background: white;
+    //background: @team-red;
+    color: @team-red;
+  }
+}
+
+.team-blue {
+  .time {
+    //background: @team-blue;
+    color: @team-blue;
+  }
+}
+
+// See Materialize adaptive sizes
+// 	Mobile Devices <= 600px
+@media only screen and (min-width: 600px) {
+  .timeline {
+    &::before {
+      left: 50%;
+      margin-left: -2px;
+    }
+  }
+
+  .description {
+    .score {
+      position: absolute;
+      top: 1.5rem;
+      width: 3rem;
+      line-height: 1.2rem;
+      font-size: 1.2rem;
+      color: @unimportant-color;
+    }
+  }
+
+  .loser {
+    margin-right: 50%;
+    margin-left: auto;
+    .time {
+      right: 0;
+      margin-right: -2.1rem;
+    }
+    .description {
+      margin: 0 2.9rem 0 auto;
+      box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2), 8px 0px 15px -5px rgba(0,0,0,0.2);
+      &::before {
+        left: initial;
+        right: 2.1rem;
+        transform: rotateZ(180deg);
+      }
+    }
+    .score {
+      right: -6rem;
+    }
+  }
+
+  .winner {
+    margin-left: 50%;
+    .time {
+      left: -2.1rem;
+    }
+    .description {
+      margin-left: 2.9rem;
+      &::before {
+        left: 2.9rem;
+      }
+    }
+    .score {
+      left: -6rem;
+      text-align: right;
+    }
   }
 }
 
