@@ -20,12 +20,12 @@
             <div class="side side-blue">
                 <div class="players">
                     <div class="player" [ngClass]="nameClassesBlue1" (click)="onPlayerClicked(bluePlayer1)">
-                        <img src="{{bluePlayer1?.imageUrl}}?size=200" class="player-squared" alt="{{bluePlayer1?.name}}">
+                        <img src="{{bluePlayer1?.imageUrl}}?size=200" class="circle" alt="{{bluePlayer1?.name}}">
                         <span class="title">{{bluePlayer1?.name}}</span>
                     </div>
                     <template [ngIf]="bluePlayer2 != null">
                         <div class="player" [ngClass]="nameClassesBlue2" (click)="onPlayerClicked(bluePlayer2)">
-                            <img src="{{bluePlayer2?.imageUrl}}?size=200" class="player-squared" alt="{{bluePlayer2?.name}}">
+                            <img src="{{bluePlayer2?.imageUrl}}?size=200" class="circle" alt="{{bluePlayer2?.name}}">
                             <span class="title">{{bluePlayer2?.name}}</span>
                         </div>
                     </template>
@@ -45,12 +45,12 @@
                 <div class="players">
                     <div class="player" [ngClass]="nameClassesRed1" (click)="onPlayerClicked(redPlayer1)">
                         <span class="title">{{redPlayer1?.name}}</span>
-                        <img src="{{redPlayer1?.imageUrl}}?size=200" class="player-squared" alt="{{redPlayer1?.name}}">
+                        <img src="{{redPlayer1?.imageUrl}}?size=200" class="circle" alt="{{redPlayer1?.name}}">
                     </div>
                     <template [ngIf]="redPlayer2 != null">
                         <div class="player" [ngClass]="nameClassesRed2" (click)="onPlayerClicked(redPlayer2)">
                             <span class="title">{{redPlayer2?.name}}</span>
-                            <img src="{{redPlayer2?.imageUrl}}?size=200" class="player-squared" alt="{{redPlayer2?.name}}">
+                            <img src="{{redPlayer2?.imageUrl}}?size=200" class="circle" alt="{{redPlayer2?.name}}">
                         </div>
                     </template>
                 </div>
