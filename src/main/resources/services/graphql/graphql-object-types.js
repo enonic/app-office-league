@@ -122,7 +122,7 @@ exports.teamType = graphQlLib.createObjectType({
         description: {
             type: graphQlLib.GraphQLString,
             data: function (env) {
-                return env.source.nickname;
+                return env.source.description;
             }
         },
         players: {

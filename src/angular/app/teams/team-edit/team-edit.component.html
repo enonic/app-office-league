@@ -1,0 +1,47 @@
+<template [ngIf]="id == ''">
+    <loading></loading>
+</template>
+<template [ngIf]="id != ''">
+    <div class="card">
+        <div class="card-content blue-grey-text">
+            <span class="card-title">Team Profile</span>
+            <form>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">fingerprint</i>
+                        <input id="name" type="text" class="validate" name="name" autocomplete="off" [(ngModel)]="name" required=""
+                               aria-required="true" [ngClass]="nameClasses">
+                        <label class="active" for="name">Team Name</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">info_outline</i>
+                        <textarea id="description" class="materialize-textarea" autocomplete="off" spellcheck="false" name="description"
+                                  [(ngModel)]="description"></textarea>
+                        <label class="active" for="description">About</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s6">
+                        <div class="right">
+                            <input type="file" accept="image/*" #fileInput style="display:none;">
+                            <div class="team-icon-frame">
+                                <img src="{{imageUrl}}?size=128" alt="Team Image" class="team-icon circle"
+                                     (click)="fileInput.click()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col s12">
+            <button class="btn waves-effect waves-light light-blue darken-3 right" type="submit" name="create" (click)="onSaveClicked()">
+                Save
+            </button>
+        </div>
+    </div>
+</template>

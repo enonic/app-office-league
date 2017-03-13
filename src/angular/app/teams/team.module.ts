@@ -5,21 +5,26 @@ import {TeamProfileComponent} from './team-profile/team-profile.component';
 import {GamesModule} from '../games/games.module';
 import {TeamListComponent} from '../common/team-list/team-list.component';
 import {LeaguesModule} from '../leagues/league.module';
+import {TeamEditComponent} from './team-edit/team-edit.component';
+import {FormsModule} from '@angular/forms';
 
 const teamRoutes: Routes = [
     {path: 'teams', component: TeamListComponent, data: {}},
     {path: 'teams/:name', component: TeamProfileComponent, data: {}},
+    {path: 'teams/:name/edit', component: TeamEditComponent, data: {}},
 ];
 
 @NgModule({
     declarations: [
-        TeamProfileComponent
+        TeamProfileComponent,
+        TeamEditComponent
     ],
     imports: [
         CommonModule,
         GamesModule,
         LeaguesModule,
-        RouterModule.forChild(teamRoutes)
+        RouterModule.forChild(teamRoutes),
+        FormsModule
     ],
     exports: [],
     providers: [],

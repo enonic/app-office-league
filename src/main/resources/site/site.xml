@@ -28,7 +28,7 @@
 
     <!-- mappings for routes handled in Angular -->
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
-      <pattern>/teams(/[^/]+)?</pattern>
+      <pattern>/teams(/[^/]+)?.*</pattern>
     </mapping>
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
       <pattern>/players(/[^/]+)?.*</pattern>

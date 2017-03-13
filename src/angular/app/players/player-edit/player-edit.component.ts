@@ -95,7 +95,7 @@ export class PlayerEditComponent extends BaseComponent {
     }
 
     private checkPlayerNameInUse(name: string): Promise<boolean> {
-        return this.graphQLService.post(PlayerEditComponent.getPlayerNameInUseQuery, {name: name}).then(data => {
+        return this.graphQLService.post(PlayerEditComponent.playerNameInUseQuery, {name: name}).then(data => {
             return data && data.player ? data.player.id !== this.id : false;
         });
     }
@@ -139,7 +139,7 @@ export class PlayerEditComponent extends BaseComponent {
         }
     }`;
 
-    private static readonly getPlayerNameInUseQuery = `query($name: String){
+    private static readonly playerNameInUseQuery = `query($name: String){
         player(name: $name) {
             id
         }
