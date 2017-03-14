@@ -1,4 +1,4 @@
-<img align="right" src="https://raw.githubusercontent.com/enonic/app-office-league/master/misc/logo.png">
+<img align="right" src="https://raw.githubusercontent.com/enonic/app-office-league/master/misc/logo.jpg">
 
 # Office League App
 
