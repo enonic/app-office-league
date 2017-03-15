@@ -10,6 +10,7 @@ import {TeamsModule} from './teams/team.module';
 import {LeaguesModule} from './leagues/league.module';
 import {AuthRouteGuard} from './auth.route.guard';
 import {AuthService} from './auth.service';
+import {CryptoService} from './crypto.service';
 import {HomeComponent} from './home.component';
 import {CommonModule} from './common/common.module';
 import {MaterializeModule} from 'angular2-materialize/dist/index';
@@ -35,7 +36,7 @@ const appRoutes: Routes = [
         TeamsModule,
         LeaguesModule
     ],
-    providers: [GraphQLService, AuthService, AuthRouteGuard],
+    providers: [GraphQLService, AuthService, CryptoService, AuthRouteGuard],
     bootstrap: [AppComponent]
 })
 export class AppModule {
