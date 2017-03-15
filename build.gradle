@@ -28,6 +28,11 @@ app {
     vendorUrl = 'http://enonic.com'
 }
 
+node {
+    download = true
+    version = '6.9.2'
+}
+
 dependencies {
     compile "com.enonic.xp:core-api:${xpVersion}"
     compile "com.enonic.xp:portal-api:${xpVersion}"
