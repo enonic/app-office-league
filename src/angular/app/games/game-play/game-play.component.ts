@@ -61,6 +61,10 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
     nameClassesRed1: {} = {selected: false, unselected: false};
     nameClassesRed2: {} = {selected: false, unselected: false};
     nameClassesField: {} = {enabled: false};
+    nameClassesGamePlay: {} = {};
+    nameClassesGamePlayScoreBlue: {} = {};
+    nameClassesGamePlayScoreRed: {} = {};
+    nameClassesGamePlayCommentator: {} = {};
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router, private elRef: ElementRef) {
     }
@@ -104,6 +108,8 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         this.nameClassesRed2['unselected'] = this.playerSelected !== PlayerPosition.Red2;
 
         this.nameClassesField['enabled'] = true;
+
+        this.nameClassesGamePlay['game-play--player-clicked'] = true;
     }
 
     private unselectAll() {
@@ -116,6 +122,8 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         this.nameClassesRed1['unselected'] = false;
         this.nameClassesRed2['unselected'] = false;
         this.nameClassesField['enabled'] = false;
+
+        this.nameClassesGamePlay['game-play--player-clicked'] = false;
     }
 
     onPauseClicked() {
@@ -129,6 +137,18 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
     }
 
     onUndoClicked() {
+
+    }
+
+    onGameTimeClicked() {
+        this.unselectAll();
+
+        if (this.gameState === GameState.Paused) {
+            this.resumeGame();
+        }
+        else {
+            this.pauseGame();
+        }
 
     }
 
@@ -199,9 +219,33 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         this.gameState = GameState.Playing;
         this.showPlay = false;
 
+        this.nameClassesField['paused'] = false;
+
         this.baseTime = new Date();
         this.updateElapsedTime();
         this.startGameTimer();
+    }
+
+    private scoreGoal(team: string) {
+        if (team === 'blue') {
+            this.nameClassesGamePlayScoreBlue['game-play__blue-score--goal'] = true;
+            this.blueScore++;
+            setTimeout(() => {
+                this.nameClassesGamePlayScoreBlue['game-play__blue-score--goal'] = false;
+            }, 2000);
+        }
+        else {
+            this.nameClassesGamePlayScoreRed['game-play__red-score--goal'] = true;
+            this.redScore++;
+            setTimeout(() => {
+                this.nameClassesGamePlayScoreRed['game-play__red-score--goal'] = false;
+            }, 2000);
+        }
+
+        this.nameClassesGamePlayCommentator['game-play__commentator--active'] = true;
+        setTimeout(() => {
+            this.nameClassesGamePlayCommentator['game-play__commentator--active'] = false;
+        }, 2000);
     }
 
     private handlePointScored(p: Player, against: boolean) {
@@ -215,15 +259,19 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
 
         if (side === Side.RED) {
             if (against) {
-                this.blueScore++;
+                this.scoreGoal('blue');
+                //this.blueScore++;
             } else {
-                this.redScore++;
+                this.scoreGoal('red');
+                //this.redScore++;
             }
         } else {
             if (against) {
-                this.redScore++;
+                this.scoreGoal('red');
+                //this.redScore++;
             } else {
-                this.blueScore++;
+                this.scoreGoal('blue');
+                //this.blueScore++;
             }
         }
 
@@ -447,8 +495,8 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         let divRed = this.elRef.nativeElement.querySelector('.field-overlay-red');
         let imgBlue = this.elRef.nativeElement.querySelector('.field-blue');
         let divBlue = this.elRef.nativeElement.querySelector('.field-overlay-blue');
-        divRed.style.width = imgRed.width + 'px';
-        divBlue.style.width = imgBlue.width + 'px';
+        //divRed.style.width = imgRed.width + 'px';
+        //divBlue.style.width = imgBlue.width + 'px';
     }
 
     private static readonly getPlayersLeagueQuery = `query ($leagueId: ID!, $playerIds: [ID]!) {
