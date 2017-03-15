@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<content-type>
+  <display-name>Application</display-name>
+  <super-type>base:structured</super-type>
+  <form>
+    <!--app config goes here -->
+  </form>
+</content-type>

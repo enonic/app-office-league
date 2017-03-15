@@ -78,7 +78,6 @@ var createSite = function () {
             }]
         });
 
-
         log.info('Assigning application to site...');
         var repoConn = nodeLib.connect({
             repoId: 'cms-repo',
@@ -97,15 +96,26 @@ var createSite = function () {
             }
         });
 
+        log.info('Creating App content...');
+        var appContent = contentLib.create({
+            name: 'app',
+            parentPath: siteContent._path,
+            displayName: 'App',
+            branch: 'draft',
+            contentType: app.name + ':app',
+            data: {},
+            x: {}
+        });
+
         log.info('Creating PWA page template...');
         var templateContent = contentLib.create({
             name: 'pwa',
             parentPath: siteContent._path + '/_templates',
-            displayName: 'PWA',
+            displayName: 'PWA page template',
             branch: 'draft',
             contentType: 'portal:page-template',
             data: {
-                supports: 'portal:site'
+                supports: app.name + ':app'
             }
         });
         // add page to template
@@ -115,7 +125,33 @@ var createSite = function () {
                 node.page = {
                     controller: app.name + ':pwa',
                     config: {},
-                    regions: {},
+                    customized: false
+                };
+                return node;
+            }
+        });
+
+        log.info('Creating Marketing page template...');
+        var marketingTemplateContent = contentLib.create({
+            name: 'marketing-page',
+            parentPath: siteContent._path + '/_templates',
+            displayName: 'Marketing page template',
+            branch: 'draft',
+            contentType: 'portal:page-template',
+            data: {
+                supports: 'portal:site'
+            }
+        });
+        // add page to template
+        repoConn.modify({
+            key: marketingTemplateContent._id,
+            editor: function (node) {
+                node.page = {
+                    controller: app.name + ':marketing-page',
+                    config: {},
+                    region: {
+                        name: 'main'
+                    },
                     customized: false
                 };
                 return node;

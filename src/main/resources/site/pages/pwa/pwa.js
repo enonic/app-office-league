@@ -5,19 +5,18 @@ var storeLib = require('/lib/office-league-store');
 var view = resolve('pwa.html');
 
 exports.get = function (req) {
-    var content = portalLib.getContent();
+    var site = portalLib.getSite();
     var baseHref = portalLib.pageUrl({
-        path: content.path
+        path: site._path
     });
-    
+
     var createdPlayer = createPlayerOnDemand();
     if (createdPlayer) {
         return {
-            redirect: baseHref + '/players/' + createdPlayer.name.toLowerCase()
+            redirect: baseHref + '/app/players/' + createdPlayer.name.toLowerCase()
         }
     }
 
-    
     
     var user = authLib.getUser();
     var userObj = user && {key: user.key};
@@ -30,7 +29,7 @@ exports.get = function (req) {
     var params = {
         locale: req.params.locale || 'en',
         user: userObj && JSON.stringify(userObj),
-        baseHref: baseHref + '/',   // trailing slash for relative urls to be correct
+        baseHref: baseHref + '/app/',   // trailing slash for relative urls to be correct
         assetsUrl: portalLib.assetUrl({path: ""}),
         loginUrl: portalLib.loginUrl({redirect: baseHref}),
         logoutUrl: portalLib.logoutUrl({redirect: baseHref}),
