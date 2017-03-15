@@ -1,7 +1,7 @@
-<template [ngIf]="id == ''">
+<template [ngIf]="player == ''">
     <loading></loading>
 </template>
-<template [ngIf]="id != ''">
+<template [ngIf]="player != ''">
     <div class="card">
         <div class="card-content blue-grey-text">
             <span class="card-title">Player Profile</span>
@@ -11,7 +11,7 @@
                         <i class="material-icons prefix">fingerprint</i>
                         <input id="name" type="text" class="validate" name="name" autocomplete="off" [(ngModel)]="name" required=""
                                aria-required="true" [ngClass]="nameClasses">
-                        <label class="active" for="name">Player Name</label>
+                        <label for="name">Player Name</label>
                     </div>
                 </div>
                 <div class="row">
@@ -20,7 +20,7 @@
                         <input id="nickname" type="text" name="nickname" autocomplete="off" [(ngModel)]="nickname"
                                required=""
                                aria-required="true">
-                        <label class="active" for="name">Nickname</label>
+                        <label for="name">Nickname</label>
                     </div>
                 </div>
                 <div class="row">
@@ -28,7 +28,7 @@
                         <i class="material-icons prefix">info_outline</i>
                         <textarea id="description" class="materialize-textarea" autocomplete="off" spellcheck="false" name="description"
                                   [(ngModel)]="description"></textarea>
-                        <label class="active" for="description">About</label>
+                        <label for="description">About</label>
                     </div>
                 </div>
                 <div class="row">
@@ -67,7 +67,7 @@
                         <div class="right">
                             <input type="file" accept="image/*" #fileInput style="display:none;">
                             <div class="player-icon-frame">
-                                <img src="{{imageUrl}}?size=128" alt="Player Image" class="player-icon circle preview"
+                                <img src="{{imageUrl}}?size=128" alt="Player Image" class="player-icon circle"
                                      (click)="fileInput.click()">
                             </div>
                         </div>

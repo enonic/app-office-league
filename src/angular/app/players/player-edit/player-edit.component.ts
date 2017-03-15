@@ -1,4 +1,4 @@
-import {Component, Input, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, Input, ElementRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Handedness} from '../../../graphql/schemas/Handedness';
 import {Player} from '../../../graphql/schemas/Player';
@@ -15,7 +15,7 @@ import {XPCONFIG} from '../../app.config';
     templateUrl: 'player-edit.component.html',
     styleUrls: ['player-edit.component.less']
 })
-export class PlayerEditComponent extends BaseComponent implements AfterViewInit {
+export class PlayerEditComponent extends BaseComponent {
 
     name: string;
     id: string;
@@ -38,11 +38,6 @@ export class PlayerEditComponent extends BaseComponent implements AfterViewInit 
 
         let name = this.route.snapshot.params['name'];
         this.loadPlayer(name);
-    }
-
-    ngAfterViewInit(): void {
-        let inputEl: HTMLInputElement = this.inputEl.nativeElement;
-        inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
     }
 
     private loadPlayer(name) {
@@ -100,7 +95,7 @@ export class PlayerEditComponent extends BaseComponent implements AfterViewInit 
     }
 
     private checkPlayerNameInUse(name: string): Promise<boolean> {
-        return this.graphQLService.post(PlayerEditComponent.playerNameInUseQuery, {name: name}).then(data => {
+        return this.graphQLService.post(PlayerEditComponent.getPlayerNameInUseQuery, {name: name}).then(data => {
             return data && data.player ? data.player.id !== this.id : false;
         });
     }
@@ -133,17 +128,6 @@ export class PlayerEditComponent extends BaseComponent implements AfterViewInit 
         return !!this.name;
     }
 
-    private onFileInputChange(input: HTMLInputElement) {
-        let preview = document.getElementsByClassName('preview')[0];
-        if (input.files && input.files[0]) {
-            let reader = new FileReader();
-            reader.onload = function (e) {
-                preview.setAttribute('src', (<any>e.target).result);
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
     private static readonly getPlayerQuery = `query($name: String){
         player(name: $name) {
             id
@@ -155,7 +139,7 @@ export class PlayerEditComponent extends BaseComponent implements AfterViewInit 
         }
     }`;
 
-    private static readonly playerNameInUseQuery = `query($name: String){
+    private static readonly getPlayerNameInUseQuery = `query($name: String){
         player(name: $name) {
             id
         }

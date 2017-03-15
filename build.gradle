@@ -23,14 +23,9 @@ apply plugin: 'maven'
 
 app {
     name = project.appName
-    displayName = 'Office League'
+    displayName = project.displayName
     vendorName = 'Enonic AS'
     vendorUrl = 'http://enonic.com'
-}
-
-node {
-    download = true
-    version = '6.9.2'
 }
 
 dependencies {

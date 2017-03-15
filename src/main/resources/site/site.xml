@@ -5,42 +5,42 @@
   <mappings>
     <!-- /<site>/players/image/<playername> -->
     <mapping controller="/site/controllers/player-image.js" order="10">
-      <pattern>/app/players/image/.*</pattern>
+      <pattern>/players/image/.*</pattern>
     </mapping>
 
     <!-- /<site>/teams/image/<teamname> -->
     <mapping controller="/site/controllers/team-image.js" order="10">
-      <pattern>/app/teams/image/.*</pattern>
+      <pattern>/teams/image/.*</pattern>
     </mapping>
 
     <!-- /<site>/leagues/image/<leaguename> -->
     <mapping controller="/site/controllers/league-image.js" order="10">
-      <pattern>/app/leagues/image/.*</pattern>
+      <pattern>/leagues/image/.*</pattern>
     </mapping>
 
     <mapping controller="/services/graphql/graphql.js" order="10">
-      <pattern>/app/api/graphql</pattern>
+      <pattern>/api/graphql</pattern>
     </mapping>
 
     <mapping controller="/site/controllers/assets.js" order="10">
-      <pattern>/app/assets/.*</pattern>
+      <pattern>/assets/.*</pattern>
     </mapping>
 
     <!-- mappings for routes handled in Angular -->
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
-      <pattern>/app/teams(/[^/]+)?.*</pattern>
+      <pattern>/teams(/[^/]+)?</pattern>
     </mapping>
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
-      <pattern>/app/players(/[^/]+)?.*</pattern>
+      <pattern>/players(/[^/]+)?.*</pattern>
     </mapping>
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
-      <pattern>/app/leagues(/[^/]+)?.*</pattern>
+      <pattern>/leagues(/[^/]+)?.*</pattern>
     </mapping>
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
-      <pattern>/app/games(/[^/]+)?.*</pattern>
+      <pattern>/games(/[^/]+)?.*</pattern>
     </mapping>
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
-      <pattern>/app/league-create</pattern>
+      <pattern>/league-create</pattern>
     </mapping>
   </mappings>
 

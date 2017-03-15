@@ -1,170 +1,31 @@
 @import "../../colors";
 
-@mobile-portrait: ~"only screen
-    and (min-width: 320px)
-    and (max-width: 480px)
-    and (orientation: portrait)";
-
-@landscape: ~"only screen
-    and (min-width: 481px)
-    and (orientation: landscape)";
-
-.game-play {
-  &__team-score {
-    padding: 0 1em;
-    width: 50%;
-    color: #fff;
-  }
-
-  &__red-score {
-    background-color: @red-team-color;
-    text-align: left;
-
-    &--goal {
-      background-color: #fff;
-      -webkit-animation: blink 0.5s linear infinite;
-      -moz-animation: blink 0.5s linear infinite;
-      animation: blink 0.5s linear infinite;
-    }
-  }
-
-  &__blue-score {
-    background-color: @blue-team-color;
-    text-align: right;
-
-    &--goal {
-      background-color: #fff;
-      -webkit-animation: blink 0.5s linear infinite;
-      -moz-animation: blink 0.5s linear infinite;
-      animation: blink 0.5s linear infinite;
-    }
-  }
-
-
-  &__commentator {
-    display: none;
-    font-size: 100px;
-    color: #fff;
-    background-color: #000;
-    position: absolute;
-    z-index: 999;
-    text-align: center;
-    width: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-
-    &--active {
-      display: block;
-      -webkit-animation: blink 0.4s linear infinite;
-      -moz-animation: blink 0.4s linear infinite;
-      animation: blink 0.4s linear infinite;
-    }
-  }
-
-}
-
-@keyframes blink {
-  0% { color: #fff; }
-  100% { color: #000; }
-}
-@-webkit-keyframes blink {
-  0% { color: #fff; }
-  100% { color: #000; }
-}
-
-
-.playing-field {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  z-index: 0;
-  top: 0;
-  left: 0;
-  display: block;
-
-  &--portrait {
-
-    @media @landscape {
-      display: none;
-    }
-  }
-
-  &--landscape {
-
-    @media @mobile-portrait {
-      display: none;
-    }
-  }
-
-  .game-play--player-clicked & {
-    .field__grass {
-      fill: #fff;
-    }
-
-    .field__lines {
-      fill: #C4C4C4;
-    }
-  }
-}
-
-
-
-
-
-
-
 .sides {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-content: center;
-  position: absolute;
-  top: 50%;
-  width: 100%;
-  transform: translateY(-50%);
+}
 
-  @media @mobile-portrait {
-    flex-direction: column;
-  }
+.col.sides {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .side {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
   flex: 1;
-  z-index: 1;
-
-  @media @mobile-portrait {
-    flex-direction: column;
-  }
 
   .players {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    //flex: 1;
-    width: 75%;
-
-    @media @mobile-portrait {
-      flex-direction: column;
-    }
+    flex: 1;
   }
 
 }
-
-.add-goal {
-  display: flex;
-  width: 25%;
-  opacity: 0;
-
-  .game-play--player-clicked & {
-    opacity: 1;
-  }
-}
-
-
 
 .side-blue {
   img {
@@ -185,7 +46,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+
+  padding-top: 2vh;
+  padding-bottom: 2vh;
 
   &.selected {
     opacity: 1;
@@ -194,30 +57,23 @@
     }
   }
   &.unselected {
-    opacity: 0;
+    opacity: 0.25;
   }
 
   img {
     width: 14vh;
     height: 14vh;
-
-    @media @mobile-portrait {
-      width: 14vw;
-      height: 14vw;
-    }
   }
 }
 
+img.player-squared {
+  border-radius: 5px;
+}
+
 .game-top-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  opacity: 0.7;
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  width: 100%;
 
   .game-top-bar-items {
     width: 100%;
@@ -225,12 +81,8 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    font-size: 24px;
+    .time {
 
-    .game-time {
-      background-color: #fff;
-      color: #000;
-      padding: 0 1em;
     }
 
     .actions i {
@@ -255,9 +107,17 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  color: #fff;
 }
 
+.blue-score {
+  color: @blue-team-color;
+  padding-right: 2px;
+}
+
+.red-score {
+  color: @red-team-color;
+  padding-left: 2px;
+}
 
 .field {
   display: flex;
@@ -329,8 +189,3 @@
     color: @red-team-color;
   }
 }
-
-.game-play {
-  position: relative;
-}
-

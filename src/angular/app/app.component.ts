@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {Location} from '@angular/common';
 import {AuthService} from './auth.service';
 import {ImageService} from './image.service';
-import {Router, NavigationStart} from '@angular/router';
 
 @Component({
     selector: 'office-league',
@@ -11,15 +10,8 @@ import {Router, NavigationStart} from '@angular/router';
 })
 export class AppComponent {
     private logoUrl: string;
-    private isPlayingGame: boolean;
 
-    constructor(private auth: AuthService, private location: Location, private router: Router) {
+    constructor(private auth: AuthService, private location: Location) {
         this.logoUrl = ImageService.logoUrl();
-
-        router.events
-            .filter(event => event instanceof NavigationStart)
-            .subscribe((event: NavigationStart) => {
-                this.isPlayingGame = event.url.startsWith('/games/');
-            });
     }
 }

@@ -12,14 +12,14 @@
                     <i class="material-icons prefix">label_outline</i>
                     <input id="name" type="text" class="validate" name="name" autocomplete="off" [(ngModel)]="name" required=""
                            aria-required="true" [ngClass]="nameClasses">
-                    <label class="active" for="name">League Name</label>
+                    <label for="name">League Name</label>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col s12">
                     <i class="material-icons prefix">info_outline</i>
                     <input id="description" type="text" class="validate" autocomplete="off" name="description" [(ngModel)]="description">
-                    <label class="active" for="description">Description</label>
+                    <label for="description">Description</label>
                 </div>
             </div>
             <div class="row">
@@ -40,7 +40,7 @@
                     <div class="right">
                         <input type="file" accept="image/*" #fileInput style="display:none;">
                         <div class="league-icon-frame">
-                            <img src="{{leagueImageUrl}}?size=64" alt="League Icon" class="league-icon circle preview" (click)="fileInput.click()">
+                            <img src="{{leagueImageUrl}}?size=64" alt="League Icon" class="league-icon circle" (click)="fileInput.click()">
                         </div>
                     </div>
                 </div>

@@ -18,9 +18,6 @@ exports.post = function (req) {
     case 'player':
         setImagePlayer(id);
         break;
-    case 'team':
-        setImageTeam(id);
-        break;
     }
 
     return {
@@ -66,19 +63,6 @@ var setImagePlayer = function (id) {
 
     storeLib.updatePlayer({
         playerId: id,
-        imageStream: stream,
-        imageType: contentType
-    });
-    storeLib.refresh();
-};
-
-var setImageTeam = function (id) {
-    var stream = portalLib.getMultipartStream('image');
-    var part = portalLib.getMultipartItem('image');
-    var contentType = part && part.contentType;
-
-    storeLib.updateTeam({
-        teamId: id,
         imageStream: stream,
         imageType: contentType
     });

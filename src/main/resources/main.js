@@ -7,6 +7,9 @@ log.info('Application ' + app.name + ' started');
 
 initLib.initialize();
 
+var playerImage = ioLib.getResource('/import/images/player.png');
+var teamImage = ioLib.getResource('/import/images/xp.png');
+
 var player1 = storeLib.getPlayerByName('Player1');
 if (!player1) {
     player1 = storeLib.createPlayer({
@@ -15,7 +18,9 @@ if (!player1) {
         description: 'Player One',
         handedness: 'left',
         nickname: 'The Player',
-        nationality: 'us'
+        nationality: 'us',
+        imageStream: playerImage.getStream(),
+        imageType: 'image/png'
     });
     log.info('Player 1 created');
 }
@@ -27,7 +32,9 @@ if (!player2) {
         description: 'Player Two',
         handedness: 'right',
         nickname: 'The Other Player',
-        nationality: 'no'
+        nationality: 'no',
+        imageStream: playerImage.getStream(),
+        imageType: 'image/png'
     });
     log.info('Player 2 created');
 }
@@ -39,7 +46,9 @@ if (!player3) {
         description: 'Player Three',
         handedness: 'left',
         nickname: 'Some Other Player',
-        nationality: 'ru'
+        nationality: 'ru',
+        imageStream: playerImage.getStream(),
+        imageType: 'image/png'
     });
     log.info('Player 3 created');
 }
@@ -51,7 +60,9 @@ if (!player4) {
         description: 'Player Four',
         handedness: 'right',
         nickname: 'And Another Player',
-        nationality: 'fr'
+        nationality: 'fr',
+        imageStream: playerImage.getStream(),
+        imageType: 'image/png'
     });
     log.info('Player 4 created');
 }
@@ -61,7 +72,9 @@ if (!teamA) {
     teamA = storeLib.createTeam({
         name: 'A Team',
         description: 'The A Team',
-        playerIds: [player1._id, player2._id]
+        playerIds: [player1._id, player2._id],
+        imageStream: teamImage.getStream(),
+        imageType: 'image/png'
     });
     log.info('Team A created');
 }
@@ -70,7 +83,9 @@ if (!teamB) {
     teamB = storeLib.createTeam({
         name: 'B Team',
         description: 'The B Team',
-        playerIds: [player3._id, player4._id]
+        playerIds: [player3._id, player4._id],
+        imageStream: teamImage.getStream(),
+        imageType: 'image/png'
     });
     log.info('Team B created');
 }
@@ -81,6 +96,8 @@ if (!league) {
         name: 'My League',
         description: 'Test league',
         sport: 'foos',
+        imageStream: teamImage.getStream(),
+        imageType: 'image/png',
         adminPlayerIds: [player1._id]
     });
     log.info('League created');

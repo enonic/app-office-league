@@ -83,6 +83,12 @@ export class GameListComponent extends ListComponent implements OnInit, OnChange
                         winner
                         score
                         side
+                        team {
+                            name
+                            players {
+                                name
+                            }
+                        }
                     }
                     league {
                         name

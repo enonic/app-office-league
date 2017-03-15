@@ -1,10 +1,15 @@
 import {Component, Input} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Handedness} from '../../../graphql/schemas/Handedness';
+import {Player} from '../../../graphql/schemas/Player';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../graphql.service';
+import {Countries} from '../../common/countries';
 import {Game} from '../../../graphql/schemas/Game';
+import {League} from '../../../graphql/schemas/League';
 import {Team} from '../../../graphql/schemas/Team';
 import {XPCONFIG} from '../../app.config';
+import {LeagueTeam} from '../../../graphql/schemas/LeagueTeam';
 
 @Component({
     selector: 'team-profile',
@@ -12,38 +17,6 @@ import {XPCONFIG} from '../../app.config';
     styleUrls: ['team-profile.component.less']
 })
 export class TeamProfileComponent extends BaseComponent {
-
-    @Input() team: Team;
-    games: Game[] = [];
-    editable: boolean;
-
-    constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService) {
-        super(route);
-    }
-
-    ngOnInit(): void {
-        super.ngOnInit();
-
-        let name = this.route.snapshot.params['name'];
-
-        if (!this.team) {
-            this.graphQLService.post(TeamProfileComponent.getTeamQuery, {name: name}).then(
-                data => this.handleResponse(data));
-        }
-    }
-
-    private handleResponse(data) {
-        this.team = Team.fromJson(data.team);
-        this.games = data.team.gameTeams.map((gm) => Game.fromJson(gm.game));
-        let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
-        this.editable =
-            this.team.players.length === 2 && ( this.team.players[0].id === currentPlayerId || this.team.players[1].id === currentPlayerId);
-    }
-
-    onEditClicked() {
-        this.router.navigate(['teams', this.team.name.toLowerCase(), 'edit']);
-    }
-
     private static readonly getTeamQuery = `query($name: String){
         team(name: $name) {
             id
@@ -111,5 +84,34 @@ export class TeamProfileComponent extends BaseComponent {
             }
         }
     }`;
+    
+    @Input() team: Team;
+    games: Game[] = [];
+    editable: boolean;
 
+    constructor(route: ActivatedRoute, private graphQLService: GraphQLService) {
+        super(route);
+    }
+
+    ngOnInit(): void {
+        super.ngOnInit();
+        
+        let name = this.route.snapshot.params['name'];
+
+        if (!this.team) {
+            this.graphQLService.post(TeamProfileComponent.getTeamQuery, {name: name}).then(
+                data => this.handleResponse(data));
+        }
+    }
+
+    private handleResponse(data) {
+        this.team = Team.fromJson(data.team);
+        this.games = data.team.gameTeams.map((gm) => Game.fromJson(gm.game));
+        let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
+        this.editable = this.team.players[0].id === currentPlayerId || this.team.players[1].id === currentPlayerId;
+    }
+
+    onEditClicked() {
+        console.log('TODO: Edit team');
+    }    
 }

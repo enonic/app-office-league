@@ -7,7 +7,7 @@
 
 <template [ngIf]="player != null">
     <div class="player {{sideClass}}" (click)="onClicked()">
-        <img src="{{player.imageUrl}}?size=200" class="circle" alt="{{player.name}}">
+        <img src="{{player.imageUrl}}?size=200" class="player-squared" alt="{{player.name}}">
         <span class="title">{{player.name}}</span>
     </div>
 </template>

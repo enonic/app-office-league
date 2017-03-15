@@ -1,4 +1,4 @@
-import {Component, Input, SimpleChanges} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {GraphQLService} from '../../graphql.service';
 import {AuthService} from '../../auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -46,11 +46,12 @@ export class LeagueProfileComponent extends BaseComponent {
                 time
                 finished
                 points {
-                    player {
-                        name
-                    }
-                    time
-                    against
+                  time
+                  against
+                  player {
+                    id
+                    name
+                  }
                 }
                 comments {
                     author {
@@ -68,9 +69,19 @@ export class LeagueProfileComponent extends BaseComponent {
                     }
                 }
                 gameTeams {
-                    score
-                    winner
-                    side
+                  id
+                  time
+                  score
+                  side
+                  winner
+                  ratingDelta
+                  team {
+                    id
+                    name
+                    players {
+                        name
+                    }
+                  }
                 }
                 league {
                     name
@@ -127,7 +138,7 @@ export class LeagueProfileComponent extends BaseComponent {
             this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery, {playerId: playerId, leagueId: this.league.id}).
                 then(data => {
                     this.refreshData(this.league.name);
-                }); 
+                });
         }
     }
 }

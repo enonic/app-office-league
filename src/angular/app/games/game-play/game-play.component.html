@@ -1,139 +1,62 @@
-<div class="row game-play" [ngClass]="nameClassesGamePlay">
-    <div class="game-top-bar">
+<div class="row">
+    <div class="col s12 game-top-bar blue-grey lighten-3">
         <div class="game-top-bar-items">
-
-            <div class="game-score">
-                <div class="game-play__team-score game-play__red-score" [ngClass]="nameClassesGamePlayScoreRed">{{redScore}}</div>
-                <div class="game-time" (click)="onGameTimeClicked()">{{elapsedTime}}</div>
-                <div class="game-play__team-score game-play__blue-score"[ngClass]="nameClassesGamePlayScoreBlue">{{blueScore}}</div>
-            </div><!--
+            <h4 class="time">{{elapsedTime}}</h4>
+            <div class="game-score"><h4 class="red-score">{{redScore}}</h4> <span> &mdash; </span> <h4 class="blue-score">{{blueScore}}</h4>
+            </div>
             <div class="actions">
                 <i class="medium material-icons green-text" [ngClass]="{hide: !showPlay}" (click)="onPlayClicked()">play_arrow</i>
                 <i class="medium material-icons indigo-text text-darken-2" [ngClass]="{hide: showPlay}" (click)="onPauseClicked()">pause</i>
                 <i class="medium material-icons" [ngClass]="{hide: !showUndo}" (click)="onUndoClicked()">replay</i>
-            </div>-->
+            </div>
         </div>
     </div>
 
-    <div class="game-play__field-container">
-        <div class="game-play__field">
-            <svg class="playing-field playing-field--landscape" [ngClass]="nameClassesField" height="1678" viewBox="0 0 3000 1678" width="3000" xmlns="http://www.w3.org/2000/svg">
-                <g transform="translate(-23740 1293)">
-                    <path class="field__grass" d="m3000 0h-3000v1678h3000z" fill="#89ba40" transform="translate(23740 -1293)"/>
-                    <g fill="#fff" fill-rule="evenodd" class="field__lines">
-                        <path class="field__goal--blue"
-                              d="m617 0h-375v168.611c-134.326 3.965-242 114.103-242 249.389s107.674 245.424 242 249.389v167.611h375v-20h-355v-795h355zm-375 646.863v-458.726c-123.045 4.215-221.5 105.291-221.5 229.363s98.455 225.148 221.5 229.363zm375-437.863h-185v416h185v-19h-165v-376h165z"
-                              transform="translate(26123 -872)"/>
-
-                        <path class="field__goal--red"
-                              d="m617 0-375 0v168.611c-134.326 3.965-242 114.103-242 249.389s107.674 245.424 242 249.389v167.611h375v-20h-355v-795h355zm-375 646.863v-458.726c-123.045 4.215-221.5 105.291-221.5 229.363s98.455 225.148 221.5 229.363zm375-437.863h-185v416h185v-19h-165v-376h165z"
-                              transform="matrix(-1 0 0 -1 24357 -37)"/>
-                        <path class="field__midfield"
-                              d="m310 0h-20v541.474c-161.057 5.275-290 137.498-290 299.837s128.943 294.559 290 299.839v536.85h20v-536.85c161.057-5.28 290-137.5 290-299.839s-128.943-294.562-290-299.837zm-20 566.489c-147.246 5.263-265 126.291-265 274.822 0 148.53 117.754 269.559 265 274.819zm20 549.641v-549.641c147.246 5.263 265 126.291 265 274.822 0 148.53-117.754 269.559-265 274.819z"
-                              transform="translate(24940 -1293)"/>
-
-                    </g>
-                </g>
-            </svg>
-
-            <svg class="playing-field playing-field--portrait" preserveAspectRatio="none" height="3000" viewBox="0 0 1678 3000" width="1678" xmlns="http://www.w3.org/2000/svg">
-                <g transform="translate(-24405 1054)">
-                    <path d="m3000 0h-3000v1678h3000z" fill="#89ba40" transform="matrix(0 -1 1 0 24405 1946)"/>
-                    <g fill="#fff" fill-rule="evenodd">
-                        <path
-                                d="m617 0h-375v168.611c-134.326 3.965-242 114.103-242 249.389s107.674 245.424 242 249.389v167.611h375v-20h-355v-795h355zm-375 646.863v-458.726c-123.045 4.215-221.5 105.291-221.5 229.363s98.455 225.148 221.5 229.363zm375-437.863h-185v416h185v-19h-165v-376h165z"
-                                transform="matrix(0 -1 1 0 24826 -437)"/>
-                        <path
-                                d="m617 0-375 0v168.611c-134.326 3.965-242 114.103-242 249.389s107.674 245.424 242 249.389v167.611h375v-20h-355v-795h355zm-375 646.863v-458.726c-123.045 4.215-221.5 105.291-221.5 229.363s98.455 225.148 221.5 229.363zm375-437.863h-185v416h185v-19h-165v-376h165z"
-                                transform="matrix(0 1 -1 0 25661 1329)"/>
-                        <path
-                                d="m310 0h-20v541.474c-161.057 5.275-290 137.498-290 299.837s128.943 294.559 290 299.839v536.85h20v-536.85c161.057-5.28 290-137.5 290-299.839s-128.943-294.562-290-299.837zm-20 566.489c-147.246 5.263-265 126.291-265 274.822 0 148.53 117.754 269.559 265 274.819zm20 549.641v-549.641c147.246 5.263 265 126.291 265 274.822 0 148.53-117.754 269.559-265 274.819z"
-                                transform="matrix(0 -1 1 0 24405 746)"/>
-                    </g>
-                </g>
-            </svg>
-
-            <template [ngIf]="bluePlayer1 == null">
-                <loading></loading>
-            </template>
-            <template [ngIf]="bluePlayer1 != null">
-                <div class="sides">
-
-                    <!--<div class="col s12 field" [ngClass]="nameClassesField">
-                        <div class="field-container field-container-left">
-                            <div class="field-overlay field-overlay-red" (click)="onRedFieldClick()"><span>{{redScore}}</span></div>
-                            <img class="field-red" src="{{leftFieldImgUrl()}}" (click)="onRedFieldClick()"/>
-                        </div>
-                        <div class="field-container field-container-right">
-                            <div class="field-overlay field-overlay-blue" (click)="onBlueFieldClick()"><span>{{blueScore}}</span></div>
-                            <img class="field-blue" src="{{rightFieldImgUrl()}}" (click)="onBlueFieldClick()"/>
-                        </div>
-                        <a href="#" (click)="onBlueFieldClick()">test</a>
-                    </div>-->
-                    <div class="side side-red">
-                        <svg class="add-goal add-goal--red" (click)="onRedFieldClick()" height="300" viewBox="0 0 300 300" width="300" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <g mask="url(#a)" transform="translate(-27753 4109)">
-                                <g>
-                                    <path d="m163.574 273.326h99.121v42.725h-99.121v112.304h-45.41v-112.304h-99.121v-42.725h99.121v-103.76h45.41z" fill="#2945a5"
-                                          transform="translate(27769 -4252)"/>
-                                </g>
-                            </g>
-                            <mask id="a">
-                                <path d="m27753-4109h300v300h-300z" fill="#fff"/>
-                            </mask>
-                        </svg>
-                        <div class="players">
-                            <div class="player" [ngClass]="nameClassesRed1" (click)="onPlayerClicked(redPlayer1)">
-                                <img src="{{redPlayer1?.imageUrl}}?size=200" class="circle" alt="{{redPlayer1?.name}}">
-                                <span class="title">{{redPlayer1?.name}}</span>
-                            </div>
-                            <template [ngIf]="redPlayer2 != null">
-                                <div class="player" [ngClass]="nameClassesRed2" (click)="onPlayerClicked(redPlayer2)">
-                                    <img src="{{redPlayer2?.imageUrl}}?size=200" class="circle" alt="{{redPlayer2?.name}}">
-                                    <span class="title">{{redPlayer2?.name}}</span>
-                                </div>
-                            </template>
-                        </div>
+    <template [ngIf]="bluePlayer1 == null">
+        <loading></loading>
+    </template>
+    <template [ngIf]="bluePlayer1 != null">
+        <div class="col s12 sides">
+            <div class="side side-blue">
+                <div class="players">
+                    <div class="player" [ngClass]="nameClassesBlue1" (click)="onPlayerClicked(bluePlayer1)">
+                        <img src="{{bluePlayer1?.imageUrl}}?size=200" class="player-squared" alt="{{bluePlayer1?.name}}">
+                        <span class="title">{{bluePlayer1?.name}}</span>
                     </div>
-                    <div class="side side-blue">
-                        <div class="players">
-                            <div class="player" [ngClass]="nameClassesBlue1" (click)="onPlayerClicked(bluePlayer1)">
-                                <img src="{{bluePlayer1?.imageUrl}}?size=200" class="circle" alt="{{bluePlayer1?.name}}">
-                                <span class="title">{{bluePlayer1?.name}}</span>
-                            </div>
-                            <template [ngIf]="bluePlayer2 != null">
-                                <div class="player" [ngClass]="nameClassesBlue2" (click)="onPlayerClicked(bluePlayer2)">
-                                    <img src="{{bluePlayer2?.imageUrl}}?size=200" class="circle" alt="{{bluePlayer2?.name}}">
-                                    <span class="title">{{bluePlayer2?.name}}</span>
-                                </div>
-                            </template>
+                    <template [ngIf]="bluePlayer2 != null">
+                        <div class="player" [ngClass]="nameClassesBlue2" (click)="onPlayerClicked(bluePlayer2)">
+                            <img src="{{bluePlayer2?.imageUrl}}?size=200" class="player-squared" alt="{{bluePlayer2?.name}}">
+                            <span class="title">{{bluePlayer2?.name}}</span>
                         </div>
-                        <svg class="add-goal add-goal--blue" (click)="onBlueFieldClick()" height="300" viewBox="0 0 300 300" width="300" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <g mask="url(#a)" transform="translate(-27753 4109)">
-                                <g>
-                                    <path d="m163.574 273.326h99.121v42.725h-99.121v112.304h-45.41v-112.304h-99.121v-42.725h99.121v-103.76h45.41z" fill="#D00000"
-                                          transform="translate(27769 -4252)"/>
-                                </g>
-                            </g>
-                            <mask id="a">
-                                <path d="m27753-4109h300v300h-300z" fill="#fff"/>
-                            </mask>
-                        </svg>
-                    </div>
-
-
-
+                    </template>
                 </div>
-            </template>
-
+            </div>
+            <div class="col s12 field" [ngClass]="nameClassesField">
+                <div class="field-container field-container-left">
+                    <div class="field-overlay field-overlay-red" (click)="onRedFieldClick()"><span>{{redScore}}</span></div>
+                    <img class="field-red" src="{{leftFieldImgUrl()}}" (click)="onRedFieldClick()"/>
+                </div>
+                <div class="field-container field-container-right">
+                    <div class="field-overlay field-overlay-blue" (click)="onBlueFieldClick()"><span>{{blueScore}}</span></div>
+                    <img class="field-blue" src="{{rightFieldImgUrl()}}" (click)="onBlueFieldClick()"/>
+                </div>
+            </div>
+            <div class="side side-red">
+                <div class="players">
+                    <div class="player" [ngClass]="nameClassesRed1" (click)="onPlayerClicked(redPlayer1)">
+                        <span class="title">{{redPlayer1?.name}}</span>
+                        <img src="{{redPlayer1?.imageUrl}}?size=200" class="player-squared" alt="{{redPlayer1?.name}}">
+                    </div>
+                    <template [ngIf]="redPlayer2 != null">
+                        <div class="player" [ngClass]="nameClassesRed2" (click)="onPlayerClicked(redPlayer2)">
+                            <span class="title">{{redPlayer2?.name}}</span>
+                            <img src="{{redPlayer2?.imageUrl}}?size=200" class="player-squared" alt="{{redPlayer2?.name}}">
+                        </div>
+                    </template>
+                </div>
+            </div>
 
         </div>
-        <div class="game-play__commentator" [ngClass]="nameClassesGamePlayCommentator">
-            GOAL!
-        </div>
-    </div>
-
-
-
+    </template>
 
 </div>

@@ -619,8 +619,7 @@ exports.getGamesByLeagueId = function (leagueId, start, count) {
     var result = repoConn.query({
         start: start,
         count: count,
-        query: "type = '" + TYPE.GAME + "' AND leagueId = '" + leagueId + "'",
-        sort: "time DESC"
+        query: "type = '" + TYPE.GAME + "' AND leagueId = '" + leagueId + "'"
     });
 
     var games = [];
