@@ -16,9 +16,6 @@ export class AppComponent {
     constructor(private auth: AuthService, private location: Location, private router: Router) {
         this.logoUrl = ImageService.logoUrl();
 
-        this.isPlayingGame = location.path().startsWith('/games/');
-        console.log(this.isPlayingGame);
-
         router.events
             .filter(event => event instanceof NavigationStart)
             .subscribe((event: NavigationStart) => {
