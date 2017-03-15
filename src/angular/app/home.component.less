@@ -1,26 +1,23 @@
-.welcome {
+h1 {
   text-align: center;
   font-weight: 100;
-}
 
-.title {
-  font-weight: 400;
-  font-family: Lobster, Roboto, sans-serif;
-}
-
-.description {
-  margin-top: 0.5rem;
-  margin-bottom: 7rem; // to prevent bottom-sticked footer from overflowing
-  text-align: justify;
-  font-size: 1.5rem;
-  font-weight: 300;
-
-  .keynote {
-    font-weight: 300;
+  span {
+    font-weight: 400;
   }
 }
 
-.background {
+ul {
+  text-align: justify;
+  font-size: 18px;
+  margin-bottom: 74px; // to prevent bottom-sticked footer from overflowing
+
+  li {
+    margin-bottom: 10px;
+  }
+}
+
+.bg {
   position: fixed;
   z-index: -1;
   top: 0;
@@ -34,14 +31,13 @@
 .footer {
   position: absolute;
   bottom: 0;
-  margin-left: 10px;
-}
 
-.login, .browse {
-  display: block;
-  width: 100%;
-}
+  button {
+    display: block;
+    width: 100%;
 
-.login {
-  margin-top: 10px;
+    &.login {
+      margin-top: 10px;
+    }
+  }
 }

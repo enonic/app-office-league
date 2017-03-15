@@ -1,23 +1,25 @@
-<div class="background"></div>
+<div class="bg"></div>
 
-<h1 class="col s12 m8 offset-m2 welcome" i18n="Welcome|Home screen welcome message">Welcome to<br/>
-    <span class="title pink-text">Office League</span>
+<h1 class="col s12 m8 offset-m2" i18n="Welcome|Home screen welcome message">
+    Welcome to<br/>
+    <span>Office League</span>
 </h1>
 
-<div class="col s12 m6 offset-m3 browser-default description">
-    <p><span class="keynote pink-text text-accent-2">Play</span> your favourite office sports with your friends, co-workers or between organizations.</p>
-    <p><span class="keynote pink-text text-accent-2">Create</span> leagues, join teams or play solo.</p>
-    <p><span class="keynote pink-text text-accent-2">Track</span> statistics on players, teams and previous games.</p>
-    <p><span class="keynote pink-text text-accent-2">Watch</span> games in real time.</p>
-</div>
+<ul class="col s12 m6 offset-m3 browser-default">
+    <li>Play your favourite office sport against your friends, co-workers and even other organisations</li>
+    <li>Join in teams or play solo</li>
+    <li>Create your leagues and invite people or join theirs</li>
+    <li>Watch games in real-time</li>
+    <li>See statistics of past games, players and teams</li>
+</ul>
 
 <footer class="container footer">
     <div class="row">
-        <div class="col s12 m6 offset-m3">
-            <button type="button" class="waves-effect waves-light btn-large pink browse" routerLink="/leagues"
+        <div class="col s12 m8 offset-m2">
+            <button type="button" class="waves-effect waves-light btn-large" routerLink="/leagues"
                     i18n="Browse leagues|Home screen browse leagues button">Browse leagues
             </button>
-            <button *ngIf="!auth.isAuthenticated()" type="button" class="btn-flat btn-large login" (click)="auth.login()">Sign in</button>
+            <button *ngIf="!auth.isAuthenticated()" type="button" class="btn-flat login" (click)="auth.login()">Log in / Sign up</button>
         </div>
     </div>
 </footer>

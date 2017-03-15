@@ -1,14 +1,14 @@
-<ul class="card collection list" [class.with-header]="!!title">
+<ul class="collection list" [class.with-header]="!!title">
     <li *ngIf="title" class="collection-header"><h4>{{title}}</h4></li>
     <li href="#!" class="collection-item avatar" *ngFor="let leaguePlayer of leaguePlayers" (click)="onLeaguePlayerClicked(leaguePlayer)">
         <league-summary *ngIf="displayLeagues" [league]="leaguePlayer.league" [rating]="leaguePlayer.rating" [ranking]="leaguePlayer.ranking"></league-summary>
         <player-summary *ngIf="displayPlayers" [player]="leaguePlayer.player" [rating]="leaguePlayer.rating" [ranking]="leaguePlayer.ranking"></player-summary>
     </li>
     <li *ngIf="leaguePlayers?.length == 0" class="collection-item empty">
-        <div *ngIf="displayLeagues" class="empty-text blue-grey-text">No leagues</div>
-        <div *ngIf="displayPlayer" class="empty-text blue-grey-text">No players</div>
+        <h5 *ngIf="displayLeagues">No leagues</h5>
+        <h5 *ngIf="displayPlayer">No players</h5>
     </li>
     <li *ngIf="leaguePlayers?.length > 0 && this.detailsPath"  href="#!" class="collection-item empty" (click)="onDetailsClicked()">
-        <div class="empty-text blue-grey-text">See more</div>
+        <h5>See more</h5>
     </li>
 </ul>

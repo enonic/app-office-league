@@ -3,13 +3,13 @@
     <input [(ngModel)]="searchValue" (input)="onSearchFieldModified()" id="searchField" type="text">
     <label for="searchField">Search</label>
 </div>
-<ul class="card collection list" [class.with-header]="!!title">
+<ul class="collection list" [class.with-header]="!!title">
     <li *ngIf="title" class="collection-header"><h4>{{title}}</h4></li>
     <li href="#!" class="collection-item avatar" *ngFor="let player of players;" (click)="onPlayerClicked(player)">
         <player-summary [player]="player"></player-summary>
     </li>
     <li *ngIf="players?.length == 0" class="collection-item empty">
-        <div class="empty-text blue-grey-text">No players</div>
+        <h5>No players</h5>
     </li>
     <li *ngIf="pages?.length > 1">
         <ul class="pagination center">

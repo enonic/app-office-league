@@ -11,9 +11,8 @@
                 <h2 class="header light-blue-text text-darken-4">{{player.name}}</h2>
             </div>
         </div>
-
-        <div *ngIf="editable" class="fixed-action-btn" (click)="onEditClicked()">
-            <a class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">edit</i></a>
+        <div *ngIf="editable" class="col s2" (click)="onEditClicked()">
+            <a class="btn-floating btn-large waves-effect waves-light light-blue darken-4"><i class="material-icons">edit</i></a>
         </div>
     </div>
     <div class="row">

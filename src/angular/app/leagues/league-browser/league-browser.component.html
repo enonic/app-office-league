@@ -1,4 +1,4 @@
-<div class="card">
+<div class="col s12">
     <ul class="tabs" *ngIf="authService.isAuthenticated()">
         <li class="tab col s6">
             <a href="#myLeagues" i18n="My leagues|My leagues tab caption">My leagues</a>
@@ -11,5 +11,5 @@
     <league-list id="allLeagues" [leagues]="allLeagues" class="no-margin"></league-list>
 </div>
 <div class="fixed-action-btn" *ngIf="authService.isAuthenticated()">
-    <a class="btn-floating btn-large waves-effect waves-light pink" routerLink="/league-create"><i class="material-icons">add</i></a>
+    <a class="btn-floating btn-large waves-effect waves-light red" routerLink="/league-create"><i class="material-icons">add</i></a>
 </div>
