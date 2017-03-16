@@ -1,4 +1,5 @@
 var repoLib = require('/lib/xp/repo');
+var valueLib = require('/lib/xp/value');
 var contextLib = require('/lib/xp/context');
 var nodeLib = require('/lib/xp/node');
 var contentLib = require('/lib/xp/content');
@@ -92,6 +93,7 @@ var createSite = function () {
                     applicationKey: app.name,
                     config: {}
                 };
+                fixTimeProperites(node);
                 return node;
             }
         });
@@ -127,6 +129,7 @@ var createSite = function () {
                     config: {},
                     customized: false
                 };
+                fixTimeProperites(node);
                 return node;
             }
         });
@@ -154,10 +157,17 @@ var createSite = function () {
                     },
                     customized: false
                 };
+                fixTimeProperites(node);
                 return node;
             }
         });
     }
+};
+
+var fixTimeProperites = function (node) {
+    node._timestamp = node._timestamp ? valueLib.instant(node._timestamp) : undefined;
+    node.createdTime = node.createdTime ? valueLib.instant(node.createdTime) : undefined;
+    node.modifiedTime = node.modifiedTime ? valueLib.instant(node.modifiedTime) : undefined;
 };
 
 var createRepo = function () {
