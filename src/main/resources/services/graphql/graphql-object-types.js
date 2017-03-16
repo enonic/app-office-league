@@ -79,7 +79,7 @@ exports.playerType = graphQlLib.createObjectType({
                 return storeLib.getTeamsByPlayerId(env.source._id, env.args.offset, env.args.first).hits;
             }
         },
-        teamConnection: {
+        teamsConnection: {
             type: graphQlLib.reference('TeamConnection'),
             args: {
                 after: graphQlLib.GraphQLInt, //TODO Change for base64

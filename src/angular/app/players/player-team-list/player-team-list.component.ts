@@ -13,17 +13,22 @@ import {MaterializeDirective} from 'angular2-materialize/dist/index';
 })
 export class PlayerTeamListComponent extends BaseComponent {
     private static readonly paging = 10;
-    private static readonly getPlayerQuery = `query($name: String) {
+    private static readonly getPlayerQuery = `query($name: String, $after:Int,$first:Int) {
         player(name:$name) {
             name
-            teams(first:-1) {
-                id
-                name
-                description
-                players {
-                    id
-                    name
-                }
+            teamsConnection(after:$after, first:$first) {
+                totalCount
+                edges {
+                    node {
+                        id
+                        name
+                        description
+                        players {
+                            id
+                            name
+                        }
+                    }
+                }                
             }
         }
     }`;
@@ -40,20 +45,22 @@ export class PlayerTeamListComponent extends BaseComponent {
     ngOnInit(): void {
         super.ngOnInit();
         this.playerName = this.route.snapshot.params['name'];
-        this.refreshData();
+        this.refresh();
     }
 
-    private refreshData(currentPage: number = 1, search: string = '') {
-        //let after = currentPage > 1 ? ((currentPage - 1) * PlayerListPageComponent.paging - 1) : undefined;
-        this.service.post(PlayerTeamListComponent.getPlayerQuery,{name: this.playerName}).
+    private refresh(currentPage: number = 1) {
+        let after = currentPage > 1 ? ((currentPage - 1) * PlayerTeamListComponent.paging - 1) : undefined;
+        this.service.post(PlayerTeamListComponent.getPlayerQuery,{name: this.playerName, after: after, first:PlayerTeamListComponent.paging }).
             then((data: any) => {
                 this.player = Player.fromJson(data.player);
-                this.teams = data.player.teams.map((team) => Team.fromJson(team));
-                //this.pages = [];
-                //let pagesCount = data.playersConnection.totalCount / PlayerListPageComponent.paging + 1;
-                //for (var i = 1; i <= pagesCount; i++) {
-                //    this.pages.push(i);
-                //}
+                this.teams = data.player.teamsConnection.edges.map(edge => Team.fromJson(edge.node));
+                
+                this.pages = [];
+                let totalCount = data.player.teamsConnection.totalCount;
+                let pagesCount = (totalCount == 0 ? 0: totalCount - 1) / PlayerTeamListComponent.paging + 1;
+                for (var i = 1; i <= pagesCount; i++) {
+                    this.pages.push(i);
+                }
             });
     }
 }

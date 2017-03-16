@@ -15,7 +15,7 @@ export class TeamListComponent extends BaseComponent {
     @Input() teams: Team[];
     @Input() pages = [1];
     @Input() hideSearchField: boolean;
-    @Input() refreshDataCallback: Function;
+    @Input() observer: any;
     private searchValue: string;
     private currentPage = 1;
 
@@ -41,8 +41,8 @@ export class TeamListComponent extends BaseComponent {
     }
 
     private refreshData() {
-        if (this.refreshDataCallback) {
-            this.refreshDataCallback(this.currentPage, this.searchValue);
+        if (this.observer) {
+            this.observer.refresh(this.currentPage, this.searchValue);
         }
     }
 }

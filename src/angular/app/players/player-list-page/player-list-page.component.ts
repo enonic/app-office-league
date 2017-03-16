@@ -31,16 +31,17 @@ export class PlayerListPageComponent extends BaseComponent {
 
     ngOnInit(): void {
         super.ngOnInit();
-        this.refreshData();
+        this.refresh();
     }
 
-    private refreshData(currentPage: number = 1, search: string = '') {
+    private refresh(currentPage: number = 1, search: string = '') {
         let after = currentPage > 1 ? ((currentPage - 1) * PlayerListPageComponent.paging - 1) : undefined;
         this.service.post(PlayerListPageComponent.getPlayersQuery,{after: after,first: PlayerListPageComponent.paging, search: search}).
             then((data: any) => {
                 this.players = data.playersConnection.edges.map(edge => Player.fromJson(edge.node));
                 this.pages = [];
-                let pagesCount = data.playersConnection.totalCount / PlayerListPageComponent.paging + 1;
+                let totalCount = data.player.teamsConnection.totalCount;
+                let pagesCount = (totalCount == 0 ? 0 : totalCount - 1) / PlayerListPageComponent.paging + 1;
                 for (var i = 1; i <= pagesCount; i++) {
                     this.pages.push(i);
                 }
