@@ -2,6 +2,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {NgModule} from '@angular/core';
 import {ListComponent} from './list.component';
+import {List2Component} from './list2.component';
 import {BaseComponent} from './base.component';
 import {RatingComponent} from './rating/rating.component';
 import {PlayerSummaryComponent} from './player-summary/player-summary.component';
@@ -22,6 +23,7 @@ import {LoadingComponent} from './loading/loading.component';
         TeamPlayersComponent,
         BaseComponent,
         ListComponent,
+        List2Component,
         LoadingComponent
     ],
     imports: [
@@ -38,6 +40,7 @@ import {LoadingComponent} from './loading/loading.component';
         TeamPlayersComponent,
         BaseComponent,
         ListComponent,
+        List2Component,
         LoadingComponent
     ]
 })

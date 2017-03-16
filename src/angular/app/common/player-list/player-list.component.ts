@@ -1,6 +1,6 @@
 import {Component, Input, SimpleChanges} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
-import {BaseComponent} from '../../common/base.component';
+import {List2Component} from '../../common/list2.component';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../graphql.service';
 import {MaterializeDirective} from 'angular2-materialize/dist/index';
@@ -9,40 +9,14 @@ import {MaterializeDirective} from 'angular2-materialize/dist/index';
     selector: 'player-list',
     templateUrl: 'player-list.component.html'
 })
-export class PlayerListComponent extends BaseComponent {
-
-    @Input() title: string;
+export class PlayerListComponent extends List2Component {
     @Input() players: Player[];
-    @Input() pages = [1];
-    @Input() hideSearchField: boolean;
-    @Input() observer: any;
-    private searchValue: string;
-    private currentPage = 1;
 
-    constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
-        super(route);
+    constructor(route: ActivatedRoute, router: Router) {
+        super(route, router);
     }
 
     onPlayerClicked(player: Player) {
         this.router.navigate(['players', player.name.toLowerCase()]);
-    }
-
-    onSearchFieldModified() {
-        this.currentPage = 1;
-        this.refreshData();
-    }
-
-    setCurrentPage(page) {
-        if (page < 1 || page > this.pages[this.pages.length - 1]) {
-            return;
-        }
-        this.currentPage = page;
-        this.refreshData();
-    }
-
-    private refreshData() {
-        if (this.observer) {
-            this.observer.refresh(this.currentPage, this.searchValue);
-        }
     }
 }
