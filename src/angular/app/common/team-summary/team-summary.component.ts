@@ -3,6 +3,7 @@ import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Team} from '../../../graphql/schemas/Team';
+import {RankingHelper} from '../../../graphql/schemas/RankingHelper';
 
 @Component({
     selector: 'team-summary',
@@ -52,25 +53,8 @@ export class TeamSummaryComponent extends BaseComponent {
         }
     }
 
-    //TODO Extract
     rankingText(): string {
-        return this.ordinal(this.ranking);
-    }
-
-    private ordinal(value: number) {
-        if (!value) {
-            return '';
-        }
-        switch (value) {
-        case 1:
-            return '1st';
-        case 2:
-            return '2nd';
-        case 3:
-            return '3rd';
-        default:
-            return value + 'th';
-        }
+        return RankingHelper.ordinal(this.ranking);
     }
 
 }
