@@ -34,7 +34,7 @@ export class TeamListComponent extends BaseComponent {
     }
 
     setCurrentPage(page) {
-        if (page < 1 || page > this.pages.length) {
+        if (page < 1 || page > this.pages[this.pages.length - 1]) {
             return;
         }
         this.currentPage = page;
