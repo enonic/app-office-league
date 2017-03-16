@@ -7,12 +7,14 @@ import {PlayerStatsComponent} from './player-stats/player-stats.component';
 import {LeaguesModule} from '../leagues/league.module';
 import {TeamsModule} from '../teams/team.module';
 import {PlayerEditComponent} from './player-edit/player-edit.component';
+import {PlayerTeamListComponent} from './player-team-list/player-team-list.component';
 import {PlayerListPageComponent} from './player-list-page/player-list-page.component';
 import {FormsModule} from '@angular/forms';
 
 const playersRoutes: Routes = [
     {path: 'players', component: PlayerListPageComponent, data: {}},
     {path: 'players/:name', component: PlayerProfileComponent, data: {}},
+    {path: 'players/:name/teams', component: PlayerTeamListComponent, data: {}},
     {path: 'players/:name/edit', component: PlayerEditComponent, data: {}},
 ];
 
@@ -20,6 +22,7 @@ const playersRoutes: Routes = [
     declarations: [
         PlayerListPageComponent,
         PlayerProfileComponent,
+        PlayerTeamListComponent,
         PlayerStatsComponent,
         PlayerEditComponent
     ],

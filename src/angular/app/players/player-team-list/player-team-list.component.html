@@ -1,0 +1,19 @@
+<template [ngIf]="player == null">
+    <loading></loading>
+</template>
+<div *ngIf="player != null">
+    <div class="row">
+        <div class="col s10">
+            <div class="player-header">
+                <img src="{{player.imageUrl}}?size=96" alt="{{player.name}}" class="circle">
+
+                <h2 class="header light-blue-text text-darken-4">{{player.name}}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <team-list title="Teams" [teams]="teams"></team-list>
+        </div>
+    </div>
+</div>
