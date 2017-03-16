@@ -1,6 +1,5 @@
 var graphQlLib = require('graphql');
 var graphQlObjectTypesLib = require('./graphql-object-types');
-var graphQlConnectionTypesLib = require('./graphql-connection-types');
 var storeLib = require('office-league-store');
 
 exports.rootQueryType = graphQlLib.createObjectType({
@@ -50,7 +49,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
             }
         },
         playersConnection: {
-            type: graphQlConnectionTypesLib.playerConnectionType,
+            type: graphQlObjectTypesLib.playerConnectionType,
             args: {
                 after: graphQlLib.GraphQLInt, //TODO Change for base64
                 first: graphQlLib.GraphQLInt,
@@ -107,7 +106,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
             }
         },
         teamsConnection: {
-            type: graphQlConnectionTypesLib.teamConnectionType,
+            type: graphQlObjectTypesLib.teamConnectionType,
             args: {
                 after: graphQlLib.GraphQLInt, //TODO Change for base64
                 first: graphQlLib.GraphQLInt,
