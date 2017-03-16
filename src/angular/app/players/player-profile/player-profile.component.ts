@@ -6,6 +6,7 @@ import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../graphql.service';
 import {Countries} from '../../common/countries';
 import {Game} from '../../../graphql/schemas/Game';
+import {Team} from '../../../graphql/schemas/Team';
 import {XPCONFIG} from '../../app.config';
 
 @Component({
@@ -16,8 +17,11 @@ import {XPCONFIG} from '../../app.config';
 export class PlayerProfileComponent extends BaseComponent {
 
     @Input() player: Player;
-    games: Game[] = [];
-    editable: boolean;
+    private games: Game[] = [];
+    private teams: Team[] = [];
+    private teamDetailsPath: string[];
+    private editable: boolean;
+    
 
     constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService) {
         super(route);
@@ -35,6 +39,8 @@ export class PlayerProfileComponent extends BaseComponent {
     private handleResponse(data) {
         this.player = Player.fromJson(data.player);
         this.games = data.player.gamePlayers.map((gm) => Game.fromJson(gm.game));
+        this.teams = data.player.teamsConnection.edges.map((edge) => Team.fromJson(edge.node));
+        this.teamDetailsPath = data.player.teamsConnection.pageInfo.hasNext ? ['players', data.player.name, 'teams'] : undefined;
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
         this.editable = this.player.id === currentPlayerId;
     }
@@ -125,13 +131,20 @@ export class PlayerProfileComponent extends BaseComponent {
               }
             }
             
-            teams(first: 5) {
-                id
-                name
-                description
-                players {
-                    id
-                    name
+            teamsConnection(first: 5) {
+                edges {
+                    node {                    
+                        id
+                        name
+                        description
+                        players {
+                            id
+                            name
+                        }
+                    }
+                }
+                pageInfo {
+                    hasNext
                 }
             }
         }

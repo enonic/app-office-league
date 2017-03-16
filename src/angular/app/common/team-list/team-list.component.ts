@@ -16,6 +16,7 @@ export class TeamListComponent extends BaseComponent {
     @Input() pages = [1];
     @Input() hideSearchField: boolean;
     @Input() observer: any;
+    @Input() detailsPath: string[];
     private searchValue: string;
     private currentPage = 1;
 
@@ -38,6 +39,10 @@ export class TeamListComponent extends BaseComponent {
         }
         this.currentPage = page;
         this.refreshData();
+    }
+
+    onDetailsClicked() {
+        this.router.navigate(this.detailsPath);
     }
 
     private refreshData() {
