@@ -12,8 +12,8 @@ export class LeaguePlayerListComponent extends List2Component {
     @Input() displayPlayers: boolean;
     @Input() displayLeagues: boolean;
     
-    constructor(route: ActivatedRoute, private router: Router) {
-        super(route);
+    constructor(route: ActivatedRoute, router: Router) {
+        super(route, router);
     }
 
     onLeaguePlayerClicked(leaguePlayer: LeaguePlayer) {

@@ -1,6 +1,6 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
-import {List2Component} from '../../common/base.component';
+import {List2Component} from '../../common/list2.component';
 import {LeagueTeam} from '../../../graphql/schemas/LeagueTeam';
 
 @Component({
@@ -13,8 +13,8 @@ export class LeagueTeamListComponent extends List2Component implements OnInit {
     @Input() displayTeams: boolean;
     @Input() displayLeagues: boolean;
     
-    constructor(route: ActivatedRoute, private router: Router) {
-        super(route);
+    constructor(route: ActivatedRoute, router: Router) {
+        super(route, router);
     }
 
     onLeagueTeamClicked(leagueTeam: LeagueTeam) {
