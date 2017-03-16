@@ -1,9 +1,9 @@
-import {Component, OnInit, Input, SimpleChanges, OnChanges} from '@angular/core';
-import {BaseComponent} from '../../common/base.component';
+import {Component, Input, SimpleChanges} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
-import {GraphQLService} from '../../graphql.service';
+import {BaseComponent} from '../../common/base.component';
 import {Team} from '../../../graphql/schemas/Team';
-import {ListComponent} from '../../common/list.component';
+import {GraphQLService} from '../../graphql.service';
+import {MaterializeDirective} from 'angular2-materialize/dist/index';
 
 @Component({
     selector: 'team-list',
@@ -11,45 +11,20 @@ import {ListComponent} from '../../common/list.component';
 })
 export class TeamListComponent extends BaseComponent {
 
-    private static readonly paging = 10;
-    private static readonly getTeamsQuery = `query($after:Int,$first:Int, $search:String) {
-        teamsConnection(after:$after, first:$first, search:$search) {
-            totalCount
-            edges {
-                node {
-                  name
-                }
-            }
-        }
-    }`;
-    
     @Input() title: string;
     @Input() teams: Team[];
-    @Input() detailsPath: string[];
+    @Input() pages = [1];
     @Input() hideSearchField: boolean;
+    @Input() refreshDataCallback: Function;
     private searchValue: string;
     private currentPage = 1;
-    private pages = [1];
 
-    constructor(route: ActivatedRoute, private router: Router, private service: GraphQLService) {
+    constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
         super(route);
     }
 
-    ngOnInit(): void {
-        super.ngOnInit();
-
-        if (this.teams == undefined) {
-            this.refreshData();
-        }
-    }
-
     onTeamClicked(team: Team) {
-        this.service.team = team;
-        this.router.navigate(['teams', team.name.toLowerCase()])
-    }
-
-    onDetailsClicked() {
-        this.router.navigate(this.detailsPath);
+        this.router.navigate(['teams', team.name.toLowerCase()]);
     }
 
     onSearchFieldModified() {
@@ -66,15 +41,8 @@ export class TeamListComponent extends BaseComponent {
     }
 
     private refreshData() {
-        let after = this.currentPage > 1 ? ((this.currentPage - 1) * TeamListComponent.paging - 1) : undefined;
-        this.service.post(TeamListComponent.getTeamsQuery,{after: after,first: TeamListComponent.paging, search: this.searchValue}).
-            then((data: any) => {
-                this.teams = data.teamsConnection.edges.map(edge => Team.fromJson(edge.node));
-                this.pages = [];
-                let pagesCount = data.teamsConnection.totalCount / TeamListComponent.paging + 1;
-                for (var i = 1; i <= pagesCount; i++) {
-                    this.pages.push(i);
-                }
-            });
+        if (this.refreshDataCallback) {
+            this.refreshDataCallback(this.currentPage, this.searchValue);
+        }
     }
 }
