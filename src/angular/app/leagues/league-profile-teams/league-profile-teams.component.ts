@@ -22,9 +22,6 @@ export class LeagueProfileTeamsComponent extends BaseComponent {
                 team {
                     name
                 }
-                league {
-                    name
-                }
             }
         }
     }`;
