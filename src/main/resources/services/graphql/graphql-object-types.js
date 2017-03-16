@@ -492,6 +492,7 @@ exports.leagueTeamType = graphQlLib.createObjectType({
         }
     }
 });
+exports.leagueTeamConnectionType = graphQlConnectionLib.createConnectionType('LeagueTeam', exports.leagueTeamType);
 
 exports.leagueType = graphQlLib.createObjectType({
     name: 'League',
@@ -590,6 +591,18 @@ exports.leagueType = graphQlLib.createObjectType({
             },
             data: function (env) {
                 return storeLib.getLeagueTeamsByLeagueId(env.source._id, env.args.offset, env.args.first, env.args.sort).hits;
+            }
+        },
+        leagueTeamsConnection: {
+            type: exports.leagueTeamConnectionType,
+            args: {
+                after: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt,
+                sort: graphQlLib.GraphQLString
+            },
+            data: function (env) {
+                return storeLib.getLeagueTeamsByLeagueId(env.source._id, env.args.after ? (env.args.after + 1) : 0, env.args.first,
+                    env.args.sort);
             }
         },
         nonMemberPlayers: {
