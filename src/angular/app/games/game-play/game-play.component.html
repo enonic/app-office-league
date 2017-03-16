@@ -4,7 +4,10 @@
 
             <div class="game-score">
                 <div class="game-play__team-score game-play__red-score" [ngClass]="nameClassesGamePlayScoreRed">{{redScore}}</div>
-                <div class="game-time" (click)="onGameTimeClicked()">{{elapsedTime}}</div>
+                <div class="game-time" (click)="onGameTimeClicked()">
+                    <span [hidden]="showPlay">{{elapsedTime}}</span>
+                    <span [hidden]="!showPlay">pause</span>
+                </div>
                 <div class="game-play__team-score game-play__blue-score"[ngClass]="nameClassesGamePlayScoreBlue">{{blueScore}}</div>
             </div><!--
             <div class="actions">
@@ -17,15 +20,37 @@
 
     <div class="game-play__field-container">
         <div class="game-play__field">
+
+
             <svg class="playing-field playing-field--landscape" [ngClass]="nameClassesField" height="1678" viewBox="0 0 3000 1678" width="3000" xmlns="http://www.w3.org/2000/svg">
+                <g transform="translate(-26234 1054)">
+                    <path class="field__grass" d="m3000 0h-3000v1678h3000z" fill="#89ba40" transform="matrix(1 0 0 1 26234 -1054)"/>
+                    <g fill-rule="evenodd">
+                        <path
+                                class="field__grass" d="m100.061 1678v-1678h-100.061v1678zm200-1678v1678h-100.061v-1678zm200 1678v-1678h-100.061v1678zm200-1678v1678h-100.061v-1678zm200 1678v-1678h-100.061v1678zm199.999-1678v1678h-100.06v-1678zm200 1678v-1678h-100.06v1678zm200-1678v1678h-100.06v-1678zm200 1678v-1678h-100.06v1678zm200-1678v1678h-100.06v-1678zm200 1678v-1678h-100.06v1678zm200-1678v1678h-100.06v-1678zm200 1678v-1678h-100.06v1678zm200-1678v1678h-100.06v-1678zm200 0v1678h-100.06v-1678z"
+                                fill="#7cac35" transform="matrix(1 0 0 1 26333.9 -1054)"/>
+                        <path
+                                class="field__lines" d="m617 0h-375v168.611c-134.326 3.965-242 114.103-242 249.389s107.674 245.424 242 249.389v167.611h375v-20h-355v-795h355zm-375 646.863v-458.726c-123.045 4.215-221.5 105.291-221.5 229.363s98.455 225.148 221.5 229.363zm375-437.863h-185v416h185v-19h-165v-376h165z"
+                                fill="#fff" transform="matrix(1 0 0 1 28617 -633)"/>
+                        <path
+                                class="field__lines" d="m617 0-375 0v168.611c-134.326 3.965-242 114.103-242 249.389s107.674 245.424 242 249.389v167.611h375v-20h-355v-795h355zm-375 646.863v-458.726c-123.045 4.215-221.5 105.291-221.5 229.363s98.455 225.148 221.5 229.363zm375-437.863h-185v416h185v-19h-165v-376h165z"
+                                fill="#fff" transform="matrix(-1 0 0 -1 26851 202)"/>
+                        <path
+                                class="field__lines" d="m310 0h-20v541.474c-161.057 5.275-290 137.498-290 299.837s128.943 294.559 290 299.839v536.85h20v-536.85c161.057-5.28 290-137.5 290-299.839s-128.943-294.562-290-299.837zm-20 566.489c-147.246 5.263-265 126.291-265 274.822 0 148.53 117.754 269.559 265 274.819zm20 549.641v-549.641c147.246 5.263 265 126.291 265 274.822 0 148.53-117.754 269.559-265 274.819z"
+                                fill="#fff" transform="matrix(1 0 0 1 27434 -1054)"/>
+                    </g>
+                </g>
+            </svg>
+
+            <!--<svg class="playing-field playing-field&#45;&#45;landscape" [ngClass]="nameClassesField" height="1678" viewBox="0 0 3000 1678" width="3000" xmlns="http://www.w3.org/2000/svg">
                 <g transform="translate(-23740 1293)">
                     <path class="field__grass" d="m3000 0h-3000v1678h3000z" fill="#89ba40" transform="translate(23740 -1293)"/>
                     <g fill="#fff" fill-rule="evenodd" class="field__lines">
-                        <path class="field__goal--blue"
+                        <path class="field__goal&#45;&#45;blue"
                               d="m617 0h-375v168.611c-134.326 3.965-242 114.103-242 249.389s107.674 245.424 242 249.389v167.611h375v-20h-355v-795h355zm-375 646.863v-458.726c-123.045 4.215-221.5 105.291-221.5 229.363s98.455 225.148 221.5 229.363zm375-437.863h-185v416h185v-19h-165v-376h165z"
                               transform="translate(26123 -872)"/>
 
-                        <path class="field__goal--red"
+                        <path class="field__goal&#45;&#45;red"
                               d="m617 0-375 0v168.611c-134.326 3.965-242 114.103-242 249.389s107.674 245.424 242 249.389v167.611h375v-20h-355v-795h355zm-375 646.863v-458.726c-123.045 4.215-221.5 105.291-221.5 229.363s98.455 225.148 221.5 229.363zm375-437.863h-185v416h185v-19h-165v-376h165z"
                               transform="matrix(-1 0 0 -1 24357 -37)"/>
                         <path class="field__midfield"
@@ -34,9 +59,9 @@
 
                     </g>
                 </g>
-            </svg>
+            </svg>-->
 
-            <svg class="playing-field playing-field--portrait" preserveAspectRatio="none" height="3000" viewBox="0 0 1678 3000" width="1678" xmlns="http://www.w3.org/2000/svg">
+            <!--<svg class="playing-field playing-field&#45;&#45;portrait" preserveAspectRatio="none" height="3000" viewBox="0 0 1678 3000" width="1678" xmlns="http://www.w3.org/2000/svg">
                 <g transform="translate(-24405 1054)">
                     <path d="m3000 0h-3000v1678h3000z" fill="#89ba40" transform="matrix(0 -1 1 0 24405 1946)"/>
                     <g fill="#fff" fill-rule="evenodd">
@@ -49,6 +74,26 @@
                         <path
                                 d="m310 0h-20v541.474c-161.057 5.275-290 137.498-290 299.837s128.943 294.559 290 299.839v536.85h20v-536.85c161.057-5.28 290-137.5 290-299.839s-128.943-294.562-290-299.837zm-20 566.489c-147.246 5.263-265 126.291-265 274.822 0 148.53 117.754 269.559 265 274.819zm20 549.641v-549.641c147.246 5.263 265 126.291 265 274.822 0 148.53-117.754 269.559-265 274.819z"
                                 transform="matrix(0 -1 1 0 24405 746)"/>
+                    </g>
+                </g>
+            </svg>-->
+
+            <svg class="playing-field playing-field--portrait" height="3000" viewBox="0 0 1678 3000" width="1678" xmlns="http://www.w3.org/2000/svg">
+                <g transform="translate(-24405 1054)">
+                    <path class="field__grass" d="m3000 0h-3000v1678h3000z" fill="#89ba40" transform="matrix(0 -1 1 0 24405 1946)"/>
+                    <g fill-rule="evenodd">
+                        <path
+                                class="field__grass" d="m2900.06 0v1678h-100.06v-1678zm-200 0v1678h-100.06v-1678zm-200 1678v-1678h-100.06v1678zm-200-1678v1678h-100.06v-1678zm-200 1678v-1678h-100.06v1678zm-200-1678v1678h-100.06v-1678zm-200 1678v-1678h-100.06v1678zm-200-1678v1678h-100.06v-1678zm-200 1678v-1678h-100.06v1678zm-200-1678v1678h-100.06v-1678zm-200 1678v-1678h-100.06v1678zm-200-1678v1678h-100.06v-1678zm-200 1678v-1678h-100.06v1678zm-200-1678v1678h-100.06v-1678zm-200 1678v-1678h-100.06v1678z"
+                                fill="#7cac35" transform="matrix(0 -1 1 0 24405 1846.06)"/>
+                        <path
+                                class="field__lines" d="m617 0h-375v168.611c-134.326 3.965-242 114.104-242 249.389s107.674 245.424 242 249.389v167.611h375v-20h-355v-795h355zm-375 646.863v-458.726c-123.045 4.215-221.5 105.291-221.5 229.363s98.455 225.148 221.5 229.363zm375-437.863h-185v416h185v-19h-165v-376h165z"
+                                fill="#fff" transform="matrix(0 -1 1 0 24826 -437)"/>
+                        <path
+                                class="field__lines" d="m0 418c0 135.285 107.674 245.424 242 249.389v167.611h375v-20h-355v-795h355v-20h-375v168.611c-134.326 3.965-242 114.104-242 249.389zm242-229.863c-123.045 4.215-221.5 105.291-221.5 229.363s98.455 225.148 221.5 229.363zm375 20.863h-185v416h185v-19h-165v-376h165z"
+                                fill="#fff" transform="matrix(0 1 -1 0 25661 1329)"/>
+                        <path
+                                class="field__lines" d="m310 0h-20v541.474c-161.057 5.275-290 137.498-290 299.837s128.943 294.559 290 299.839v536.85h20v-536.85c161.057-5.28 290-137.5 290-299.839s-128.943-294.562-290-299.837zm-20 566.489c-147.246 5.263-265 126.291-265 274.822 0 148.53 117.754 269.559 265 274.819zm20 549.641v-549.641c147.246 5.263 265 126.291 265 274.822 0 148.53-117.754 269.559-265 274.819z"
+                                fill="#fff" transform="matrix(0 -1 1 0 24405 746)"/>
                     </g>
                 </g>
             </svg>
@@ -71,7 +116,7 @@
                         <a href="#" (click)="onBlueFieldClick()">test</a>
                     </div>-->
                     <div class="side side-red">
-                        <svg class="add-goal add-goal--red" (click)="onRedFieldClick()" height="300" viewBox="0 0 300 300" width="300" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <svg class="add-goal add-goal--red" (click)="onRedGoalClick()" height="300" viewBox="0 0 300 300" width="300" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <g mask="url(#a)" transform="translate(-27753 4109)">
                                 <g>
                                     <path d="m163.574 273.326h99.121v42.725h-99.121v112.304h-45.41v-112.304h-99.121v-42.725h99.121v-103.76h45.41z" fill="#2945a5"
@@ -82,33 +127,33 @@
                                 <path d="m27753-4109h300v300h-300z" fill="#fff"/>
                             </mask>
                         </svg>
-                        <div class="players">
-                            <div class="player" [ngClass]="nameClassesRed1" (click)="onPlayerClicked(redPlayer1)">
-                                <img src="{{redPlayer1?.imageUrl}}?size=200" class="circle" alt="{{redPlayer1?.name}}">
-                                <span class="title">{{redPlayer1?.name}}</span>
+                        <div class="game-play__players">
+                            <div class="game-play__player game-play__player--red" [ngClass]="nameClassesRed1" (click)="onPlayerClicked(redPlayer1)">
+                                <img class="game-play__player-img" src="{{redPlayer1?.imageUrl}}?size=200" alt="{{redPlayer1?.name}}">
+                                <span class="game-play__player-name">{{redPlayer1?.name | slice:0:10}}</span>
                             </div>
                             <template [ngIf]="redPlayer2 != null">
-                                <div class="player" [ngClass]="nameClassesRed2" (click)="onPlayerClicked(redPlayer2)">
-                                    <img src="{{redPlayer2?.imageUrl}}?size=200" class="circle" alt="{{redPlayer2?.name}}">
-                                    <span class="title">{{redPlayer2?.name}}</span>
+                                <div class="game-play__player game-play__player--red" [ngClass]="nameClassesRed2" (click)="onPlayerClicked(redPlayer2)">
+                                    <img class="game-play__player-img" src="{{redPlayer2?.imageUrl}}?size=200" alt="{{redPlayer2?.name}}">
+                                    <span class="game-play__player-name">{{redPlayer2?.name | slice:0:10}}</span>
                                 </div>
                             </template>
                         </div>
                     </div>
                     <div class="side side-blue">
-                        <div class="players">
-                            <div class="player" [ngClass]="nameClassesBlue1" (click)="onPlayerClicked(bluePlayer1)">
-                                <img src="{{bluePlayer1?.imageUrl}}?size=200" class="circle" alt="{{bluePlayer1?.name}}">
-                                <span class="title">{{bluePlayer1?.name}}</span>
+                        <div class="game-play__players">
+                            <div class="game-play__player game-play__player--blue" [ngClass]="nameClassesBlue1" (click)="onPlayerClicked(bluePlayer1)">
+                                <img class="game-play__player-img" src="{{bluePlayer1?.imageUrl}}?size=200" alt="{{bluePlayer1?.name}}">
+                                <span class="game-play__player-name">{{bluePlayer1?.name | slice:0:10}}</span>
                             </div>
                             <template [ngIf]="bluePlayer2 != null">
-                                <div class="player" [ngClass]="nameClassesBlue2" (click)="onPlayerClicked(bluePlayer2)">
-                                    <img src="{{bluePlayer2?.imageUrl}}?size=200" class="circle" alt="{{bluePlayer2?.name}}">
-                                    <span class="title">{{bluePlayer2?.name}}</span>
+                                <div class="game-play__player game-play__player--blue" [ngClass]="nameClassesBlue2" (click)="onPlayerClicked(bluePlayer2)">
+                                    <img class="game-play__player-img" src="{{bluePlayer2?.imageUrl}}?size=200" alt="{{bluePlayer2?.name}}">
+                                    <span class="game-play__player-name">{{bluePlayer2?.name | slice:0:10}}</span>
                                 </div>
                             </template>
                         </div>
-                        <svg class="add-goal add-goal--blue" (click)="onBlueFieldClick()" height="300" viewBox="0 0 300 300" width="300" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <svg class="add-goal add-goal--blue" (click)="onBlueGoalClick()" height="300" viewBox="0 0 300 300" width="300" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <g mask="url(#a)" transform="translate(-27753 4109)">
                                 <g>
                                     <path d="m163.574 273.326h99.121v42.725h-99.121v112.304h-45.41v-112.304h-99.121v-42.725h99.121v-103.76h45.41z" fill="#D00000"
@@ -130,6 +175,11 @@
         </div>
         <div class="game-play__commentator" [ngClass]="nameClassesGamePlayCommentator">
             GOAL!
+        </div>
+        <div class="game-play__menu" [ngClass]="{'game-play__menu--active': showMenu}">
+            <button class="game-play__menu-btn game-play__menu-btn--continue" (click)="onContinueGameClicked()">Continue</button>
+            <button class="game-play__menu-btn game-play__menu-btn--undo" (click)="onUndoLastGoalClicked()" [hidden]="redScore === 0 && blueScore === 0">Undo last goal</button>
+            <button class="game-play__menu-btn game-play__menu-btn--end" (click)="onEndGameClicked()">End game</button>
         </div>
     </div>
 

@@ -51,15 +51,28 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
     elapsedTime: string;
     timerId: number;
     gameState: GameState = GameState.NotStarted;
+    showMenu: boolean = false;
     showPlay: boolean;
     showUndo: boolean;
 
     playerSelected: PlayerPosition;
 
-    nameClassesBlue1: {} = {selected: false, unselected: false};
-    nameClassesBlue2: {} = {selected: false, unselected: false};
-    nameClassesRed1: {} = {selected: false, unselected: false};
-    nameClassesRed2: {} = {selected: false, unselected: false};
+    nameClassesBlue1: {} = {
+        'game-play__player--selected': false,
+        'game-play__player--unselected': false
+    };
+    nameClassesBlue2: {} = {
+        'game-play__player--selected': false,
+        'game-play__player--unselected': false
+    };
+    nameClassesRed1: {} = {
+        'game-play__player--selected': false,
+        'game-play__player--unselected': false
+    };
+    nameClassesRed2: {} = {
+        'game-play__player--selected': false,
+        'game-play__player--unselected': false
+    };
     nameClassesField: {} = {enabled: false};
     nameClassesGamePlay: {} = {};
     nameClassesGamePlayScoreBlue: {} = {};
@@ -98,14 +111,14 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         this.pauseGame();
 
         this.playerSelected = this.getPlayerPosition(p);
-        this.nameClassesBlue1['selected'] = this.playerSelected === PlayerPosition.Blue1;
-        this.nameClassesBlue2['selected'] = this.playerSelected === PlayerPosition.Blue2;
-        this.nameClassesRed1['selected'] = this.playerSelected === PlayerPosition.Red1;
-        this.nameClassesRed2['selected'] = this.playerSelected === PlayerPosition.Red2;
-        this.nameClassesBlue1['unselected'] = this.playerSelected !== PlayerPosition.Blue1;
-        this.nameClassesBlue2['unselected'] = this.playerSelected !== PlayerPosition.Blue2;
-        this.nameClassesRed1['unselected'] = this.playerSelected !== PlayerPosition.Red1;
-        this.nameClassesRed2['unselected'] = this.playerSelected !== PlayerPosition.Red2;
+        this.nameClassesBlue1['game-play__player--selected'] = this.playerSelected === PlayerPosition.Blue1;
+        this.nameClassesBlue2['game-play__player--selected'] = this.playerSelected === PlayerPosition.Blue2;
+        this.nameClassesRed1['game-play__player--selected'] = this.playerSelected === PlayerPosition.Red1;
+        this.nameClassesRed2['game-play__player--selected'] = this.playerSelected === PlayerPosition.Red2;
+        this.nameClassesBlue1['game-play__player--unselected'] = this.playerSelected !== PlayerPosition.Blue1;
+        this.nameClassesBlue2['game-play__player--unselected'] = this.playerSelected !== PlayerPosition.Blue2;
+        this.nameClassesRed1['game-play__player--unselected'] = this.playerSelected !== PlayerPosition.Red1;
+        this.nameClassesRed2['game-play__player--unselected'] = this.playerSelected !== PlayerPosition.Red2;
 
         this.nameClassesField['enabled'] = true;
 
@@ -113,14 +126,14 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
     }
 
     private unselectAll() {
-        this.nameClassesBlue1['selected'] = false;
-        this.nameClassesBlue2['selected'] = false;
-        this.nameClassesRed1['selected'] = false;
-        this.nameClassesRed2['selected'] = false;
-        this.nameClassesBlue1['unselected'] = false;
-        this.nameClassesBlue2['unselected'] = false;
-        this.nameClassesRed1['unselected'] = false;
-        this.nameClassesRed2['unselected'] = false;
+        this.nameClassesBlue1['game-play__player--selected'] = false;
+        this.nameClassesBlue2['game-play__player--selected'] = false;
+        this.nameClassesRed1['game-play__player--selected'] = false;
+        this.nameClassesRed2['game-play__player--selected'] = false;
+        this.nameClassesBlue1['game-play__player--unselected'] = false;
+        this.nameClassesBlue2['game-play__player--unselected'] = false;
+        this.nameClassesRed1['game-play__player--unselected'] = false;
+        this.nameClassesRed2['game-play__player--unselected'] = false;
         this.nameClassesField['enabled'] = false;
 
         this.nameClassesGamePlay['game-play--player-clicked'] = false;
@@ -136,8 +149,40 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         this.resumeGame();
     }
 
-    onUndoClicked() {
+    onUndoLastGoalClicked() {
+        let point = this.points.pop();
 
+        if (point) {
+            let side = this.getPlayerSide(point.player);
+            let against = point.against;
+
+            if (side === Side.RED) {
+                if (against) {
+                    this.blueScore--;
+                } else {
+                    this.redScore--;
+                }
+            } else {
+                if (against) {
+                    this.redScore--;
+                } else {
+                    this.blueScore--;
+                }
+            }
+
+            this.saveGame().then((gameId) => {
+                // TODO show point feedback
+            }).catch((ex) => {
+                console.log('Could not update game. Offline mode On.');
+                this.onlineMode = false;
+            });
+        }
+
+
+
+        this.unselectAll();
+        this.resumeGame();
+        this.showMenu = false;
     }
 
     onGameTimeClicked() {
@@ -148,11 +193,21 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         }
         else {
             this.pauseGame();
+            this.showMenu = true;
         }
 
     }
 
-    onBlueFieldClick() {
+    onContinueGameClicked() {
+        this.resumeGame();
+        this.showMenu = false;
+    }
+
+    onEndGameClicked() {
+
+    }
+
+    onBlueGoalClick() {
         if (this.gameState !== GameState.Paused || (this.playerSelected == null)) {
             return;
         }
@@ -164,7 +219,7 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         this.resumeGame();
     }
 
-    onRedFieldClick() {
+    onRedGoalClick() {
         if (this.gameState !== GameState.Paused || (this.playerSelected == null)) {
             return;
         }
@@ -557,12 +612,4 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
             id
         }
     }`;
-
-    leftFieldImgUrl(): string {
-        return `${XPCONFIG.assetsUrl}/img/foostable-v2.svg`;
-    }
-
-    rightFieldImgUrl(): string {
-        return `${XPCONFIG.assetsUrl}/img/foostable-v2-rev.svg`;
-    }
 }
