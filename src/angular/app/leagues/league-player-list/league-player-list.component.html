@@ -6,7 +6,7 @@
     </li>
     <li *ngIf="leaguePlayers?.length == 0" class="collection-item empty">
         <h5 *ngIf="displayLeagues">No leagues</h5>
-        <h5 *ngIf="displayPlayer">No players</h5>
+        <h5 *ngIf="displayPlayers">No players</h5>
     </li>
     <li *ngIf="leaguePlayers?.length > 0 && this.detailsPath"  href="#!" class="collection-item empty" (click)="onDetailsClicked()">
         <h5>See more</h5>
