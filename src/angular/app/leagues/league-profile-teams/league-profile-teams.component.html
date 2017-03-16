@@ -23,7 +23,7 @@
         <div class="col s12 l8">
             <ul class="row list">
                 <li class="col s12 m6 l12">
-                    <team-list [title]="'Team ranking'" [teams]="members" hideSearchField="true"></team-list>
+                    <league-team-list title="Team ranking" displayTeams="true" [leagueTeams]="league.leagueTeams"  hideSearchField="true"></league-team-list>
                 </li>
             </ul>
         </div>
