@@ -79,6 +79,16 @@ exports.playerType = graphQlLib.createObjectType({
                 return storeLib.getTeamsByPlayerId(env.source._id, env.args.offset, env.args.first).hits;
             }
         },
+        teamConnection: {
+            type: graphQlLib.reference('TeamConnection'),
+            args: {
+                after: graphQlLib.GraphQLInt, //TODO Change for base64
+                first: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                return storeLib.getTeamsByPlayerId(env.source._id, env.args.after ? (env.args.after + 1) : 0, env.args.first);
+            }
+        },
         leaguePlayers: {
             type: graphQlLib.list(graphQlLib.reference('LeaguePlayer')),
             args: {
