@@ -40,7 +40,7 @@ export class TeamListPageComponent extends BaseComponent {
             then((data: any) => {
                 this.teams = data.teamsConnection.edges.map(edge => Team.fromJson(edge.node));
                 this.pages = [];
-                let totalCount = data.player.teamsConnection.totalCount;
+                let totalCount = data.teamsConnection.totalCount;
                 let pagesCount = (totalCount == 0 ? 0: totalCount - 1) / TeamListPageComponent.paging + 1;
                 for (var i = 1; i <= pagesCount; i++) {
                     this.pages.push(i);
