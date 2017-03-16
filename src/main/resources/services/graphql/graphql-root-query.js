@@ -1,6 +1,5 @@
 var graphQlLib = require('graphql');
 var graphQlObjectTypesLib = require('./graphql-object-types');
-var graphQlConnectionLib = require('./graphql-connection');
 var storeLib = require('office-league-store');
 
 exports.rootQueryType = graphQlLib.createObjectType({
@@ -50,7 +49,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
             }
         },
         playersConnection: {
-            type: graphQlConnectionLib.createConnectionType ('Player', graphQlObjectTypesLib.playerType),
+            type: graphQlObjectTypesLib.playerConnectionType,
             args: {
                 after: graphQlLib.GraphQLInt, //TODO Change for base64
                 first: graphQlLib.GraphQLInt,
@@ -61,9 +60,9 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 var first = env.args.first;
                 var search = env.args.search;
                 if (search) {
-                    return storeLib.findPlayers(search, after? (after+1) : 0, first);
+                    return storeLib.findPlayers(search, after ? (after + 1) : 0, first);
                 } else {
-                    return storeLib.getPlayers(after? (after+1) : 0, first);
+                    return storeLib.getPlayers(after ? (after + 1) : 0, first);
                 }
             }
         },
@@ -107,7 +106,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
             }
         },
         teamsConnection: {
-            type: graphQlConnectionLib.createConnectionType ('Team', graphQlObjectTypesLib.teamType),
+            type: graphQlObjectTypesLib.teamConnectionType,
             args: {
                 after: graphQlLib.GraphQLInt, //TODO Change for base64
                 first: graphQlLib.GraphQLInt,
@@ -118,9 +117,9 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 var first = env.args.first;
                 var search = env.args.search;
                 if (search) {
-                    return storeLib.findTeams(search, after? (after+1) : 0, first);
+                    return storeLib.findTeams(search, after ? (after + 1) : 0, first);
                 } else {
-                    return storeLib.getTeams(after? (after+1) : 0, first);
+                    return storeLib.getTeams(after ? (after + 1) : 0, first);
                 }
             }
         },

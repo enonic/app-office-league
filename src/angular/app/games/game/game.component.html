@@ -2,25 +2,45 @@
     <loading></loading>
 </template>
 <template [ngIf]="game != null">
+    <div class="game">
 
-    <div class="results">
+        <div class="results">
+            <img *ngIf="blueTeam" src="{{blueTeam?.imageUrl}}?size=96" alt="{{blueTeam?.name}}" class="logo circle">
+            <img *ngIf="!blueTeam" src="{{bluePlayers[0]?.imageUrl}}?size=96" alt="{{bluePlayers[0]?.name}}" class="logo circle">
+            <div class="score score--blue side-blue">{{blueScore}}</div>
+            <span class="colon">:</span>
+            <div class="score score--red side-red">{{redScore}}</div>
+            <img *ngIf="redTeam" src="{{redTeam?.imageUrl}}?size=96" alt="{{redTeam?.name}}" class="logo circle">
+            <img *ngIf="!redTeam" src="{{redPlayers[0]?.imageUrl}}?size=96" alt="{{redPlayers[0]?.name}}" class="logo circle">
+        </div>
 
-        <ul class="losers {{loserSide | lowercase}}">
-            <li class="score valign-wrapper">{{loserGoals}}</li>
-            <li class="team" *ngIf="loserTeam">{{loserTeam.name}}</li>
-            <li *ngFor="let loser of losers">{{loser.name}}</li>
-        </ul>
+        <div class="teams">
+            <div class="side side--blue side-blue">
+                <template [ngIf]="blueTeam">
+                    <div class="team">{{blueTeam?.name}}</div>
+                    <ul class="players">
+                        <li *ngFor="let bluePlayer of bluePlayers">{{bluePlayer.name}}</li>
+                    </ul>
+                </template>
+                <template [ngIf]="!blueTeam">
+                    <div class="team">{{bluePlayers[0]?.name}}</div>
+                </template>
+            </div>
 
-        <span class="colon">:</span>
+            <div class="side side--red side-red">
+                <template [ngIf]="redTeam">
+                    <div class="team">{{redTeam?.name}}</div>
+                    <ul class="players">
+                        <li *ngFor="let redPlayer of redPlayers">{{redPlayer.name}}</li>
+                    </ul>
+                </template>
+                <template [ngIf]="!redTeam">
+                    <div class="team">{{redPlayers[0]?.name}}</div>
+                </template>
+            </div>
+        </div>
 
-        <ul class="winners {{winnerSide | lowercase}}">
-            <li class="score valign-wrapper">{{winnerGoals}}</li>
-            <li class="team" *ngIf="winnerTeam">{{winnerTeam.name}}</li>
-            <li *ngFor="let winner of winners">{{winner.name}}</li>
-        </ul>
-
+        <div class="date">{{game.time | date}}</div>
     </div>
-
-    <p>{{game.time | date}}</p>
 
 </template>

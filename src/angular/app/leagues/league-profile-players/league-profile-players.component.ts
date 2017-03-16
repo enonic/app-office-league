@@ -3,6 +3,7 @@ import {GraphQLService} from '../../graphql.service';
 import {AuthService} from '../../auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {League} from '../../../graphql/schemas/League';
+import {LeaguePlayer} from '../../../graphql/schemas/LeaguePlayer';
 import {BaseComponent} from '../../common/base.component';
 import {Player} from '../../../graphql/schemas/Player';
 import {Team} from '../../../graphql/schemas/Team';
@@ -14,18 +15,24 @@ import {MaterializeDirective,MaterializeAction} from "angular2-materialize/dist/
 })
 export class LeagueProfilePlayersComponent extends BaseComponent {
     materializeActions = new EventEmitter<string|MaterializeAction>();
-    
-    private static readonly getLeagueQuery = `query ($name: String, $first:Int, $sort: String) {
+
+    private static readonly paging = 10;
+    private static readonly getLeagueQuery = `query ($name: String, $after:Int, $first:Int, $sort: String) {
         league(name: $name) {
             id
             name
-            leaguePlayers(first:$first, sort:$sort) {
-                player {
-                    name
+            leaguePlayersConnection(after:$after, first:$first, sort:$sort) {
+                totalCount
+                edges {
+                    node {
+                        rating
+                        ranking
+                        player {
+                            name
+                        }    
+                    }
                 }
-                league {
-                    name
-                }
+                
             }
             nonMemberPlayers {
                 id
@@ -39,9 +46,11 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
             id
         }
     }`;
-    
+
     @Input() league: League;
-    members: Player[];
+    @Input() leaguePlayers: LeaguePlayer[];
+    private leagueName: string;
+    private pages = [1];
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private authService: AuthService, private router: Router) {
         super(route);
@@ -49,34 +58,40 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
 
     ngOnInit(): void {
         super.ngOnInit();
-
-        let name = this.route.snapshot.params['name'];
-
-        if (!this.league && name) {
-            this.refreshData(name);   
-        }
+        this.leagueName = this.route.snapshot.params['name'];
+        this.refresh();
     }
-    
-    refreshData(leagueName: String): void {
-        this.graphQLService.post(LeagueProfilePlayersComponent.getLeagueQuery, {name: leagueName, first:-1, sort:'rating DESC, name ASC'}).then(data => {
-            this.league = League.fromJson(data.league);
-            this.members = data.league.leaguePlayers.map(leaguePlayer => Player.fromJson(leaguePlayer.player));
-        });
+
+    refresh(currentPage: number = 1) {
+        let after = currentPage > 1 ? ((currentPage - 1) * LeagueProfilePlayersComponent.paging - 1) : undefined;
+        this.graphQLService.post(LeagueProfilePlayersComponent.getLeagueQuery,  {name: this.leagueName, after: after, first: LeagueProfilePlayersComponent.paging, sort: 'rating DESC, name ASC'}).
+            then(data => {
+                this.league = League.fromJson(data.league);
+                this.leaguePlayers = data.league.leaguePlayersConnection.edges.map((edge) => LeaguePlayer.fromJson(edge.node));
+
+                this.pages = [];
+                let totalCount = data.league.leaguePlayersConnection.totalCount;
+                let pagesCount = (totalCount == 0 ? 0 : totalCount - 1) / LeagueProfilePlayersComponent.paging + 1;
+                for (var i = Math.max(1,currentPage - 5); i <= Math.min(pagesCount,currentPage + 5); i++) {
+                    this.pages.push(i);
+                }
+            });
     }
 
     openAddPlayerModal(): void {
-        this.materializeActions.emit({action:"modal",params:['open']});
+        this.materializeActions.emit({action: "modal", params: ['open']});
     }
 
     closeAddPlayerModal(): void {
-        this.materializeActions.emit({action:"modal",params:['close']});
+        this.materializeActions.emit({action: "modal", params: ['close']});
     }
-    
+
     addPlayer(player: Player): void {
         console.log('add ' + player.name);
-        this.graphQLService.post(LeagueProfilePlayersComponent.joinPlayerLeagueQuery, {playerId: player.id, leagueId: this.league.id}).then(data => {
-            this.refreshData(this.league.name);
-        });
+        this.graphQLService.post(LeagueProfilePlayersComponent.joinPlayerLeagueQuery, {playerId: player.id, leagueId: this.league.id}).then(
+                data => {
+                this.refresh();
+            });
         this.closeAddPlayerModal();
     }
 }

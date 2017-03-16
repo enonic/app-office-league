@@ -1,22 +1,19 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
-import {BaseComponent} from '../../common/base.component';
+import {List2Component} from '../../common/list2.component';
 import {LeaguePlayer} from '../../../graphql/schemas/LeaguePlayer';
 
 @Component({
     selector: 'league-player-list',
     templateUrl: 'league-player-list.component.html'
 })
-export class LeaguePlayerListComponent extends BaseComponent implements OnInit {
-
-    @Input() title: String;
+export class LeaguePlayerListComponent extends List2Component {
     @Input() leaguePlayers: LeaguePlayer[];
     @Input() displayPlayers: boolean;
     @Input() displayLeagues: boolean;
-    @Input() detailsPath: string[];
-
-    constructor(route: ActivatedRoute, private router: Router) {
-        super(route);
+    
+    constructor(route: ActivatedRoute, router: Router) {
+        super(route, router);
     }
 
     onLeaguePlayerClicked(leaguePlayer: LeaguePlayer) {
@@ -25,9 +22,5 @@ export class LeaguePlayerListComponent extends BaseComponent implements OnInit {
         } else if (this.displayPlayers) {
             this.router.navigate(['players', leaguePlayer.player.name.toLowerCase()]);
         }
-    }
-
-    onDetailsClicked() {
-        this.router.navigate(this.detailsPath);
     }
 }

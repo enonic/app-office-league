@@ -73,6 +73,7 @@ export class GameListComponent extends ListComponent implements OnInit, OnChange
                     gamePlayers {
                         winner
                         score
+                        scoreAgainst
                         side
                         ratingDelta
                         player {
@@ -82,6 +83,7 @@ export class GameListComponent extends ListComponent implements OnInit, OnChange
                     gameTeams {
                         winner
                         score
+                        scoreAgainst
                         side
                     }
                     league {

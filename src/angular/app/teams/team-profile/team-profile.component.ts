@@ -36,7 +36,8 @@ export class TeamProfileComponent extends BaseComponent {
         this.team = Team.fromJson(data.team);
         this.games = data.team.gameTeams.map((gm) => Game.fromJson(gm.game));
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
-        this.editable = this.team.players[0].id === currentPlayerId || this.team.players[1].id === currentPlayerId;
+        this.editable =
+            this.team.players.length === 2 && ( this.team.players[0].id === currentPlayerId || this.team.players[1].id === currentPlayerId);
     }
 
     onEditClicked() {
@@ -66,6 +67,7 @@ export class TeamProfileComponent extends BaseComponent {
                   id
                   time
                   score
+                  scoreAgainst
                   side
                   winner
                   ratingDelta
@@ -78,6 +80,7 @@ export class TeamProfileComponent extends BaseComponent {
                   id
                   time
                   score
+                  scoreAgainst
                   side
                   winner
                   ratingDelta

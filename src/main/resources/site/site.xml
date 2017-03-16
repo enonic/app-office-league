@@ -5,42 +5,45 @@
   <mappings>
     <!-- /<site>/players/image/<playername> -->
     <mapping controller="/site/controllers/player-image.js" order="10">
-      <pattern>/players/image/.*</pattern>
+      <pattern>/app/players/image/.*</pattern>
     </mapping>
 
     <!-- /<site>/teams/image/<teamname> -->
     <mapping controller="/site/controllers/team-image.js" order="10">
-      <pattern>/teams/image/.*</pattern>
+      <pattern>/app/teams/image/.*</pattern>
     </mapping>
 
     <!-- /<site>/leagues/image/<leaguename> -->
     <mapping controller="/site/controllers/league-image.js" order="10">
-      <pattern>/leagues/image/.*</pattern>
+      <pattern>/app/leagues/image/.*</pattern>
     </mapping>
 
     <mapping controller="/services/graphql/graphql.js" order="10">
-      <pattern>/api/graphql</pattern>
+      <pattern>/app/api/graphql</pattern>
     </mapping>
 
     <mapping controller="/site/controllers/assets.js" order="10">
-      <pattern>/assets/.*</pattern>
+      <pattern>/app/assets/.*</pattern>
     </mapping>
 
     <!-- mappings for routes handled in Angular -->
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
-      <pattern>/teams(/[^/]+)?.*</pattern>
+      <pattern>/app/teams(/[^/]+)?.*</pattern>
     </mapping>
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
-      <pattern>/players(/[^/]+)?.*</pattern>
+      <pattern>/app/players(/[^/]+)?.*</pattern>
     </mapping>
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
-      <pattern>/leagues(/[^/]+)?.*</pattern>
+      <pattern>/app/leagues(/[^/]+)?.*</pattern>
     </mapping>
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
-      <pattern>/games(/[^/]+)?.*</pattern>
+      <pattern>/app/games(/[^/]+)?.*</pattern>
     </mapping>
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
-      <pattern>/league-create</pattern>
+      <pattern>/app/league-create</pattern>
+    </mapping>
+    <mapping controller="/lib/service-worker/controller.js">
+      <pattern>/service-worker.js</pattern>
     </mapping>
   </mappings>
 

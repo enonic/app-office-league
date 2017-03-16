@@ -5,6 +5,7 @@ import {Team} from '../graphql/schemas/Team';
 import {Game} from '../graphql/schemas/Game';
 import {League} from '../graphql/schemas/League';
 import {Player} from '../graphql/schemas/Player';
+import {CryptoService} from './crypto.service';
 import {XPCONFIG} from './app.config';
 
 @Injectable()
@@ -16,18 +17,13 @@ export class GraphQLService {
     league: League;
     player: Player;
 
-    constructor(private http: Http) {
-    }
-
-    get(query: string): Promise<any> {
-        return this.http.get(this.url + '?query=' + query)
-            .map(this.extractData)
-            .catch(this.handleError)
-            .toPromise();
+    constructor(private http: Http, private cryptoService: CryptoService) {
     }
 
     post(query: string, variables?: {[key: string]: any}): Promise<any> {
-        return this.http.post(this.url, {query: query, variables: variables})
+        var body = JSON.stringify({query: query, variables: variables});
+        var hash = this.cryptoService.sha1(body);
+        return this.http.post(this.url + '?etag=' + hash, body)
             .map(this.extractData)
             .catch(this.handleError)
             .toPromise();

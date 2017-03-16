@@ -10,16 +10,17 @@ import {Router, NavigationStart} from '@angular/router';
     styleUrls: ['app.component.less']
 })
 export class AppComponent {
-    private logoUrl: string;
-    private isPlayingGame: boolean;
+    logoUrl: string;
+    isPlayingGame: boolean;
 
     constructor(private auth: AuthService, private location: Location, private router: Router) {
         this.logoUrl = ImageService.logoUrl();
+        this.isPlayingGame = new RegExp('/games/.*/game-play').test(location.path());
 
         router.events
             .filter(event => event instanceof NavigationStart)
             .subscribe((event: NavigationStart) => {
-                this.isPlayingGame = event.url.startsWith('/games/');
+                this.isPlayingGame = new RegExp('/games/.*/game-play').test(event.url);
             });
     }
 }

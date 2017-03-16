@@ -23,7 +23,7 @@ apply plugin: 'maven'
 
 app {
     name = project.appName
-    displayName = project.displayName
+    displayName = 'Office League'
     vendorName = 'Enonic AS'
     vendorUrl = 'http://enonic.com'
 }

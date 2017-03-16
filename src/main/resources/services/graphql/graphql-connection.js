@@ -48,7 +48,7 @@ function createEdgeType(name, type) {
 
 exports.createConnectionType = function (name, type) {
     return graphQlLib.createObjectType({
-        name: name + 'sConnection',
+        name: name + 'Connection',
         fields: {
             totalCount: {
                 type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
@@ -73,7 +73,6 @@ exports.createConnectionType = function (name, type) {
             pageInfo: {
                 type: pageInfoType,
                 data: function (env) {
-                    log.info('pageInfo:' + JSON.stringify(env, null, 2));
                     return {
                         startCursor: env.source.start,
                         endCursor: env.source.start + (env.source.count == 0 ? 0 : (env.source.count - 1)),

@@ -1,6 +1,6 @@
 import {Component, Input, SimpleChanges} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
-import {BaseComponent} from '../../common/base.component';
+import {List2Component} from '../../common/list2.component';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../graphql.service';
 import {MaterializeDirective} from 'angular2-materialize/dist/index';
@@ -9,66 +9,14 @@ import {MaterializeDirective} from 'angular2-materialize/dist/index';
     selector: 'player-list',
     templateUrl: 'player-list.component.html'
 })
-export class PlayerListComponent extends BaseComponent {
-
-    private static readonly paging = 10;
-    private static readonly getPlayersQuery = `query($after:Int,$first:Int, $search:String) {
-        playersConnection(after:$after, first:$first, search:$search) {
-            totalCount
-            edges {
-                node {
-                  name
-                }
-            }
-        }
-    }`;
-
-    @Input() title: string;
+export class PlayerListComponent extends List2Component {
     @Input() players: Player[];
-    @Input() hideSearchField: boolean;
-    private searchValue: string;
-    private currentPage = 1;
-    private pages = [1];
 
-    constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
-        super(route);
-    }
-
-    ngOnInit(): void {
-        super.ngOnInit();
-
-        if (this.players === undefined) {
-            this.refreshData();
-        }
+    constructor(route: ActivatedRoute, router: Router) {
+        super(route, router);
     }
 
     onPlayerClicked(player: Player) {
         this.router.navigate(['players', player.name.toLowerCase()]);
-    }
-
-    onSearchFieldModified() {
-        this.currentPage = 1;
-        this.refreshData();
-    }
-
-    setCurrentPage(page) {
-        if (page < 1 || page > this.pages.length) {
-            return;
-        }
-        this.currentPage = page;
-        this.refreshData();
-    }
-
-    private refreshData() {
-        let after = this.currentPage > 1 ? ((this.currentPage - 1) * PlayerListComponent.paging - 1) : undefined;
-        this.service.post(PlayerListComponent.getPlayersQuery,{after: after,first: PlayerListComponent.paging, search: this.searchValue}).
-            then((data: any) => {
-                this.players = data.playersConnection.edges.map(edge => Player.fromJson(edge.node));
-                this.pages = [];
-                let pagesCount = data.playersConnection.totalCount / PlayerListComponent.paging + 1;
-                for (var i = 1; i <= pagesCount; i++) {
-                    this.pages.push(i);
-                }
-            });
     }
 }

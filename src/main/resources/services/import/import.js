@@ -5,10 +5,10 @@ var LEGACY_APP_NAME = 'systems.rcd.enonic.foos';
 
 exports.get = function (req) {
 
-    importPlayers();
-    importTeams();
+    var playerContentToNodeId = importPlayers();
+    importTeams(playerContentToNodeId);
     storeLib.refresh();
-    importLeague();
+    importLeague(playerContentToNodeId);
 
     log.info('Import completed!');
 
@@ -24,25 +24,28 @@ var importPlayers = function () {
     var players = fetchPlayers();
     var p;
     log.info(players.length + ' players found');
+    var playerContentToNodeId = {};
     for (var i = 0; i < players.length; i++) {
         p = players[i];
         // log.info(JSON.stringify(p));
-        createPlayer(p);
+        var playerIds = createPlayer(p);
+        playerContentToNodeId[playerIds.contentId] = playerIds.nodeId;
     }
+    return playerContentToNodeId;
 };
 
-var importTeams = function () {
+var importTeams = function (playerContentToNodeId) {
     var teams = fetchTeams();
     var t;
     log.info(teams.length + ' teams found');
     for (var i = 0; i < teams.length; i++) {
         t = teams[i];
         // log.info(JSON.stringify(t));
-        createTeam(t);
+        createTeam(t, playerContentToNodeId);
     }
 };
 
-var importLeague = function () {
+var importLeague = function (playerContentToNodeId) {
     var leagueNode = storeLib.createLeague({
         name: 'Enonic Foos',
         description: 'Enonic Foos League',
@@ -54,7 +57,7 @@ var importLeague = function () {
         from = from + games.length;
         games = fetchGames(from);
         for (i = 0; i < games.length; i++) {
-            createGame(games[i], leagueNode._id);
+            createGame(games[i], leagueNode._id, playerContentToNodeId);
         }
     } while (games && games.length > 0);
 
@@ -113,7 +116,7 @@ var fetchTeams = function () {
     }).hits;
 };
 
-var createGame = function (foosGame, leagueId) {
+var createGame = function (foosGame, leagueId, playerContentToNodeId) {
     var blueIds = [], redIds = [], goals = [], playerTable = {};
     var foosGoal, goal;
     var pw1, pw2, pl1, pl2;
@@ -124,42 +127,38 @@ var createGame = function (foosGame, leagueId) {
         pw2 = foosGame.data.winners[1].playerId;
         pl1 = foosGame.data.losers[0].playerId;
         pl2 = foosGame.data.losers[1].playerId;
-        playerTable[pw1] = findPlayerNodeById(pw1);
-        playerTable[pw2] = findPlayerNodeById(pw2);
-        playerTable[pl1] = findPlayerNodeById(pl1);
-        playerTable[pl2] = findPlayerNodeById(pl2);
 
-        blueIds.push(playerTable[pw1]);
-        blueIds.push(playerTable[pw2]);
-        redIds.push(playerTable[pl1]);
-        redIds.push(playerTable[pl2]);
+        blueIds.push(playerContentToNodeId[pw1]);
+        blueIds.push(playerContentToNodeId[pw2]);
+        redIds.push(playerContentToNodeId[pl1]);
+        redIds.push(playerContentToNodeId[pl2]);
 
-        gamePlayers[playerTable[pw1]] = {
-            playerId: playerTable[pw1],
+        gamePlayers[playerContentToNodeId[pw1]] = {
+            playerId: playerContentToNodeId[pw1],
             score: foosGame.data.winners[0].score,
             scoreAgainst: foosGame.data.winners[0].against,
             side: 'red',
             winner: true,
             ratingDelta: foosGame.data.winners[0].ratingDiff
         };
-        gamePlayers[playerTable[pw2]] = {
-            playerId: playerTable[pw2],
+        gamePlayers[playerContentToNodeId[pw2]] = {
+            playerId: playerContentToNodeId[pw2],
             score: foosGame.data.winners[1].score,
             scoreAgainst: foosGame.data.winners[1].against,
             side: 'red',
             winner: true,
             ratingDelta: foosGame.data.winners[1].ratingDiff
         };
-        gamePlayers[playerTable[pl1]] = {
-            playerId: playerTable[pl1],
+        gamePlayers[playerContentToNodeId[pl1]] = {
+            playerId: playerContentToNodeId[pl1],
             score: foosGame.data.losers[0].score,
             scoreAgainst: foosGame.data.losers[0].against,
             side: 'blue',
             winner: false,
             ratingDelta: foosGame.data.losers[0].ratingDiff
         };
-        gamePlayers[playerTable[pl2]] = {
-            playerId: playerTable[pl2],
+        gamePlayers[playerContentToNodeId[pl2]] = {
+            playerId: playerContentToNodeId[pl2],
             score: foosGame.data.losers[1].score,
             scoreAgainst: foosGame.data.losers[1].against,
             side: 'blue',
@@ -168,28 +167,28 @@ var createGame = function (foosGame, leagueId) {
         };
 
         storeLib.refresh();
-        var teamNodeW = storeLib.getTeamByPlayerIds(playerTable[pw1], playerTable[pw2]);
+        var teamNodeW = storeLib.getTeamByPlayerIds(playerContentToNodeId[pw1], playerContentToNodeId[pw2]);
         teamNodeW = teamNodeW ? teamNodeW._id : null;
         if (!teamNodeW) {
-            teamNodeW = createTeamWithPlayers(playerTable[pw1], playerTable[pw2]);
+            teamNodeW = createTeamWithPlayers(playerContentToNodeId[pw1], playerContentToNodeId[pw2]);
         }
-        var teamNodeL = storeLib.getTeamByPlayerIds(playerTable[pl1], playerTable[pl2]);
+        var teamNodeL = storeLib.getTeamByPlayerIds(playerContentToNodeId[pl1], playerContentToNodeId[pl2]);
         teamNodeL = teamNodeL ? teamNodeL._id : null;
         if (!teamNodeL) {
-            teamNodeL = createTeamWithPlayers(playerTable[pl1], playerTable[pl2]);
+            teamNodeL = createTeamWithPlayers(playerContentToNodeId[pl1], playerContentToNodeId[pl2]);
         }
         gameTeams[teamNodeW] = {
             teamId: teamNodeW,
-            score: gamePlayers[playerTable[pw1]].score + gamePlayers[playerTable[pw2]].score,
-            scoreAgainst: gamePlayers[playerTable[pw1]].scoreAgainst + gamePlayers[playerTable[pw2]].scoreAgainst,
+            score: gamePlayers[playerContentToNodeId[pw1]].score + gamePlayers[playerContentToNodeId[pw2]].score,
+            scoreAgainst: gamePlayers[playerContentToNodeId[pw1]].scoreAgainst + gamePlayers[playerContentToNodeId[pw2]].scoreAgainst,
             side: 'red',
             winner: true,
             ratingDelta: foosGame.data.winnerTeamRatingDiff
         };
         gameTeams[teamNodeL] = {
             teamId: teamNodeL,
-            score: gamePlayers[playerTable[pl1]].score + gamePlayers[playerTable[pl2]].score,
-            scoreAgainst: gamePlayers[playerTable[pl1]].scoreAgainst + gamePlayers[playerTable[pl2]].scoreAgainst,
+            score: gamePlayers[playerContentToNodeId[pl1]].score + gamePlayers[playerContentToNodeId[pl2]].score,
+            scoreAgainst: gamePlayers[playerContentToNodeId[pl1]].scoreAgainst + gamePlayers[playerContentToNodeId[pl2]].scoreAgainst,
             side: 'blue',
             winner: false,
             ratingDelta: foosGame.data.loserTeamRatingDiff
@@ -197,22 +196,20 @@ var createGame = function (foosGame, leagueId) {
     } else {
         pw1 = foosGame.data.winners.playerId;
         pl1 = foosGame.data.losers.playerId;
-        playerTable[pw1] = findPlayerNodeById(pw1);
-        playerTable[pl1] = findPlayerNodeById(pl1);
 
-        blueIds.push(playerTable[pw1]);
-        redIds.push(playerTable[pl1]);
+        blueIds.push(playerContentToNodeId[pw1]);
+        redIds.push(playerContentToNodeId[pl1]);
 
-        gamePlayers[playerTable[pw1]] = {
-            playerId: playerTable[pw1],
+        gamePlayers[playerContentToNodeId[pw1]] = {
+            playerId: playerContentToNodeId[pw1],
             score: foosGame.data.winners.score,
             scoreAgainst: foosGame.data.winners.against,
             side: 'red',
             winner: true,
             ratingDelta: foosGame.data.winners.ratingDiff
         };
-        gamePlayers[playerTable[pl1]] = {
-            playerId: playerTable[pl1],
+        gamePlayers[playerContentToNodeId[pl1]] = {
+            playerId: playerContentToNodeId[pl1],
             score: foosGame.data.losers.score,
             scoreAgainst: foosGame.data.losers.against,
             side: 'blue',
@@ -224,7 +221,7 @@ var createGame = function (foosGame, leagueId) {
     for (var g = 0, l = foosGame.data.goals && foosGame.data.goals.length; g < l; g++) {
         foosGoal = foosGame.data.goals[g];
         goal = {
-            playerId: playerTable[foosGoal.playerId],
+            playerId: playerContentToNodeId[foosGoal.playerId],
             time: foosGoal.time,
             against: foosGoal.against
         };
@@ -284,10 +281,13 @@ var createPlayer = function (foosPlayer) {
         imageType: mimeType
     });
 
-    // log.info(JSON.stringify(playerNode));
+    return {
+        contentId: foosPlayer._id,
+        nodeId: playerNode._id
+    };
 };
 
-var createTeam = function (foosTeam) {
+var createTeam = function (foosTeam, playerContentToNodeId) {
     var teamExist = storeLib.getTeamByName(foosTeam._name);
     if (teamExist) {
         log.warning('Team with name "' + foosTeam._name + '" already exists, cannot be imported.');
@@ -313,8 +313,8 @@ var createTeam = function (foosTeam) {
         }
     }
     var players = [];
-    players.push(findPlayerNodeById(foosTeam.data.playerIds[0]));
-    players.push(findPlayerNodeById(foosTeam.data.playerIds[1]));
+    players.push(playerContentToNodeId[foosTeam.data.playerIds[0]]);
+    players.push(playerContentToNodeId[foosTeam.data.playerIds[1]]);
 
     var playerNode = storeLib.createTeam({
         name: foosTeam.displayName,
@@ -339,19 +339,6 @@ var createTeamWithPlayers = function (playerId1, playerId2) {
         playerIds: playerIds
     });
     return teamNode._id;
-};
-
-var findPlayerNodeById = function (playerContentId) {
-    var p = contentLib.get({
-        key: playerContentId,
-        branch: 'draft'
-    });
-    if (!p) {
-        return null;
-    }
-
-    var result = storeLib.getPlayerByName(p.displayName);
-    return result && result._id;
 };
 
 var findPlayerContentByName = function (playerContentName) {
