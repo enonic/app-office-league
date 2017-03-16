@@ -72,7 +72,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
                 this.pages = [];
                 let totalCount = data.league.leaguePlayersConnection.totalCount;
                 let pagesCount = (totalCount == 0 ? 0 : totalCount - 1) / LeagueProfilePlayersComponent.paging + 1;
-                for (var i = 1; i <= pagesCount; i++) {
+                for (var i = Math.max(1,currentPage - 5); i <= Math.min(pagesCount,currentPage + 5); i++) {
                     this.pages.push(i);
                 }
             });
