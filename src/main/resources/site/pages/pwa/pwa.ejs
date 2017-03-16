@@ -16,6 +16,12 @@
     <link rel="stylesheet" href="<%= '{{assetsUrl}}/' + item %>"/>
     <% }; %>
 
+    <script type="text/javascript">
+        if (document.location.href.endsWith('{{siteUrl}}') && !document.location.href.endsWith('/')) {
+            document.location = document.location.href + "/";
+        }
+
+    </script>
 </head>
 
 <body>
@@ -23,6 +29,8 @@
 <office-league>Loading...</office-league>
 
 </body>
+
+
 
 <script type="text/javascript">
     var XPCONFIG = {
@@ -35,6 +43,17 @@
         graphQlUrl: '{{baseHref}}/api/graphql',
         setImageUrl: '{{setImageUrl}}'
     }
+    {{#isLive}}
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker
+                .register('{{siteUrl}}service-worker.js', {scope: '{{siteUrl}}'})
+                .then(function (reg) {
+                    console.log('Service Worker registered with scope ' + reg.scope);
+                }, function () {
+                    console.log('Service Worker registration failure.');
+                });
+    }
+    {{/isLive}}
 </script>
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"

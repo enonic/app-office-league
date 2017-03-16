@@ -25,10 +25,12 @@ exports.get = function (req) {
         userObj.playerId = player && player._id;
         userObj.playerName = player && player.name;
     }
-
+ 
     var params = {
         locale: req.params.locale || 'en',
         user: userObj && JSON.stringify(userObj),
+        siteUrl: baseHref + '/',
+        isLive: (req.mode == 'live'),
         baseHref: baseHref + '/app/',   // trailing slash for relative urls to be correct
         assetsUrl: portalLib.assetUrl({path: ""}),
         loginUrl: portalLib.loginUrl({redirect: baseHref}),

@@ -42,6 +42,9 @@
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
       <pattern>/app/league-create</pattern>
     </mapping>
+    <mapping controller="/lib/service-worker/controller.js">
+      <pattern>/service-worker.js</pattern>
+    </mapping>
   </mappings>
 
 </site>
