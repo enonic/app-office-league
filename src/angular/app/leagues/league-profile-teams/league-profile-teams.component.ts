@@ -17,6 +17,7 @@ export class LeagueProfileTeamsComponent extends BaseComponent {
             id
             name
             leagueTeams(first:$first, sort:$sort) {
+                rating
                 ranking
                 team {
                     name
