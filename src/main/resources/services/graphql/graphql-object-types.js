@@ -190,6 +190,12 @@ exports.gamePlayerType = graphQlLib.createObjectType({
                 return graphQlUtilLib.toInt(env.source.score);
             }
         },
+        scoreAgainst: {
+            type: graphQlLib.GraphQLInt,
+            data: function (env) {
+                return graphQlUtilLib.toInt(env.source.scoreAgainst);
+            }
+        },
         side: {
             type: graphQlEnumsLib.sideEnumType,
             data: function (env) {
@@ -245,6 +251,12 @@ exports.gameTeamType = graphQlLib.createObjectType({
             type: graphQlLib.GraphQLInt,
             data: function (env) {
                 return graphQlUtilLib.toInt(env.source.score);
+            }
+        },
+        scoreAgainst: {
+            type: graphQlLib.GraphQLInt,
+            data: function (env) {
+                return graphQlUtilLib.toInt(env.source.scoreAgainst);
             }
         },
         side: {

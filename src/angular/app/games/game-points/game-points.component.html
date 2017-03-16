@@ -1,0 +1,23 @@
+<template [ngIf]="game == null">
+    <div class="empty-text blue-grey-text">Loading...</div>
+</template>
+<template [ngIf]="game != null">
+    <div class="row list">
+        <div class="col s12 m12 l10 offset-l1">
+            <div class="header">Timeline</div>
+            <section class="timeline">
+                <div *ngFor="let entry of timeline" class="block team-{{entry.side}}">
+                    <div class="time"><span class="fix">{{entry.score}}</span></div>
+                    <div class="description">
+                        <div class="name">{{entry.name}}</div>
+                        <div class="team">{{entry.team?.team.name}}</div>
+                        <div class="comment">{{entry.comment}}</div>
+                        <div class="score">{{entry.time}}</div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+</template>

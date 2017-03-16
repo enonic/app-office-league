@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {GraphQLService} from '../../graphql.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {GameComponent} from '../game/game.component';
 
 @Component({
@@ -10,8 +10,8 @@ import {GameComponent} from '../game/game.component';
 })
 export class GameProfileComponent extends GameComponent {
 
-    constructor(service: GraphQLService, route: ActivatedRoute, router: Router) {
-        super(service, route, router);
+    constructor(service: GraphQLService, route: ActivatedRoute) {
+        super(service, route);
     }
 
 }

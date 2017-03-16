@@ -1,6 +1,6 @@
 import {Component, OnInit, Input, OnChanges, SimpleChanges, SimpleChange} from '@angular/core';
 import {GraphQLService} from '../../graphql.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {Game} from '../../../graphql/schemas/Game';
 import {GamePlayer} from '../../../graphql/schemas/GamePlayer';
 import {Player} from '../../../graphql/schemas/Player';
@@ -17,61 +17,58 @@ export class GameComponent implements OnInit, OnChanges {
 
     @Input() game: Game;
 
-    private winnerGoals: number = 0;
-    private loserGoals: number = 0;
-    private winnerSide: string;
-    private loserSide: string;
-    private winnerTeam: Team;
-    private loserTeam: Team;
-    private winners: Player[] = [];
-    private losers: Player[] = [];
+    private redScore: number = 0;
+    private blueScore: number = 0;
+    private redTeam: Team;
+    private blueTeam: Team;
+    private redPlayers: Player[] = [];
+    private bluePlayers: Player[] = [];
 
-    constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router) {
+    constructor(private graphQLService: GraphQLService, private route: ActivatedRoute) {
     }
 
     ngOnInit(): void {
         let gameId = this.route.snapshot.params['id'];
 
-        if (!this.game && gameId) {
-            // check if the game was passed from list to spare request
-            this.game = this.graphQLService.game;
-            if (!this.game) {
-                this.graphQLService.post(GameComponent.getGameQuery,
-                    {gameId: gameId}).then(
-                    data => {
-                        this.game = Game.fromJson(data.game);
-                        this.calcStats(this.game);
-                    });
-            } else {
-                this.calcStats(this.game);
-            }
+        if (gameId) {
+            this.graphQLService.post(GameComponent.getGameQuery,
+                {gameId: gameId}).then(
+                data => {
+                    this.game = Game.fromJson(data.game);
+                    this.processGame(this.game);
+                });
         }
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         let gameChange: SimpleChange = changes['game'];
         if (gameChange && gameChange.currentValue) {
-            this.calcStats(gameChange.currentValue);
+            this.processGame(gameChange.currentValue);
         }
     }
 
-    private calcStats(game: Game) {
+    private processGame(game: Game) {
+        this.redScore = 0;
+        this.blueScore = 0;
+        this.redPlayers = [];
+        this.bluePlayers = [];
+
         game.gamePlayers.forEach((gp: GamePlayer) => {
-            if (gp.winner) {
-                this.winnerGoals += gp.score || 0;
-                this.winners.push(gp.player);
-                this.winnerSide = `side-${Side[gp.side]}`;
-            } else {
-                this.loserGoals += gp.score || 0;
-                this.losers.push(gp.player);
-                this.loserSide = `side-${Side[gp.side]}`;
+            if (gp.side === Side.RED) {
+                this.redScore += gp.score;
+                this.blueScore += gp.scoreAgainst;
+                this.redPlayers.push(gp.player);
+            } else if (gp.side === Side.BLUE) {
+                this.blueScore += gp.score;
+                this.redScore += gp.scoreAgainst;
+                this.bluePlayers.push(gp.player);
             }
         });
         game.gameTeams.forEach((gt: GameTeam) => {
-            if (gt.winner) {
-                this.winnerTeam = gt.team;
-            } else {
-                this.loserTeam = gt.team
+            if (gt.side === Side.RED) {
+                this.redTeam = gt.team;
+            } else if (gt.side === Side.BLUE) {
+                this.blueTeam = gt.team
             }
         });
     }
@@ -96,6 +93,7 @@ export class GameComponent implements OnInit, OnChanges {
         }
         gamePlayers {
             score
+            scoreAgainst
             winner
             side
             ratingDelta
@@ -105,6 +103,7 @@ export class GameComponent implements OnInit, OnChanges {
         }
         gameTeams {
             score
+            scoreAgainst
             winner
             side    
             ratingDelta

@@ -6,6 +6,7 @@ import {Side, SideUtil} from './Side';
 export class GameTeam extends Entity {
     time: Date;
     score: number;
+    scoreAgainst: number;
     side: Side;
     winner: boolean;
     ratingDelta: number;
@@ -18,7 +19,8 @@ export class GameTeam extends Entity {
     static fromJson(json: any) {
         let gameTeam = new GameTeam(json.id);
         gameTeam.time = json.time && DateUtil.parseDate(json.time);
-        gameTeam.score = json.score;
+        gameTeam.score = json.score || 0;
+        gameTeam.scoreAgainst = json.scoreAgainst || 0;
         gameTeam.side = SideUtil.parse(json.side);
         gameTeam.winner = json.winner;
         gameTeam.ratingDelta = json.ratingDelta;

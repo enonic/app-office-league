@@ -93,6 +93,7 @@ export class PlayerProfileComponent extends BaseComponent {
                   id
                   time
                   score
+                  scoreAgainst
                   side
                   winner
                   ratingDelta
@@ -105,6 +106,7 @@ export class PlayerProfileComponent extends BaseComponent {
                   id
                   time
                   score
+                  scoreAgainst
                   side
                   winner
                   ratingDelta
