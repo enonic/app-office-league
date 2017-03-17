@@ -21,10 +21,6 @@ export class AuthService {
         return !!this.user;
     }
 
-    public isPlayer() {
-        return !!this.user && !!this.user.playerId;
-    }
-
     public getUser(): ConfigUser {
         return this.user;
     }

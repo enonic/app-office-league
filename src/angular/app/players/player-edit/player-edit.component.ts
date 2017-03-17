@@ -17,7 +17,6 @@ import {XPCONFIG} from '../../app.config';
 })
 export class PlayerEditComponent extends BaseComponent implements AfterViewInit {
 
-    loaded: boolean;
     name: string;
     id: string;
     nickname: string;
@@ -38,11 +37,7 @@ export class PlayerEditComponent extends BaseComponent implements AfterViewInit 
         super.ngOnInit();
 
         let name = this.route.snapshot.params['name'];
-        if (name) {
-            this.loadPlayer(name);
-        } else {
-            this.loaded = true;
-        }
+        this.loadPlayer(name);
     }
 
     ngAfterViewInit(): void {
@@ -63,7 +58,6 @@ export class PlayerEditComponent extends BaseComponent implements AfterViewInit 
                 this.imageUrl = player.imageUrl;
 
                 this.countries = Countries.getCountries();
-                this.loaded = true;
 
                 // TODO, if not current player, redirect to profile view
             });

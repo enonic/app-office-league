@@ -17,7 +17,7 @@
                 <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>
                 <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
                 <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
-                <li *ngIf="auth.isPlayer()">
+                <li *ngIf="auth.isAuthenticated()">
                     <ul id="user-dropdown" class="dropdown-content">
                         <li><a href="#" routerLink="/players/{{auth.getUser().playerName.toLowerCase()}}">{{auth.getUser().playerName}}</a></li>
                         <li><a href="#!" (click)="auth.logout()">Logout</a></li>
@@ -25,9 +25,6 @@
 
                     <a class="dropdown-button" href="#!" data-activates="user-dropdown">{{auth.getUser().playerName}}
                         <i class="material-icons right">arrow_drop_down</i></a>
-                </li>
-                <li *ngIf="auth.isAuthenticated() && !auth.isPlayer()">
-                    <a href="#!" (click)="auth.logout()">Logout</a>
                 </li>
                 <li *ngIf="!auth.isAuthenticated()">
                     <a href="#!" (click)="auth.login()">Login</a>
@@ -44,10 +41,10 @@
 </div>
 
 <ul class="side-nav" id="mobile-side-nav">
-    <template [ngIf]="auth.isPlayer()">
-        <li class="user-profile"><a href="#" routerLink="/players/{{auth.getUser().playerName.toLowerCase()}}">
+    <template [ngIf]="auth.isAuthenticated()">
+        <li class="user-profile"><a href="#" routerLink="/players/{{auth.getUser().playerName}}">
             <i class="material-icons medium">face</i>
-            <span>{{auth.getUser().playerName}}</span>
+            <span>{{auth.getUser().displayName}}</span>
         </a></li>
         <li class="divider"></li>
     </template>

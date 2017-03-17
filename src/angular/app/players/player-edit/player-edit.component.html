@@ -1,7 +1,7 @@
-<template [ngIf]="!loaded">
+<template [ngIf]="id == ''">
     <loading></loading>
 </template>
-<template [ngIf]="loaded">
+<template [ngIf]="id != ''">
     <div class="card">
         <div class="card-content blue-grey-text">
             <span class="card-title">Player Profile</span>
@@ -84,6 +84,4 @@
             </button>
         </div>
     </div>
-
-   
 </template>
