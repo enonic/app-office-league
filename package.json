@@ -1,8 +1,8 @@
 {
   "name": "office-league",
   "scripts": {
-    "start": "webpack-dev-server --config config/webpack.dev.js --progress --color",
-    "build": "webpack --config config/webpack.prod.js --color --bail",
+    "start": "webpack-dev-server --config config/webpack.dev.js",
+    "build": "webpack --config config/webpack.prod.js",
     "i18n": "ng-xi18n -p tsconfig.json"
   },
   "dependencies": {
@@ -15,8 +15,10 @@
     "@angular/platform-browser-dynamic": "^2.4.8",
     "@angular/router": "^3.4.8",
     "@angular/upgrade": "^2.4.8",
-    "angular2-materialize": "^6.7.1",
+    "angular2-materialize": "^6.7.2",
     "core-js": "^2.4.1",
+    "crypto-js": "^3.1.9-1",
+    "materialize-css": "^0.98.0",
     "rxjs": "5.0.1",
     "zone.js": "^0.7.7"
   },
@@ -30,6 +32,7 @@
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.26.1",
     "extract-text-webpack-plugin": "^2.0.0-rc.3",
+    "file-loader": "^0.10.1",
     "html-loader": "^0.4.4",
     "html-webpack-plugin": "^2.28.0",
     "less": "^2.7.2",
@@ -37,6 +40,7 @@
     "style-loader": "^0.13.1",
     "to-string-loader": "^1.1.5",
     "typescript": "^2.1.5",
+    "url-loader": "^0.5.8",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.3.0",
     "webpack-merge": "^2.6.1"
