@@ -9,7 +9,8 @@
 
     <img src="{{team.imageUrl}}?size=42" alt="{{team.name}}" class="circle">
     <span class="title">{{team.name}}</span>
-    <span *ngIf="ranking > 0" class="badge right blue-grey white-text" title="{{rating}}">{{ranking}}<small>{{rankingText()}}</small></span>
+    <span *ngIf="ranking > 0" class="badge right blue-grey white-text" title="{{rating}}" (click)="onRankingClicked($event)">
+        {{showPoints?ratingPoints():ranking}}<small>{{showPoints?'':rankingText()}}</small></span>
     <p *ngIf="team.players">
         <span *ngFor="let player of team.players; let isLast = last">{{player.name}}{{!isLast ? ' + ' : ''}}</span>
     </p>
