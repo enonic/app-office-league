@@ -1,8 +1,6 @@
 import {Component, Input, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
-import {Location} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Handedness} from '../../../graphql/schemas/Handedness';
-import {Player} from '../../../graphql/schemas/Player';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../graphql.service';
 import {Countries} from '../../common/countries';
@@ -10,16 +8,17 @@ import {MaterializeDirective} from 'angular2-materialize/dist/index';
 import {Country} from '../../common/country';
 import {Http, Headers, RequestOptions, Response} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
+import {ImageService} from '../../image.service';
+import {AuthService} from '../../auth.service';
 
 @Component({
-    selector: 'player-edit',
-    templateUrl: 'player-edit.component.html',
-    styleUrls: ['player-edit.component.less']
+    selector: 'player-create',
+    templateUrl: 'player-create.component.html',
+    styleUrls: ['player-create.component.less']
 })
-export class PlayerEditComponent extends BaseComponent implements AfterViewInit {
+export class PlayerCreateComponent extends BaseComponent implements AfterViewInit {
 
     name: string;
-    id: string;
     nickname: string;
     nationality: string;
     handedness: string;
@@ -30,39 +29,29 @@ export class PlayerEditComponent extends BaseComponent implements AfterViewInit 
     @ViewChild('fileInput') inputEl: ElementRef;
     nameClasses: {} = {invalid: false};
 
-    constructor(private http: Http, route: ActivatedRoute, private graphQLService: GraphQLService, private router: Router,
-                private location: Location) {
+    constructor(private http: Http, route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
+                private auth: AuthService) {
         super(route);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
 
-        let name = this.route.snapshot.params['name'];
-        this.loadPlayer(name);
+        const user = this.auth.getUser();
+        if (!this.auth.isNewUser()) {
+            this.router.navigate(['players', user.playerName]);
+            return;
+        }
+
+        this.name = user.playerName || '';
+        this.handedness = Handedness[Handedness.RIGHT].toLowerCase();
+        this.countries = Countries.getCountries();
+        this.imageUrl = ImageService.playerDefault();
     }
 
     ngAfterViewInit(): void {
         let inputEl: HTMLInputElement = this.inputEl.nativeElement;
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
-    }
-
-    private loadPlayer(name) {
-        this.graphQLService.post(PlayerEditComponent.getPlayerQuery, {name: name}).then(
-            data => {
-                const player = Player.fromJson(data.player);
-                this.name = player.name;
-                this.nickname = player.nickname;
-                this.id = player.id;
-                this.nationality = player.nationality;
-                this.handedness = Handedness[player.handedness || Handedness.RIGHT].toLowerCase();
-                this.description = player.description;
-                this.imageUrl = player.imageUrl;
-
-                this.countries = Countries.getCountries();
-
-                // TODO, if not current player, redirect to profile view
-            });
     }
 
     getNationality(): string {
@@ -84,30 +73,35 @@ export class PlayerEditComponent extends BaseComponent implements AfterViewInit 
     }
 
     onCancelClicked() {
-        this.location.back();
+        window.location.href = XPCONFIG.logoutUrl;
     }
 
     savePlayer() {
-        const updatePlayerParams = {
-            playerId: this.id,
+        const createPlayerParams = {
             name: this.name,
             description: this.description || '',
             nickname: this.nickname || '',
             nationality: this.nationality || '',
             handedness: this.handedness || Handedness[Handedness.RIGHT],
         };
-        this.graphQLService.post(PlayerEditComponent.updatePlayerMutation, updatePlayerParams).then(data => {
-            return data && data.updatePlayer;
-        }).then(updatedPlayer => {
-            this.uploadImage(updatedPlayer.id).then(uploadResp => {
-                this.router.navigate(['players', updatedPlayer.name]);
-            });
+
+        this.graphQLService.post(PlayerCreateComponent.createPlayerMutation, createPlayerParams).then(data => {
+            return data && data.createPlayer;
+        }).then(createdPlayer => {
+            if (createdPlayer) {
+                const user = this.auth.getUser();
+                user.playerName = createdPlayer.name;
+                user.playerId = createdPlayer.id;
+                this.uploadImage(createdPlayer.id).then(uploadResp => {
+                    this.router.navigate(['players', createdPlayer.name]);
+                });
+            }
         });
     }
 
     private checkPlayerNameInUse(name: string): Promise<boolean> {
-        return this.graphQLService.post(PlayerEditComponent.playerNameInUseQuery, {name: name}).then(data => {
-            return data && data.player ? data.player.id !== this.id : false;
+        return this.graphQLService.post(PlayerCreateComponent.playerNameInUseQuery, {name: name}).then(data => {
+            return data && data.player;
         });
     }
 
@@ -150,25 +144,14 @@ export class PlayerEditComponent extends BaseComponent implements AfterViewInit 
         }
     }
 
-    private static readonly getPlayerQuery = `query($name: String){
-        player(name: $name) {
-            id
-            name
-            nickname
-            nationality
-            handedness
-            description
-        }
-    }`;
-
     private static readonly playerNameInUseQuery = `query($name: String){
         player(name: $name) {
             id
         }
     }`;
 
-    private static readonly updatePlayerMutation = `mutation ($playerId: ID!, $name: String, $nickname: String, $description: String, $nationality: String, $handedness: Handedness) {
-        updatePlayer(id: $playerId, name: $name, nickname: $nickname, description: $description, nationality: $nationality, handedness: $handedness) {
+    private static readonly createPlayerMutation = `mutation ($name: String!, $nickname: String, $description: String, $nationality: String, $handedness: Handedness) {
+        createPlayer(name: $name, nickname: $nickname, description: $description, nationality: $nationality, handedness: $handedness) {
             id
             name
         }

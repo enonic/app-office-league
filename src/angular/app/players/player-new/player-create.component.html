@@ -1,0 +1,87 @@
+<div class="card">
+    <div class="card-content blue-grey-text">
+        <span class="card-title">New Player</span>
+        <form>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">fingerprint</i>
+                    <input id="name" type="text" class="validate" name="name" autofocus autocomplete="off" [(ngModel)]="name" required=""
+                           aria-required="true" [ngClass]="nameClasses">
+                    <label class="active" for="name">Player Name</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">pets</i>
+                    <input id="nickname" type="text" name="nickname" autocomplete="off" [(ngModel)]="nickname"
+                           required=""
+                           aria-required="true">
+                    <label class="active" for="name">Nickname</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">info_outline</i>
+                    <textarea id="description" class="materialize-textarea" autocomplete="off" spellcheck="false" name="description"
+                              [(ngModel)]="description"></textarea>
+                    <label class="active" for="description">About</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <i class="material-icons prefix">language</i>
+                    <label class="nationality">Nationality</label>
+                    <select class="browser-default" [(ngModel)]="nationality" name="nationality">
+                        <option [value]="" disabled>Choose your nationality</option>
+                        <option *ngFor="let country of countries;" [value]="country.code" [selected]="country.code == nationality">
+                            {{country.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s6">
+                    <i class="material-icons prefix">thumbs_up_down</i>
+                    <label class="handedness">Handedness</label>
+                    <p>
+                        <input name="handLeft" type="radio" id="handLeft" value="left" [(ngModel)]="handedness" required=""
+                               aria-required="true"/>
+                        <label for="handLeft">Left</label>
+                    </p>
+                    <p>
+                        <input name="handRight" type="radio" id="handRight" value="right" [(ngModel)]="handedness" required=""
+                               aria-required="true"/>
+                        <label for="handRight">Right</label>
+                    </p>
+                    <p>
+                        <input name="handBoth" type="radio" id="handBoth" value="ambidexterity" [(ngModel)]="handedness" required=""
+                               aria-required="true"/>
+                        <label for="handBoth">Ambidextrous</label>
+                    </p>
+                </div>
+                <div class="col s6">
+                    <div class="right">
+                        <input type="file" accept="image/*" #fileInput style="display:none;">
+                        <div class="player-icon-frame">
+                            <img src="{{imageUrl}}?size=128" alt="Player Image" class="player-icon circle preview"
+                                 (click)="fileInput.click()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s6">
+        <button class="btn waves-effect waves-light grey darken-1 left" type="submit" name="create" (click)="onCancelClicked()">
+            Cancel
+        </button>
+    </div>
+    <div class="col s6">
+        <button class="btn waves-effect waves-light light-blue darken-3 right" type="submit" name="create" (click)="onSaveClicked()">
+            Create Player
+        </button>
+    </div>
+</div>

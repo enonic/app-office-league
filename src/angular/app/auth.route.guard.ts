@@ -1,23 +1,19 @@
 import {Injectable} from '@angular/core';
-import {CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot} from '@angular/router';
+import {CanActivate, Router} from '@angular/router';
 import {AuthService} from './auth.service';
 import {Observable} from 'rxjs';
 
 @Injectable()
-export class AuthRouteGuard implements CanActivate, CanActivateChild {
+export class AuthRouteGuard implements CanActivate {
 
-    constructor(private authService: AuthService) {
+    constructor(private authService: AuthService, private router: Router) {
     }
 
     canActivate() {
-        if (this.authService.isAuthenticated()) {
-            return true;
+        if (this.authService.isNewUser()) {
+            this.router.navigate(['player-create']);
+            return false;
         }
-        this.authService.login();
-        return false;
-    }
-
-    canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean>|Promise<boolean>|boolean {
         return true;
     }
 

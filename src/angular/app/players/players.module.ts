@@ -9,13 +9,16 @@ import {TeamsModule} from '../teams/team.module';
 import {PlayerEditComponent} from './player-edit/player-edit.component';
 import {PlayerTeamListComponent} from './player-team-list/player-team-list.component';
 import {PlayerListPageComponent} from './player-list-page/player-list-page.component';
+import {PlayerCreateComponent} from './player-new/player-create.component';
 import {FormsModule} from '@angular/forms';
+import {AuthRouteGuard} from '../auth.route.guard';
 
 const playersRoutes: Routes = [
-    {path: 'players', component: PlayerListPageComponent, data: {}},
-    {path: 'players/:name', component: PlayerProfileComponent, data: {}},
-    {path: 'players/:name/teams', component: PlayerTeamListComponent, data: {}},
-    {path: 'players/:name/edit', component: PlayerEditComponent, data: {}},
+    {path: 'players', component: PlayerListPageComponent, canActivate: [AuthRouteGuard]},
+    {path: 'players/:name', component: PlayerProfileComponent, canActivate: [AuthRouteGuard]},
+    {path: 'players/:name/teams', component: PlayerTeamListComponent, canActivate: [AuthRouteGuard]},
+    {path: 'players/:name/edit', component: PlayerEditComponent, canActivate: [AuthRouteGuard]},
+    {path: 'player-create', component: PlayerCreateComponent},
 ];
 
 @NgModule({
@@ -24,7 +27,8 @@ const playersRoutes: Routes = [
         PlayerProfileComponent,
         PlayerTeamListComponent,
         PlayerStatsComponent,
-        PlayerEditComponent
+        PlayerEditComponent,
+        PlayerCreateComponent
     ],
     imports: [
         CommonModule,
