@@ -16,6 +16,7 @@ const playersRoutes: Routes = [
     {path: 'players/:name', component: PlayerProfileComponent, data: {}},
     {path: 'players/:name/teams', component: PlayerTeamListComponent, data: {}},
     {path: 'players/:name/edit', component: PlayerEditComponent, data: {}},
+    {path: 'player-create', component: PlayerEditComponent, data: {}},
 ];
 
 @NgModule({

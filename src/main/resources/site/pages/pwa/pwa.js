@@ -9,26 +9,21 @@ exports.get = function (req) {
     var baseHref = portalLib.pageUrl({
         path: site._path
     });
+    var user = authLib.getUser();
 
-    var createdPlayer = createPlayerOnDemand();
-    if (createdPlayer) {
+    var playerCreationUrl = baseHref + '/app/player-create';
+    if (user && !storeLib.getPlayerByUserKey(user.key) && playerCreationUrl !== req.path) {
         return {
-            redirect: baseHref + '/app/players/' + createdPlayer.name.toLowerCase()
+            redirect: playerCreationUrl
+            
+            
+            
         }
     }
 
-    
-    var user = authLib.getUser();
-    var userObj = user && {key: user.key};
-    if (user) {
-        var player = storeLib.getPlayerByUserKey(user.key);
-        userObj.playerId = player && player._id;
-        userObj.playerName = player && player.name;
-    }
- 
     var params = {
         locale: req.params.locale || 'en',
-        user: userObj && JSON.stringify(userObj),
+        user: user && JSON.stringify(createUserConfig(user)),
         siteUrl: baseHref + '/',
         isLive: (req.mode == 'live'),
         baseHref: baseHref + '/app/',   // trailing slash for relative urls to be correct
@@ -46,21 +41,15 @@ exports.get = function (req) {
     };
 };
 
-function createPlayerOnDemand() {
-    var user = authLib.getUser();
-
+function createUserConfig(user) {
     if (user) {
         var player = storeLib.getPlayerByUserKey(user.key);
-        if (!player) {            
-            var createdPlayer = storeLib.createPlayer({
-                userKey: user.key,
-                name: user.displayName
-            });
-            if (createdPlayer) {
-                log.info('Created player [' + createdPlayer.name + ']');
-                storeLib.refresh();
-                return createdPlayer;
-            }
-        }
+        return {
+            key: user.key,
+            displayName: user.displayName,
+            playerId: player && player._id,
+            playerName: player && player.name
+        };
     }
+    return undefined;
 }
