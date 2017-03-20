@@ -41,7 +41,7 @@
     {{#isLive}}
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker
-                .register('{{siteUrl}}service-worker.js', {scope: '{{siteUrl}}'})
+                .register('{{siteUrl}}/service-worker.js', {scope: '{{siteUrl}}'})
                 .then(function (reg) {
                     console.log('Service Worker registered with scope ' + reg.scope);
                 }, function () {
