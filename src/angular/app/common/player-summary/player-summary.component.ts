@@ -74,7 +74,6 @@ export class PlayerSummaryComponent extends BaseComponent {
 
     onRankingClicked(event) {
         event.stopPropagation();
-        console.log('ranking click');
         this.notifyRankingClick();
     }
 

@@ -65,7 +65,6 @@ export class TeamSummaryComponent extends BaseComponent {
 
     onRankingClicked(event) {
         event.stopPropagation();
-        console.log('ranking click');
         this.notifyRankingClick();
     }
 
