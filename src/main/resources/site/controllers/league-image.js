@@ -3,7 +3,7 @@ var attachmentLib = require('/lib/attachment');
 var ioLib = require('/lib/xp/io');
 var imageHelper = require('./image-helper');
 
-var defaultImage = ioLib.getResource('/site/controllers/default-images/8-tournament-transitive.svg').getStream();
+var defaultImage = ioLib.getResource('/site/controllers/default-images/league.svg').getStream();
 var defaultImageType = 'image/svg+xml';
 
 exports.get = function (req) {
