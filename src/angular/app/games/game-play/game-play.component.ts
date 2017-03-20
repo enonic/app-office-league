@@ -207,6 +207,8 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
 
     }
 
+
+
     onBlueGoalClick() {
         if (this.gameState !== GameState.Paused || (this.playerSelected == null)) {
             return;
@@ -545,13 +547,28 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         return null;
     }
 
+    private getWindowAspectRatio() {
+        return window.innerWidth / window.innerHeight;
+    }
+
     private handleResize() {
-        let imgRed = this.elRef.nativeElement.querySelector('.field-red');
-        let divRed = this.elRef.nativeElement.querySelector('.field-overlay-red');
-        let imgBlue = this.elRef.nativeElement.querySelector('.field-blue');
-        let divBlue = this.elRef.nativeElement.querySelector('.field-overlay-blue');
-        //divRed.style.width = imgRed.width + 'px';
-        //divBlue.style.width = imgBlue.width + 'px';
+        let playerImgPlaceholder = this.elRef.nativeElement.querySelector('.game-play__player-img-placeholder');
+        let playerImg = this.elRef.nativeElement.querySelectorAll('.game-play__player-img');
+        let orientation = this.getWindowAspectRatio() > 1 ? 'landscape' : 'portrait';
+
+        playerImg.forEach((img) => {
+
+            if (orientation === 'portrait') {
+                img.style.width = playerImgPlaceholder.clientHeight + 'px';
+                img.style.height = playerImgPlaceholder.clientHeight + 'px';
+            }
+            else {
+                img.style.height = playerImgPlaceholder.clientWidth + 'px';
+                img.style.width = playerImgPlaceholder.clientWidth + 'px';
+            }
+        });
+
+
     }
 
     private static readonly getPlayersLeagueQuery = `query ($leagueId: ID!, $playerIds: [ID]!) {

@@ -22,7 +22,7 @@
         <div class="game-play__field">
 
 
-            <svg class="playing-field playing-field--landscape" [ngClass]="nameClassesField" height="1678" viewBox="0 0 3000 1678" width="3000" xmlns="http://www.w3.org/2000/svg">
+            <svg class="playing-field playing-field--landscape" [ngClass]="nameClassesField" preserveAspectRatio="none" height="1678" viewBox="0 0 3000 1678" width="3000" xmlns="http://www.w3.org/2000/svg">
                 <g transform="translate(-26234 1054)">
                     <path class="field__grass" d="m3000 0h-3000v1678h3000z" fill="#89ba40" transform="matrix(1 0 0 1 26234 -1054)"/>
                     <g fill-rule="evenodd">
@@ -78,7 +78,7 @@
                 </g>
             </svg>-->
 
-            <svg class="playing-field playing-field--portrait" height="3000" viewBox="0 0 1678 3000" width="1678" xmlns="http://www.w3.org/2000/svg">
+            <svg class="playing-field playing-field--portrait" [ngClass]="nameClassesField" preserveAspectRatio="none" height="3000" viewBox="0 0 1678 3000" width="1678" xmlns="http://www.w3.org/2000/svg">
                 <g transform="translate(-24405 1054)">
                     <path class="field__grass" d="m3000 0h-3000v1678h3000z" fill="#89ba40" transform="matrix(0 -1 1 0 24405 1946)"/>
                     <g fill-rule="evenodd">
@@ -129,13 +129,22 @@
                         </svg>
                         <div class="game-play__players">
                             <div class="game-play__player game-play__player--red" [ngClass]="nameClassesRed1" (click)="onPlayerClicked(redPlayer1)">
+                                <img class="game-play__player-img-placeholder" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox%3D'0 0 200 150'%2F%3E" width="10" height="10" />
                                 <img class="game-play__player-img" src="{{redPlayer1?.imageUrl}}?size=200" alt="{{redPlayer1?.name}}">
-                                <span class="game-play__player-name">{{redPlayer1?.name | slice:0:10}}</span>
+                                <span class="game-play__player-name">
+                                    <span class="game-play__player-name-container">
+                                        {{redPlayer1?.name | slice:0:10}}
+                                    </span>
+                                </span>
                             </div>
                             <template [ngIf]="redPlayer2 != null">
                                 <div class="game-play__player game-play__player--red" [ngClass]="nameClassesRed2" (click)="onPlayerClicked(redPlayer2)">
                                     <img class="game-play__player-img" src="{{redPlayer2?.imageUrl}}?size=200" alt="{{redPlayer2?.name}}">
-                                    <span class="game-play__player-name">{{redPlayer2?.name | slice:0:10}}</span>
+                                    <span class="game-play__player-name">
+                                        <span class="game-play__player-name-container">
+                                            {{redPlayer2?.name | slice:0:10}}
+                                        </span>
+                                    </span>
                                 </div>
                             </template>
                         </div>
@@ -144,12 +153,20 @@
                         <div class="game-play__players">
                             <div class="game-play__player game-play__player--blue" [ngClass]="nameClassesBlue1" (click)="onPlayerClicked(bluePlayer1)">
                                 <img class="game-play__player-img" src="{{bluePlayer1?.imageUrl}}?size=200" alt="{{bluePlayer1?.name}}">
-                                <span class="game-play__player-name">{{bluePlayer1?.name | slice:0:10}}</span>
+                                <span class="game-play__player-name">
+                                    <span class="game-play__player-name-container">
+                                        {{bluePlayer1?.name | slice:0:10}}
+                                    </span>
+                                </span>
                             </div>
                             <template [ngIf]="bluePlayer2 != null">
                                 <div class="game-play__player game-play__player--blue" [ngClass]="nameClassesBlue2" (click)="onPlayerClicked(bluePlayer2)">
                                     <img class="game-play__player-img" src="{{bluePlayer2?.imageUrl}}?size=200" alt="{{bluePlayer2?.name}}">
-                                    <span class="game-play__player-name">{{bluePlayer2?.name | slice:0:10}}</span>
+                                    <span class="game-play__player-name">
+                                        <span class="game-play__player-name-container">
+                                            {{bluePlayer2?.name | slice:0:10}}
+                                        </span>
+                                    </span>
                                 </div>
                             </template>
                         </div>
