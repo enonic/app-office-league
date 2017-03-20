@@ -14,6 +14,7 @@ export class LeagueSummaryComponent extends BaseComponent {
     @Input() league: League;
     @Input() rating: number = 0;
     @Input() ranking: number = 0;
+    @Input() showPoints: boolean;
 
     constructor(route: ActivatedRoute) {
         super(route);
@@ -21,5 +22,14 @@ export class LeagueSummaryComponent extends BaseComponent {
 
     rankingText(): string {
         return RankingHelper.ordinal(this.ranking);
+    }
+
+    ratingPoints(): string {
+        return String(this.rating);
+    }
+
+    onRankingClicked(event) {
+        event.stopPropagation();
+        this.showPoints = !this.showPoints;
     }
 }

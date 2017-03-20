@@ -1,4 +1,4 @@
-import {Component, Input, HostListener} from '@angular/core';
+import {Component, Input, HostListener, Output, EventEmitter} from '@angular/core';
 import {Player} from '../../../graphql/schemas/Player';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../graphql.service';
@@ -17,6 +17,8 @@ export class PlayerSummaryComponent extends BaseComponent {
     @Input() playerId: string;
     @Input() rating: number = 0;
     @Input() ranking: number = 0;
+    @Input() showPoints: boolean;
+    @Output() rankingClicked: EventEmitter<void> = new EventEmitter<void>();
 
     @HostListener('click') onClick() {
         this.router.navigate(['players', this.playerId || this.player.name]);
@@ -66,4 +68,17 @@ export class PlayerSummaryComponent extends BaseComponent {
         return RankingHelper.ordinal(this.ranking);
     }
 
+    ratingPoints(): string {
+        return String(this.rating);
+    }
+
+    onRankingClicked(event) {
+        event.stopPropagation();
+        console.log('ranking click');
+        this.notifyRankingClick();
+    }
+
+    private notifyRankingClick() {
+        this.rankingClicked.emit();
+    }
 }

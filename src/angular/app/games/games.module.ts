@@ -10,28 +10,28 @@ import {PlayerSelectComponent} from './player-select/player-select.component';
 import {MaterializeModule} from 'angular2-materialize/dist/index';
 import {GamePlayComponent} from './game-play/game-play.component';
 import {GamePointsComponent} from './game-points/game-points.component';
+import {AuthRouteGuard} from '../auth.route.guard';
 
 const gameRoutes: Routes = [
     {
         path: 'games',
         component: GameListComponent,
-        data: {}
+        canActivate: [AuthRouteGuard]
     },
     {
         path: 'games/:id',
         component: GameProfileComponent,
-        // canActivate: [AuthRouteGuard],
-        data: {}
+        canActivate: [AuthRouteGuard]
     },
     {
         path: 'games/:leagueId/new-game',
         component: NewGameComponent,
-        data: {}
+        canActivate: [AuthRouteGuard]
     },
     {
         path: 'games/:leagueId/game-play',
         component: GamePlayComponent,
-        data: {}
+        canActivate: [AuthRouteGuard]
     },
 ];
 

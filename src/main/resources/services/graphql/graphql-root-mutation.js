@@ -3,6 +3,7 @@ var graphQlEnumsLib = require('./graphql-enums');
 var graphQlObjectTypesLib = require('./graphql-object-types');
 var graphQlInputTypesLib = require('./graphql-input-types');
 var storeLib = require('office-league-store');
+var authLib = require('/lib/xp/auth');
 
 exports.rootMutationType = graphQlLib.createObjectType({
     name: 'Mutation',
@@ -59,12 +60,20 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 description: graphQlLib.GraphQLString
             },
             data: function (env) {
+                var userKey = getCurrentUserKey();
+                if (!userKey) {
+                    throw "Player cannot be created, no logged in user to link to.";
+                }
+                if (isUserLinkedToPlayer(userKey)) {
+                    throw "Player cannot be created, logged in user already linked to another player.";
+                }
                 var createdPlayer = storeLib.createPlayer({
                     name: env.args.name,
                     nickname: env.args.nickname,
                     nationality: env.args.nationality,
                     handedness: env.args.handedness,
-                    description: env.args.description
+                    description: env.args.description,
+                    userKey: userKey
                 });
                 storeLib.refresh();
                 return createdPlayer;
@@ -237,3 +246,13 @@ exports.rootMutationType = graphQlLib.createObjectType({
         }
     }
 });
+
+var getCurrentUserKey = function () {
+    var user = authLib.getUser();
+    return user ? user.key : null;
+};
+
+var isUserLinkedToPlayer = function (userKey) {
+    var player = storeLib.getPlayerByUserKey(userKey);
+    return !!player;
+};

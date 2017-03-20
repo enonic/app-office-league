@@ -1,11 +1,11 @@
 <div class="navbar-fixed" [hidden]="isPlayingGame">
     <nav class="blue accent-2">
         <div class="nav-wrapper">
-            <a href="#" (click)="location.back()" class="button-back hide-on-large-only"><i class="material-icons">arrow_back</i></a>
+            <a *ngIf="!auth.isNewUser()" href="#" (click)="location.back()" class="button-back hide-on-large-only"><i class="material-icons">arrow_back</i></a>
 
             <a routerLink="/" href="#" class="brand-logo"><img src="{{logoUrl}}" height="40px">Office League</a>
 
-            <a href="#"
+            <a *ngIf="!auth.isNewUser()" href="#"
                materialize="sideNav"
                [materializeParams]="[{closeOnClick: true}]"
                data-activates="mobile-side-nav"
@@ -13,7 +13,7 @@
                 <i class="material-icons">menu</i>
             </a>
 
-            <ul class="right hide-on-med-and-down">
+            <ul *ngIf="!auth.isNewUser()" class="right hide-on-med-and-down">
                 <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>
                 <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
                 <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
@@ -40,7 +40,7 @@
     </div>
 </div>
 
-<ul class="side-nav" id="mobile-side-nav">
+<ul *ngIf="!auth.isNewUser()" class="side-nav" id="mobile-side-nav">
     <template [ngIf]="auth.isAuthenticated()">
         <li class="user-profile"><a href="#" routerLink="/players/{{auth.getUser().playerName}}">
             <i class="material-icons medium">face</i>

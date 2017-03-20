@@ -9,32 +9,34 @@ exports.get = function (req) {
     var baseHref = portalLib.pageUrl({
         path: site._path
     });
+    var appBaseUrl = baseHref + '/app';
 
-    var createdPlayer = createPlayerOnDemand();
-    if (createdPlayer) {
-        return {
-            redirect: baseHref + '/app/players/' + createdPlayer.name.toLowerCase()
+    if (loggedInUserWithoutPlayer()) {
+        var createPlayerPath = portalLib.getContent()._path + '/player-create';
+        if (!endsWith(req.path, createPlayerPath)) {
+            return {
+                redirect: appBaseUrl + '/player-create'
+            }
         }
     }
 
-    
     var user = authLib.getUser();
     var userObj = user && {key: user.key};
     if (user) {
         var player = storeLib.getPlayerByUserKey(user.key);
         userObj.playerId = player && player._id;
-        userObj.playerName = player && player.name;
+        userObj.playerName = (player && player.name) || user.displayName;
     }
- 
+
     var params = {
         locale: req.params.locale || 'en',
         user: userObj && JSON.stringify(userObj),
         siteUrl: baseHref + '/',
         isLive: (req.mode == 'live'),
-        baseHref: baseHref + '/app/',   // trailing slash for relative urls to be correct
+        baseHref: appBaseUrl + '/',   // trailing slash for relative urls to be correct
         assetsUrl: portalLib.assetUrl({path: ""}),
-        loginUrl: portalLib.loginUrl({redirect: baseHref}),
-        logoutUrl: portalLib.logoutUrl({redirect: baseHref}),
+        loginUrl: portalLib.loginUrl({redirect: appBaseUrl}),
+        logoutUrl: portalLib.logoutUrl({redirect: appBaseUrl}),
         idProvider: portalLib.idProviderUrl(),
         setImageUrl: portalLib.serviceUrl({service: "set-image"})
     };
@@ -46,21 +48,16 @@ exports.get = function (req) {
     };
 };
 
-function createPlayerOnDemand() {
+var loggedInUserWithoutPlayer = function () {
     var user = authLib.getUser();
-
-    if (user) {
-        var player = storeLib.getPlayerByUserKey(user.key);
-        if (!player) {            
-            var createdPlayer = storeLib.createPlayer({
-                userKey: user.key,
-                name: user.displayName
-            });
-            if (createdPlayer) {
-                log.info('Created player [' + createdPlayer.name + ']');
-                storeLib.refresh();
-                return createdPlayer;
-            }
-        }
+    if (!user) {
+        return false;
     }
-}
+
+    var player = storeLib.getPlayerByUserKey(user.key);
+    return !player;
+};
+
+var endsWith = function (str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+};

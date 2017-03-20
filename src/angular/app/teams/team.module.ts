@@ -7,11 +7,12 @@ import {LeaguesModule} from '../leagues/league.module';
 import {TeamEditComponent} from './team-edit/team-edit.component';
 import {TeamListPageComponent} from './team-list-page/team-list-page.component';
 import {FormsModule} from '@angular/forms';
+import {AuthRouteGuard} from '../auth.route.guard';
 
 const teamRoutes: Routes = [
-    {path: 'teams', component: TeamListPageComponent, data: {}},
-    {path: 'teams/:name', component: TeamProfileComponent, data: {}},
-    {path: 'teams/:name/edit', component: TeamEditComponent, data: {}},
+    {path: 'teams', component: TeamListPageComponent, canActivate: [AuthRouteGuard]},
+    {path: 'teams/:name', component: TeamProfileComponent, canActivate: [AuthRouteGuard]},
+    {path: 'teams/:name/edit', component: TeamEditComponent, canActivate: [AuthRouteGuard]},
 ];
 
 @NgModule({

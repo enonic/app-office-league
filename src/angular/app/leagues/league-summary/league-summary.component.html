@@ -5,7 +5,8 @@
 
     <img src="{{league.imageUrl}}" alt="{{league.name}}" class="circle">
     <span class="title">{{league.name}}</span>
-    <span *ngIf="ranking > 0" class="badge right blue-grey white-text" title="{{rating}}">{{ranking}}<small>{{rankingText()}}</small></span>
+    <span *ngIf="ranking > 0" class="badge right blue-grey white-text" title="{{rating}}" (click)="onRankingClicked($event)">
+        {{showPoints?ratingPoints():ranking}}<small>{{showPoints?'':rankingText()}}</small></span>
     <p>{{league.description}}</p>
 
 </template>

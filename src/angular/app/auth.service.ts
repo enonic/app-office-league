@@ -17,6 +17,10 @@ export class AuthService {
         return false;
     }
 
+    public isNewUser(): boolean {
+        return this.user && !this.user.playerId;
+    }
+
     public isAuthenticated() {
         return !!this.user;
     }

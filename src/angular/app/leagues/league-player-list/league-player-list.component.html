@@ -2,7 +2,8 @@
     <li *ngIf="title" class="collection-header"><h4>{{title}}</h4></li>
     <li href="#!" class="collection-item avatar" *ngFor="let leaguePlayer of leaguePlayers" (click)="onLeaguePlayerClicked(leaguePlayer)">
         <league-summary *ngIf="displayLeagues" [league]="leaguePlayer.league" [rating]="leaguePlayer.rating" [ranking]="leaguePlayer.ranking"></league-summary>
-        <player-summary *ngIf="displayPlayers" [player]="leaguePlayer.player" [rating]="leaguePlayer.rating" [ranking]="leaguePlayer.ranking"></player-summary>
+        <player-summary *ngIf="displayPlayers" [player]="leaguePlayer.player" [rating]="leaguePlayer.rating" [ranking]="leaguePlayer.ranking"
+                        [showPoints]="showRankingPoints" (rankingClicked)="onRankingClicked()"></player-summary>
     </li>
     <li *ngIf="leaguePlayers?.length == 0" class="collection-item empty">
         <h5 *ngIf="displayLeagues">No leagues</h5>
