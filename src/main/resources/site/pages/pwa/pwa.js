@@ -9,10 +9,12 @@ exports.get = function (req) {
     var baseHref = portalLib.pageUrl({
         path: site._path
     });
-    var appBaseUrl = baseHref + '/app';
+    var appBaseUrl = portalLib.pageUrl({
+        path: site._path + '/app'
+    });
 
     if (loggedInUserWithoutPlayer()) {
-        var createPlayerPath = portalLib.getContent()._path + '/player-create';
+        var createPlayerPath = appBaseUrl + '/player-create';
         if (!endsWith(req.path, createPlayerPath)) {
             return {
                 redirect: appBaseUrl + '/player-create'
