@@ -62,6 +62,7 @@ export class LeagueProfileComponent extends BaseComponent {
                 }
                 gamePlayers {
                     score
+                    scoreAgainst
                     winner
                     side
                     ratingDelta
@@ -71,6 +72,7 @@ export class LeagueProfileComponent extends BaseComponent {
                 }
                 gameTeams {
                     score
+                    scoreAgainst
                     winner
                     side
                 }

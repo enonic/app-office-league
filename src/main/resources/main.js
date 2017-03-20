@@ -1,7 +1,6 @@
 var initLib = require('/lib/office-league-init');
 var storeLib = require('/lib/office-league-store');
 var ratingLib = require('/lib/office-league-rating');
-var ioLib = require('/lib/xp/io');
 
 log.info('Application ' + app.name + ' started');
 

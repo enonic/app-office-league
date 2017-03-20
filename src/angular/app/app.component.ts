@@ -12,10 +12,13 @@ import {Router, NavigationStart} from '@angular/router';
 export class AppComponent {
     logoUrl: string;
     isPlayingGame: boolean;
+    playerImage: string;
 
     constructor(private auth: AuthService, private location: Location, private router: Router) {
         this.logoUrl = ImageService.logoUrl();
         this.isPlayingGame = new RegExp('/games/.*/game-play').test(location.path());
+        let user = auth.getUser();
+        this.playerImage = !!user ? ImageService.forPlayer(user.playerName) : ImageService.playerDefault();
 
         router.events
             .filter(event => event instanceof NavigationStart)
