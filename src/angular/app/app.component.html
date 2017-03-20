@@ -42,10 +42,12 @@
 
 <ul *ngIf="!auth.isNewUser()" class="side-nav" id="mobile-side-nav">
     <template [ngIf]="auth.isAuthenticated()">
-        <li class="user-profile"><a href="#" routerLink="/players/{{auth.getUser().playerName}}">
-            <i class="material-icons medium">face</i>
-            <span>{{auth.getUser().displayName}}</span>
-        </a></li>
+        <li class="user-profile">
+            <a href="#" routerLink="/players/{{auth.getUser().playerName}}">
+                <img src="{{playerImage}}?size=48" alt="{{auth.getUser().playerName}}" class="circle">
+                <span>{{auth.getUser().playerName}}</span>
+            </a>
+        </li>
         <li class="divider"></li>
     </template>
     <li><a routerLink="/" href="#">Home</a></li>
