@@ -281,6 +281,18 @@ exports.getLeaguePlayerByLeagueIdAndPlayerId = function (leagueId, playerId) {
 };
 
 /**
+ * Retrieve a LeagueTeam
+ * @param  {string} leagueId League id.
+ * @param  {string} teamId Team id.
+ * @return {LeagueTeam} League team.
+ */
+exports.getLeagueTeamByLeagueIdAndTeamId = function (leagueId, teamId) {
+    return querySingleHit({
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND leagueId='" + leagueId + "' AND teamId='" + teamId + "'"
+    });
+};
+
+/**
  * Retrieve a list of league players and their rating points in the ranking.
  * @param  {string} leagueId League id.
  * @param  {string[]} playerIds Player ids.
@@ -288,6 +300,14 @@ exports.getLeaguePlayerByLeagueIdAndPlayerId = function (leagueId, playerId) {
  */
 exports.getLeaguePlayersByLeagueIdAndPlayerIds = function (leagueId, playerIds) {
     playerIds = playerIds || [];
+    if (playerIds.length === 0) {
+        return {
+            total: 0,
+            start: 0,
+            count: 0,
+            hits: []
+        };
+    }
     var playersCondition = playerIds.map(function (id) {
         return "playerId='" + id + "'";
     }).join(' OR ');
@@ -303,11 +323,20 @@ exports.getLeaguePlayersByLeagueIdAndPlayerIds = function (leagueId, playerIds) 
  * Retrieve a list of league teams and their rating points in the ranking.
  * @param  {string} leagueId League id.
  * @param  {string[]} teamIds Team ids.
- * @return {LeagueTeam[]} League teams.
+ * @return {LeagueTeamResponse} League teams.
  */
 exports.getLeagueTeamsByLeagueIdAndTeamIds = function (leagueId, teamIds) {
 
     teamIds = teamIds || [];
+    if (teamIds.length === 0) {
+        return {
+            total: 0,
+            start: 0,
+            count: 0,
+            hits: []
+        };
+    }
+
     var teamsCondition = teamIds.map(function (id) {
         return "teamId='" + id + "'";
     }).join(' OR ');
@@ -1640,7 +1669,7 @@ exports.updatePlayerLeagueRating = function (leagueId, playerId, ratingDelta) {
         key: result.hits[0].id,
         editor: function (node) {
             node.rating = (node.rating || 0) + ratingDelta;
-            node._timestamp = valueLib.instant(new Date().toISOString())
+            node._timestamp = valueLib.instant(new Date().toISOString());
             return node;
         }
     });
@@ -1856,6 +1885,88 @@ exports.updateGame = function (params) {
 };
 
 /**
+ * Apply ranking updates as a result of a game.
+ *
+ * @param {Game} game Game object.
+ */
+exports.updateGameRanking = function (game) {
+    if (!game.finished) {
+        log.info('Skipping game ranking changes, game not finished: ' + game._id);
+        return;
+    }
+
+    var playerIds = game.gamePlayers.map(function (gp) {
+        return gp.playerId;
+    });
+    var teamIds = game.gameTeams.map(function (gp) {
+        return gp.teamId;
+    });
+
+    var leaguePlayers = exports.getLeaguePlayersByLeagueIdAndPlayerIds(game.leagueId, playerIds);
+    var leagueTeams = exports.getLeagueTeamsByLeagueIdAndTeamIds(game.leagueId, teamIds);
+    ratingLib.calculateGameRatings(game, leaguePlayers.hits, leagueTeams.hits);
+    for (var j = 0; j < game.gamePlayers.length; j++) {
+        exports.updatePlayerLeagueRating(game.leagueId, game.gamePlayers[j].playerId, game.gamePlayers[j].ratingDelta);
+    }
+    for (var k = 0; k < game.gameTeams.length; k++) {
+        exports.updateTeamLeagueRating(game.leagueId, game.gameTeams[k].teamId, game.gameTeams[k].ratingDelta);
+    }
+    exports.updateGame({
+        gameId: game._id,
+        finished: true,
+        gamePlayers: game.gamePlayers,
+        gameTeams: game.gameTeams,
+        points: game.points
+    });
+};
+
+/**
+ * Log game ranking info.
+ *
+ * @param {Game} game Game object.
+ */
+exports.logGameRanking = function (game) {
+    var playerIds = game.gamePlayers.map(function (gp) {
+        return gp.playerId;
+    });
+    var teamIds = game.gameTeams.map(function (gp) {
+        return gp.teamId;
+    });
+    var players = exports.getPlayersById(playerIds);
+    var teams = exports.getTeamsById(teamIds);
+    var gameInfo = {
+        gameId: game._id,
+        sides: {
+            blue: {
+                players: [],
+                team: null
+            },
+            red: {
+                players: [],
+                team: null
+            }
+        }
+    };
+    game.gamePlayers.forEach(function (gp) {
+        var p = itemById(players, '_id', gp.playerId);
+        if (gp.side === 'red') {
+            gameInfo.sides.red.players.push({'name': p.name, 'id': p._id, 'rating': gp.ratingDelta});
+        } else if (gp.side === 'blue') {
+            gameInfo.sides.blue.players.push({'name': p.name, 'id': p._id, 'rating': gp.ratingDelta});
+        }
+    });
+    game.gameTeams.forEach(function (gt) {
+        var t = itemById(teams, '_id', gt.teamId);
+        if (gt.side === 'red') {
+            gameInfo.sides.red.team = {'name': t.name, 'id': t._id, 'rating': gt.ratingDelta};
+        } else if (gt.side === 'blue') {
+            gameInfo.sides.blue.team = {'name': t.name, 'id': t._id, 'rating': gt.ratingDelta};
+        }
+    });
+    log.info('Game ranking details: \r\n' + JSON.stringify(gameInfo, null, 2));
+};
+
+/**
  * Refresh the index.
  */
 exports.refresh = function () {
@@ -1948,4 +2059,25 @@ var extensionFromMimeType = function (mimeType) {
         ext = '.gif';
     }
     return ext;
+};
+
+/**
+ * Get object from array with matching property value.
+ *
+ * @param {Array} array Array of values.
+ * @param {string} key Property key of the object.
+ * @param {string} value Property value of the object.
+ */
+var itemById = function (array, key, value) {
+    if (!array || array.length === 0) {
+        return null;
+    }
+    var i, v;
+    for (i = 0; i < array.length; i++) {
+        v = array[i];
+        if (v[key] === value) {
+            return v
+        }
+    }
+    return null;
 };

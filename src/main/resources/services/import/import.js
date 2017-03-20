@@ -135,32 +135,32 @@ var createGame = function (foosGame, leagueId, playerContentToNodeId) {
 
         gamePlayers[playerContentToNodeId[pw1]] = {
             playerId: playerContentToNodeId[pw1],
-            score: foosGame.data.winners[0].score,
-            scoreAgainst: foosGame.data.winners[0].against,
+            score: foosGame.data.winners[0].score || 0,
+            scoreAgainst: foosGame.data.winners[0].against || 0,
             side: 'red',
             winner: true,
             ratingDelta: foosGame.data.winners[0].ratingDiff
         };
         gamePlayers[playerContentToNodeId[pw2]] = {
             playerId: playerContentToNodeId[pw2],
-            score: foosGame.data.winners[1].score,
-            scoreAgainst: foosGame.data.winners[1].against,
+            score: foosGame.data.winners[1].score || 0,
+            scoreAgainst: foosGame.data.winners[1].against || 0,
             side: 'red',
             winner: true,
             ratingDelta: foosGame.data.winners[1].ratingDiff
         };
         gamePlayers[playerContentToNodeId[pl1]] = {
             playerId: playerContentToNodeId[pl1],
-            score: foosGame.data.losers[0].score,
-            scoreAgainst: foosGame.data.losers[0].against,
+            score: foosGame.data.losers[0].score || 0,
+            scoreAgainst: foosGame.data.losers[0].against || 0,
             side: 'blue',
             winner: false,
             ratingDelta: foosGame.data.losers[0].ratingDiff
         };
         gamePlayers[playerContentToNodeId[pl2]] = {
             playerId: playerContentToNodeId[pl2],
-            score: foosGame.data.losers[1].score,
-            scoreAgainst: foosGame.data.losers[1].against,
+            score: foosGame.data.losers[1].score || 0,
+            scoreAgainst: foosGame.data.losers[1].against || 0,
             side: 'blue',
             winner: false,
             ratingDelta: foosGame.data.losers[1].ratingDiff

@@ -4,7 +4,6 @@ var graphQlObjectTypesLib = require('./graphql-object-types');
 var graphQlInputTypesLib = require('./graphql-input-types');
 var storeLib = require('office-league-store');
 var authLib = require('/lib/xp/auth');
-var ratingLib = require('/lib/office-league-rating');
 
 exports.rootMutationType = graphQlLib.createObjectType({
     name: 'Mutation',
@@ -200,8 +199,9 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 if (createGameParams.finished) {
                     // update ranking
                     var game = storeLib.getGameById(createdGame._id);
-                    updateGameRanking(game);
+                    storeLib.updateGameRanking(game);
                     storeLib.refresh();
+                    storeLib.logGameRanking(game);
                 }
                 return createdGame;
             }
@@ -231,8 +231,9 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 if (createGameParams.finished) {
                     // update ranking
                     var game = storeLib.getGameById(env.args.gameId);
-                    updateGameRanking(game);
+                    storeLib.updateGameRanking(game);
                     storeLib.refresh();
+                    storeLib.logGameRanking(game);
                 }
                 return storeLib.getGameById(env.args.gameId);
             }
@@ -254,34 +255,6 @@ exports.rootMutationType = graphQlLib.createObjectType({
         }
     }
 });
-
-var updateGameRanking = function (game) {
-    var playerIds = game.gamePlayers.map(function (gp) {
-        return gp.playerId;
-    });
-    var teamIds = game.gameTeams.map(function (gp) {
-        return gp.teamId;
-    });
-    // log.info('playerIds: ' + JSON.stringify(playerIds));
-    // log.info('teamIds: ' + JSON.stringify(teamIds));
-    // log.info('game: ' + JSON.stringify(game));
-    var leaguePlayers = storeLib.getLeaguePlayersByLeagueIdAndPlayerIds(game.leagueId, playerIds);
-    var leagueTeams = storeLib.getLeagueTeamsByLeagueIdAndTeamIds(game.leagueId, teamIds);
-    ratingLib.calculateGameRatings(game, leaguePlayers.hits, leagueTeams.hits);
-    for (var j = 0; j < game.gamePlayers.length; j++) {
-        storeLib.updatePlayerLeagueRating(game.leagueId, game.gamePlayers[j].playerId, game.gamePlayers[j].ratingDelta);
-    }
-    for (var k = 0; k < game.gameTeams.length; k++) {
-        storeLib.updateTeamLeagueRating(game.leagueId, game.gameTeams[k].teamId, game.gameTeams[k].ratingDelta);
-    }
-    storeLib.updateGame({
-        gameId: game._id,
-        finished: true,
-        gamePlayers: game.gamePlayers,
-        gameTeams: game.gameTeams,
-        points: game.points
-    });
-};
 
 var getCurrentUserKey = function () {
     var user = authLib.getUser();

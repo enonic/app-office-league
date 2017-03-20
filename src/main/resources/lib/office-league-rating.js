@@ -101,11 +101,11 @@ var calculateGameScores = function (game) {
     for (i = 0; i < game.gamePlayers.length; i++) {
         gamePlayer = game.gamePlayers[i];
         if (gamePlayer.side === 'red') {
-            sidePoints.red += gamePlayer.score;
-            sidePoints.blue += gamePlayer.scoreAgainst;
+            sidePoints.red += (gamePlayer.score || 0);
+            sidePoints.blue += (gamePlayer.scoreAgainst || 0);
         } else if (gamePlayer.side === 'blue') {
-            sidePoints.blue += gamePlayer.score;
-            sidePoints.red += gamePlayer.scoreAgainst;
+            sidePoints.blue += (gamePlayer.score || 0);
+            sidePoints.red += (gamePlayer.scoreAgainst || 0);
         }
     }
 
