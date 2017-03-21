@@ -7,13 +7,8 @@ const filesToCache = [
     '{{siteUrl}}/',
     '{{appUrl}}',
     '{{appUrl}}/',
-    '{{appUrl}}/assets/img/bg.png',
-    '{{assetUrl}}/css/styles.css',
-    '{{assetUrl}}/js/app.js',
-    '{{assetUrl}}/js/polyfills.js',
-    '{{assetUrl}}/js/vendor.js',
-    '{{assetUrl}}/img/bg.png',
-    '{{assetUrl}}/img/logo.svg'
+    '{{assetUrl}}/img/logo.svg',
+    '{{assetUrl}}/img/office-league-logo.svg'
 ];
 
 function consoleLog(message) {
@@ -30,7 +25,12 @@ self.addEventListener('install', function(e) {
 
     e.waitUntil(
         caches.open(cacheName).then(function(cache) {
-            consoleLog('Caching app shell');
+            consoleLog('Caching App Shell');
+            if (debugging) {
+                console.group();
+                filesToCache.forEach(f => consoleLog(f));
+                console.groupEnd();
+            }
             return cache.addAll(filesToCache);
         }).catch(function(err) {
             console.log(err);
@@ -67,4 +67,22 @@ self.addEventListener('fetch', function(e) {
                 return response || fetch(e.request);
             })
     );
+});
+
+self.addEventListener("message", function(e) {
+    if (e.data.assets) {
+        e.waitUntil(
+            caches.open(cacheName).then(function(cache) {
+                consoleLog('Caching App Shell');
+                if (debugging) {
+                    console.group();
+                    e.data.assets.forEach(f => consoleLog(f));
+                    console.groupEnd();
+                }
+                return cache.addAll(e.data.assets);
+            }).catch(function(err) {
+                console.log(err);
+            })
+        );
+    }
 });

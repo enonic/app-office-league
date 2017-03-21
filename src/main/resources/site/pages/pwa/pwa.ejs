@@ -15,7 +15,6 @@
         if (document.location.href.endsWith('{{siteUrl}}') && !document.location.href.endsWith('/')) {
             document.location = document.location.href + "/";
         }
-
     </script>
 </head>
 
@@ -39,11 +38,30 @@
         setImageUrl: '{{setImageUrl}}'
     }
     {{#isLive}}
+    var serviceWorker;
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker
                 .register('{{siteUrl}}/service-worker.js', {scope: '{{siteUrl}}'})
-                .then(function (reg) {
-                    console.log('Service Worker registered with scope ' + reg.scope);
+                .then(function (registration) {
+                    if (registration.installing) {
+                        serviceWorker = registration.installing;
+                        let assets = [];
+                        <% for (key in htmlWebpackPlugin.files.chunks) { %>
+                        <%      item = htmlWebpackPlugin.files.chunks[key].entry; %>
+                                assets.push('<%= '{{assetsUrl}}/' + item %>');
+                        <% }; %>
+                        <% for (key in htmlWebpackPlugin.files.css) { %>
+                        <%      item = htmlWebpackPlugin.files.css[key]; %>
+                                assets.push('<%= '{{assetsUrl}}/' + item %>');
+                        <% }; %>
+
+                        if (assets.length > 0) {
+                            serviceWorker.postMessage({
+                                assets: assets
+                            });
+                        }
+                    }
+                    console.log('Service Worker registered with scope ' + registration.scope);
                 }, function () {
                     console.log('Service Worker registration failure.');
                 });
