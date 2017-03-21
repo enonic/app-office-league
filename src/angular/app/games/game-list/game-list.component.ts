@@ -55,7 +55,7 @@ export class GameListComponent extends ListComponent implements OnInit, OnChange
 
     getQuery(): string {
         return `query{
-                  games(leagueId: "${this.leagueId}"){
+                  games(leagueId: "${this.leagueId}", finished: true){
                     id
                     time
                     finished

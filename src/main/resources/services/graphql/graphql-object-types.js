@@ -620,10 +620,11 @@ exports.leagueType = graphQlLib.createObjectType({
             type: graphQlLib.list(exports.gameType),
             args: {
                 offset: graphQlLib.GraphQLInt,
-                first: graphQlLib.GraphQLInt
+                first: graphQlLib.GraphQLInt,
+                finished: graphQlLib.GraphQLBoolean
             },
             data: function (env) {
-                return storeLib.getGamesByLeagueId(env.source._id, env.args.offset, env.args.first).hits;
+                return storeLib.getGamesByLeagueId(env.source._id, env.args.offset, env.args.first, env.args.finished).hits;
             }
         }
     }
