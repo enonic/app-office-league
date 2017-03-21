@@ -4,18 +4,10 @@
 <template [ngIf]="game != null">
     <div class="game">
 
-        <div class="results">
-            <img *ngIf="blueTeam" src="{{blueTeam?.imageUrl}}?size=96" alt="{{blueTeam?.name}}" class="logo circle">
-            <img *ngIf="!blueTeam" src="{{bluePlayers[0]?.imageUrl}}?size=96" alt="{{bluePlayers[0]?.name}}" class="logo circle">
-            <div class="score score--blue side-blue">{{blueScore}}</div>
-            <span class="colon">:</span>
-            <div class="score score--red side-red">{{redScore}}</div>
-            <img *ngIf="redTeam" src="{{redTeam?.imageUrl}}?size=96" alt="{{redTeam?.name}}" class="logo circle">
-            <img *ngIf="!redTeam" src="{{redPlayers[0]?.imageUrl}}?size=96" alt="{{redPlayers[0]?.name}}" class="logo circle">
-        </div>
-
-        <div class="teams">
-            <div class="side side--blue side-blue">
+        <div class="game__result">
+            <div class="game__team game__team--1">
+                <img *ngIf="blueTeam" src="{{blueTeam?.imageUrl}}?size=96" alt="{{blueTeam?.name}}" class="game__team-logo logo circle">
+                <img *ngIf="!blueTeam" src="{{bluePlayers[0]?.imageUrl}}?size=96" alt="{{bluePlayers[0]?.name}}" class="game__team-logo logo circle">
                 <template [ngIf]="blueTeam">
                     <div class="team">{{blueTeam?.name}}</div>
                     <ul class="players">
@@ -26,8 +18,14 @@
                     <div class="team">{{bluePlayers[0]?.name}}</div>
                 </template>
             </div>
-
-            <div class="side side--red side-red">
+            <div class="game__score">
+                <span class="">{{blueScore}}</span>
+                <span>-</span>
+                <span class="">{{redScore}}</span>
+            </div>
+            <div class="game__team game__team--2">
+                <img *ngIf="redTeam" src="{{redTeam?.imageUrl}}?size=96" alt="{{redTeam?.name}}" class="game__team-logo logo circle">
+                <img *ngIf="!redTeam" src="{{redPlayers[0]?.imageUrl}}?size=96" alt="{{redPlayers[0]?.name}}" class="game__team-logo logo circle">
                 <template [ngIf]="redTeam">
                     <div class="team">{{redTeam?.name}}</div>
                     <ul class="players">
@@ -39,6 +37,39 @@
                 </template>
             </div>
         </div>
+
+
+ <!--       <div class="results">
+            <div class="score score&#45;&#45;blue side-blue">{{blueScore}}</div>
+            <span class="colon">:</span>
+            <div class="score score&#45;&#45;red side-red">{{redScore}}</div>
+        </div>-->
+
+        <!--<div class="teams">
+            <div class="side side&#45;&#45;blue side-blue">
+                <template [ngIf]="blueTeam">
+                    <div class="team">{{blueTeam?.name}}</div>
+                    <ul class="players">
+                        <li *ngFor="let bluePlayer of bluePlayers">{{bluePlayer.name}}</li>
+                    </ul>
+                </template>
+                <template [ngIf]="!blueTeam">
+                    <div class="team">{{bluePlayers[0]?.name}}</div>
+                </template>
+            </div>
+
+            <div class="side side&#45;&#45;red side-red">
+                <template [ngIf]="redTeam">
+                    <div class="team">{{redTeam?.name}}</div>
+                    <ul class="players">
+                        <li *ngFor="let redPlayer of redPlayers">{{redPlayer.name}}</li>
+                    </ul>
+                </template>
+                <template [ngIf]="!redTeam">
+                    <div class="team">{{redPlayers[0]?.name}}</div>
+                </template>
+            </div>
+        </div>-->
 
         <div class="date">{{game.time | date}}</div>
     </div>
