@@ -7,7 +7,8 @@ import {BaseComponent} from '../../common/base.component';
 
 @Component({
     selector: 'league-profile',
-    templateUrl: 'league-profile.component.html'
+    templateUrl: 'league-profile.component.html',
+    styleUrls: ['league-profile.component.less']
 })
 export class LeagueProfileComponent extends BaseComponent {
 

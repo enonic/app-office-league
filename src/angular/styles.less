@@ -8,7 +8,7 @@ html {
   position: relative;
 
   body {
-    background-color: #eee;
+    background-color: #fff;
   }
 }
 
@@ -18,12 +18,45 @@ html {
   }
 }
 
+h2 {
+  font-size: 2.6rem;
+  margin-top: 0;
+}
+
+.container {
+  width: 100%;
+
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.row {
+  .col {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
 .collection {
+  border: none;
+
+
+  &.with-header {
+    .collection-header {
+      //background-color: #f0f0f0;
+    }
+  }
 
   &.list {
 
     .collection-item {
       min-height: 64px;
+
+      &:nth-child(odd) {
+        background-color: #fafafa;
+      }
 
       &.empty {
 
