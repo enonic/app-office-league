@@ -50,6 +50,17 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 return updatedLeague;
             }
         },
+        deleteLeague: {
+            type: graphQlLib.list(graphQlLib.GraphQLID),
+            args: {
+                name: graphQlLib.nonNull(graphQlLib.GraphQLString)
+            },
+            data: function (env) {
+                var deletedIds = storeLib.deleteLeagueByName(env.args.name);
+                storeLib.refresh();
+                return deletedIds;
+            }
+        },
         createPlayer: {
             type: graphQlObjectTypesLib.playerType,
             args: {
@@ -236,6 +247,17 @@ exports.rootMutationType = graphQlLib.createObjectType({
                     storeLib.logGameRanking(game);
                 }
                 return storeLib.getGameById(env.args.gameId);
+            }
+        },
+        deleteGame: {
+            type: graphQlLib.list(graphQlLib.GraphQLID),
+            args: {
+                id: graphQlLib.nonNull(graphQlLib.GraphQLID)
+            },
+            data: function (env) {
+                var deletedIds = storeLib.deleteGameById(env.args.id);
+                storeLib.refresh();
+                return deletedIds;
             }
         },
         createComment: {
