@@ -6,8 +6,8 @@ exports.toArray = function(object) {
         return object;
     }
     return [object];
-}
+};
 
 exports.toInt = function(number) {
     return number.intValue();
-}
+};

@@ -1513,7 +1513,7 @@ exports.updatePlayer = function (params) {
                 node.image = imageAttachment.name;
                 node.attachment = imageAttachment;
             }
-            node._timestamp = valueLib.instant(new Date().toISOString())
+            node._timestamp = valueLib.instant(new Date().toISOString());
             return node;
         }
     });
@@ -1673,7 +1673,7 @@ exports.updatePlayerLeagueRating = function (leagueId, playerId, ratingDelta) {
     var leaguePlayerNode = repoConn.modify({
         key: result.hits[0].id,
         editor: function (node) {
-            node.rating = (node.rating || 0) + ratingDelta;
+            node.rating = toInt((node.rating || 0) + ratingDelta);
             node._timestamp = valueLib.instant(new Date().toISOString());
             return node;
         }
@@ -1706,7 +1706,7 @@ exports.setPlayerLeagueRating = function (leagueId, playerId, rating) {
     var leaguePlayerNode = repoConn.modify({
         key: result.hits[0].id,
         editor: function (node) {
-            node.rating = rating;
+            node.rating = toInt(rating);
             node._timestamp = valueLib.instant(new Date().toISOString());
             return node;
         }
@@ -1739,7 +1739,7 @@ exports.updateTeamLeagueRating = function (leagueId, teamId, ratingDelta) {
     var leagueTeamNode = repoConn.modify({
         key: result.hits[0].id,
         editor: function (node) {
-            node.rating = (node.rating || 0) + ratingDelta;
+            node.rating = toInt((node.rating || 0) + ratingDelta);
             node._timestamp = valueLib.instant(new Date().toISOString());
             return node;
         }
@@ -1773,7 +1773,7 @@ exports.setTeamLeagueRating = function (leagueId, teamId, rating) {
     var leagueTeamNode = repoConn.modify({
         key: result.hits[0].id,
         editor: function (node) {
-            node.rating = rating;
+            node.rating = toInt(rating);
             node._timestamp = valueLib.instant(new Date().toISOString())
             return node;
         }
@@ -1836,18 +1836,18 @@ exports.updateGame = function (params) {
                     key: gamePlayerResult.hits[0].id,
                     editor: function (node) {
                         if (gp.score != null) {
-                            node.score = gp.score;
+                            node.score = toInt(gp.score);
                         }
                         if (gp.scoreAgainst != null) {
-                            node.scoreAgainst = gp.scoreAgainst;
+                            node.scoreAgainst = toInt(gp.scoreAgainst);
                         }
                         if (gp.winner != null) {
                             node.winner = gp.winner;
                         }
                         if (gp.ratingDelta != null) {
-                            node.ratingDelta = gp.ratingDelta;
+                            node.ratingDelta = toInt(gp.ratingDelta);
                         }
-                        node._timestamp = valueLib.instant(new Date().toISOString())
+                        node._timestamp = valueLib.instant(new Date().toISOString());
                         return node;
                     }
                 });
@@ -1869,18 +1869,18 @@ exports.updateGame = function (params) {
                     key: gameTeamResult.hits[0].id,
                     editor: function (node) {
                         if (gt.score != null) {
-                            node.score = gt.score;
+                            node.score = toInt(gt.score);
                         }
                         if (gt.scoreAgainst != null) {
-                            node.scoreAgainst = gt.scoreAgainst;
+                            node.scoreAgainst = toInt(gt.scoreAgainst);
                         }
                         if (gt.winner != null) {
                             node.winner = gt.winner;
                         }
                         if (gt.ratingDelta != null) {
-                            node.ratingDelta = gt.ratingDelta;
+                            node.ratingDelta = toInt(gt.ratingDelta);
                         }
-                        node._timestamp = valueLib.instant(new Date().toISOString())
+                        node._timestamp = valueLib.instant(new Date().toISOString());
                         return node;
                     }
                 });
@@ -1941,7 +1941,7 @@ exports.deleteLeagueByName = function (name) {
 
 /**
  * Delete a league by its name.
- * @param  {string} name ID of the game.
+ * @param  {string} id ID of the game.
  * @return {string[]} Deleted node IDs.
  */
 exports.deleteGameById = function (id) {
@@ -2123,4 +2123,17 @@ var itemById = function (array, key, value) {
  */
 var boolToStr = function (value) {
     return value ? 'true' : 'false';
+};
+
+/**
+ * Convert number to int value.
+ *
+ * @param {number} value Number value.
+ * @return {number} Int value.
+ */
+var toInt = function (value) {
+    if (!value.intValue) {
+        throw "Expected number value: [" + value + "]"
+    }
+    return value.intValue();
 };
