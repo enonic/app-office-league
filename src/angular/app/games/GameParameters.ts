@@ -1,6 +1,6 @@
 
 export interface GameParameters {
-    leagueId: string;
+    leagueId?: string;
     gameId?: string;
     bluePlayer1?: string;
     bluePlayer2?: string;

@@ -50,7 +50,6 @@ export class NewGameComponent implements OnInit {
 
     onPlayClicked() {
         let gameParams: GameParameters = {
-            leagueId: this.leagueId,
             bluePlayer1: this.bluePlayer1 && this.bluePlayer1.id,
             bluePlayer2: this.bluePlayer2 && this.bluePlayer2.id,
             redPlayer1: this.redPlayer1 && this.redPlayer1.id,
