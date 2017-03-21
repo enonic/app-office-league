@@ -1949,34 +1949,6 @@ exports.deleteGameById = function (id) {
 };
 
 /**
- * Delete a league by its name.
- * @param  {string} name Name of the league.
- * @return {League} League object or null if not found.
- */
-exports.deleteLeagueByName = function (name) {
-    var league = exports.getLeagueByName(name);
-    if (league) {
-        var repoConn = newConnection();
-        return repoConn.delete(league._id);
-    }
-    return [];
-};
-
-/**
- * Delete a league by its name.
- * @param  {string} name Name of the league.
- * @return {League} League object or null if not found.
- */
-exports.deleteLeagueByName = function (name) {
-    var league = exports.getLeagueByName(name);
-    if (league) {
-        var repoConn = newConnection();
-        return repoConn.delete(league._id);
-    }
-    return [];
-};
-
-/**
  * Log game ranking info.
  *
  * @param {Game} game Game object.
