@@ -139,6 +139,20 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 return storeLib.getGamesByLeagueId(leagueId, offset, first, finished).hits;
             }
         },
+        activeGames: {
+            type: graphQlLib.list(graphQlObjectTypesLib.gameType),
+            args: {
+                leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                var leagueId = env.args.leagueId;
+                var offset = env.args.offset;
+                var first = env.args.first;
+                return storeLib.getActiveGamesByLeagueId(leagueId, offset, first).hits;
+            }
+        },
         game: {
             type: graphQlObjectTypesLib.gameType,
             args: {

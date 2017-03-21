@@ -42,6 +42,10 @@
             </ul>
         </div>
         <div class="col s12 l7 pull-l5">
+            <template [ngIf]="activeGames.length > 0">
+                <game-list [title]="'Active games'"
+                           [games]="activeGames"></game-list>
+            </template>
             <game-list [title]="'Latest games'"
                        [games]="league.games"></game-list>
         </div>

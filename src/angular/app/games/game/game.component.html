@@ -2,19 +2,22 @@
     <loading></loading>
 </template>
 <template [ngIf]="game != null">
+    <template [ngIf]="game.live">
+        <span class="game__live">Live</span>
+    </template>
     <div class="game">
 
         <div class="game__result">
             <div class="game__side game__side--1">
                 <template [ngIf]="blueTeam">
-                    <img src="{{blueTeam?.imageUrl}}?size=96" alt="{{blueTeam?.name}}" class="game__side-logo logo circle">
+                    <img src="{{blueTeam?.imageUrl}}?size=512" alt="{{blueTeam?.name}}" class="game__side-logo logo circle">
                     <div class="game__team-name">{{blueTeam?.name}}</div>
                     <ul class="game__players">
                         <li *ngFor="let bluePlayer of bluePlayers">{{bluePlayer.name}}</li>
                     </ul>
                 </template>
                 <template [ngIf]="!blueTeam">
-                    <img src="{{bluePlayers[0]?.imageUrl}}?size=96" alt="{{bluePlayers[0]?.name}}" class="game__side-logo logo circle">
+                    <img src="{{bluePlayers[0]?.imageUrl}}?size=512" alt="{{bluePlayers[0]?.name}}" class="game__side-logo logo circle">
                     <div class="team">{{bluePlayers[0]?.name}}</div>
                 </template>
             </div>
@@ -25,14 +28,14 @@
             </div>
             <div class="game__side game__side--2">
                 <template [ngIf]="redTeam">
-                    <img src="{{redTeam?.imageUrl}}?size=96" alt="{{redTeam?.name}}" class="game__side-logo logo circle">
+                    <img src="{{redTeam?.imageUrl}}?size=512" alt="{{redTeam?.name}}" class="game__side-logo logo circle">
                     <div class="game__team-name">{{redTeam?.name}}</div>
                     <ul class="game__players">
                         <li *ngFor="let redPlayer of redPlayers">{{redPlayer.name}}</li>
                     </ul>
                 </template>
                 <template [ngIf]="!redTeam">
-                    <img src="{{redPlayers[0]?.imageUrl}}?size=96" alt="{{redPlayers[0]?.name}}" class="game__side-logo logo circle">
+                    <img src="{{redPlayers[0]?.imageUrl}}?size=512" alt="{{redPlayers[0]?.name}}" class="game__side-logo logo circle">
                     <div class="team">{{redPlayers[0]?.name}}</div>
                 </template>
             </div>

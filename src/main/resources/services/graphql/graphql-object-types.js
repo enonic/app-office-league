@@ -626,6 +626,19 @@ exports.leagueType = graphQlLib.createObjectType({
             data: function (env) {
                 return storeLib.getGamesByLeagueId(env.source._id, env.args.offset, env.args.first, env.args.finished).hits;
             }
+        },
+        activeGames: {
+            type: graphQlLib.list(exports.gameType),
+            args: {
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
+            },
+            data: function (env) {
+                var leagueId = env.source._id;
+                var offset = env.args.offset;
+                var first = env.args.first;
+                return storeLib.getActiveGamesByLeagueId(leagueId, offset, first).hits;
+            }
         }
     }
 });

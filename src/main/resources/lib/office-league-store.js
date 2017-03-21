@@ -672,6 +672,49 @@ exports.getGamesByLeagueId = function (leagueId, start, count, finished) {
 };
 
 /**
+ * Retrieve a list of league games currently being played.
+ * @param  {string} leagueId League id.
+ * @param  {number} [start=0] First index of the league games.
+ * @param  {number} [count=10] Number of games to fetch.
+ * @return {GamesResponse} League games.
+ */
+exports.getActiveGamesByLeagueId = function (leagueId, start, count) {
+    var repoConn = newConnection();
+
+    var now = new Date();
+    var lastModifiedPlaying = now;
+    var finishedRecently = now;
+
+    lastModifiedPlaying.setSeconds(lastModifiedPlaying.getSeconds() - (60 * 30)); // 30 minutes ago
+    finishedRecently.setSeconds(finishedRecently.getSeconds() - (60 * 10)); // 10 minutes ago
+
+    var query = "type = '" + TYPE.GAME + "' AND leagueId = '" + leagueId + "' " +
+                "AND (" +
+                "(finished = 'false' AND _timestamp >= instant('" + lastModifiedPlaying.toISOString() + "')) " +
+                "OR (_timestamp >= instant('" + finishedRecently.toISOString() + "')) )";
+    log.info(query);
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: query,
+        sort: "finished, _timestamp DESC"
+    });
+
+    var games = [];
+    if (result.count > 0) {
+        games = result.hits.map(function (hit) {
+            return exports.getGameById(hit.id);
+        });
+    }
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "hits": games
+    };
+};
+
+/**
  * Retrieve the list of leagues a player is a member of.
  * @param  {string} playerId Player id.
  * @param  {number} [start=0] First index of the leagues.

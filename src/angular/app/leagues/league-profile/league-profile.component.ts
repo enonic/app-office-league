@@ -4,6 +4,7 @@ import {AuthService} from '../../auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
+import {Game} from '../../../graphql/schemas/Game';
 
 @Component({
     selector: 'league-profile',
@@ -86,6 +87,48 @@ export class LeagueProfileComponent extends BaseComponent {
                     name
                 }
             }
+            activeGames {
+                id
+                time
+                finished
+                points {
+                    player {
+                        name
+                    }
+                    time
+                    against
+                }
+                comments {
+                    author {
+                        name
+                    }
+                    text
+                }
+                gamePlayers {
+                    score
+                    scoreAgainst
+                    winner
+                    side
+                    ratingDelta
+                    player {
+                        name
+                    }
+                }
+                gameTeams {
+                    score
+                    scoreAgainst
+                    winner
+                    side
+                    ratingDelta
+                    team {
+                        id
+                        name
+                    }
+                }
+                league {
+                    name
+                }
+            }
         }
     }`;
 
@@ -98,6 +141,7 @@ export class LeagueProfileComponent extends BaseComponent {
     @Input() league: League;
     playerInLeague: boolean;
     adminInLeague: boolean;
+    activeGames: Game[] = [];
 
     constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService, private router: Router) {
         super(route);
@@ -115,12 +159,18 @@ export class LeagueProfileComponent extends BaseComponent {
 
     refreshData(leagueName: String): void {
         let playerId = this.authService.isAuthenticated() ? this.authService.getUser().playerId : '-1';
-        this.graphQLService.post(LeagueProfileComponent.getLeagueQuery, {name: leagueName, first:3, sort:'rating DESC, name ASC', playerId: playerId}).
-            then(data => {
-                this.league = League.fromJson(data.league);
-                this.playerInLeague = !!data.league.myLeaguePlayer;
-                this.adminInLeague = data.league.isAdmin;
+
+        const getLeagueParams = {name: leagueName, first: 3, sort: 'rating DESC, name ASC', playerId: playerId};
+        this.graphQLService.post(LeagueProfileComponent.getLeagueQuery, getLeagueParams).then(data => {
+            this.league = League.fromJson(data.league);
+            this.playerInLeague = !!data.league.myLeaguePlayer;
+            this.adminInLeague = data.league.isAdmin;
+            this.activeGames = data.league.activeGames.map((gameJson) => {
+                let game = Game.fromJson(gameJson);
+                game.live = true;
+                return game;
             });
+        });
     }
 
     onPlayClicked() {
@@ -134,10 +184,10 @@ export class LeagueProfileComponent extends BaseComponent {
     onJoinClicked() {
         if (this.authService.isAuthenticated() && !this.playerInLeague) {
             let playerId = this.authService.getUser().playerId;
-            this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery, {playerId: playerId, leagueId: this.league.id}).
-                then(data => {
+            this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery, {playerId: playerId, leagueId: this.league.id}).then(
+                data => {
                     this.refreshData(this.league.name);
-                }); 
+                });
         }
     }
 }
