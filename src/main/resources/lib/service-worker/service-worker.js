@@ -10,11 +10,19 @@ const filesToCache = [
     '{{assetUrl}}/img/logo.svg',
     '{{assetUrl}}/img/office-league-logo.svg'
 ];
+const dynamicAssets = [
+    '{{assetUrl}}/fonts/',
+    '{{assetUrl}}/img/flags/'
+];
 
 function consoleLog(message) {
     if (debugging) {
         console.log('[ServiceWorker]', message);
     }
+}
+
+function isRequestToDynamicAsset(url) {
+    return dynamicAssets.some(asset => (url.indexOf(asset) > -1));
 }
 
 self.addEventListener('install', function(e) {
@@ -64,7 +72,18 @@ self.addEventListener('fetch', function(e) {
             .then(function (response) {
                 consoleLog((response ? 'Serving from cache' : 'Fetching from the server') + ': ' + e.request.url);
 
-                return response || fetch(e.request);
+                return response || 
+                       fetch(e.request)
+                        .then(function (response) {
+                            if (isRequestToDynamicAsset(e.request.url)) {
+                                let clonedResponse = response.clone();
+                                consoleLog('Caching dynamic asset: ' + e.request.url);
+                                caches.open(cacheName).then(function(cache) {
+                                    cache.put(e.request.url, clonedResponse);
+                                });
+                            }
+                            return response;
+                        });
             })
     );
 });
