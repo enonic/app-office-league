@@ -5,16 +5,16 @@
     <div class="game">
 
         <div class="game__result">
-            <div class="game__team game__team--1">
-                <img *ngIf="blueTeam" src="{{blueTeam?.imageUrl}}?size=96" alt="{{blueTeam?.name}}" class="game__team-logo logo circle">
-                <img *ngIf="!blueTeam" src="{{bluePlayers[0]?.imageUrl}}?size=96" alt="{{bluePlayers[0]?.name}}" class="game__team-logo logo circle">
+            <div class="game__side game__side--1">
                 <template [ngIf]="blueTeam">
-                    <div class="team">{{blueTeam?.name}}</div>
-                    <ul class="players">
+                    <img src="{{blueTeam?.imageUrl}}?size=96" alt="{{blueTeam?.name}}" class="game__side-logo logo circle">
+                    <div class="game__team-name">{{blueTeam?.name}}</div>
+                    <ul class="game__players">
                         <li *ngFor="let bluePlayer of bluePlayers">{{bluePlayer.name}}</li>
                     </ul>
                 </template>
                 <template [ngIf]="!blueTeam">
+                    <img src="{{bluePlayers[0]?.imageUrl}}?size=96" alt="{{bluePlayers[0]?.name}}" class="game__side-logo logo circle">
                     <div class="team">{{bluePlayers[0]?.name}}</div>
                 </template>
             </div>
@@ -23,16 +23,16 @@
                 <span>-</span>
                 <span class="">{{redScore}}</span>
             </div>
-            <div class="game__team game__team--2">
-                <img *ngIf="redTeam" src="{{redTeam?.imageUrl}}?size=96" alt="{{redTeam?.name}}" class="game__team-logo logo circle">
-                <img *ngIf="!redTeam" src="{{redPlayers[0]?.imageUrl}}?size=96" alt="{{redPlayers[0]?.name}}" class="game__team-logo logo circle">
+            <div class="game__side game__side--2">
                 <template [ngIf]="redTeam">
-                    <div class="team">{{redTeam?.name}}</div>
-                    <ul class="players">
+                    <img src="{{redTeam?.imageUrl}}?size=96" alt="{{redTeam?.name}}" class="game__side-logo logo circle">
+                    <div class="game__team-name">{{redTeam?.name}}</div>
+                    <ul class="game__players">
                         <li *ngFor="let redPlayer of redPlayers">{{redPlayer.name}}</li>
                     </ul>
                 </template>
                 <template [ngIf]="!redTeam">
+                    <img src="{{redPlayers[0]?.imageUrl}}?size=96" alt="{{redPlayers[0]?.name}}" class="game__side-logo logo circle">
                     <div class="team">{{redPlayers[0]?.name}}</div>
                 </template>
             </div>
@@ -70,8 +70,8 @@
                 </template>
             </div>
         </div>-->
-
-        <div class="date">{{game.time | date}}</div>
+<!--
+        <div class="date">{{game.time | date}}</div>-->
     </div>
 
 </template>

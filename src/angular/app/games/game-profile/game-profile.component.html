@@ -1,7 +1,7 @@
 <template [ngIf]="game == null">
     <loading></loading>
 </template>
-<div *ngIf="game != null">
+<div *ngIf="game != null" class="game-profile">
 
     <game [game]="game"></game>
 
