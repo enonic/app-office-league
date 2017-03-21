@@ -640,15 +640,20 @@ var getGameDetails = function (repoConn, game) {
  * @param  {string} leagueId League id.
  * @param  {number} [start=0] First index of the league games.
  * @param  {number} [count=10] Number of games to fetch.
+ * @param  {boolean} [finished] Filter for games finished.
  * @return {GamesResponse} League games.
  */
-exports.getGamesByLeagueId = function (leagueId, start, count) {
+exports.getGamesByLeagueId = function (leagueId, start, count, finished) {
     var repoConn = newConnection();
 
+    var finishedCondition = '';
+    if (finished != null) {
+        finishedCondition = ' AND finished = "' + boolToStr(finished) + '"';
+    }
     var result = repoConn.query({
         start: start,
         count: count,
-        query: "type = '" + TYPE.GAME + "' AND leagueId = '" + leagueId + "'",
+        query: "type = '" + TYPE.GAME + "' AND leagueId = '" + leagueId + "'" + finishedCondition,
         sort: "time DESC"
     });
 
@@ -2108,4 +2113,14 @@ var itemById = function (array, key, value) {
         }
     }
     return null;
+};
+
+/**
+ * Convert boolean to string: 'true' or 'false'
+ *
+ * @param {boolean} value Boolean value.
+ * @return {string} String value.
+ */
+var boolToStr = function (value) {
+    return value ? 'true' : 'false';
 };

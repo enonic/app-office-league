@@ -128,13 +128,15 @@ exports.rootQueryType = graphQlLib.createObjectType({
             args: {
                 leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 offset: graphQlLib.GraphQLInt,
-                first: graphQlLib.GraphQLInt
+                first: graphQlLib.GraphQLInt,
+                finished: graphQlLib.GraphQLBoolean
             },
             data: function (env) {
                 var leagueId = env.args.leagueId;
                 var offset = env.args.offset;
                 var first = env.args.first;
-                return storeLib.getGamesByLeagueId(leagueId, offset, first).hits;
+                var finished = env.args.finished;
+                return storeLib.getGamesByLeagueId(leagueId, offset, first, finished).hits;
             }
         },
         game: {

@@ -44,7 +44,7 @@ export class LeagueProfileComponent extends BaseComponent {
                     name
                 }
             }
-            games{
+            games(finished: true){
                 id
                 time
                 finished
@@ -76,6 +76,11 @@ export class LeagueProfileComponent extends BaseComponent {
                     scoreAgainst
                     winner
                     side
+                    ratingDelta
+                    team {
+                        id
+                        name
+                    }
                 }
                 league {
                     name

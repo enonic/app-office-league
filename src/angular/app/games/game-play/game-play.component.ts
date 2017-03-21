@@ -17,7 +17,6 @@ import {GraphQLService} from '../../graphql.service';
 import {GameParameters} from '../GameParameters';
 import {League} from '../../../graphql/schemas/League';
 import {Point} from '../../../graphql/schemas/Point';
-import {XPCONFIG} from '../../app.config';
 import {Side, SideUtil} from '../../../graphql/schemas/Side';
 
 enum GameState {
@@ -85,6 +84,14 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
         this.route.queryParams.subscribe(params => {
             let gameParams: GameParameters = <GameParameters> params;
+            gameParams = {
+                leagueId: this.route.snapshot.params['leagueId'],
+                gameId: gameParams.gameId,
+                bluePlayer1: gameParams.bluePlayer1,
+                bluePlayer2: gameParams.bluePlayer2,
+                redPlayer1: gameParams.redPlayer1,
+                redPlayer2: gameParams.redPlayer2
+            };
             this.loadGameData(gameParams).then(() => this.startGame());
         });
     }
@@ -99,6 +106,9 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
     }
 
     onPlayerClicked(p: Player) {
+        if (this.hasGameEnded()) {
+            return;
+        }
         if (this.gameState === GameState.Paused && this.playerSelected === this.getPlayerPosition(p)) {
             this.unselectAll();
             this.resumeGame();
@@ -179,7 +189,6 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         }
 
 
-
         this.unselectAll();
         this.resumeGame();
         this.showMenu = false;
@@ -206,8 +215,6 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
     onEndGameClicked() {
 
     }
-
-
 
     onBlueGoalClick() {
         if (this.gameState !== GameState.Paused || (this.playerSelected == null)) {
@@ -248,23 +255,33 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         }
 
         this.updateElapsedTime();
-        this.startGameTimer();
 
-        if (!this.gameId) {
-            this.createGame().then((gameId) => {
-                console.log('Initial game created: ' + gameId);
-                this.gameId = gameId;
-                this.onlineMode = true;
-            }).catch((ex) => {
-                console.log('Could not create game. Offline mode On.');
-                this.onlineMode = false;
-            });
+        if (this.hasGameEnded()) {
+            this.gameState = GameState.Finished;
+            this.router.navigate(['games', this.gameId]);
+        } else {
+            this.startGameTimer();
+
+            if (!this.gameId) {
+                this.createGame().then((gameId) => {
+                    console.log('Initial game created: ' + gameId);
+                    this.gameId = gameId;
+                    this.onlineMode = true;
+                }).catch((ex) => {
+                    console.log('Could not create game. Offline mode On.');
+                    this.onlineMode = false;
+                });
+            }
         }
     }
 
     private pauseGame() {
-        this.gameState = GameState.Paused;
         this.showPlay = true;
+        if (this.hasGameEnded()) {
+            return;
+        }
+
+        this.gameState = GameState.Paused;
         this.stopGameTimer();
 
         this.secondsBeforePause = this.getElapsedSeconds(new Date());
@@ -273,10 +290,13 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
     }
 
     private resumeGame() {
-        this.gameState = GameState.Playing;
         this.showPlay = false;
-
         this.nameClassesField['paused'] = false;
+
+        if (this.hasGameEnded()) {
+            return;
+        }
+        this.gameState = GameState.Playing;
 
         this.baseTime = new Date();
         this.updateElapsedTime();
@@ -353,7 +373,8 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
     }
 
     private hasGameEnded(): boolean {
-        return (this.blueScore >= 10 || this.redScore >= 10) && Math.abs(this.blueScore - this.redScore) >= 2;
+        return (this.gameState === GameState.Finished) ||
+               ((this.blueScore >= 10 || this.redScore >= 10) && Math.abs(this.blueScore - this.redScore) >= 2);
     }
 
     private loadGameData(gameParams: GameParameters) {
