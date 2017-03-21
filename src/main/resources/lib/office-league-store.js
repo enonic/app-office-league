@@ -1923,6 +1923,48 @@ exports.updateGameRanking = function (game) {
 /**
  * Delete a league by its name.
  * @param  {string} name Name of the league.
+ * @return {string[]} Deleted node IDs.
+ */
+exports.deleteLeagueByName = function (name) {
+    var league = exports.getLeagueByName(name);
+    if (league) {
+        var repoConn = newConnection();
+        return repoConn.delete(league._id);
+    }
+    return [];
+};
+
+/**
+ * Delete a league by its name.
+ * @param  {string} name ID of the game.
+ * @return {string[]} Deleted node IDs.
+ */
+exports.deleteGameById = function (id) {
+    var game = exports.getGameById(id);
+    if (game) {
+        var repoConn = newConnection();
+        return repoConn.delete(game._id);
+    }
+    return [];
+};
+
+/**
+ * Delete a league by its name.
+ * @param  {string} name Name of the league.
+ * @return {League} League object or null if not found.
+ */
+exports.deleteLeagueByName = function (name) {
+    var league = exports.getLeagueByName(name);
+    if (league) {
+        var repoConn = newConnection();
+        return repoConn.delete(league._id);
+    }
+    return [];
+};
+
+/**
+ * Delete a league by its name.
+ * @param  {string} name Name of the league.
  * @return {League} League object or null if not found.
  */
 exports.deleteLeagueByName = function (name) {

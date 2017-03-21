@@ -249,6 +249,17 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 return storeLib.getGameById(env.args.gameId);
             }
         },
+        deleteGame: {
+            type: graphQlLib.list(graphQlLib.GraphQLID),
+            args: {
+                id: graphQlLib.nonNull(graphQlLib.GraphQLID)
+            },
+            data: function (env) {
+                var deletedIds = storeLib.deleteGameById(env.args.id);
+                storeLib.refresh();
+                return deletedIds;
+            }
+        },
         createComment: {
             type: graphQlObjectTypesLib.commentType,
             args: {
