@@ -1,6 +1,7 @@
 var nodeLib = require('/lib/xp/node');
 var valueLib = require('/lib/xp/value');
 var ratingLib = require('/lib/office-league-rating');
+var eventLib = require('/lib/xp/event');
 
 var REPO_NAME = 'office-league';
 var LEAGUES_PATH = '/leagues';
@@ -9,6 +10,7 @@ var TEAMS_PATH = '/teams';
 var LEAGUE_GAMES_REL_PATH = '/games';
 var LEAGUE_PLAYERS_REL_PATH = '/players';
 var LEAGUE_TEAMS_REL_PATH = '/teams';
+var OFFICE_LEAGUE_GAME_EVENT_ID = 'office-league-game';
 
 var TYPE = {
     PLAYER: 'player',
@@ -1930,6 +1932,18 @@ exports.updateGame = function (params) {
             })(gameTeam);
         }
     }
+
+    notifyGameUpdate(params.gameId);
+};
+
+var notifyGameUpdate = function (gameId) {
+    eventLib.send({
+        type: OFFICE_LEAGUE_GAME_EVENT_ID,
+        distributed: true,
+        data: {
+            gameId: gameId
+        }
+    });
 };
 
 /**

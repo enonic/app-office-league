@@ -40,7 +40,8 @@ exports.get = function (req) {
         loginUrl: portalLib.loginUrl({redirect: appBaseUrl}),
         logoutUrl: portalLib.logoutUrl({redirect: appBaseUrl}),
         idProvider: portalLib.idProviderUrl(),
-        setImageUrl: portalLib.serviceUrl({service: "set-image"})
+        setImageUrl: portalLib.serviceUrl({service: "set-image"}),
+        liveGameUrl: getWebSocketUrl(portalLib.serviceUrl({service: "live-game", type: "absolute"}))
     };
     var body = mustacheLib.render(view, params);
 
@@ -62,4 +63,9 @@ var loggedInUserWithoutPlayer = function () {
 
 var endsWith = function (str, suffix) {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
+};
+
+var getWebSocketUrl = function (url) {
+    var wsProto = url.indexOf('https:') === 0 ? 'wss' : 'ws';
+    return wsProto + url.substring(url.indexOf(':'));
 };

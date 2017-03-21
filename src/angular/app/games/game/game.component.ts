@@ -24,19 +24,14 @@ export class GameComponent implements OnInit, OnChanges {
     private redPlayers: Player[] = [];
     private bluePlayers: Player[] = [];
 
-    constructor(private graphQLService: GraphQLService, private route: ActivatedRoute) {
+    constructor(private graphQLService: GraphQLService, protected route: ActivatedRoute) {
     }
 
     ngOnInit(): void {
         let gameId = this.route.snapshot.params['id'];
 
         if (gameId) {
-            this.graphQLService.post(GameComponent.getGameQuery,
-                {gameId: gameId}).then(
-                data => {
-                    this.game = Game.fromJson(data.game);
-                    this.processGame(this.game);
-                });
+            this.loadGame(gameId);
         }
     }
 
@@ -45,6 +40,19 @@ export class GameComponent implements OnInit, OnChanges {
         if (gameChange && gameChange.currentValue) {
             this.processGame(gameChange.currentValue);
         }
+    }
+
+    protected loadGame(gameId: string) {
+        this.graphQLService.post(GameComponent.getGameQuery,
+            {gameId: gameId}).then(
+            data => {
+                this.game = Game.fromJson(data.game);
+                this.processGame(this.game);
+                this.afterGameLoaded(this.game);
+            });
+    }
+
+    protected afterGameLoaded(game: Game) {
     }
 
     private processGame(game: Game) {
