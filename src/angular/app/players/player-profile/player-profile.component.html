@@ -1,7 +1,7 @@
 <template [ngIf]="player == null">
     <loading></loading>
 </template>
-<div *ngIf="player != null">
+<div *ngIf="player != null" class="player-profile">
 
     <div class="row">
         <div class="col s10">
@@ -15,7 +15,7 @@
             <a class="btn-floating btn-large waves-effect waves-light light-blue darken-4"><i class="material-icons">edit</i></a>
         </div>
     </div>
-    <div class="row">
+    <div class="row player-profile__details">
         <div class="col s12">
             <form>
                 <div>
@@ -42,15 +42,15 @@
 
     <ul class="row">
 
-        <li class="col s12 m8">
+        <li class="col s12 l6">
             <game-list [games]="games" [title]="'Latest games'"></game-list>
         </li>
 
-        <li class="col s12 m8">
+        <li class="col s12 l6">
             <league-player-list [leaguePlayers]="player.leaguePlayers" displayLeagues="true" title="Leagues"></league-player-list>
         </li>
 
-        <li class="col s12 m8">
+        <li class="col s12 l6">
             <team-list [teams]="teams" [title]="'Teams'" [detailsPath]="teamDetailsPath" hideSearchField="true"></team-list>
         </li>
 
