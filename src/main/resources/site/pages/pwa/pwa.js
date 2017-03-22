@@ -12,6 +12,10 @@ exports.get = function (req) {
     var appBaseUrl = portalLib.pageUrl({
         path: site._path + '/app'
     });
+    var appBaseAbsoluteUrl = portalLib.pageUrl({
+        path: site._path + '/app',
+        type: 'absolute'
+    });
 
     if (loggedInUserWithoutPlayer()) {
         var createPlayerPath = appBaseUrl + '/player-create';
@@ -37,8 +41,8 @@ exports.get = function (req) {
         siteUrl: baseHref,
         baseHref: appBaseUrl + '/',   // trailing slash for relative urls to be correct
         assetsUrl: portalLib.assetUrl({path: ""}),
-        loginUrl: portalLib.loginUrl({redirect: appBaseUrl}),
-        logoutUrl: portalLib.logoutUrl({redirect: appBaseUrl}),
+        loginUrl: portalLib.loginUrl({redirect: appBaseAbsoluteUrl}),
+        logoutUrl: portalLib.logoutUrl({redirect: appBaseAbsoluteUrl}),
         idProvider: portalLib.idProviderUrl(),
         setImageUrl: portalLib.serviceUrl({service: "set-image"}),
         liveGameUrl: getWebSocketUrl(portalLib.serviceUrl({service: "live-game", type: "absolute"}))
