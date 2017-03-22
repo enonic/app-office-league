@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/enonic/app-office-league.svg?branch=master)](https://travis-ci.org/enonic/app-office-league)
 
-Office League application for Enonic XP.
+Office League application for [Enonic XP](https://enonic.com/developer-tour).
 
 ## Releases
 
