@@ -5,10 +5,15 @@ const debugging = true;
 const filesToCache = [
     '{{siteUrl}}',
     '{{siteUrl}}/',
+    '{{siteUrl}}/manifest.json',
     '{{appUrl}}',
     '{{appUrl}}/',
     '{{assetUrl}}/img/logo.svg',
-    '{{assetUrl}}/img/office-league-logo.svg'
+    '{{assetUrl}}/img/office-league-logo.svg',
+    '{{assetUrl}}/icons/apple-touch-icon.png',
+    '{{assetUrl}}/icons/favicon-16x16.png',
+    '{{assetUrl}}/icons/favicon-32x32.png',
+    '{{assetUrl}}/icons/safari-pinned-tab.svg'
 ];
 const dynamicAssets = [
     '{{assetUrl}}/fonts/',
