@@ -1,0 +1,20 @@
+{
+  "name": "Office League",
+  "short_name": "Office League",
+  "theme_color": "#142663",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "{{siteUrl}}/?source=web_app_manifest",
+  "icons": [
+    {
+      "src": "{{iconUrl}}/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "{{iconUrl}}/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

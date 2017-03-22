@@ -45,8 +45,14 @@
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
       <pattern>/app/player-create</pattern>
     </mapping>
-    <mapping controller="/lib/service-worker/controller.js">
+    <mapping controller="/lib/pwa/sw-controller.js">
       <pattern>/service-worker.js</pattern>
+    </mapping>
+    <mapping controller="/lib/pwa/manifest-controller.js">
+      <pattern>/manifest.json</pattern>
+    </mapping>
+    <mapping controller="/lib/pwa/favicon-controller.js">
+      <pattern>/favicon.ico</pattern>
     </mapping>
   </mappings>
 
