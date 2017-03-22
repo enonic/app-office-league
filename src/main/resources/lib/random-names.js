@@ -32,6 +32,9 @@ var pluralize = function (str) {
     if (str.endsWith('ch')) {
         return str + 'es';
     }
+    if (str.endsWith('s')) {
+        return str + 'es';
+    }
     return str + 's';
 };
 
