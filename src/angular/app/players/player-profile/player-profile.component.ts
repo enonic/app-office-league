@@ -21,7 +21,7 @@ export class PlayerProfileComponent extends BaseComponent {
     private teams: Team[] = [];
     private teamDetailsPath: string[];
     private editable: boolean;
-    
+
 
     constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService) {
         super(route);
@@ -65,6 +65,10 @@ export class PlayerProfileComponent extends BaseComponent {
 
     onEditClicked() {
         this.router.navigate(['players', this.player.name.toLowerCase(), 'edit']);
+    }
+
+    onCreateTeamClicked() {
+        // TODO
     }
 
     private static readonly getPlayerQuery = `query($name: String){

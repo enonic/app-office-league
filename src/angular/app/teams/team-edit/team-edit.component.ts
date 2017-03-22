@@ -6,6 +6,7 @@ import {MaterializeDirective} from 'angular2-materialize/dist/index';
 import {Http, Headers, RequestOptions, Response} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
 import {Team} from '../../../graphql/schemas/Team';
+import {Player} from '../../../graphql/schemas/Player';
 
 @Component({
     selector: 'team-edit',
@@ -18,6 +19,7 @@ export class TeamEditComponent extends BaseComponent implements AfterViewInit {
     id: string;
     description: string;
     imageUrl: string;
+    players: Player[] = [];
 
     @ViewChild('fileInput') inputEl: ElementRef;
     nameClasses: {} = {invalid: false};
@@ -46,6 +48,7 @@ export class TeamEditComponent extends BaseComponent implements AfterViewInit {
                 this.id = team.id;
                 this.description = team.description;
                 this.imageUrl = team.imageUrl;
+                this.players = team.players || [];
             });
     }
 
@@ -128,6 +131,10 @@ export class TeamEditComponent extends BaseComponent implements AfterViewInit {
             id
             name
             description
+            players {
+                id
+                name
+            }
         }
     }`;
 

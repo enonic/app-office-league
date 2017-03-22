@@ -18,10 +18,13 @@ export class PlayerSummaryComponent extends BaseComponent {
     @Input() rating: number = 0;
     @Input() ranking: number = 0;
     @Input() showPoints: boolean;
+    @Input() disableClick: boolean;
     @Output() rankingClicked: EventEmitter<void> = new EventEmitter<void>();
 
     @HostListener('click') onClick() {
-        this.router.navigate(['players', this.playerId || this.player.name]);
+        if (!this.disableClick) {
+            this.router.navigate(['players', this.playerId || this.player.name]);
+        }
     }
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private router: Router) {

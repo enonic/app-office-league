@@ -1590,6 +1590,9 @@ exports.updatePlayer = function (params) {
             if (params.description != null) {
                 node.description = params.description;
             }
+            if (params.userKey != null) { // TODO for testing, remove
+                node.userKey = params.userKey;
+            }
             if (imageAttachment) {
                 node.image = imageAttachment.name;
                 node.attachment = imageAttachment;

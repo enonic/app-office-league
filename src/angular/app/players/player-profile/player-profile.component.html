@@ -11,8 +11,13 @@
                 <h2 class="header light-blue-text text-darken-4">{{player.name}}</h2>
             </div>
         </div>
-        <div *ngIf="editable" class="col s2" (click)="onEditClicked()">
-            <a class="btn-floating btn-large waves-effect waves-light light-blue darken-4"><i class="material-icons">edit</i></a>
+    </div>
+    <div class="row">
+        <div *ngIf="editable" class="col s6 center-align" (click)="onEditClicked()">
+            <a class="waves-effect waves-light btn light-blue darken-3"><i class="material-icons left">mode_edit</i>Edit</a>
+        </div>
+        <div *ngIf="editable" class="col s6 center-align" (click)="onCreateTeamClicked()">
+            <a class="waves-effect waves-light btn green"><i class="material-icons left">person_add</i>Create Team</a>
         </div>
     </div>
     <div class="row player-profile__details">

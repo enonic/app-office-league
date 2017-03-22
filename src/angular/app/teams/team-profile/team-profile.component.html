@@ -31,7 +31,7 @@
     <ul class="row">
 
         <li class="col s12 m8">
-            <game-list [games]="games" [title]="'Latest games'"></game-list>
+            <player-list [players]="team.players" [title]="'Players'" hideSearchField="true"></player-list>
         </li>
 
         <li class="col s12 m8">
@@ -39,7 +39,7 @@
         </li>
 
         <li class="col s12 m8">
-            <player-list [players]="team.players" [title]="'Players'" hideSearchField="true"></player-list>
+            <game-list [games]="games" [title]="'Latest games'"></game-list>
         </li>
 
     </ul>

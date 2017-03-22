@@ -23,11 +23,24 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s6">
+                    <ul class="collection list">
+                        <li class="collection-header">
+                            <i class="material-icons prefix team__players-titleicon">people</i>
+                            <h6 class="team__players-title">Team Players</h6>
+                        </li>
+                        <li *ngFor="let player of players" class="collection-item avatar">
+                            <player-summary [player]="player" [disableClick]="true"></player-summary>
+                        </li>
+                    </ul>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix team__players-titleicon">image</i>
+                        <h6 class="team__players-title">Team Logo</h6>
                         <div class="right">
                             <input type="file" accept="image/*" #fileInput style="display:none;">
                             <div class="team-icon-frame">
-                                <img src="{{imageUrl}}?size=128" alt="Team Image" class="team-icon circle preview"
+                                <img src="{{imageUrl}}?size=512" alt="Team Image" class="team-icon circle preview"
                                      (click)="fileInput.click()">
                             </div>
                         </div>
