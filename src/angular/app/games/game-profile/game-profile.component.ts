@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {GraphQLService} from '../../graphql.service';
+import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute} from '@angular/router';
 import {GameComponent} from '../game/game.component';
 import {XPCONFIG} from '../../app.config';

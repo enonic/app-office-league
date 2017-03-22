@@ -1,7 +1,7 @@
 import {Component, Input, HostListener, Output, EventEmitter} from '@angular/core';
 import {Player} from '../../../graphql/schemas/Player';
-import {BaseComponent} from '../../common/base.component';
-import {GraphQLService} from '../../graphql.service';
+import {BaseComponent} from '../base.component';
+import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RankingHelper} from '../../../graphql/schemas/RankingHelper';
 

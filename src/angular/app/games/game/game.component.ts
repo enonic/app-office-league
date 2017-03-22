@@ -1,5 +1,5 @@
 import {Component, OnInit, Input, OnChanges, SimpleChanges, SimpleChange} from '@angular/core';
-import {GraphQLService} from '../../graphql.service';
+import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute} from '@angular/router';
 import {Game} from '../../../graphql/schemas/Game';
 import {GamePlayer} from '../../../graphql/schemas/GamePlayer';

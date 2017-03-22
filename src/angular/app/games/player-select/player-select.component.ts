@@ -1,7 +1,6 @@
 import {Component, OnInit, Input, Output, OnChanges, SimpleChanges, SimpleChange, EventEmitter, ElementRef} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
-import {GraphQLService} from '../../graphql.service';
+import {GraphQLService} from '../../services/graphql.service';
 
 @Component({
     selector: 'player-select',

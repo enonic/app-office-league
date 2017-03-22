@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import {ActivatedRoute, Router, Params} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
-import {GraphQLService} from '../../graphql.service';
+import {GraphQLService} from '../../services/graphql.service';
 import {GameParameters} from '../GameParameters';
 import {League} from '../../../graphql/schemas/League';
 import {Point} from '../../../graphql/schemas/Point';

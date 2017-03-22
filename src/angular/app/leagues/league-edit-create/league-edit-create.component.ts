@@ -1,13 +1,13 @@
-import {Component, OnInit, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
-import {GraphQLService} from '../../graphql.service';
+import {Component, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
+import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {XPCONFIG} from '../../app.config';
-import {Http, Headers, RequestOptions, Response} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
+import {Http, Headers, RequestOptions} from '@angular/http';
 import {Sport, SportUtil} from '../../../graphql/schemas/Sport';
 import {League} from '../../../graphql/schemas/League';
-import {AuthService} from '../../auth.service';
+import {AuthService} from '../../services/auth.service';
+import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
     selector: 'league-edit-create',
@@ -25,7 +25,8 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     nameClasses: {} = {invalid: false};
     editMode: boolean;
 
-    constructor(private http: Http, private authService: AuthService, private graphQLService: GraphQLService, route: ActivatedRoute,
+    constructor(private http: Http, private authService: AuthService, private graphQLService: GraphQLService,
+                private pageTitleService: PageTitleService, route: ActivatedRoute,
                 private router: Router) {
         super(route);
     }
@@ -44,6 +45,10 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     ngAfterViewInit(): void {
         let inputEl: HTMLInputElement = this.inputEl.nativeElement;
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
+    }
+
+    private updatePageTitle(title: string) {
+        this.pageTitleService.setTitle(title);
     }
 
     private validate(): boolean {
@@ -107,6 +112,9 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             this.leagueImageUrl = this.getLeagueImageUrl();
             const sport = SportUtil.parse(league.sport) || Sport.FOOS;
             this.sport = Sport[sport].toLowerCase();
+
+            this.pageTitleService.setTitle(league.name);
+
             return league;
         });
     }

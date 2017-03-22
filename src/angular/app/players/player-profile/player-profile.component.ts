@@ -1,20 +1,21 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Handedness} from '../../../graphql/schemas/Handedness';
 import {Player} from '../../../graphql/schemas/Player';
 import {BaseComponent} from '../../common/base.component';
-import {GraphQLService} from '../../graphql.service';
+import {GraphQLService} from '../../services/graphql.service';
 import {Countries} from '../../common/countries';
 import {Game} from '../../../graphql/schemas/Game';
 import {Team} from '../../../graphql/schemas/Team';
 import {XPCONFIG} from '../../app.config';
+import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
     selector: 'player-profile',
     templateUrl: 'player-profile.component.html',
     styleUrls: ['player-profile.component.less']
 })
-export class PlayerProfileComponent extends BaseComponent {
+export class PlayerProfileComponent extends BaseComponent implements OnChanges {
 
     @Input() player: Player;
     private games: Game[] = [];
@@ -23,7 +24,8 @@ export class PlayerProfileComponent extends BaseComponent {
     private editable: boolean;
 
 
-    constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService) {
+    constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
+                private pageTitleService: PageTitleService) {
         super(route);
     }
 
@@ -36,6 +38,15 @@ export class PlayerProfileComponent extends BaseComponent {
             data => this.handleResponse(data));
     }
 
+    ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
+
+        let playerChange = changes['player'];
+        if (playerChange && playerChange.currentValue) {
+            this.pageTitleService.setTitle((<Player>playerChange.currentValue).name);
+        }
+    }
+
     private handleResponse(data) {
         this.player = Player.fromJson(data.player);
         this.games = data.player.gamePlayers.map((gm) => Game.fromJson(gm.game));
@@ -43,6 +54,8 @@ export class PlayerProfileComponent extends BaseComponent {
         this.teamDetailsPath = data.player.teamsConnection.pageInfo.hasNext ? ['players', data.player.name, 'teams'] : undefined;
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
         this.editable = this.player.id === currentPlayerId;
+
+        this.pageTitleService.setTitle(this.player.name);
     }
 
     getNationality(): string {

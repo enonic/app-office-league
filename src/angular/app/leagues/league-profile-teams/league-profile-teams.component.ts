@@ -1,6 +1,6 @@
 import {Component, Input, SimpleChanges} from '@angular/core';
-import {GraphQLService} from '../../graphql.service';
-import {AuthService} from '../../auth.service';
+import {GraphQLService} from '../../services/graphql.service';
+import {AuthService} from '../../services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {League} from '../../../graphql/schemas/League';
 import {LeagueTeam} from '../../../graphql/schemas/LeagueTeam';

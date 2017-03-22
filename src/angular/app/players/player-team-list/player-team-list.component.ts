@@ -3,8 +3,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {Player} from '../../../graphql/schemas/Player';
 import {Team} from '../../../graphql/schemas/Team';
-import {GraphQLService} from '../../graphql.service';
-import {MaterializeDirective} from 'angular2-materialize/dist/index';
+import {GraphQLService} from '../../services/graphql.service';
 
 @Component({
     selector: 'player-team-list',

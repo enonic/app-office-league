@@ -2,8 +2,7 @@ import {Component, Input, SimpleChanges} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {Player} from '../../../graphql/schemas/Player';
-import {GraphQLService} from '../../graphql.service';
-import {MaterializeDirective} from 'angular2-materialize/dist/index';
+import {GraphQLService} from '../../services/graphql.service';
 
 @Component({
     selector: 'player-list-page',

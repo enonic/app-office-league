@@ -1,4 +1,4 @@
-import {ImageService} from '../../app/image.service';
+import {ImageService} from '../../app/services/image.service';
 import {NamedEntity} from './NamedEntity';
 import {Sport, SportUtil} from './Sport';
 import {Game} from './Game';

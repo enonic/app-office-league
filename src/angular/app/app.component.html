@@ -3,7 +3,7 @@
         <div class="nav-wrapper">
             <a *ngIf="!auth.isNewUser()" href="#" (click)="location.back()" class="button-back hide-on-large-only"><i class="material-icons">arrow_back</i></a>
 
-            <a routerLink="/" href="#" class="brand-logo"><img src="{{logoUrl}}" height="40px">Office League</a>
+            <a routerLink="/" href="#" class="brand-logo"><img src="{{logoUrl}}" height="40px">{{pageTitle}}</a>
 
             <a *ngIf="!auth.isNewUser()" href="#"
                materialize="sideNav"
