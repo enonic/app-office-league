@@ -1,31 +1,39 @@
-import {Component, Input, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, Input, ElementRef, ViewChild, AfterViewInit, EventEmitter} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
+import {MaterializeDirective, MaterializeAction} from 'angular2-materialize/dist/index';
 import {Http, Headers, RequestOptions, Response} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
 import {Team} from '../../../graphql/schemas/Team';
 import {PageTitleService} from '../../services/page-title.service';
 import {Player} from '../../../graphql/schemas/Player';
+import {ImageService} from '../../services/image.service';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
-    selector: 'team-edit',
-    templateUrl: 'team-edit.component.html',
-    styleUrls: ['team-edit.component.less']
+    selector: 'team-edit-create',
+    templateUrl: 'team-edit-create.component.html',
+    styleUrls: ['team-edit-create.component.less']
 })
-export class TeamEditComponent extends BaseComponent implements AfterViewInit {
+export class TeamEditCreateComponent extends BaseComponent implements AfterViewInit {
+    materializeActions = new EventEmitter<string|MaterializeAction>();
 
     name: string;
     id: string;
     description: string;
     imageUrl: string;
     players: Player[] = [];
+    createMode: boolean;
+    excludePlayerIds: {[id: string]: boolean} = {};
+    leagueIds: string[] = [];
+    private currentPlayer: Player;
 
     @ViewChild('fileInput') inputEl: ElementRef;
     nameClasses: {} = {invalid: false};
 
     constructor(private http: Http, route: ActivatedRoute, private graphQLService: GraphQLService,
-                private pageTitleService: PageTitleService, private router: Router) {
+                private pageTitleService: PageTitleService, private router: Router, private authService: AuthService) {
         super(route);
     }
 
@@ -33,7 +41,11 @@ export class TeamEditComponent extends BaseComponent implements AfterViewInit {
         super.ngOnInit();
 
         let name = this.route.snapshot.params['name'];
-        this.loadTeam(name);
+        if (name) {
+            this.loadTeam(name);
+        } else {
+            this.setupCreate();
+        }
     }
 
     ngAfterViewInit(): void {
@@ -46,7 +58,7 @@ export class TeamEditComponent extends BaseComponent implements AfterViewInit {
     }
 
     private loadTeam(name) {
-        this.graphQLService.post(TeamEditComponent.getTeamQuery, {name: name}).then(
+        this.graphQLService.post(TeamEditCreateComponent.getTeamQuery, {name: name}).then(
             data => {
                 const team = Team.fromJson(data.team);
                 this.name = team.name;
@@ -55,6 +67,31 @@ export class TeamEditComponent extends BaseComponent implements AfterViewInit {
                 this.imageUrl = team.imageUrl;
                 this.players = team.players || [];
                 this.pageTitleService.setTitle(team.name);
+            });
+    }
+
+    private setupCreate() {
+        let playerId = this.authService.getUser().playerId;
+        this.graphQLService.post(TeamEditCreateComponent.getPlayerByIdQuery, {playerId: playerId}).then(
+            data => {
+                let playerTeamMates = data.player.teams.map((team) => {
+                    return team.players.map((p) => p.id).filter((id) => id != playerId)[0];
+                });
+                delete data.player.teams;
+                const player = Player.fromJson(data.player);
+                this.name = '';
+                this.id = '';
+                this.description = '';
+                this.imageUrl = ImageService.teamDefault();
+                this.players = [player];
+                this.currentPlayer = player;
+                this.createMode = true;
+                this.excludePlayerIds[player.id] = true;
+                playerTeamMates.forEach((playerId) => this.excludePlayerIds[playerId] = true);
+
+                if (data.player && data.player.leaguePlayers) {
+                    this.leagueIds = data.player.leaguePlayers.map((lp) => lp.league.id);
+                }
             });
     }
 
@@ -72,13 +109,17 @@ export class TeamEditComponent extends BaseComponent implements AfterViewInit {
         });
     }
 
-    saveTeam() {
+    onSelectPlayerClicked() {
+        this.showModal();
+    }
+
+    private updateTeam() {
         const updateTeamParams = {
             teamId: this.id,
             name: this.name,
             description: this.description || '',
         };
-        this.graphQLService.post(TeamEditComponent.updateTeamMutation, updateTeamParams).then(data => {
+        this.graphQLService.post(TeamEditCreateComponent.updateTeamMutation, updateTeamParams).then(data => {
             return data && data.updateTeam;
         }).then(updatedTeam => {
             this.uploadImage(updatedTeam.id).then(uploadResp => {
@@ -87,8 +128,46 @@ export class TeamEditComponent extends BaseComponent implements AfterViewInit {
         });
     }
 
+    private createTeam() {
+        const createTeamParams = {
+            playerIds: [this.players[0].id, this.players[1].id],
+            name: this.name,
+            description: this.description || '',
+        };
+        this.graphQLService.post(TeamEditCreateComponent.createTeamMutation, createTeamParams).then(data => {
+            return data && data.createTeam;
+        }).then(createdTeam => {
+            this.uploadImage(createdTeam.id).then(uploadResp => {
+                this.router.navigate(['teams', createdTeam.name]);
+            });
+        });
+    }
+
+    saveTeam() {
+        if (this.createMode) {
+            this.createTeam();
+        } else {
+            this.updateTeam();
+        }
+    }
+
+    onPlayerSelected(p: Player) {
+        if (p) {
+            this.hideModal();
+            this.players = [this.currentPlayer, p];
+        }
+    }
+
+    public showModal(): void {
+        this.materializeActions.emit({action: "modal", params: ['open']});
+    }
+
+    public hideModal(): void {
+        this.materializeActions.emit({action: "modal", params: ['close']});
+    }
+
     private checkTeamNameInUse(name: string): Promise<boolean> {
-        return this.graphQLService.post(TeamEditComponent.teamNameInUseQuery, {name: name}).then(data => {
+        return this.graphQLService.post(TeamEditCreateComponent.teamNameInUseQuery, {name: name}).then(data => {
             return data && data.team ? data.team.id !== this.id : false;
         });
     }
@@ -118,7 +197,7 @@ export class TeamEditComponent extends BaseComponent implements AfterViewInit {
 
     private validate(): boolean {
         this.nameClasses['invalid'] = !this.name;
-        return !!this.name;
+        return !!this.name && (!this.createMode || this.players.length === 2);
     }
 
     private onFileInputChange(input: HTMLInputElement) {
@@ -154,6 +233,30 @@ export class TeamEditComponent extends BaseComponent implements AfterViewInit {
         updateTeam(id: $teamId, name: $name, description: $description) {
             id
             name
+        }
+    }`;
+
+    private static readonly createTeamMutation = `mutation ($playerIds: [ID]!, $name: String!, $description: String) {
+        createTeam(name: $name, description: $description, playerIds: $playerIds) {
+            id
+            name
+        }
+    }`;
+
+    private static readonly getPlayerByIdQuery = `query($playerId: ID){
+        player(id: $playerId) {
+            id
+            name
+            leaguePlayers {
+                league {
+                    id
+                }
+            }
+            teams(first:-1) {
+              players {
+                id
+              }
+            }
         }
     }`;
 }

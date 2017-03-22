@@ -1,7 +1,7 @@
-<template [ngIf]="id == ''">
+<template [ngIf]="id == '' && !createMode">
     <loading></loading>
 </template>
-<template [ngIf]="id != ''">
+<template [ngIf]="id != '' || createMode">
     <div class="card">
         <div class="card-content blue-grey-text">
             <span class="card-title">Team Profile</span>
@@ -33,6 +33,13 @@
                             <player-summary [player]="player" [disableClick]="true"></player-summary>
                         </li>
                     </ul>
+                    <template [ngIf]="createMode">
+                        <button class="btn waves-effect waves-light grey darken-1" type="button" name="selectPlayer"
+                                (click)="onSelectPlayerClicked()">
+                            Select player
+                        </button>
+                    </template>
+
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
@@ -59,3 +66,12 @@
         </div>
     </div>
 </template>
+
+<div class="modal center player-select-modal" materialize="modal"
+     [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
+    <div class="modal-content">
+        <h4 class="center">Select a player</h4>
+        <player-select [leagueIds]="leagueIds" [enabled]="'true'" [excludePlayerIds]="excludePlayerIds"
+                       (playerSelected)="onPlayerSelected($event)"></player-select>
+    </div>
+</div>

@@ -81,7 +81,7 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
     }
 
     onCreateTeamClicked() {
-        // TODO
+        this.router.navigate(['team-create']);
     }
 
     private static readonly getPlayerQuery = `query($name: String){

@@ -11,6 +11,7 @@ import {TeamSummaryComponent} from './team-summary/team-summary.component';
 import {TeamListComponent} from './team-list/team-list.component';
 import {TeamPlayersComponent} from './team-players/team-players.component';
 import {LoadingComponent} from './loading/loading.component';
+import {PlayerSelectComponent} from './player-select/player-select.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import {LoadingComponent} from './loading/loading.component';
         BaseComponent,
         ListComponent,
         List2Component,
-        LoadingComponent
+        LoadingComponent,
+        PlayerSelectComponent
     ],
     imports: [
         BrowserModule,
@@ -41,7 +43,8 @@ import {LoadingComponent} from './loading/loading.component';
         BaseComponent,
         ListComponent,
         List2Component,
-        LoadingComponent
+        LoadingComponent,
+        PlayerSelectComponent
     ]
 })
 export class CommonModule {

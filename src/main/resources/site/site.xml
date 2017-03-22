@@ -48,6 +48,9 @@
     <mapping controller="/lib/pwa/sw-controller.js">
       <pattern>/service-worker.js</pattern>
     </mapping>
+    <mapping controller="/site/pages/pwa/pwa.js" order="20">
+      <pattern>/app/team-create</pattern>
+    </mapping>
     <mapping controller="/lib/pwa/manifest-controller.js">
       <pattern>/manifest.json</pattern>
     </mapping>

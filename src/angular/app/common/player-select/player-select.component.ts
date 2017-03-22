@@ -13,7 +13,7 @@ import {GraphQLService} from '../../services/graphql.service';
 })
 export class PlayerSelectComponent implements OnInit, OnChanges {
 
-    @Input() leagueId: string;
+    @Input() leagueIds: string[];
     @Input() enabled: boolean;
     @Input() excludePlayerIds: {[id: string]: boolean} = {};
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
@@ -30,7 +30,8 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         let enabledChange = changes['enabled'];
-        if (enabledChange && enabledChange.currentValue) {
+        let leagueIdsChange = changes['leagueIds'];
+        if ((enabledChange && enabledChange.currentValue) || (leagueIdsChange && leagueIdsChange.currentValue)) {
             this.loadPlayers();
         } else {
             this.players = [];
@@ -39,11 +40,16 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
     }
 
     private loadPlayers() {
-        this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {leagueId: this.leagueId, first: -1, sort: 'name ASC'}).then(
+        if (this.leagueIds.length === 0) {
+            return;
+        }
+        this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {leagueIds: this.leagueIds, first: -1, sort: 'name ASC'}).then(
             data => {
-                if (data.league && data.league.leaguePlayers) {
+                if (data.leagues) {
+                    let leaguePlayers = [];
+                    data.leagues.forEach((league) => leaguePlayers.push(...league.leaguePlayers));
                     this.players =
-                        data.league.leaguePlayers.filter(lp => !this.excludePlayerIds[lp.player.id]) .map(lp => Player.fromJson(lp.player));
+                        leaguePlayers.filter(lp => !this.excludePlayerIds[lp.player.id]) .map(lp => Player.fromJson(lp.player));
                 }
                 this.ready = true;
             });
@@ -87,8 +93,8 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
         this.notifySelected();
     }
 
-    private static readonly GetPlayersQuery = `query ($leagueId: ID, $first:Int, $sort: String) {
-        league(id: $leagueId) {
+    private static readonly GetPlayersQuery = `query ($leagueIds: [ID], $first:Int, $sort: String) {
+        leagues(ids: $leagueIds) {
             leaguePlayers(first: $first, sort: $sort) {
                 player {
                     id

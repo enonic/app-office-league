@@ -229,6 +229,20 @@ exports.getLeagueById = function (leagueId) {
 };
 
 /**
+ * Retrieve multiple leagues by their ids.
+ * @param  {string[]} leagueIds Ids of the leagues.
+ * @return {League[]} Array of League objects found.
+ */
+exports.getLeaguesById = function (leagueIds) {
+    var repoConn = newConnection();
+
+    var obj = repoConn.get(leagueIds);
+    return obj && [].concat(obj).filter(function (obj) {
+            return obj.type === TYPE.LEAGUE;
+        });
+};
+
+/**
  * Retrieve a league by its name.
  * @param  {string} name Name of the league.
  * @return {League} League object or null if not found.

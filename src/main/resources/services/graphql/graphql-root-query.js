@@ -227,14 +227,18 @@ exports.rootQueryType = graphQlLib.createObjectType({
             args: {
                 playerId: graphQlLib.GraphQLID,
                 offset: graphQlLib.GraphQLInt,
-                first: graphQlLib.GraphQLInt
+                first: graphQlLib.GraphQLInt,
+                ids: graphQlLib.list(graphQlLib.GraphQLID)
             },
             data: function (env) {
                 var playerId = env.args.playerId;
                 var offset = env.args.offset;
                 var first = env.args.first;
+                var ids = env.args.ids;
                 if (playerId) {
                     return storeLib.getLeaguesByPlayerId(playerId, offset, first).hits;
+                } else if (ids) {
+                    return storeLib.getLeaguesById(ids);
                 } else {
                     return storeLib.getLeagues(offset, first).hits;
                 }
