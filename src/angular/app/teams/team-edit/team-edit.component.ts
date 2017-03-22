@@ -1,11 +1,12 @@
 import {Component, Input, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
-import {GraphQLService} from '../../graphql.service';
-import {MaterializeDirective} from 'angular2-materialize/dist/index';
+import {GraphQLService} from '../../services/graphql.service';
 import {Http, Headers, RequestOptions, Response} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
 import {Team} from '../../../graphql/schemas/Team';
+import {PageTitleService} from '../../services/page-title.service';
+import {Player} from '../../../graphql/schemas/Player';
 
 @Component({
     selector: 'team-edit',
@@ -18,11 +19,13 @@ export class TeamEditComponent extends BaseComponent implements AfterViewInit {
     id: string;
     description: string;
     imageUrl: string;
+    players: Player[] = [];
 
     @ViewChild('fileInput') inputEl: ElementRef;
     nameClasses: {} = {invalid: false};
 
-    constructor(private http: Http, route: ActivatedRoute, private graphQLService: GraphQLService, private router: Router) {
+    constructor(private http: Http, route: ActivatedRoute, private graphQLService: GraphQLService,
+                private pageTitleService: PageTitleService, private router: Router) {
         super(route);
     }
 
@@ -38,6 +41,10 @@ export class TeamEditComponent extends BaseComponent implements AfterViewInit {
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
     }
 
+    private updatePageTitle(title: string) {
+        this.pageTitleService.setTitle(title);
+    }
+
     private loadTeam(name) {
         this.graphQLService.post(TeamEditComponent.getTeamQuery, {name: name}).then(
             data => {
@@ -46,6 +53,8 @@ export class TeamEditComponent extends BaseComponent implements AfterViewInit {
                 this.id = team.id;
                 this.description = team.description;
                 this.imageUrl = team.imageUrl;
+                this.players = team.players || [];
+                this.pageTitleService.setTitle(team.name);
             });
     }
 
@@ -128,6 +137,10 @@ export class TeamEditComponent extends BaseComponent implements AfterViewInit {
             id
             name
             description
+            players {
+                id
+                name
+            }
         }
     }`;
 

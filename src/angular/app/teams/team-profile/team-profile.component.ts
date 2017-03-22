@@ -1,23 +1,25 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, SimpleChanges, OnChanges, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
-import {GraphQLService} from '../../graphql.service';
+import {GraphQLService} from '../../services/graphql.service';
 import {Game} from '../../../graphql/schemas/Game';
 import {Team} from '../../../graphql/schemas/Team';
 import {XPCONFIG} from '../../app.config';
+import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
     selector: 'team-profile',
     templateUrl: 'team-profile.component.html',
     styleUrls: ['team-profile.component.less']
 })
-export class TeamProfileComponent extends BaseComponent {
+export class TeamProfileComponent extends BaseComponent implements OnInit, OnChanges {
 
     @Input() team: Team;
     games: Game[] = [];
     editable: boolean;
 
-    constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService) {
+    constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
+                private pageTitleService: PageTitleService) {
         super(route);
     }
 
@@ -32,12 +34,23 @@ export class TeamProfileComponent extends BaseComponent {
         }
     }
 
+    ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
+
+        let teamChane = changes['team'];
+        if (teamChane && teamChane.currentValue) {
+            this.pageTitleService.setTitle((<Team>teamChane.currentValue).name);
+        }
+    }
+
     private handleResponse(data) {
         this.team = Team.fromJson(data.team);
         this.games = data.team.gameTeams.map((gm) => Game.fromJson(gm.game));
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
         this.editable =
             this.team.players.length === 2 && ( this.team.players[0].id === currentPlayerId || this.team.players[1].id === currentPlayerId);
+
+        this.pageTitleService.setTitle(this.team.name);
     }
 
     onEditClicked() {

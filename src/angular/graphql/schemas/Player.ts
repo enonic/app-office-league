@@ -1,5 +1,5 @@
 import {NamedEntity} from './NamedEntity';
-import {ImageService} from '../../app/image.service';
+import {ImageService} from '../../app/services/image.service';
 import {Handedness, HandednessUtil} from './Handedness';
 import {Team} from './Team';
 import {LeaguePlayer} from './LeaguePlayer';

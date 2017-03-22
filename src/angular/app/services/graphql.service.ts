@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs';
-import {Team} from '../graphql/schemas/Team';
-import {Game} from '../graphql/schemas/Game';
-import {League} from '../graphql/schemas/League';
-import {Player} from '../graphql/schemas/Player';
+import {Team} from '../../graphql/schemas/Team';
+import {Game} from '../../graphql/schemas/Game';
+import {League} from '../../graphql/schemas/League';
+import {Player} from '../../graphql/schemas/Player';
 import {CryptoService} from './crypto.service';
-import {XPCONFIG} from './app.config';
+import {XPCONFIG} from '../app.config';
 
 @Injectable()
 export class GraphQLService {

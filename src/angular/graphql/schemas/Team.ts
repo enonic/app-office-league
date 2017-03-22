@@ -1,5 +1,5 @@
 import {NamedEntity} from './NamedEntity';
-import {ImageService} from '../../app/image.service';
+import {ImageService} from '../../app/services/image.service';
 import {Player} from './Player';
 import {LeagueTeam} from './LeagueTeam';
 

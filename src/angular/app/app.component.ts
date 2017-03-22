@@ -1,8 +1,9 @@
 import {Component} from '@angular/core';
 import {Location} from '@angular/common';
-import {AuthService} from './auth.service';
-import {ImageService} from './image.service';
+import {AuthService} from './services/auth.service';
+import {ImageService} from './services/image.service';
 import {Router, NavigationStart} from '@angular/router';
+import {PageTitleService} from './services/page-title.service';
 
 @Component({
     selector: 'office-league',
@@ -13,17 +14,21 @@ export class AppComponent {
     logoUrl: string;
     isPlayingGame: boolean;
     playerImage: string;
+    private pageTitle: string;
 
-    constructor(private auth: AuthService, private location: Location, private router: Router) {
+    constructor(private auth: AuthService, private pageTitleService: PageTitleService, private location: Location, private router: Router) {
         this.logoUrl = ImageService.logoUrl();
         this.isPlayingGame = new RegExp('/games/.*/game-play').test(location.path());
         let user = auth.getUser();
         this.playerImage = !!user ? ImageService.forPlayer(user.playerName) : ImageService.playerDefault();
 
+        this.pageTitleService.subscribeTitle(title => this.pageTitle = title).resetTitle();
+
         router.events
             .filter(event => event instanceof NavigationStart)
             .subscribe((event: NavigationStart) => {
                 this.isPlayingGame = new RegExp('/games/.*/game-play').test(event.url);
+                this.pageTitleService.resetTitle();
             });
     }
 }

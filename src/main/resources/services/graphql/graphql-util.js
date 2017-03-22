@@ -1,4 +1,4 @@
-exports.toArray = function(object) {
+exports.toArray = function (object) {
     if (!object) {
         return [];
     }
@@ -8,6 +8,6 @@ exports.toArray = function(object) {
     return [object];
 };
 
-exports.toInt = function(number) {
-    return number.intValue();
+exports.toInt = function (number, defaultValue) {
+    return number == null ? defaultValue.intValue() : number.intValue();
 };

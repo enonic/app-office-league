@@ -190,13 +190,13 @@ exports.gamePlayerType = graphQlLib.createObjectType({
         score: {
             type: graphQlLib.GraphQLInt,
             data: function (env) {
-                return graphQlUtilLib.toInt(env.source.score);
+                return graphQlUtilLib.toInt(env.source.score, 0);
             }
         },
         scoreAgainst: {
             type: graphQlLib.GraphQLInt,
             data: function (env) {
-                return graphQlUtilLib.toInt(env.source.scoreAgainst);
+                return graphQlUtilLib.toInt(env.source.scoreAgainst, 0);
             }
         },
         side: {
@@ -253,13 +253,13 @@ exports.gameTeamType = graphQlLib.createObjectType({
         score: {
             type: graphQlLib.GraphQLInt,
             data: function (env) {
-                return graphQlUtilLib.toInt(env.source.score);
+                return graphQlUtilLib.toInt(env.source.score, 0);
             }
         },
         scoreAgainst: {
             type: graphQlLib.GraphQLInt,
             data: function (env) {
-                return graphQlUtilLib.toInt(env.source.scoreAgainst);
+                return graphQlUtilLib.toInt(env.source.scoreAgainst, 0);
             }
         },
         side: {

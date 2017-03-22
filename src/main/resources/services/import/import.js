@@ -64,6 +64,11 @@ var importLeague = function (playerContentToNodeId) {
     // add players to league
     var playersResult = storeLib.getPlayers(0, 1000);
     playersResult.hits.forEach(function (player) {
+        var playerLeagues = storeLib.getLeaguesByPlayerId(player._id, 0, 0);
+        if (playerLeagues.total !== 0) {
+            log.info('Skipping player from another league: ' + player.name);
+            return;
+        }
         storeLib.joinPlayerLeague(leagueNode._id, player._id);
         storeLib.refresh();
         var contentPlayer = findPlayerContentByName(player.name);
@@ -75,6 +80,11 @@ var importLeague = function (playerContentToNodeId) {
     // add teams to league
     var teamsResult = storeLib.getTeams(0, 1000);
     teamsResult.hits.forEach(function (team) {
+        var teamLeagues = storeLib.getLeaguesByTeamId(team._id, 0, 0);
+        if (teamLeagues.total !== 0) {
+            log.info('Skipping team from another league: ' + team.name);
+            return;
+        }
         storeLib.joinTeamLeague(leagueNode._id, team._id);
         storeLib.refresh();
         var contentTeam = findTeamContentByName(team.name);
@@ -329,12 +339,8 @@ var createTeamWithPlayers = function (playerId1, playerId2) {
     var playerIds = [];
     playerIds.push(playerId1);
     playerIds.push(playerId2);
-    var player1 = storeLib.getPlayerById(playerId1);
-    var player2 = storeLib.getPlayerById(playerId2);
 
-    var teamName = player1._name + player2._name;
     var teamNode = storeLib.createTeam({
-        name: 'Team ' + teamName,
         description: '',
         playerIds: playerIds
     });

@@ -1,13 +1,12 @@
 import {Component, Input, SimpleChanges, EventEmitter} from '@angular/core';
-import {GraphQLService} from '../../graphql.service';
-import {AuthService} from '../../auth.service';
+import {GraphQLService} from '../../services/graphql.service';
+import {AuthService} from '../../services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {League} from '../../../graphql/schemas/League';
 import {LeaguePlayer} from '../../../graphql/schemas/LeaguePlayer';
 import {BaseComponent} from '../../common/base.component';
 import {Player} from '../../../graphql/schemas/Player';
-import {Team} from '../../../graphql/schemas/Team';
-import {MaterializeDirective,MaterializeAction} from "angular2-materialize/dist/index";
+import {MaterializeAction} from "angular2-materialize";
 
 @Component({
     selector: 'league-profile-players',

@@ -1,6 +1,8 @@
 var nodeLib = require('/lib/xp/node');
 var valueLib = require('/lib/xp/value');
 var ratingLib = require('/lib/office-league-rating');
+var eventLib = require('/lib/xp/event');
+var randomLib = require('/lib/random-names');
 
 var REPO_NAME = 'office-league';
 var LEAGUES_PATH = '/leagues';
@@ -9,6 +11,7 @@ var TEAMS_PATH = '/teams';
 var LEAGUE_GAMES_REL_PATH = '/games';
 var LEAGUE_PLAYERS_REL_PATH = '/players';
 var LEAGUE_TEAMS_REL_PATH = '/teams';
+var OFFICE_LEAGUE_GAME_EVENT_ID = 'office-league-game';
 
 var TYPE = {
     PLAYER: 'player',
@@ -996,6 +999,22 @@ function querySingleHit(params) {
 }
 
 /**
+ * Check if the query finds any match.
+ * @param  {string} query Node query.
+ * @param  {Object} [repoConn] RepoConnection object.
+ * @return {boolean} True if the query found any items.
+ */
+function queryExists(query, repoConn) {
+    repoConn = repoConn || newConnection();
+    var queryResult = repoConn.query({
+        start: 0,
+        count: 0,
+        query: query
+    });
+    return queryResult.total > 0;
+}
+
+/**
  * Create a new league.
  *
  * @param {object} params JSON with the league parameters.
@@ -1097,7 +1116,7 @@ exports.createPlayer = function (params) {
  * Create a new team.
  *
  * @param {object} params JSON with the team parameters.
- * @param {string} params.name Name of the team.
+ * @param {string} [params.name] Name of the team.
  * @param {string} [params.imageStream] Stream with the team's image.
  * @param {string} [params.imageType] Mime type of the team's image.
  * @param {string} [params.description] Description text.
@@ -1107,11 +1126,26 @@ exports.createPlayer = function (params) {
 exports.createTeam = function (params) {
     var repoConn = newConnection();
 
-    params.handedness = params.handedness || 'right';
-    required(params, 'name');
     required(params, 'playerIds');
     if (params.playerIds.length !== 2) {
         throw "Parameter 'playerIds' must have 2 values";
+    }
+
+    var existingTeam = exports.getTeamByPlayerIds(params.playerIds[0], params.playerIds[1]);
+    if (existingTeam) {
+        return exports.updateTeam({
+            teamId: existingTeam._id,
+            description: params.description,
+            name: params.name,
+            imageStream: params.imageStream,
+            imageType: params.imageType
+        });
+    }
+
+    params.handedness = params.handedness || 'right';
+    var name = params.name;
+    while (!name || teamWithNameExists(repoConn, name)) {
+        name = randomLib.randomName();
     }
 
     var imageAttachment = null;
@@ -1121,10 +1155,10 @@ exports.createTeam = function (params) {
     }
 
     var teamNode = repoConn.create({
-        _name: prettifyName(params.name),
+        _name: prettifyName(name),
         _parentPath: TEAMS_PATH,
         type: TYPE.TEAM,
-        name: params.name,
+        name: name,
         image: imageAttachment && imageAttachment.name,
         description: params.description,
         playerIds: params.playerIds,
@@ -1132,6 +1166,11 @@ exports.createTeam = function (params) {
     });
 
     return teamNode;
+};
+
+var teamWithNameExists = function (repoConn, teamName) {
+    var query = "type = '" + TYPE.TEAM + "' AND name='" + teamName + "'";
+    return queryExists(query, repoConn)
 };
 
 /**
@@ -1145,7 +1184,6 @@ var createDefaultTeamForPlayers = function (playerId1, playerId2) {
     var p1 = exports.getPlayerById(playerId1);
     var p2 = exports.getPlayerById(playerId2);
     var team = exports.createTeam({
-        name: 'Team ' + p1.name + '-' + p2.name,
         description: p1.name + ' & ' + p2.name,
         playerIds: [playerId1, playerId2]
     });
@@ -1552,6 +1590,9 @@ exports.updatePlayer = function (params) {
             if (params.description != null) {
                 node.description = params.description;
             }
+            if (params.userKey != null) { // TODO for testing, remove
+                node.userKey = params.userKey;
+            }
             if (imageAttachment) {
                 node.image = imageAttachment.name;
                 node.attachment = imageAttachment;
@@ -1930,6 +1971,18 @@ exports.updateGame = function (params) {
             })(gameTeam);
         }
     }
+
+    notifyGameUpdate(params.gameId);
+};
+
+var notifyGameUpdate = function (gameId) {
+    eventLib.send({
+        type: OFFICE_LEAGUE_GAME_EVENT_ID,
+        distributed: true,
+        data: {
+            gameId: gameId
+        }
+    });
 };
 
 /**

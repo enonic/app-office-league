@@ -55,19 +55,17 @@ if (!player4) {
     log.info('Player 4 created');
 }
 
-var teamA = storeLib.getTeamByName('A Team');
+var teamA = storeLib.getTeamByPlayerIds(player1._id, player2._id);
 if (!teamA) {
     teamA = storeLib.createTeam({
-        name: 'A Team',
         description: 'The A Team',
         playerIds: [player1._id, player2._id]
     });
     log.info('Team A created');
 }
-var teamB = storeLib.getTeamByName('B Team');
+var teamB = storeLib.getTeamByPlayerIds(player3._id, player4._id);
 if (!teamB) {
     teamB = storeLib.createTeam({
-        name: 'B Team',
         description: 'The B Team',
         playerIds: [player3._id, player4._id]
     });

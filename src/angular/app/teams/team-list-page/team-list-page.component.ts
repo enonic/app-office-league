@@ -2,7 +2,7 @@ import {Component, Input, SimpleChanges} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {Team} from '../../../graphql/schemas/Team';
-import {GraphQLService} from '../../graphql.service';
+import {GraphQLService} from '../../services/graphql.service';
 import {MaterializeDirective} from '../../../../../node_modules/angular2-materialize/dist/index.d';
 
 @Component({

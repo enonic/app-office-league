@@ -10,7 +10,8 @@
             <div class="row">
                 <div class="input-field col s12">
                     <i class="material-icons prefix">label_outline</i>
-                    <input id="name" type="text" class="validate" name="name" autocomplete="off" [(ngModel)]="name" required=""
+                    <input id="name" type="text" class="validate" name="name" autocomplete="off" [(ngModel)]="name" (ngModelChange)="updatePageTitle($event)"
+                           required=""
                            aria-required="true" [ngClass]="nameClasses">
                     <label class="active" for="name">League Name</label>
                 </div>

@@ -2,14 +2,14 @@ import {Component, Input, ElementRef, ViewChild, AfterViewInit} from '@angular/c
 import {ActivatedRoute, Router} from '@angular/router';
 import {Handedness} from '../../../graphql/schemas/Handedness';
 import {BaseComponent} from '../../common/base.component';
-import {GraphQLService} from '../../graphql.service';
+import {GraphQLService} from '../../services/graphql.service';
 import {Countries} from '../../common/countries';
-import {MaterializeDirective} from 'angular2-materialize/dist/index';
 import {Country} from '../../common/country';
 import {Http, Headers, RequestOptions, Response} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
-import {ImageService} from '../../image.service';
-import {AuthService} from '../../auth.service';
+import {ImageService} from '../../services/image.service';
+import {AuthService} from '../../services/auth.service';
+import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
     selector: 'player-create',
@@ -30,6 +30,7 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
     nameClasses: {} = {invalid: false};
 
     constructor(private http: Http, route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
+                private pageTitleService: PageTitleService,
                 private auth: AuthService) {
         super(route);
     }
@@ -52,6 +53,10 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
     ngAfterViewInit(): void {
         let inputEl: HTMLInputElement = this.inputEl.nativeElement;
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
+    }
+
+    private updatePageTitle(title: string) {
+        this.pageTitleService.setTitle(title);
     }
 
     getNationality(): string {

@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {ImageService} from './image.service';
-import {AuthService} from './auth.service';
+import {ImageService} from './services/image.service';
+import {AuthService} from './services/auth.service';
 
 @Component({
     selector: 'home',

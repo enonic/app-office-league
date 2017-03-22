@@ -1,7 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {BaseComponent} from '../../common/base.component';
 import {Player} from '../../../graphql/schemas/Player';
-import {GraphQLService} from '../../graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({

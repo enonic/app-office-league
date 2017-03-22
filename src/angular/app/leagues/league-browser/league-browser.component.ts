@@ -1,8 +1,8 @@
 import {Component, Input, ElementRef, AfterViewInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ConfigUser} from '../../app.config';
-import {GraphQLService} from '../../graphql.service';
-import {AuthService} from '../../auth.service';
+import {GraphQLService} from '../../services/graphql.service';
+import {AuthService} from '../../services/auth.service';
 import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
 declare var $: any;

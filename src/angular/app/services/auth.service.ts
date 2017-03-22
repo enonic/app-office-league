@@ -1,7 +1,6 @@
-import {Location} from '@angular/common';
 import {Injectable} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {XPCONFIG, ConfigUser} from './app.config';
+import {XPCONFIG, ConfigUser} from '../app.config';
 
 @Injectable()
 export class AuthService {

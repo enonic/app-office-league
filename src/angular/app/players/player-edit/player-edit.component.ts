@@ -1,22 +1,22 @@
-import {Component, Input, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, ElementRef, ViewChild, AfterViewInit, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Location} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Handedness} from '../../../graphql/schemas/Handedness';
 import {Player} from '../../../graphql/schemas/Player';
 import {BaseComponent} from '../../common/base.component';
-import {GraphQLService} from '../../graphql.service';
+import {GraphQLService} from '../../services/graphql.service';
 import {Countries} from '../../common/countries';
-import {MaterializeDirective} from 'angular2-materialize/dist/index';
 import {Country} from '../../common/country';
-import {Http, Headers, RequestOptions, Response} from '@angular/http';
+import {Http, Headers, RequestOptions} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
+import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
     selector: 'player-edit',
     templateUrl: 'player-edit.component.html',
     styleUrls: ['player-edit.component.less']
 })
-export class PlayerEditComponent extends BaseComponent implements AfterViewInit {
+export class PlayerEditComponent extends BaseComponent implements OnInit, AfterViewInit {
 
     name: string;
     id: string;
@@ -30,7 +30,8 @@ export class PlayerEditComponent extends BaseComponent implements AfterViewInit 
     @ViewChild('fileInput') inputEl: ElementRef;
     nameClasses: {} = {invalid: false};
 
-    constructor(private http: Http, route: ActivatedRoute, private graphQLService: GraphQLService, private router: Router,
+    constructor(private http: Http, route: ActivatedRoute, private pageTitleService: PageTitleService, private graphQLService: GraphQLService,
+                private router: Router,
                 private location: Location) {
         super(route);
     }
@@ -47,6 +48,10 @@ export class PlayerEditComponent extends BaseComponent implements AfterViewInit 
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
     }
 
+    private updatePageTitle(title: string) {
+        this.pageTitleService.setTitle(title);
+    }
+
     private loadPlayer(name) {
         this.graphQLService.post(PlayerEditComponent.getPlayerQuery, {name: name}).then(
             data => {
@@ -60,6 +65,8 @@ export class PlayerEditComponent extends BaseComponent implements AfterViewInit 
                 this.imageUrl = player.imageUrl;
 
                 this.countries = Countries.getCountries();
+
+                this.pageTitleService.setTitle(player.name);
 
                 // TODO, if not current player, redirect to profile view
             });

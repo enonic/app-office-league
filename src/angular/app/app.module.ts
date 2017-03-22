@@ -4,16 +4,17 @@ import {HttpModule} from '@angular/http';
 import {AppComponent} from './app.component';
 import {Routes, RouterModule} from '@angular/router';
 import {PlayersModule} from './players/players.module';
-import {GraphQLService} from './graphql.service';
+import {GraphQLService} from './services/graphql.service';
 import {GamesModule} from './games/games.module';
 import {TeamsModule} from './teams/team.module';
 import {LeaguesModule} from './leagues/league.module';
 import {AuthRouteGuard} from './auth.route.guard';
-import {AuthService} from './auth.service';
-import {CryptoService} from './crypto.service';
+import {AuthService} from './services/auth.service';
+import {CryptoService} from './services/crypto.service';
 import {HomeComponent} from './home.component';
 import {CommonModule} from './common/common.module';
-import {MaterializeModule} from 'angular2-materialize/dist/index';
+import {MaterializeModule} from 'angular2-materialize';
+import {PageTitleService} from './services/page-title.service';
 
 const appRoutes: Routes = [
     {path: '', component: HomeComponent},
@@ -36,7 +37,7 @@ const appRoutes: Routes = [
         TeamsModule,
         LeaguesModule
     ],
-    providers: [GraphQLService, AuthService, CryptoService, AuthRouteGuard],
+    providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthRouteGuard],
     bootstrap: [AppComponent]
 })
 export class AppModule {

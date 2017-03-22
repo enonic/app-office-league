@@ -5,7 +5,8 @@
             <div class="row">
                 <div class="input-field col s12">
                     <i class="material-icons prefix">fingerprint</i>
-                    <input id="name" type="text" class="validate" name="name" autofocus autocomplete="off" [(ngModel)]="name" required=""
+                    <input id="name" type="text" class="validate" name="name" autofocus autocomplete="off" [(ngModel)]="name"
+                           (ngModelChange)="updatePageTitle($event)" required=""
                            aria-required="true" [ngClass]="nameClasses">
                     <label class="active" for="name">Player Name</label>
                 </div>

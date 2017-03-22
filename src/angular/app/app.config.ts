@@ -13,6 +13,7 @@ export interface Config {
     logoutUrl: string;
     graphQlUrl: string;
     setImageUrl: string;
+    liveGameUrl: string;
     user: ConfigUser
 }
 
