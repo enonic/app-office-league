@@ -10,14 +10,17 @@
     </div>
 
     <div class="row league-profile">
-        <div *ngIf="playerInLeague" class="col s6" (click)="onPlayClicked()">
+        <div *ngIf="playerInLeague" class="col s4" (click)="onPlayClicked()">
             <a class="waves-effect waves-light btn green"><i class="material-icons left">play_arrow</i>Play Game</a>
         </div>
-        <div *ngIf="authService.isAuthenticated() && !playerInLeague" class="col s6 m4" (click)="onJoinClicked()">
+        <div *ngIf="authService.isAuthenticated() && !playerInLeague" class="col s12" (click)="onJoinClicked()">
             <a class="waves-effect waves-light btn green"><i class="material-icons left">person_add</i>Join</a>
         </div>
-        <div *ngIf="adminInLeague" class="col s6" (click)="onEditClicked()">
+        <div *ngIf="adminInLeague" class="col s4" (click)="onEditClicked()">
             <a class="waves-effect waves-light btn light-blue darken-3"><i class="material-icons left">mode_edit</i>Edit</a>
+        </div>
+        <div *ngIf="adminInLeague" class="col s4" (click)="onAddPlayerClicked()">
+            <a class="waves-effect waves-light btn light-blue darken-3"><i class="material-icons left">add</i>Add player</a>
         </div>
     </div>
 
@@ -54,4 +57,13 @@
         </div>
     </div>
 
+    <div class="modal center player-select-modal" materialize="modal"
+         [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
+        <div class="modal-content">
+            <h4 class="center">Select a player</h4>
+            <player-select [leagueIds]="[leagueId]" [enabled]="true" [excludePlayerIds]="[]"
+                           (playerSelected)="onSelected($event)"></player-select>
+        </div>
+    </div>
 </template>
+

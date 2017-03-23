@@ -1,4 +1,4 @@
-import {Component, Input, SimpleChanges, OnChanges} from '@angular/core';
+import {Component, Input, Output, SimpleChanges, OnChanges, EventEmitter} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {AuthService} from '../../services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -6,6 +6,8 @@ import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
 import {Game} from '../../../graphql/schemas/Game';
 import {PageTitleService} from '../../services/page-title.service';
+import {Player} from '../../../graphql/schemas/Player';
+import {MaterializeDirective, MaterializeAction} from 'angular2-materialize/dist/index';
 
 @Component({
     selector: 'league-profile',
@@ -143,6 +145,7 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
     playerInLeague: boolean;
     adminInLeague: boolean;
     activeGames: Game[] = [];
+    materializeActions = new EventEmitter<string|MaterializeAction>();
 
     constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private router: Router) {
@@ -198,9 +201,32 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
         if (this.authService.isAuthenticated() && !this.playerInLeague) {
             let playerId = this.authService.getUser().playerId;
             this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery, {playerId: playerId, leagueId: this.league.id}).then(
-                data => {
+                    data => {
                     this.refreshData(this.league.name);
                 });
         }
     }
+
+    onAddPlayerClicked() {
+        this.showModal();
+    }
+
+    onSelected(player: Player) {
+        if (player) {
+            this.hideModal();
+            this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery, {playerId: player.id, leagueId: this.league.id}).
+                then(data => {
+                    this.refreshData(this.league.name);
+                });
+        }
+    }
+
+    public showModal(): void {
+        this.materializeActions.emit({action: "modal", params: ['open']});
+    }
+
+    public hideModal(): void {
+        this.materializeActions.emit({action: "modal", params: ['close']});
+    }
+
 }
