@@ -24,18 +24,18 @@ export class GamePointsComponent implements OnInit, OnChanges {
 
     ngOnInit(): void {
         if (this.game) {
-            this.processPoints(this.game);
+            this.processTimeline(this.game);
         }
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         let gameChange: SimpleChange = changes['game'];
         if (gameChange && gameChange.currentValue) {
-            this.processPoints(gameChange.currentValue);
+            this.processTimeline(gameChange.currentValue);
         }
     }
 
-    private processPoints(game: Game) {
+    private processTimeline(game: Game) {
         const teamMap: {[playerName: string]: GameTeam} = {};
         const playerMap: {[playerName: string]: GamePlayer} = {};
 
@@ -53,6 +53,7 @@ export class GamePointsComponent implements OnInit, OnChanges {
 
         this.timeline = [];
 
+        // process points
         game.points.forEach((point: Point) => {
             const name = point.player.name;
             const gameTeam = teamMap[name];
@@ -74,9 +75,41 @@ export class GamePointsComponent implements OnInit, OnChanges {
                 }
             }
             const score = `${blueScore}-${redScore}`;
-
-            const color = gamePlayer.side === Side.BLUE ? 'blue' : 'red';
-            this.timeline.push(new TimelineEntry(name, gameTeam, point.time, comment, score, color));
+            this.timeline.push(new TimelineEntry(name, gameTeam && gameTeam.team.name, point.time, comment, score, gamePlayer.side));
         });
+
+        // process comments
+        const baseTimeOffset = game.time.getTime() / 1000;
+        const commentAuthorSides: {[playerName: string]: Side} = {};
+        let nextCommenterSide = Side.BLUE;
+        for (let c = game.comments.length - 1; c >= 0; c--) {
+            const comment = game.comments[c];
+            if (!comment.time) {
+                continue;
+            }
+            let timeOffset = Math.floor(( comment.time.getTime() / 1000) - baseTimeOffset);
+            timeOffset = timeOffset < 0 ? 0 : timeOffset;
+
+            const gamePlayer = playerMap[comment.author.name];
+            let side: Side;
+            if (gamePlayer) {
+                // comment author is one of the players in the game
+                side = gamePlayer.side;
+            } else {
+                // pick one side for the author, and keep it for all its comments
+                side = commentAuthorSides[comment.author.name];
+                if (side == null) {
+                    side = nextCommenterSide;
+                    nextCommenterSide = nextCommenterSide == Side.BLUE ? Side.RED : Side.BLUE;
+                    commentAuthorSides[comment.author.name] = side;
+                }
+            }
+            const timelineEntry = new TimelineEntry(comment.author.name, comment.text, timeOffset, '', '', side);
+            timelineEntry.isComment = true;
+            timelineEntry.time = '';
+            this.timeline.push(timelineEntry);
+        }
+
+        this.timeline.sort((t1, t2) => t2.timeOffset - t1.timeOffset);
     }
 }

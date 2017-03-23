@@ -1,9 +1,12 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute} from '@angular/router';
 import {GameComponent} from '../game/game.component';
 import {XPCONFIG} from '../../app.config';
 import {Game} from '../../../graphql/schemas/Game';
+import {Comment} from '../../../graphql/schemas/Comment';
+import {MaterializeDirective, MaterializeAction} from 'angular2-materialize/dist/index';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
     selector: 'game-profile',
@@ -11,17 +14,19 @@ import {Game} from '../../../graphql/schemas/Game';
     styleUrls: ['game-profile.component.less']
 })
 export class GameProfileComponent extends GameComponent {
+    materializeActions = new EventEmitter<string|MaterializeAction>();
 
     private static readonly KeepAliveTimeMs = 30 * 1000;
     private static readonly ReconnectTimeMs = 5 * 1000;
 
+    comment: string;
     private gameId: string;
     private webSocket: WebSocket;
     private wsConnected: boolean;
     private keepAliveIntervalId: any;
 
-    constructor(service: GraphQLService, protected route: ActivatedRoute) {
-        super(service, route);
+    constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, private authService: AuthService) {
+        super(graphQLService, route);
     }
 
     ngOnInit(): void {
@@ -38,6 +43,34 @@ export class GameProfileComponent extends GameComponent {
         } else {
             this.wsConnect(this.gameId);
         }
+    }
+
+    protected getGameQuery(): string {
+        return GameProfileComponent.getGameWithCommentsQuery;
+    }
+
+    onCommentClicked() {
+        this.comment = '';
+        this.showModal();
+    }
+
+    onCommentDoneClicked() {
+        this.comment = this.comment.trim();
+        this.comment = this.comment.replace(/^\s+|\s+$/g, '');// trim line breaks
+        if (this.comment) {
+            this.createComment(this.comment).then((comment) => {
+                this.hideModal();
+                super.loadGame(this.gameId);
+            });
+        }
+    }
+
+    public showModal(): void {
+        this.materializeActions.emit({action: "modal", params: ['open']});
+    }
+
+    public hideModal(): void {
+        this.materializeActions.emit({action: "modal", params: ['close']});
     }
 
     wsConnect(gameId) {
@@ -97,4 +130,89 @@ export class GameProfileComponent extends GameComponent {
             super.loadGame(msg.gameId);
         }
     }
+
+    private createComment(comment: string): Promise<Comment> {
+        let playerId = this.authService.getUser().playerId;
+
+        const createCommentParams = {
+            gameId: this.gameId,
+            author: playerId,
+            text: comment,
+        };
+        return this.graphQLService.post(GameProfileComponent.createCommentMutation, createCommentParams).then(data => {
+            return data && data.createComment;
+        }).then(createdComment => {
+            return createdComment && Comment.fromJson(createdComment);
+        });
+    }
+
+    private static readonly createCommentMutation = `mutation ($gameId: ID!, $author: ID!, $text: String) {
+        createComment(gameId: $gameId, author: $author, text: $text) {
+            id
+            text
+            time
+            author {
+                id
+                name
+            }
+        }
+    }`;
+
+
+    private static readonly getGameWithCommentsQuery = `query ($gameId: ID!) {
+      game(id: $gameId) {
+        id
+        time
+        finished
+        points {
+            player {
+                name
+            }
+            time
+            against
+        }
+        comments {
+            author {
+                name
+            }
+            text
+        }
+        gamePlayers {
+            score
+            scoreAgainst
+            winner
+            side
+            ratingDelta
+            player {
+                name
+            }
+        }
+        gameTeams {
+            score
+            scoreAgainst
+            winner
+            side    
+            ratingDelta
+            team {
+                name
+                players {
+                    name
+                }
+            }
+        }
+        league {
+            name
+        }
+        comments {
+            id
+            text
+            time
+            author {
+                id
+                name
+            }
+        }
+      }
+    }`;
+
 }

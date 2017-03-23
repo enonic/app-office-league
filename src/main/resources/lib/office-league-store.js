@@ -191,6 +191,7 @@ var TYPE = {
  * @property {string} text Comment text.
  * @property {string} gameId Game id.
  * @property {string} author Player id.
+ * @property {string} time Date and time of the comment. An ISO-8601-formatted instant (e.g '2011-12-03T10:15:30Z').
  * @property {string} media Binary name of the league's image.
  * @property {string} mediaType Mime type of the league's image.
  */
@@ -1440,15 +1441,20 @@ exports.createComment = function (params) {
         }
     }
 
+    var time = new Date().toISOString();
+
     var commentNode = repoConn.create({
         _parentPath: gameNode._path,
         type: TYPE.COMMENT,
         gameId: params.gameId,
         author: params.author,
+        time: time,
         text: params.text,
         media: mediaAttachment && mediaAttachment.name,
         attachment: mediaAttachment
     });
+
+    notifyGameUpdate(params.gameId);
 
     return commentNode;
 };

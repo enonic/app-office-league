@@ -17,6 +17,9 @@ var pluralize = function (str) {
     if (str.endsWith('ey')) {
         return str + 's';
     }
+    if (str.endsWith('y')) {
+        return str + 'ies';
+    }
     if (str.endsWith('us')) {
         return str + 'es';
     }

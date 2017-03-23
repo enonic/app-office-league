@@ -5,18 +5,21 @@
 
     <game [game]="game"></game>
 
-<!--    <ul class="row list">
-        <li class="col s12 m5 l4 offset-l1">
-            <player-list [players]="bluePlayers" hideSearchField="true"></player-list>
-        </li>
-
-        <li class="colon col s12 m2 l2">vs</li>
-
-        <li class="col s12 m5 l4">
-            <player-list [players]="redPlayers" hideSearchField="true"></player-list>
-        </li>
-    </ul>-->
+    <a class="btn-floating blue right" (click)="onCommentClicked()"><i class="material-icons">comment</i></a>
 
     <game-points [game]="game"></game-points>
 
+</div>
+<div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
+     [materializeActions]="materializeActions">
+    <div class="modal-content">
+        <h6 class="center">Game comment</h6>
+        <div class="input-field col s12">
+            <textarea id="comment" class="materialize-textarea" name="comment" [(ngModel)]="comment"></textarea>
+            <label class="active" for="comment">What's happening?</label>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a (click)="onCommentDoneClicked()" class="modal-action modal-close waves-effect waves-blue btn-flat blue white-text">Done</a>
+    </div>
 </div>

@@ -1,7 +1,9 @@
 import {Player} from './Player';
+import {DateUtil} from './DateUtil';
 
 export class Comment {
     id: string;
+    time: Date;
     text: string;
     author: Player;
     likes: Player[] = [];
@@ -25,6 +27,7 @@ export class Comment {
         if (json.likes) {
             c.likes = json.likes.map(player => Player.fromJson(player));
         }
+        c.time = json.time && DateUtil.parseDate(json.time);
         return c;
     }
 }

@@ -36,6 +36,10 @@
 }
 
 .time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   position: absolute;
   width: 4.4rem;
   height: 4.4rem;
@@ -101,6 +105,14 @@
 
 .team-blue .name {
   color: @blue-team-color;
+}
+
+.team-blue.comment .name {
+  color: @unimportant-color;
+}
+
+.team-red.comment .name {
+  color: @unimportant-color;
 }
 
 // See Materialize adaptive sizes

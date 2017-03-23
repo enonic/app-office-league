@@ -343,6 +343,12 @@ exports.commentType = graphQlLib.createObjectType({
                 return storeLib.getPlayerById(env.source.author);
             }
         },
+        time: {
+            type: graphQlLib.GraphQLString,
+            data: function (env) {
+                return env.source.time;
+            }
+        },
         likes: {
             type: graphQlLib.list(exports.playerType),
             data: function (env) {
