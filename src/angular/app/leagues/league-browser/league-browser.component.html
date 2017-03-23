@@ -4,11 +4,11 @@
             <a href="#myLeagues" i18n="My leagues|My leagues tab caption">My leagues</a>
         </li>
         <li class="tab col s6">
-            <a href="#allLeagues" i18n="Discover|All leagues tab caption">Discover</a>
+            <a href="#discoverLeagues" i18n="Discover|All leagues tab caption">Discover</a>
         </li>
     </ul>
     <league-list id="myLeagues" [leagues]="myLeagues" class="no-margin" *ngIf="authService.isAuthenticated()"></league-list>
-    <league-list id="allLeagues" [leagues]="allLeagues" class="no-margin"></league-list>
+    <league-list id="discoverLeagues" [leagues]="discoverLeagues" class="no-margin"></league-list>
 </div>
 <div class="fixed-action-btn" *ngIf="authService.isAuthenticated()">
     <a class="btn-floating btn-large waves-effect waves-light red" routerLink="/league-create"><i class="material-icons">add</i></a>

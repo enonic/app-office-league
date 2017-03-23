@@ -14,16 +14,14 @@ declare var $: any;
 })
 export class LeagueBrowserComponent extends BaseComponent implements AfterViewInit {
 
-    private static readonly myLeaguesQuery: string = `query($playerId: ID) {
-        leagues(playerId:$playerId){
+    private static readonly getLeaguesQuery: string = `query($playerId: ID) {
+        myLeagues : leagues(playerId:$playerId){
             id
             name 
             description 
         }
-    }`;
-
-    private static readonly allLeaguesQuery: string = `query {
-        leagues{
+        
+        allLeagues: leagues{
             id
             name 
             description 
@@ -31,31 +29,28 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
     }`;
 
     @Input() myLeagues: League[] = [];
-    @Input() allLeagues: League[];
+    @Input() discoverLeagues: League[];
     @Input() playerId: string;
     @Input() teamId: string;
 
-    constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private pageTitleService: PageTitleService, private authService: AuthService,
+    constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private pageTitleService: PageTitleService,
+                private authService: AuthService,
                 private elementRef: ElementRef) {
         super(route);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
-        
-        if (this.allLeagues === undefined) {
-            this.graphQLService.post(LeagueBrowserComponent.allLeaguesQuery).then((data: any) => {
-                this.allLeagues = data.leagues.map(league => League.fromJson(league));
-            });
 
-            let user: ConfigUser = this.authService.getUser();
-            if (user) {
-                this.graphQLService.post(LeagueBrowserComponent.myLeaguesQuery, {playerId: user.playerId}).then((data: any) => {
-                    this.myLeagues = data.leagues.map(league => League.fromJson(league));
-                });
-            }
-        }
+        let user: ConfigUser = this.authService.getUser();
+        this.graphQLService.post(LeagueBrowserComponent.getLeaguesQuery, {playerId: user ? user.playerId : 'unknown'}).then((data: any) => {
+            this.myLeagues = data.myLeagues.map(league => League.fromJson(league));
+            let myLeagueIds = data.myLeagues.map(league => league.id);
 
+            this.discoverLeagues = data.allLeagues.
+                filter((league) => myLeagueIds.indexOf(league.id) == -1).
+                map(league => League.fromJson(league));
+        });
 
         this.pageTitleService.setTitle('Leagues');
     }
