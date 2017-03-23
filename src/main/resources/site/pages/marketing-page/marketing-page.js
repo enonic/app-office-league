@@ -17,12 +17,11 @@ exports.get = function (req) {
     var siteUrl = portal.pageUrl({
         path: site._path
     });
-
     var params = {
         page: content.page,
         appUrl: appUrl,
         isLive: (req.mode == 'live'),
-        siteUrl: (siteUrl == '/') ? '/' : siteUrl + '/'
+        siteUrl: (siteUrl == '/') ? '' : siteUrl
     };
     var body = thymeleaf.render(view, params);
 
