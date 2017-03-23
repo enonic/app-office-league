@@ -5,6 +5,7 @@ import {GraphQLService} from '../../services/graphql.service';
 import {AuthService} from '../../services/auth.service';
 import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
+import {PageTitleService} from '../../services/page-title.service';
 declare var $: any;
 
 @Component({
@@ -34,7 +35,7 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
     @Input() playerId: string;
     @Input() teamId: string;
 
-    constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private authService: AuthService,
+    constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private pageTitleService: PageTitleService, private authService: AuthService,
                 private elementRef: ElementRef) {
         super(route);
     }
@@ -54,6 +55,9 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
                 });
             }
         }
+
+
+        this.pageTitleService.setTitle('Leagues');
     }
 
     ngAfterViewInit(): void {
