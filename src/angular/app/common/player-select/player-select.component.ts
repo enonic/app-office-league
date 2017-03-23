@@ -36,9 +36,6 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
     }
 
     private loadPlayers() {
-        if (this.playerIds.length === 0) {
-            return;
-        }
         this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {playerIds: this.playerIds, first: -1}).then(
             data => {
                 this.players = data.players.map((player) => Player.fromJson(player));
