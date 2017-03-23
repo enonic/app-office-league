@@ -8,6 +8,7 @@ const filesToCache = [
     '{{siteUrl}}manifest.json',
     '{{appUrl}}',
     '{{appUrl}}/',
+    '{{appUrl}}?source=web_app_manifest',
     '{{assetUrl}}/img/logo.svg',
     '{{assetUrl}}/img/office-league-logo.svg',
     '{{assetUrl}}/icons/apple-touch-icon.png',
