@@ -3,8 +3,9 @@ var mustache = require('/lib/xp/mustache');
 
 exports.get = function(req) {
     var sitePath = portalLib.getSite()._path;
+    var siteUrl = portalLib.pageUrl({path: sitePath});
     var params = {
-        siteUrl : portalLib.pageUrl({path: sitePath}),
+        siteUrl: (siteUrl == '/') ? '/' : siteUrl + '/',
         iconUrl : portalLib.assetUrl({path: '/icons'})
     };
     var res = mustache.render(resolve('manifest.json'), params);

@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{assetsUrl}}/icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" href="{{assetsUrl}}/icons/favicon-32x32.png" sizes="32x32">
     <link rel="icon" type="image/png" href="{{assetsUrl}}/icons/favicon-16x16.png" sizes="16x16">
-    <link rel="manifest" href="{{siteUrl}}/manifest.json">
+    <link rel="manifest" href="{{siteUrl}}manifest.json">
     <link rel="mask-icon" href="{{assetsUrl}}/icons/safari-pinned-tab.svg" color="#142663">
     <meta name="theme-color" content="#ffffff">
 
@@ -49,30 +49,43 @@
     var serviceWorker;
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker
-                .register('{{siteUrl}}/service-worker.js', {scope: '{{siteUrl}}'})
-                .then(function (registration) {
-                    if (registration.installing) {
-                        serviceWorker = registration.installing;
-                        let assets = [];
-                        <% for (key in htmlWebpackPlugin.files.chunks) { %>
-                        <%      item = htmlWebpackPlugin.files.chunks[key].entry; %>
-                                assets.push('<%= '{{assetsUrl}}/' + item %>');
-                        <% }; %>
-                        <% for (key in htmlWebpackPlugin.files.css) { %>
-                        <%      item = htmlWebpackPlugin.files.css[key]; %>
-                                assets.push('<%= '{{assetsUrl}}/' + item %>');
-                        <% }; %>
+            .getRegistration()
+            .then(function (registration) {
+                if (!!registration && registration.active) {
+                    console.log('Detected active Service Worker with scope ' + registration.scope);
+                    return registration.active;
+                }
+                else {
+                    return navigator.serviceWorker
+                        .register('{{siteUrl}}service-worker.js', {scope: '{{siteUrl}}'})
+                        .then(function (registration) {
+                            console.log('Service Worker registered with scope ' + registration.scope);
+                            return registration.installing;
+                        }, function () {
+                            console.log('Service Worker registration failure.');
+                        })
+                }
+            })
+            .then(function (serviceWorker) {
+                if (!serviceWorker) {
+                    return;
+                }
+                let assets = [];
+                <% for (key in htmlWebpackPlugin.files.chunks) { %>
+                <%      item = htmlWebpackPlugin.files.chunks[key].entry; %>
+                assets.push('<%= '{{assetsUrl}}/' + item %>');
+                <% }; %>
+                <% for (key in htmlWebpackPlugin.files.css) { %>
+                <%      item = htmlWebpackPlugin.files.css[key]; %>
+                assets.push('<%= '{{assetsUrl}}/' + item %>');
+                <% }; %>
 
-                        if (assets.length > 0) {
-                            serviceWorker.postMessage({
-                                assets: assets
-                            });
-                        }
-                    }
-                    console.log('Service Worker registered with scope ' + registration.scope);
-                }, function () {
-                    console.log('Service Worker registration failure.');
-                });
+                if (assets.length > 0) {
+                    serviceWorker.postMessage({
+                        assets: assets
+                    });
+                }
+            });
     }
     {{/isLive}}
 </script>

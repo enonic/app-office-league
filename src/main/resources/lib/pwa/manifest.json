@@ -4,7 +4,7 @@
   "theme_color": "#142663",
   "background_color": "#ffffff",
   "display": "standalone",
-  "start_url": "{{siteUrl}}/?source=web_app_manifest",
+  "start_url": "{{siteUrl}}?source=web_app_manifest",
   "icons": [
     {
       "src": "{{iconUrl}}/android-chrome-192x192.png",

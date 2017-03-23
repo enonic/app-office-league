@@ -38,7 +38,7 @@ exports.get = function (req) {
         locale: req.params.locale || 'en',
         user: userObj && JSON.stringify(userObj),
         isLive: (req.mode == 'live'),
-        siteUrl: baseHref,
+        siteUrl: (baseHref == '/') ? '/' : baseHref + '/',
         baseHref: appBaseUrl + '/',   // trailing slash for relative urls to be correct
         assetsUrl: portalLib.assetUrl({path: ""}),
         loginUrl: portalLib.loginUrl({redirect: appBaseAbsoluteUrl}),
