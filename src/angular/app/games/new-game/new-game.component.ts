@@ -21,7 +21,7 @@ export class NewGameComponent implements OnInit {
     bluePlayer2: Player;
     redPlayer1: Player;
     redPlayer2: Player;
-    excludePlayerIds: {[id: string]: boolean} = {};
+    possiblePlayerIds: string[] = [];
 
     league: League;
     title: string;
@@ -133,9 +133,14 @@ export class NewGameComponent implements OnInit {
         let doublesGameReady = !!(this.bluePlayer1 && this.redPlayer1 && this.bluePlayer2 && this.redPlayer2);
         this.playerSelectionReady = singlesGameReady || doublesGameReady;
 
-        this.excludePlayerIds = {};
-        [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2].filter((p) => !!p).forEach(
-            (p) => this.excludePlayerIds[p.id] = true);
+        let possiblePlayerIds = [];
+        let alreadyAssignePlayerIds = [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2].filter((p) => !!p).map((player) => player.id);
+        this.league.leaguePlayers.forEach((leaguePlayer) => {
+            if (alreadyAssignePlayerIds.indexOf(leaguePlayer.player.id) == -1) {
+                possiblePlayerIds.push(leaguePlayer.player.id);
+            } 
+        });
+        this.possiblePlayerIds = possiblePlayerIds;
     }
 
     private static readonly getPlayerLeagueQuery = `query ($playerId: ID!, $leagueId: ID!) {
@@ -152,6 +157,11 @@ export class NewGameComponent implements OnInit {
             id
             name
             description
+            leaguePlayers(first:-1) {
+                player {
+                    id
+                }
+            }
         }
     }`;
 

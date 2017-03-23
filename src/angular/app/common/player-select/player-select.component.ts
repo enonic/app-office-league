@@ -13,9 +13,7 @@ import {GraphQLService} from '../../services/graphql.service';
 })
 export class PlayerSelectComponent implements OnInit, OnChanges {
 
-    @Input() leagueIds: string[];
-    @Input() enabled: boolean;
-    @Input() excludePlayerIds: {[id: string]: boolean} = {};
+    @Input() playerIds: string[];
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
     players: Player[] = [];
     private selectedPlayer: Player;
@@ -25,13 +23,11 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
-
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        let enabledChange = changes['enabled'];
-        let leagueIdsChange = changes['leagueIds'];
-        if ((enabledChange && enabledChange.currentValue) || (leagueIdsChange && leagueIdsChange.currentValue)) {
+        let playerIdsChange = changes['playerIds'];
+        if (playerIdsChange) {
             this.loadPlayers();
         } else {
             this.players = [];
@@ -40,17 +36,12 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
     }
 
     private loadPlayers() {
-        if (this.leagueIds.length === 0) {
+        if (this.playerIds.length === 0) {
             return;
         }
-        this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {leagueIds: this.leagueIds, first: -1, sort: 'name ASC'}).then(
+        this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {playerIds: this.playerIds, first: -1}).then(
             data => {
-                if (data.leagues) {
-                    let leaguePlayers = [];
-                    data.leagues.forEach((league) => leaguePlayers.push(...league.leaguePlayers));
-                    this.players =
-                        leaguePlayers.filter(lp => !this.excludePlayerIds[lp.player.id]) .map(lp => Player.fromJson(lp.player));
-                }
+                this.players = data.players.map((player) => Player.fromJson(player));
                 this.ready = true;
             });
     }
@@ -93,18 +84,11 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
         this.notifySelected();
     }
 
-    private static readonly GetPlayersQuery = `query ($leagueIds: [ID], $first:Int, $sort: String) {
-        leagues(ids: $leagueIds) {
-            leaguePlayers(first: $first, sort: $sort) {
-                player {
-                    id
-                    name
-                    nickname
-                    nationality
-                    handedness
-                    description
-                }
-            }
+    private static readonly GetPlayersQuery = `query ($playerIds: [ID], $first:Int) {
+        players(ids: $playerIds, first: $first) {
+            id
+            name
+            nickname
         }
     }`;
 }
