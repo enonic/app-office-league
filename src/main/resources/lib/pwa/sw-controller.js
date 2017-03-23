@@ -17,7 +17,7 @@ exports.get = function(req) {
         body: res,
         contentType: 'application/javascript',
         headers: {
-            'Service-Worker-Allowed': params.siteUrl
+            'Service-Worker-Allowed': (siteUrl == '/' ? '' : siteUrl)
         }
     };
 };

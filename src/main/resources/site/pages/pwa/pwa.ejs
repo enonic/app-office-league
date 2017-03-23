@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{assetsUrl}}/icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" href="{{assetsUrl}}/icons/favicon-32x32.png" sizes="32x32">
     <link rel="icon" type="image/png" href="{{assetsUrl}}/icons/favicon-16x16.png" sizes="16x16">
-    <link rel="manifest" href="{{siteUrl}}manifest.json">
+    <link rel="manifest" href="../manifest.json">
     <link rel="mask-icon" href="{{assetsUrl}}/icons/safari-pinned-tab.svg" color="#142663">
     <meta name="theme-color" content="#ffffff">
 
@@ -17,12 +17,6 @@
     <% item = htmlWebpackPlugin.files.css[key]; %>
     <link rel="stylesheet" href="<%= '{{assetsUrl}}/' + item %>"/>
     <% }; %>
-
-    <script type="text/javascript">
-        if (document.location.href.endsWith('{{siteUrl}}') && !document.location.href.endsWith('/')) {
-            document.location = document.location.href + "/";
-        }
-    </script>
 </head>
 
 <body>
@@ -57,7 +51,7 @@
                 }
                 else {
                     return navigator.serviceWorker
-                        .register('{{siteUrl}}service-worker.js', {scope: '{{siteUrl}}'})
+                        .register('../service-worker.js', {scope: '{{siteUrl}}'.slice(0, - 1)})
                         .then(function (registration) {
                             console.log('Service Worker registered with scope ' + registration.scope);
                             return registration.installing;

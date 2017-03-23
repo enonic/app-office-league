@@ -3,6 +3,12 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="manifest" href="./manifest.json">
+    <script th:inline="javascript">
+        if (!document.location.href.endsWith('/')) {
+            document.location = document.location.href + "/";
+        }
+    </script>
 </head>
 <body>
 <h1>Office League</h1>
@@ -23,7 +29,7 @@
     var siteUrl = /*[[${siteUrl}]]*/"";
     if (live && 'serviceWorker' in navigator) {
         navigator.serviceWorker
-                .register(siteUrl + 'service-worker.js', {scope: siteUrl})
+                .register('./service-worker.js', {scope: siteUrl})
                 .then(function (registration) {
                     console.log('Service Worker registered with scope ' + registration.scope);
                 }, function () {
