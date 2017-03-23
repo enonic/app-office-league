@@ -1,39 +1,37 @@
 <div class="navbar-fixed" [hidden]="isPlayingGame">
     <nav class="app__navbar">
-        <div class="nav-wrapper">
-            <a *ngIf="!auth.isNewUser()" href="#" (click)="location.back()" class="button-back hide-on-large-only"><i class="material-icons">arrow_back</i></a>
+        <a *ngIf="!auth.isNewUser()" href="#" (click)="location.back()" class="app__navbar-back button-back"><i class="material-icons">arrow_back</i></a>
 
-            <a routerLink="/" href="#" class="brand-logo">
-                <!--<img src="{{logoUrl}}" height="40px">-->
-                {{pageTitle}}
-            </a>
+        <a routerLink="/" href="#" class="app__navbar-title">
+            <!--<img src="{{logoUrl}}" height="40px">-->
+            {{pageTitle}}
+        </a>
 
-            <a *ngIf="!auth.isNewUser()" href="#"
-               materialize="sideNav"
-               [materializeParams]="[{closeOnClick: true, edge: 'right'}]"
-               data-activates="mobile-side-nav"
-               class="button-collapse right">
-                <i class="material-icons">menu</i>
-            </a>
+        <a *ngIf="!auth.isNewUser()" href="#"
+           materialize="sideNav"
+           [materializeParams]="[{closeOnClick: true, edge: 'right'}]"
+           data-activates="mobile-side-nav"
+           class="app__navbar-menu-btn button-collapse right">
+            <i class="material-icons">menu</i>
+        </a>
 
-            <ul *ngIf="!auth.isNewUser()" class="right hide-on-med-and-down">
-                <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>
-                <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
-                <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
-                <li *ngIf="auth.isAuthenticated()">
-                    <ul id="user-dropdown" class="dropdown-content">
-                        <li><a href="#" routerLink="/players/{{auth.getUser().playerName.toLowerCase()}}">{{auth.getUser().playerName}}</a></li>
-                        <li><a href="#!" (click)="auth.logout()">Logout</a></li>
-                    </ul>
+        <ul *ngIf="!auth.isNewUser()" class="app__navbar-menu right hide-on-med-and-down">
+            <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>
+            <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
+            <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
+            <li *ngIf="auth.isAuthenticated()">
+                <ul id="user-dropdown" class="dropdown-content">
+                    <li><a href="#" routerLink="/players/{{auth.getUser().playerName.toLowerCase()}}">{{auth.getUser().playerName}}</a></li>
+                    <li><a href="#!" (click)="auth.logout()">Logout</a></li>
+                </ul>
 
-                    <a class="dropdown-button" href="#!" data-activates="user-dropdown">{{auth.getUser().playerName}}
-                        <i class="material-icons right">arrow_drop_down</i></a>
-                </li>
-                <li *ngIf="!auth.isAuthenticated()">
-                    <a href="#!" (click)="auth.login()">Login</a>
-                </li>
-            </ul>
-        </div>
+                <a class="dropdown-button" href="#!" data-activates="user-dropdown">{{auth.getUser().playerName}}
+                    <i class="material-icons right">arrow_drop_down</i></a>
+            </li>
+            <li *ngIf="!auth.isAuthenticated()">
+                <a href="#!" (click)="auth.login()">Login</a>
+            </li>
+        </ul>
     </nav>
 </div>
 

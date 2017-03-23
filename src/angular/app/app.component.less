@@ -3,6 +3,19 @@
 .app {
   &__navbar {
     background-color: @main-theme-color;
+    display: flex;
+
+    &-title {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      font-size: 1.3rem;
+      flex: 1 1 auto;
+      white-space: nowrap;
+    }
+
+    &-back {
+      padding: 0 1rem;
+    }
   }
 }
 
@@ -10,22 +23,25 @@
   //margin-bottom: 20px; TODO: maybe?
   margin-bottom: 2px;
 
+  .nav-wrapper {
+    display: flex;
+
+  }
   .button-back {
-    float: left;
-    position: relative;
-    z-index: 1;
-    margin: 0 18px;
+    //float: left;
+    //position: relative;
+    //z-index: 1;
+    //margin: 0 18px;
   }
 
-  .brand-logo {
-    padding: 0 15px;
+  .nav-title {
 
-    img {
+    /*img {
       vertical-align: middle;
       margin-right: 10px;
       max-height: 44px;
       margin-top: -5px;
-    }
+    }*/
   }
 }
 
