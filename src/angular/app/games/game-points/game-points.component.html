@@ -6,12 +6,19 @@
         <div class="col s12 m12 l10 offset-l1">
             <div class="header">Timeline</div>
             <section class="timeline">
-                <div *ngFor="let entry of timeline" class="block team-{{entry.side}}">
-                    <div class="time"><span class="fix">{{entry.score}}</span></div>
+                <div *ngFor="let entry of timeline" class="block team-{{entry.side}} {{entry.isComment&&'comment'}}">
+                    <div class="time">
+                        <template [ngIf]="!entry.isComment">
+                            <span class="fix">{{entry.score}}</span>
+                        </template>
+                        <template [ngIf]="entry.isComment">
+                            <i class="material-icons blue-text text-lighten-3">comment</i>
+                        </template>
+                    </div>
                     <div class="description">
                         <div class="name">{{entry.name}}</div>
-                        <div class="team">{{entry.team?.team.name}}</div>
-                        <div class="comment">{{entry.comment}}</div>
+                        <div class="team">{{entry.teamName}}</div>
+                        <div class="comment">{{entry.text}}</div>
                         <div class="score">{{entry.time}}</div>
                     </div>
                 </div>

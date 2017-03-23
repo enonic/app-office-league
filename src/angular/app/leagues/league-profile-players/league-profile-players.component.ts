@@ -1,4 +1,4 @@
-import {Component, Input, SimpleChanges, EventEmitter} from '@angular/core';
+import {Component, Input, SimpleChanges} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {AuthService} from '../../services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -6,14 +6,12 @@ import {League} from '../../../graphql/schemas/League';
 import {LeaguePlayer} from '../../../graphql/schemas/LeaguePlayer';
 import {BaseComponent} from '../../common/base.component';
 import {Player} from '../../../graphql/schemas/Player';
-import {MaterializeAction} from "angular2-materialize";
 
 @Component({
     selector: 'league-profile-players',
     templateUrl: 'league-profile-players.component.html'
 })
 export class LeagueProfilePlayersComponent extends BaseComponent {
-    materializeActions = new EventEmitter<string|MaterializeAction>();
 
     private static readonly paging = 10;
     private static readonly getLeagueQuery = `query ($name: String, $after:Int, $first:Int, $sort: String) {
@@ -75,22 +73,5 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
                     this.pages.push(i);
                 }
             });
-    }
-
-    openAddPlayerModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['open']});
-    }
-
-    closeAddPlayerModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['close']});
-    }
-
-    addPlayer(player: Player): void {
-        console.log('add ' + player.name);
-        this.graphQLService.post(LeagueProfilePlayersComponent.joinPlayerLeagueQuery, {playerId: player.id, leagueId: this.league.id}).then(
-                data => {
-                this.refresh();
-            });
-        this.closeAddPlayerModal();
     }
 }

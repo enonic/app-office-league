@@ -13,8 +13,7 @@ export class NewGamePlayerComponent implements OnInit, OnChanges {
     materializeActions = new EventEmitter<string|MaterializeAction>();
 
     @Input() player: Player;
-    @Input() leagueId: string;
-    @Input() excludePlayerIds: {[id: string]: boolean} = {};
+    @Input() possiblePlayerIds: string[];
     @Input() sideClass: string;
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
     playerSelectEnabled: boolean;
@@ -36,8 +35,10 @@ export class NewGamePlayerComponent implements OnInit, OnChanges {
     }
 
     onSelected(p: Player) {
-        this.hideModal();
-        this.playerSelected.emit(p);
+        if (p) {
+            this.hideModal();
+            this.playerSelected.emit(p);
+        }
     }
 
     public showModal(): void {

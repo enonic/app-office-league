@@ -26,7 +26,7 @@ export class Game extends Entity {
         game.time = json.time && DateUtil.parseDate(json.time);
         game.finished = json.finished;
         game.points = json.points && json.points.map(point => Point.fromJson(point));
-        game.comments = json.comments && json.comments.map(comment => Comment.fromJson(comment));
+        game.comments = json.comments ? json.comments.map(comment => Comment.fromJson(comment)) : [];
         game.gamePlayers = json.gamePlayers && json.gamePlayers.map(gamePlayer => GamePlayer.fromJson(gamePlayer));
         game.gameTeams = json.gameTeams && json.gameTeams.map(gameTeam => GameTeam.fromJson(gameTeam));
         game.league = json.league && League.fromJson(json.league);

@@ -12,24 +12,22 @@
 
         <div class="side side-blue">
             <div class="player">
-                <new-game-player [player]="bluePlayer1" [leagueId]="leagueId" [sideClass]="'side-blue'"
-                                 [excludePlayerIds]="excludePlayerIds"
+                <new-game-player [player]="bluePlayer1" [possiblePlayerIds]="possiblePlayerIds" [sideClass]="'side-blue'"
                                  (playerSelected)="onBluePlayer1Selected($event)"></new-game-player>
             </div>
             <div class="player">
-                <new-game-player [player]="bluePlayer2" [leagueId]="leagueId" [sideClass]="'side-blue'"
-                                 [excludePlayerIds]="excludePlayerIds"
+                <new-game-player [player]="bluePlayer2" [possiblePlayerIds]="possiblePlayerIds" [sideClass]="'side-blue'"
                                  (playerSelected)="onBluePlayer2Selected($event)"></new-game-player>
             </div>
         </div>
         <h5 class="center grey-text text-darken-3 vs">VS</h5>
         <div class="side side-red">
             <div class="player">
-                <new-game-player [player]="redPlayer1" [leagueId]="leagueId" [sideClass]="'side-red'" [excludePlayerIds]="excludePlayerIds"
+                <new-game-player [player]="redPlayer1" [possiblePlayerIds]="possiblePlayerIds" [sideClass]="'side-red'"
                                  (playerSelected)="onRedPlayer1Selected($event)"></new-game-player>
             </div>
             <div class="player">
-                <new-game-player [player]="redPlayer2" [leagueId]="leagueId" [sideClass]="'side-red'" [excludePlayerIds]="excludePlayerIds"
+                <new-game-player [player]="redPlayer2" [possiblePlayerIds]="possiblePlayerIds" [sideClass]="'side-red'"
                                  (playerSelected)="onRedPlayer2Selected($event)"></new-game-player>
             </div>
         </div>

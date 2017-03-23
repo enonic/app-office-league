@@ -3,6 +3,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../services/graphql.service';
+import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
     selector: 'player-list-page',
@@ -24,7 +25,7 @@ export class PlayerListPageComponent extends BaseComponent {
     private players: Player[];
     private pages = [1];
 
-    constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
+    constructor(private router: Router, private service: GraphQLService, private pageTitleService: PageTitleService, route: ActivatedRoute) {
         super(route);
     }
 
@@ -45,5 +46,7 @@ export class PlayerListPageComponent extends BaseComponent {
                     this.pages.push(i);
                 }
             });
+
+        this.pageTitleService.setTitle('Players');
     }
 }

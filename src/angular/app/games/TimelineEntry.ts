@@ -1,20 +1,24 @@
-import {GameTeam} from '../../graphql/schemas/GameTeam';
+import {Side} from '../../graphql/schemas/Side';
 
 export class TimelineEntry {
     name: string;
-    team: GameTeam;
+    teamName: string;
+    timeOffset: number;
     time: string;
-    comment: string;
+    text: string;
     score: string;
     side: string;
+    isComment: boolean;
 
-    constructor(name: string, team: GameTeam, time: number, comment: string, score: string, side: string) {
+    constructor(name: string, teamName: string, timeOffset: number, text: string, score: string, side: Side) {
         this.name = name;
-        this.team = team;
-        this.time = this.formatTime(time);
-        this.comment = comment;
+        this.teamName = teamName;
+        this.timeOffset = timeOffset;
+        this.time = this.formatTime(timeOffset);
+        this.text = text;
         this.score = score;
-        this.side = side;
+        this.side = side === Side.BLUE ? 'blue' : 'red';
+        this.isComment = false;
     }
 
     private formatTime(seconds: number): string {

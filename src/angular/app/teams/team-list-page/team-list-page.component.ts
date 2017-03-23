@@ -4,6 +4,7 @@ import {BaseComponent} from '../../common/base.component';
 import {Team} from '../../../graphql/schemas/Team';
 import {GraphQLService} from '../../services/graphql.service';
 import {MaterializeDirective} from '../../../../../node_modules/angular2-materialize/dist/index.d';
+import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
     selector: 'team-list-page',
@@ -25,7 +26,8 @@ export class TeamListPageComponent extends BaseComponent {
     private teams: Team[];
     private pages = [1];
 
-    constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
+    constructor(private router: Router, private service: GraphQLService,
+                private pageTitleService: PageTitleService, route: ActivatedRoute) {
         super(route);
     }
 
@@ -47,5 +49,6 @@ export class TeamListPageComponent extends BaseComponent {
                 }
                 this.pages= pages;
             });
+        this.pageTitleService.setTitle('Teams');
     }
 }

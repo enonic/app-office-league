@@ -155,7 +155,9 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 rating: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.joinPlayerLeague(env.args.leagueId, env.args.playerId, env.args.rating);
+                var createdLeaguePlayer = storeLib.joinPlayerLeague(env.args.leagueId, env.args.playerId, env.args.rating);
+                storeLib.refresh();
+                return createdLeaguePlayer;
             }
         },
         updatePlayerLeagueRating: {
@@ -166,7 +168,9 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 ratingDelta: graphQlLib.nonNull(graphQlLib.GraphQLInt)
             },
             data: function (env) {
-                return storeLib.updatePlayerLeagueRating(env.args.leagueId, env.args.playerId, env.args.ratingDelta);
+                var updatedLeaguePlayer = storeLib.updatePlayerLeagueRating(env.args.leagueId, env.args.playerId, env.args.ratingDelta);
+                storeLib.refresh();
+                return updatedLeaguePlayer;
             }
         },
         joinTeamLeague: {
@@ -177,7 +181,9 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 rating: graphQlLib.GraphQLInt
             },
             data: function (env) {
-                return storeLib.joinTeamLeague(env.args.leagueId, env.args.teamId, env.args.rating);
+                var createdLeagueTeam = storeLib.joinTeamLeague(env.args.leagueId, env.args.teamId, env.args.rating);
+                storeLib.refresh();
+                return createdLeagueTeam;
             }
         },
         updateTeamLeagueRating: {
@@ -188,7 +194,9 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 ratingDelta: graphQlLib.nonNull(graphQlLib.GraphQLInt)
             },
             data: function (env) {
-                return storeLib.updateTeamLeagueRating(env.args.leagueId, env.args.teamId, env.args.ratingDelta);
+                var updatedLeagueTeam = storeLib.updateTeamLeagueRating(env.args.leagueId, env.args.teamId, env.args.ratingDelta);
+                storeLib.refresh();
+                return updatedLeagueTeam;
             }
         },
         createGame: {
@@ -268,15 +276,30 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 text: graphQlLib.GraphQLString
             },
             data: function (env) {
-                return storeLib.createComment({
+                var playerId = getCurrentPlayerId();
+                if (playerId !== env.args.author) {
+                    throw "Comment author is not the logged in user";
+                }
+                var createdComment = storeLib.createComment({
                     gameId: env.args.gameId,
                     author: env.args.author,
                     text: env.args.text
                 });
+                storeLib.refresh();
+                return createdComment;
             }
         }
     }
 });
+
+var getCurrentPlayerId = function () {
+    var user = authLib.getUser();
+    if (!user) {
+        return null;
+    }
+    var player = storeLib.getPlayerByUserKey(user.key);
+    return player && player._id;
+};
 
 var getCurrentUserKey = function () {
     var user = authLib.getUser();
