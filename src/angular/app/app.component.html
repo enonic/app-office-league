@@ -1,18 +1,17 @@
 <div class="navbar-fixed" [hidden]="isPlayingGame">
     <nav class="app__navbar">
-        <a *ngIf="!auth.isNewUser()" href="#" (click)="location.back()" class="app__navbar-back button-back"><i class="material-icons">arrow_back</i></a>
+
+        <a *ngIf="topLevelPage" href="#" materialize="sideNav" [materializeParams]="[{closeOnClick: true}]"
+           data-activates="mobile-side-nav" class="app__navbar-menu-btn button-collapse">
+            <i class="material-icons">menu</i>
+        </a>
+        <a *ngIf="!topLevelPage" href="#" (click)="location.back()" class="app__navbar-back button-collapse">
+            <i class="material-icons">arrow_back</i>
+        </a>
 
         <a routerLink="/" href="#" class="app__navbar-title">
             <!--<img src="{{logoUrl}}" height="40px">-->
             {{pageTitle}}
-        </a>
-
-        <a *ngIf="!auth.isNewUser()" href="#"
-           materialize="sideNav"
-           [materializeParams]="[{closeOnClick: true, edge: 'right'}]"
-           data-activates="mobile-side-nav"
-           class="app__navbar-menu-btn button-collapse right">
-            <i class="material-icons">menu</i>
         </a>
 
         <ul *ngIf="!auth.isNewUser()" class="app__navbar-menu right hide-on-med-and-down">
