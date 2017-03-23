@@ -20,6 +20,7 @@ export class GameProfileComponent extends GameComponent {
     private static readonly ReconnectTimeMs = 5 * 1000;
 
     comment: string;
+    playerId: string;
     private gameId: string;
     private webSocket: WebSocket;
     private wsConnected: boolean;
@@ -33,6 +34,8 @@ export class GameProfileComponent extends GameComponent {
         super.ngOnInit();
 
         this.gameId = this.route.snapshot.params['id'];
+        const user = this.authService.getUser();
+        this.playerId = user && user.playerId;
     }
 
     protected afterGameLoaded(game: Game) {
@@ -132,11 +135,13 @@ export class GameProfileComponent extends GameComponent {
     }
 
     private createComment(comment: string): Promise<Comment> {
-        let playerId = this.authService.getUser().playerId;
+        if (!this.playerId) {
+            return;
+        }
 
         const createCommentParams = {
             gameId: this.gameId,
-            author: playerId,
+            author: this.playerId,
             text: comment,
         };
         return this.graphQLService.post(GameProfileComponent.createCommentMutation, createCommentParams).then(data => {

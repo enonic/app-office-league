@@ -276,6 +276,10 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 text: graphQlLib.GraphQLString
             },
             data: function (env) {
+                var playerId = getCurrentPlayerId();
+                if (playerId !== env.args.author) {
+                    throw "Comment author is not the logged in user";
+                }
                 var createdComment = storeLib.createComment({
                     gameId: env.args.gameId,
                     author: env.args.author,
@@ -287,6 +291,15 @@ exports.rootMutationType = graphQlLib.createObjectType({
         }
     }
 });
+
+var getCurrentPlayerId = function () {
+    var user = authLib.getUser();
+    if (!user) {
+        return null;
+    }
+    var player = storeLib.getPlayerByUserKey(user.key);
+    return player && player._id;
+};
 
 var getCurrentUserKey = function () {
     var user = authLib.getUser();

@@ -4,9 +4,9 @@
 <div *ngIf="game != null" class="game-profile">
 
     <game [game]="game"></game>
-
-    <a class="btn-floating blue right" (click)="onCommentClicked()"><i class="material-icons">comment</i></a>
-
+    <template [ngIf]="playerId">
+        <a class="btn-floating blue right" (click)="onCommentClicked()"><i class="material-icons">comment</i></a>
+    </template>
     <game-points [game]="game"></game-points>
 
 </div>
