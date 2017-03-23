@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Response} from '@angular/http';
+import {Http, Response, Headers, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs';
 import {Team} from '../../graphql/schemas/Team';
 import {Game} from '../../graphql/schemas/Game';
@@ -23,7 +23,11 @@ export class GraphQLService {
     post(query: string, variables?: {[key: string]: any}): Promise<any> {
         var body = JSON.stringify({query: query, variables: variables});
         var hash = this.cryptoService.sha1(body);
-        return this.http.post(this.url + '?etag=' + hash, body)
+
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json; charset=utf-8');
+        let options = new RequestOptions({headers: headers});
+        return this.http.post(this.url + '?etag=' + hash, body, options)
             .map(this.extractData)
             .catch(this.handleError)
             .toPromise();
