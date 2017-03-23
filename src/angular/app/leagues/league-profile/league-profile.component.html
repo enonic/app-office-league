@@ -10,16 +10,16 @@
     </div>
 
     <div class="row league-profile">
-        <div *ngIf="playerInLeague" class="col s4" (click)="onPlayClicked()">
+        <div *ngIf="playerInLeague" class="col s12 m4" (click)="onPlayClicked()">
             <a class="waves-effect waves-light btn green"><i class="material-icons left">play_arrow</i>Play Game</a>
         </div>
         <div *ngIf="authService.isAuthenticated() && !playerInLeague" class="col s12" (click)="onJoinClicked()">
             <a class="waves-effect waves-light btn green"><i class="material-icons left">person_add</i>Join</a>
         </div>
-        <div *ngIf="adminInLeague" class="col s4" (click)="onEditClicked()">
+        <div *ngIf="adminInLeague" class="col s12 m4" (click)="onEditClicked()">
             <a class="waves-effect waves-light btn light-blue darken-3"><i class="material-icons left">mode_edit</i>Edit</a>
         </div>
-        <div *ngIf="adminInLeague" class="col s4" (click)="onAddPlayerClicked()">
+        <div *ngIf="adminInLeague" class="col s12 m4" (click)="onAddPlayerClicked()">
             <a class="waves-effect waves-light btn light-blue darken-3"><i class="material-icons left">add</i>Add player</a>
         </div>
     </div>
