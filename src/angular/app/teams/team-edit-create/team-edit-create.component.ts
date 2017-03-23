@@ -26,6 +26,7 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
     players: Player[] = [];
     createMode: boolean;
     excludePlayerIds: {[id: string]: boolean} = {};
+    possibleTeamMateIds: string[]= [];
     leagueIds: string[] = [];
     private currentPlayer: Player;
 
@@ -73,10 +74,25 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
     private setupCreate() {
         let playerId = this.authService.getUser().playerId;
         this.graphQLService.post(TeamEditCreateComponent.getPlayerByIdQuery, {playerId: playerId}).then(
-            data => {
-                let playerTeamMates = data.player.teams.map((team) => {
+                data => {
+                let playerTeamMateIds = data.player.teams.map((team) => {
                     return team.players.map((p) => p.id).filter((id) => id != playerId)[0];
                 });
+                console.log('playerTeamMateIds: ', playerTeamMateIds);
+
+                let possibleTeamMateIds = new Set();
+                data.player.leaguePlayers.forEach((leaguePlayer => {
+                    leaguePlayer.league.leaguePlayers.forEach((relatedLeaguePlayer) => {
+                        if (relatedLeaguePlayer.player.id != data.player.id) {
+                            possibleTeamMateIds.add(relatedLeaguePlayer.player.id);
+                        }
+                    });
+                }));
+                playerTeamMateIds.forEach((playerTeamMateId) => {
+                    possibleTeamMateIds.delete(playerTeamMateId);
+                });
+                this.possibleTeamMateIds = Array.from(possibleTeamMateIds);
+
                 delete data.player.teams;
                 const player = Player.fromJson(data.player);
                 this.name = '';
@@ -87,7 +103,7 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
                 this.currentPlayer = player;
                 this.createMode = true;
                 this.excludePlayerIds[player.id] = true;
-                playerTeamMates.forEach((playerId) => this.excludePlayerIds[playerId] = true);
+                playerTeamMateIds.forEach((playerId) => this.excludePlayerIds[playerId] = true);
 
                 if (data.player && data.player.leaguePlayers) {
                     this.leagueIds = data.player.leaguePlayers.map((lp) => lp.league.id);
@@ -247,15 +263,20 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
         player(id: $playerId) {
             id
             name
-            leaguePlayers {
+            leaguePlayers(first:-1) {
                 league {
                     id
+                    leaguePlayers(first:-1) {
+                        player {
+                            id
+                        }
+                    }
                 }
             }
             teams(first:-1) {
-              players {
-                id
-              }
+                players {
+                    id
+                }
             }
         }
     }`;
