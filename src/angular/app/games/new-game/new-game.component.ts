@@ -6,6 +6,7 @@ import {XPCONFIG} from '../../app.config';
 import {League} from '../../../graphql/schemas/League';
 import {GameParameters} from '../GameParameters';
 import {GamePlayComponent} from '../game-play/game-play.component';
+import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
     selector: 'new-game',
@@ -26,7 +27,8 @@ export class NewGameComponent implements OnInit {
     title: string;
     playerSelectionReady: boolean;
 
-    constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router) {
+    constructor(private graphQLService: GraphQLService, private route: ActivatedRoute,
+                private pageTitleService: PageTitleService, private router: Router) {
     }
 
     ngOnInit(): void {
@@ -42,6 +44,8 @@ export class NewGameComponent implements OnInit {
                 this.bluePlayer1 = Player.fromJson(data.player);
                 this.league = League.fromJson(data.league);
                 this.title = this.league.name;
+
+                this.pageTitleService.setTitle(this.league.name);
 
                 this.updatePlayerSelectionState();
             });
