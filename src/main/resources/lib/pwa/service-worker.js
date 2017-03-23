@@ -3,9 +3,9 @@ const dataCacheName = 'office-league-data-cache';
 const swVersion = '{{appVersion}}';
 const debugging = true;
 const filesToCache = [
+    '{{siteUrl}}'.slice(0, - 1),
     '{{siteUrl}}',
-    '{{siteUrl}}/',
-    '{{siteUrl}}/manifest.json',
+    '{{siteUrl}}manifest.json',
     '{{appUrl}}',
     '{{appUrl}}/',
     '{{assetUrl}}/img/logo.svg',

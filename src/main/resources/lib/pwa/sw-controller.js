@@ -5,8 +5,8 @@ exports.get = function(req) {
     var sitePath = portalLib.getSite()._path;
     var siteUrl = portalLib.pageUrl({path: sitePath});
     var params = {
-        siteUrl: siteUrl,
-        appUrl: siteUrl + '/app',
+        siteUrl: (siteUrl == '/') ? '/' : siteUrl + '/',
+        appUrl: (siteUrl == '/') ? '/app' : siteUrl + '/app',
         assetUrl : portalLib.assetUrl(''),
         appVersion: app.version
     };

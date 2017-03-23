@@ -18,4 +18,17 @@
     </div>
 </div>
 </body>
+<script th:inline="javascript">
+    var live = /*[[${isLive}]]*/false;
+    var siteUrl = /*[[${siteUrl}]]*/"";
+    if (live && 'serviceWorker' in navigator) {
+        navigator.serviceWorker
+                .register(siteUrl + 'service-worker.js', {scope: siteUrl})
+                .then(function (registration) {
+                    console.log('Service Worker registered with scope ' + registration.scope);
+                }, function () {
+                    console.log('Service Worker registration failure.');
+                });
+    }
+</script>
 </html>

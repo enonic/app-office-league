@@ -13,10 +13,16 @@ exports.get = function (req) {
         ]
     });
     var appUrl = appContent.count === 0 ? '#' : portal.pageUrl({id: appContent.hits[0]._id});
+    var site = portal.getSite();
+    var siteUrl = portal.pageUrl({
+        path: site._path
+    });
 
     var params = {
         page: content.page,
-        appUrl: appUrl
+        appUrl: appUrl,
+        isLive: (req.mode == 'live'),
+        siteUrl: (siteUrl == '/') ? '/' : siteUrl + '/'
     };
     var body = thymeleaf.render(view, params);
 
