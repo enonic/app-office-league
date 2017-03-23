@@ -132,6 +132,9 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                     name
                 }
             }
+            nonMemberPlayers(first:-1, sort:"name ASC") {
+                id
+            }
         }
     }`;
 
@@ -145,6 +148,7 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
     playerInLeague: boolean;
     adminInLeague: boolean;
     activeGames: Game[] = [];
+    nonMembersPlayerIds: string[] = [];
     materializeActions = new EventEmitter<string|MaterializeAction>();
 
     constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
@@ -184,6 +188,7 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                 game.live = true;
                 return game;
             });
+            this.nonMembersPlayerIds = data.league.nonMemberPlayers.map((player) => player.id);
 
             this.pageTitleService.setTitle(this.league.name);
         });
