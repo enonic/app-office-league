@@ -209,6 +209,7 @@ export class GameProfileComponent
             ratingDelta
             team {
                 name
+                imageUrl
                 players {
                     name
                     imageUrl
