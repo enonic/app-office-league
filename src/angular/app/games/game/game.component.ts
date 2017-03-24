@@ -93,6 +93,7 @@ export class GameComponent implements OnInit, OnChanges {
         points {
             player {
                 name
+                imageUrl
             }
             time
             against
@@ -105,6 +106,7 @@ export class GameComponent implements OnInit, OnChanges {
             ratingDelta
             player {
                 name
+                imageUrl
             }
         }
         gameTeams {
@@ -115,13 +117,16 @@ export class GameComponent implements OnInit, OnChanges {
             ratingDelta
             team {
                 name
+                imageUrl
                 players {
                     name
+                    imageUrl
                 }
             }
         }
         league {
             name
+            imageUrl
         }
       }
     }`;

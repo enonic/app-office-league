@@ -5,11 +5,13 @@ import {Game} from './Game';
 import {LeaguePlayer} from './LeaguePlayer';
 import {Player} from './Player';
 import {LeagueTeam} from './LeagueTeam';
+import {XPCONFIG} from '../../app/app.config';
 
-export class League extends NamedEntity {
+export class League
+    extends NamedEntity {
     sport: Sport;
     description: string;
-    config: {[key: string]: any} = {};
+    config: { [key: string]: any } = {};
     leaguePlayers: LeaguePlayer[];
     leagueTeams: LeagueTeam[];
     nonMemberPlayers: Player[];
@@ -18,7 +20,6 @@ export class League extends NamedEntity {
 
     constructor(id: string, name: string) {
         super(id, name);
-        this.imageUrl = ImageService.forLeague(name);
     }
 
     static fromJson(json: any): League {
@@ -30,6 +31,7 @@ export class League extends NamedEntity {
         league.leagueTeams = json.leagueTeams && json.leagueTeams.map(leagueTeam => LeagueTeam.fromJson(leagueTeam));
         league.nonMemberPlayers = json.nonMemberPlayers && json.nonMemberPlayers.map(nonMemberPlayer => Player.fromJson(nonMemberPlayer));
         league.games = json.games && json.games.map(game => Game.fromJson(game));
+        league.imageUrl = json.imageUrl ? (XPCONFIG.baseHref + json.imageUrl) : ImageService.leagueDefault();
         return league;
     }
 }

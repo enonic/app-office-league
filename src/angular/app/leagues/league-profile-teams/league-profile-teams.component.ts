@@ -18,6 +18,7 @@ export class LeagueProfileTeamsComponent extends BaseComponent {
         league(name: $name) {
             id
             name
+            imageUrl
             leagueTeamsConnection(after:$after, first:$first, sort:$sort) {
                 totalCount
                 edges {
@@ -26,6 +27,7 @@ export class LeagueProfileTeamsComponent extends BaseComponent {
                         ranking
                         team {
                             name
+                            imageUrl
                         }    
                     }
                 }

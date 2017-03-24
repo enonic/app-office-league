@@ -18,6 +18,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
         league(name: $name) {
             id
             name
+            imageUrl
             leaguePlayersConnection(after:$after, first:$first, sort:$sort) {
                 totalCount
                 edges {
@@ -26,6 +27,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
                         ranking
                         player {
                             name
+                            imageUrl
                         }    
                     }
                 }
@@ -34,6 +36,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
             nonMemberPlayers {
                 id
                 name
+                imageUrl
             }
         }
     }`;
@@ -41,6 +44,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
     private static readonly joinPlayerLeagueQuery = `mutation ($playerId: ID!, $leagueId:ID!) {
         joinPlayerLeague(playerId: $playerId, leagueId: $leagueId) {
             id
+            imageUrl
         }
     }`;
 

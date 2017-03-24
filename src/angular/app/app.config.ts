@@ -2,6 +2,7 @@ export interface ConfigUser {
     key: string;
     playerId: string;
     playerName: string;
+    playerImageUrl: string;
 }
 
 export interface Config {

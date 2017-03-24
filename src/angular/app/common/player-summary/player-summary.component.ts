@@ -44,19 +44,23 @@ export class PlayerSummaryComponent
                   player(name: "${id}") {
                     id
                     name
+                    imageUrl
                     nickname
                     nationality
                     handedness
                     description
                     teams {
                         name
+                        imageUrl
                     }
                     leaguePlayers {
                         league {
                             name
+                            imageUrl
                         }
                         player {
                             name
+                            imageUrl
                         }
                     }
                   }

@@ -15,16 +15,19 @@ export class PlayerTeamListComponent extends BaseComponent {
     private static readonly getPlayerQuery = `query($name: String, $after:Int,$first:Int) {
         player(name:$name) {
             name
+            imageUrl
             teamsConnection(after:$after, first:$first) {
                 totalCount
                 edges {
                     node {
                         id
                         name
+                        imageUrl
                         description
                         players {
                             id
                             name
+                            imageUrl
                         }
                     }
                 }                

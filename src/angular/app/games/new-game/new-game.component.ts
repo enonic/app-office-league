@@ -147,6 +147,7 @@ export class NewGameComponent implements OnInit {
         player(id: $playerId) {
             id
             name
+            imageUrl
             nickname
             nationality
             handedness
@@ -156,10 +157,12 @@ export class NewGameComponent implements OnInit {
         league(id: $leagueId) {
             id
             name
+            imageUrl
             description
             leaguePlayers(first:-1) {
                 player {
                     id
+                    imageUrl
                 }
             }
         }

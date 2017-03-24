@@ -18,12 +18,14 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
         myLeagues : leagues(playerId:$playerId){
             id
             name 
+            imageUrl
             description 
         }
         
         allLeagues: leagues{
             id
             name 
+            imageUrl
             description 
         }
     }`;

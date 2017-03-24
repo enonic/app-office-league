@@ -70,6 +70,12 @@ exports.playerType = graphQlLib.createObjectType({
                 return env.source.description;
             }
         },
+        imageUrl: {
+            type: graphQlLib.GraphQLString,
+            data: function (env) {
+                return env.source.imageUrl;
+            }
+        },
         teams: {
             type: graphQlLib.list(graphQlLib.reference('Team')),
             args: {
@@ -135,6 +141,12 @@ exports.teamType = graphQlLib.createObjectType({
             type: graphQlLib.GraphQLString,
             data: function (env) {
                 return env.source.description;
+            }
+        },
+        imageUrl: {
+            type: graphQlLib.GraphQLString,
+            data: function (env) {
+                return env.source.imageUrl;
             }
         },
         players: {
@@ -515,6 +527,12 @@ exports.leagueType = graphQlLib.createObjectType({
             type: graphQlLib.nonNull(graphQlLib.GraphQLString),
             data: function (env) {
                 return env.source.name;
+            }
+        },
+        imageUrl: {
+            type: graphQlLib.GraphQLString,
+            data: function (env) {
+                return env.source.imageUrl;
             }
         },
         sport: {

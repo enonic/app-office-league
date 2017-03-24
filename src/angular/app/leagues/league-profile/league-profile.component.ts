@@ -20,6 +20,7 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
         league(name: $name) {
             id
             name
+            imageUrl
             description
             isAdmin(playerId:$playerId)
             myLeaguePlayer: leaguePlayer(playerId:$playerId) {
@@ -30,9 +31,11 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                 ranking
                 player {
                     name
+                    imageUrl
                 }
                 league {
                     name
+                    imageUrl
                 }
             }
             leagueTeams(first:$first, sort:$sort) {
@@ -40,12 +43,15 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                 ranking
                 team {
                     name
+                    imageUrl
                     players {
                         name
+                        imageUrl
                     }
                 }
                 league {
                     name
+                    imageUrl
                 }
             }
             games(finished: true){
@@ -55,6 +61,7 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                 points {
                     player {
                         name
+                        imageUrl
                     }
                     time
                     against
@@ -62,6 +69,7 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                 comments {
                     author {
                         name
+                        imageUrl
                     }
                     text
                 }
@@ -73,6 +81,7 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                     ratingDelta
                     player {
                         name
+                        imageUrl
                     }
                 }
                 gameTeams {
@@ -84,10 +93,12 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                     team {
                         id
                         name
+                        imageUrl
                     }
                 }
                 league {
                     name
+                    imageUrl
                 }
             }
             activeGames {
@@ -97,6 +108,7 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                 points {
                     player {
                         name
+                        imageUrl
                     }
                     time
                     against
@@ -104,6 +116,7 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                 comments {
                     author {
                         name
+                        imageUrl
                     }
                     text
                 }
@@ -115,6 +128,7 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                     ratingDelta
                     player {
                         name
+                        imageUrl
                     }
                 }
                 gameTeams {
@@ -126,14 +140,17 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                     team {
                         id
                         name
+                        imageUrl
                     }
                 }
                 league {
                     name
+                    imageUrl
                 }
             }
             nonMemberPlayers(first:-1, sort:"name ASC") {
                 id
+                imageUrl
             }
         }
     }`;

@@ -596,12 +596,14 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         league(id: $leagueId) {
             id
             name
+            imageUrl
             description
         }
         
         players(ids: $playerIds) {
             id
             name
+            imageUrl
             nickname
             nationality
             handedness
@@ -618,6 +620,7 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
           against
           player {
             id
+            imageUrl
           }
         }
         gamePlayers {
@@ -625,6 +628,7 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
           player {
             id
             name
+            imageUrl
             nickname
             nationality
             handedness
@@ -634,6 +638,7 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         league {
           id
           name
+          imageUrl
           description
         }
       }

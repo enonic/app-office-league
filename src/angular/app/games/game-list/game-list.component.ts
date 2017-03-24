@@ -62,6 +62,7 @@ export class GameListComponent extends ListComponent implements OnInit, OnChange
                     points {
                         player {
                             name
+                            imageUrl
                         }
                     }
                     comments {
@@ -78,6 +79,7 @@ export class GameListComponent extends ListComponent implements OnInit, OnChange
                         ratingDelta
                         player {
                             name
+                            imageUrl
                         }
                     }
                     gameTeams {
@@ -88,6 +90,7 @@ export class GameListComponent extends ListComponent implements OnInit, OnChange
                     }
                     league {
                         name
+                        imageUrl
                     }
                   }
                 }`;

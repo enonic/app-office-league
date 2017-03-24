@@ -61,6 +61,7 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
         team(name: $name) {
             id
             name
+            imageUrl
             description
 
             gameTeams(first: 5) {
@@ -74,6 +75,7 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
                   player {
                     id
                     name
+                    imageUrl
                   }
                 }
                 gamePlayers {
@@ -87,6 +89,7 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
                   player {
                     id
                     name
+                    imageUrl
                   }
                 }
                 gameTeams {
@@ -100,11 +103,13 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
                   team {
                     id
                     name
+                    imageUrl
                   }
                 }
                 league {
                   id
                   name
+                  imageUrl
                 }
               }
             }
@@ -115,6 +120,7 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
               league {
                 id
                 name
+                imageUrl
                 sport
                 description      
               }
@@ -123,6 +129,7 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
             players {
                 id
                 name
+                imageUrl
             }
         }
     }`;

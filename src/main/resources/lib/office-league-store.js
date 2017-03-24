@@ -41,6 +41,7 @@ var TYPE = {
  * @property {string} sport Sport id (e.g. 'foos')
  * @property {string} description League description text.
  * @property {string} image Attachment name of the league's image.
+ * @property {string} imageUrl URL for the league's image.
  * @property {Object} config League config.
  * @property {string[]} adminPlayerIds Array with ids of the admin players.
  * @property {Attachment|Attachment[]} [attachment] League attachments.
@@ -60,6 +61,7 @@ var TYPE = {
  * @property {string} name Name of the player.
  * @property {string} nickname Nickname of the player.
  * @property {string} image Attachment name of the player's image.
+ * @property {string} imageUrl URL for the player's image.
  * @property {string} nationality 2 letter country code of the player (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
  * @property {string} handedness Player handedness: 'right', 'left', 'ambidexterity.
  * @property {string} description Description text.
@@ -78,6 +80,7 @@ var TYPE = {
  * @property {string} type Object type: 'team'
  * @property {string} name Name of the team.
  * @property {string} image Attachment name of the team's image.
+ * @property {string} imageUrl URL for the team's image.
  * @property {string} description Description text.
  * @property {string[]} playerIds Array with ids of the team players.
  * @property {Attachment|Attachment[]} [attachment] Team attachments.
@@ -226,7 +229,7 @@ exports.getLeagueById = function (leagueId) {
     var repoConn = newConnection();
 
     var obj = repoConn.get(leagueId);
-    return obj && (obj.type === TYPE.LEAGUE) ? obj : null;
+    return obj && (obj.type === TYPE.LEAGUE) ? setImageUrl(obj) : null;
 };
 
 /**
@@ -239,6 +242,7 @@ exports.getLeaguesById = function (leagueIds) {
 
     var obj = repoConn.get(leagueIds);
     return obj && [].concat(obj).filter(function (obj) {
+            setImageUrl(obj);
             return obj.type === TYPE.LEAGUE;
         });
 };
@@ -501,7 +505,7 @@ exports.getPlayerById = function (playerId) {
     var repoConn = newConnection();
 
     var obj = repoConn.get(playerId);
-    return obj && (obj.type === TYPE.PLAYER) ? obj : null;
+    return obj && (obj.type === TYPE.PLAYER) ? setImageUrl(obj) : null;
 };
 
 /**
@@ -514,6 +518,7 @@ exports.getPlayersById = function (playerIds) {
 
     var obj = repoConn.get(playerIds);
     return obj && [].concat(obj).filter(function (obj) {
+            setImageUrl(obj);
             return obj.type === TYPE.PLAYER;
         });
 };
@@ -563,7 +568,7 @@ exports.getTeamById = function (teamId) {
     var repoConn = newConnection();
 
     var obj = repoConn.get(teamId);
-    return obj && (obj.type === TYPE.TEAM) ? obj : null;
+    return obj && (obj.type === TYPE.TEAM) ? setImageUrl(obj) : null;
 };
 
 /**
@@ -576,6 +581,7 @@ exports.getTeamsById = function (teamIds) {
 
     var obj = repoConn.get(teamIds);
     return obj && [].concat(obj).filter(function (obj) {
+            setImageUrl(obj);
             return obj.type === TYPE.TEAM;
         });
 };
@@ -710,7 +716,7 @@ exports.getActiveGamesByLeagueId = function (leagueId, start, count) {
                 "AND (" +
                 "(finished = 'false' AND _timestamp >= instant('" + lastModifiedPlaying.toISOString() + "')) " +
                 "OR (_timestamp >= instant('" + finishedRecently.toISOString() + "')) )";
-    log.info(query);
+
     var result = repoConn.query({
         start: start,
         count: count,
@@ -758,7 +764,9 @@ exports.getLeaguesByPlayerId = function (playerId, start, count) {
     var leagueIds = leaguePlayers.map(function (leaguePlayer) {
         return leaguePlayer.leagueId;
     });
-    var leagues = [].concat(repoConn.get(leagueIds));
+    var leagues = [].concat(repoConn.get(leagueIds)).map(function (league) {
+        return setImageUrl(league);
+    });
 
     return {
         "total": result.total,
@@ -827,7 +835,9 @@ exports.getLeaguesByTeamId = function (teamId, start, count) {
     var leagueIds = leagueTeams.map(function (leagueTeam) {
         return leagueTeam.leagueId;
     });
-    var leagues = [].concat(repoConn.get(leagueIds));
+    var leagues = [].concat(repoConn.get(leagueIds)).map(function (league) {
+        return setImageUrl(league);
+    });
 
     return {
         "total": result.total,
@@ -986,7 +996,9 @@ function query(params) {
         var ids = queryResult.hits.map(function (hit) {
             return hit.id;
         });
-        hits = [].concat(repoConn.get(ids));
+        hits = [].concat(repoConn.get(ids)).map(function (hit) {
+            return setImageUrl(hit);
+        })
     }
 
     return {
@@ -1007,7 +1019,7 @@ function querySingleHit(params) {
 
     if (queryResult.count > 0) {
         var id = queryResult.hits[0].id;
-        return repoConn.get(id);
+        return setImageUrl(repoConn.get(id));
     }
 
     return null;
@@ -1081,7 +1093,7 @@ exports.createLeague = function (params) {
         _parentPath: leagueNode._path
     });
 
-    return leagueNode;
+    return setImageUrl(leagueNode);
 };
 
 /**
@@ -1124,7 +1136,7 @@ exports.createPlayer = function (params) {
         attachment: imageAttachment
     });
 
-    return playerNode;
+    return setImageUrl(playerNode);
 };
 
 /**
@@ -1180,7 +1192,7 @@ exports.createTeam = function (params) {
         attachment: imageAttachment
     });
 
-    return teamNode;
+    return setImageUrl(teamNode);
 };
 
 var teamWithNameExists = function (repoConn, teamName) {
@@ -1622,7 +1634,7 @@ exports.updatePlayer = function (params) {
         }
     });
 
-    return playerNode;
+    return setImageUrl(playerNode);
 };
 
 /**
@@ -1681,7 +1693,7 @@ exports.updateTeam = function (params) {
         }
     });
 
-    return teamNode;
+    return setImageUrl(teamNode);
 };
 
 /**
@@ -1748,7 +1760,7 @@ exports.updateLeague = function (params) {
         }
     });
 
-    return leagueNode;
+    return setImageUrl(leagueNode);
 };
 
 
@@ -2252,4 +2264,34 @@ var toInt = function (value) {
         throw "Expected number value: [" + value + "]"
     }
     return value.intValue();
+};
+
+/**
+ * Get image URL for league, team or player.
+ *
+ * @param {object} node Node object.
+ * @return {string} Image URL.
+ */
+var getImageUrl = function (node) {
+    var type;
+    if (node.type === TYPE.LEAGUE) {
+        type = 'leagues'
+    } else if (node.type === TYPE.TEAM) {
+        type = 'teams'
+    } else if (node.type === TYPE.PLAYER) {
+        type = 'players'
+    } else {
+        return '';
+    }
+
+    var version = node._versionKey;
+    return '/' + type + '/image/' + version + '/' + node.name;
+};
+
+var setImageUrl = function (node) {
+    if (node && (node.type === TYPE.LEAGUE || node.type === TYPE.PLAYER || node.type === TYPE.TEAM)) {
+        node.imageUrl = getImageUrl(node);
+        log.info(node.imageUrl);
+    }
+    return node;
 };

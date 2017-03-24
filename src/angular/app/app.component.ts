@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {Location} from '@angular/common';
 import {AuthService} from './services/auth.service';
 import {ImageService} from './services/image.service';
-import {Router, NavigationStart} from '@angular/router';
+import {NavigationStart, Router} from '@angular/router';
 import {PageTitleService} from './services/page-title.service';
 
 @Component({
@@ -21,7 +21,7 @@ export class AppComponent {
         this.logoUrl = ImageService.logoUrl();
         this.isPlayingGame = new RegExp('/games/.*/game-play').test(location.path());
         let user = auth.getUser();
-        this.playerImage = !!user ? ImageService.forPlayer(user.playerName) : ImageService.playerDefault();
+        this.playerImage = !!user ? user.playerImageUrl : ImageService.playerDefault();
 
         this.pageTitleService.subscribeTitle(title => this.pageTitle = title).resetTitle();
 

@@ -34,18 +34,22 @@ export class TeamSummaryComponent
                 // no team was passed because this was probably a page reload
                 let query = `query {
                     team(name: "${name}") {
-                        id,
-                        name,
-                        description,
+                        id
+                        name
+                        imageUrl
+                        description
                         players {
                             name
+                            imageUrl
                         },
                         leagueTeams {
                             league {
                                 name
+                                imageUrl
                             },
                             team {
                                 name
+                                imageUrl
                             }
                         }
                     }

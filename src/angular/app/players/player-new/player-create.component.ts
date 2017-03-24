@@ -152,6 +152,7 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
     private static readonly playerNameInUseQuery = `query($name: String){
         player(name: $name) {
             id
+            imageUrl
         }
     }`;
 
@@ -159,6 +160,7 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
         createPlayer(name: $name, nickname: $nickname, description: $description, nationality: $nationality, handedness: $handedness) {
             id
             name
+            imageUrl
         }
     }`;
 }

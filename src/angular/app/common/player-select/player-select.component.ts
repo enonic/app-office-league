@@ -85,6 +85,7 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
         players(ids: $playerIds, first: $first) {
             id
             name
+            imageUrl
             nickname
         }
     }`;

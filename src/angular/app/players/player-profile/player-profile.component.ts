@@ -88,6 +88,7 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
         player(name: $name) {
             id
             name
+            imageUrl
             nickname
             nationality
             handedness
@@ -104,6 +105,7 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
                   player {
                     id
                     name
+                    imageUrl
                   }
                 }
                 gamePlayers {
@@ -117,6 +119,7 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
                   player {
                     id
                     name
+                    imageUrl
                   }
                 }
                 gameTeams {
@@ -130,11 +133,13 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
                   team {
                     id
                     name
+                    imageUrl
                   }
                 }
                 league {
                   id
                   name
+                  imageUrl
                 }
               }
             }
@@ -145,6 +150,7 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
               league {
                 id
                 name
+                imageUrl
                 sport
                 description      
               }
@@ -155,10 +161,12 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
                     node {                    
                         id
                         name
+                        imageUrl
                         description
                         players {
                             id
                             name
+                            imageUrl
                         }
                     }
                 }

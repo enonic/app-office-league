@@ -231,10 +231,12 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
         team(name: $name) {
             id
             name
+            imageUrl
             description
             players {
                 id
                 name
+                imageUrl
             }
         }
     }`;
@@ -242,6 +244,7 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
     private static readonly teamNameInUseQuery = `query($name: String){
         team(name: $name) {
             id
+            imageUrl
         }
     }`;
 
@@ -249,6 +252,7 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
         updateTeam(id: $teamId, name: $name, description: $description) {
             id
             name
+            imageUrl
         }
     }`;
 
@@ -256,6 +260,7 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
         createTeam(name: $name, description: $description, playerIds: $playerIds) {
             id
             name
+            imageUrl
         }
     }`;
 
@@ -263,12 +268,15 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
         player(id: $playerId) {
             id
             name
+            imageUrl
             leaguePlayers(first:-1) {
                 league {
                     id
+                    imageUrl
                     leaguePlayers(first:-1) {
                         player {
                             id
+                            imageUrl
                         }
                     }
                 }
@@ -276,6 +284,7 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
             teams(first:-1) {
                 players {
                     id
+                    imageUrl
                 }
             }
         }

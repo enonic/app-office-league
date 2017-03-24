@@ -17,6 +17,7 @@ export class PlayerListPageComponent extends BaseComponent {
             edges {
                 node {
                   name
+                  imageUrl
                 }
             }
         }

@@ -18,6 +18,7 @@ export class TeamListPageComponent extends BaseComponent {
             edges {
                 node {
                   name
+                  imageUrl
                 }
             }
         }

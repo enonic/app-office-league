@@ -161,6 +161,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
         createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: [$playerId]) {
             id
             name
+            imageUrl
         }
     }`;
 
@@ -168,6 +169,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
         updateLeague(id: $leagueId, name: $name, description: $description, adminPlayerIds: [$playerId]) {
             id
             name
+            imageUrl
         }
     }`;
 
@@ -177,6 +179,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             name
             description
             sport
+            imageUrl
             isAdmin(playerId:$playerId)
         }
     }`;

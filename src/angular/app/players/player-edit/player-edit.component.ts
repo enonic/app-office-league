@@ -161,6 +161,7 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
         player(name: $name) {
             id
             name
+            imageUrl
             nickname
             nationality
             handedness
@@ -171,6 +172,7 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
     private static readonly playerNameInUseQuery = `query($name: String){
         player(name: $name) {
             id
+            imageUrl
         }
     }`;
 
@@ -178,6 +180,7 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
         updatePlayer(id: $playerId, name: $name, nickname: $nickname, description: $description, nationality: $nationality, handedness: $handedness) {
             id
             name
+            imageUrl
         }
     }`;
 }

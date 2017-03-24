@@ -7,7 +7,8 @@ var defaultImage = ioLib.getResource('/site/controllers/default-images/account.s
 var defaultImageType = 'image/svg+xml';
 
 exports.get = function (req) {
-    var playerName = decodeURIComponent(req.path.substr(req.path.lastIndexOf('/') + 1));
+    var pathParts = req.path.split('/');
+    var playerName = decodeURIComponent(pathParts[pathParts.length - 1]);
 
     var player = storeLib.getPlayerByName(playerName);
     if (!player) {

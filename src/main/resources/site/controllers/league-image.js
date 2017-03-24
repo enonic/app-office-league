@@ -7,7 +7,8 @@ var defaultImage = ioLib.getResource('/site/controllers/default-images/league.sv
 var defaultImageType = 'image/svg+xml';
 
 exports.get = function (req) {
-    var leagueName = decodeURIComponent(req.path.substr(req.path.lastIndexOf('/') + 1));
+    var pathParts = req.path.split('/');
+    var leagueName = decodeURIComponent(pathParts[pathParts.length - 1]);
 
     var league = storeLib.getLeagueByName(leagueName);
     if (!league) {

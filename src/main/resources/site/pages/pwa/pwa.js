@@ -32,13 +32,14 @@ exports.get = function (req) {
         var player = storeLib.getPlayerByUserKey(user.key);
         userObj.playerId = player && player._id;
         userObj.playerName = (player && player.name) || user.displayName;
+        userObj.playerImageUrl = player ? appBaseUrl + '/' + player.imageUrl : '';
     }
 
     var params = {
         locale: req.params.locale || 'en',
         user: userObj && JSON.stringify(userObj),
-        isLive: (req.mode == 'live'),
-        siteUrl: (baseHref == '/') ? '/' : baseHref + '/',
+        isLive: (req.mode === 'live'),
+        siteUrl: (baseHref === '/') ? '' : baseHref,
         baseHref: appBaseUrl + '/',   // trailing slash for relative urls to be correct
         assetsUrl: portalLib.assetUrl({path: ""}),
         loginUrl: portalLib.loginUrl({redirect: appBaseAbsoluteUrl}),

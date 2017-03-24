@@ -178,6 +178,7 @@ export class GameProfileComponent
         points {
             player {
                 name
+                imageUrl
             }
             time
             against
@@ -185,6 +186,7 @@ export class GameProfileComponent
         comments {
             author {
                 name
+                imageUrl
             }
             text
         }
@@ -196,6 +198,7 @@ export class GameProfileComponent
             ratingDelta
             player {
                 name
+                imageUrl
             }
         }
         gameTeams {
@@ -208,11 +211,13 @@ export class GameProfileComponent
                 name
                 players {
                     name
+                    imageUrl
                 }
             }
         }
         league {
             name
+            imageUrl
         }
         comments {
             id

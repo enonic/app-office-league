@@ -7,24 +7,16 @@ export class ImageService {
     constructor() {
     }
 
-    public static forLeague(name: string): string {
-        return `${XPCONFIG.baseHref}/leagues/image/${name}`;
-    }
-
-    public static forPlayer(name: string): string {
-        return `${XPCONFIG.baseHref}/players/image/${name}`;
-    }
-
     public static playerDefault(): string {
-        return `${XPCONFIG.baseHref}/players/image/____`;
+        return `${XPCONFIG.baseHref}/players/image/__/__`;
     }
 
     public static teamDefault(): string {
-        return `${XPCONFIG.baseHref}/teams/image/____`;
+        return `${XPCONFIG.baseHref}/teams/image/__/__`;
     }
 
-    public static forTeam(name: string): string {
-        return `${XPCONFIG.baseHref}/teams/image/${name}`;
+    public static leagueDefault(): string {
+        return `${XPCONFIG.baseHref}/leagues/image/__/__`;
     }
 
     public static logoUrl(): string {

@@ -7,7 +7,8 @@ var defaultImage = ioLib.getResource('/site/controllers/default-images/account-m
 var defaultImageType = 'image/svg+xml';
 
 exports.get = function (req) {
-    var teamName = decodeURIComponent(req.path.substr(req.path.lastIndexOf('/') + 1));
+    var pathParts = req.path.split('/');
+    var teamName = decodeURIComponent(pathParts[pathParts.length - 1]);
 
     var team = storeLib.getTeamByName(teamName);
     if (!team) {
