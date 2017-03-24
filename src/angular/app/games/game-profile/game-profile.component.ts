@@ -1,11 +1,11 @@
-import {Component, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, Renderer, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute} from '@angular/router';
 import {GameComponent} from '../game/game.component';
 import {XPCONFIG} from '../../app.config';
 import {Game} from '../../../graphql/schemas/Game';
 import {Comment} from '../../../graphql/schemas/Comment';
-import {MaterializeDirective, MaterializeAction} from 'angular2-materialize/dist/index';
+import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
 import {AuthService} from '../../services/auth.service';
 
 @Component({
@@ -13,8 +13,10 @@ import {AuthService} from '../../services/auth.service';
     templateUrl: 'game-profile.component.html',
     styleUrls: ['game-profile.component.less']
 })
-export class GameProfileComponent extends GameComponent {
-    materializeActions = new EventEmitter<string|MaterializeAction>();
+export class GameProfileComponent
+    extends GameComponent {
+    materializeActions = new EventEmitter<string | MaterializeAction>();
+    @ViewChild('commenttextarea') commentsTextAreaElementRef;
 
     private static readonly KeepAliveTimeMs = 30 * 1000;
     private static readonly ReconnectTimeMs = 5 * 1000;
@@ -26,7 +28,8 @@ export class GameProfileComponent extends GameComponent {
     private wsConnected: boolean;
     private keepAliveIntervalId: any;
 
-    constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, private authService: AuthService) {
+    constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, private authService: AuthService,
+                private _renderer: Renderer) {
         super(graphQLService, route);
     }
 
@@ -55,6 +58,9 @@ export class GameProfileComponent extends GameComponent {
     onCommentClicked() {
         this.comment = '';
         this.showModal();
+        setTimeout(_ =>
+            this._renderer.invokeElementMethod(
+                this.commentsTextAreaElementRef.nativeElement, 'focus', []), 0);
     }
 
     onCommentDoneClicked() {

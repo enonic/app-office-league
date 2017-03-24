@@ -715,7 +715,7 @@ exports.getActiveGamesByLeagueId = function (leagueId, start, count) {
         start: start,
         count: count,
         query: query,
-        sort: "finished, _timestamp DESC"
+        sort: "finished, time DESC"
     });
 
     var games = [];
