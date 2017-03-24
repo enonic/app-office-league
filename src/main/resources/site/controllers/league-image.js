@@ -7,14 +7,15 @@ var defaultImage = ioLib.getResource('/site/controllers/default-images/league.sv
 var defaultImageType = 'image/svg+xml';
 
 exports.get = function (req) {
-    var leagueName = req.path.substr(req.path.lastIndexOf('/') + 1);
+    var leagueName = decodeURIComponent(req.path.substr(req.path.lastIndexOf('/') + 1));
 
     var league = storeLib.getLeagueByName(leagueName);
     if (!league) {
         return defaultImageHandler();
     }
 
-    return attachmentLib.serveAttachment(req, storeLib.getRepoConnection(), league, league.image, defaultImageHandler, imageHelper.processImage);
+    return attachmentLib.serveAttachment(req, storeLib.getRepoConnection(), league, league.image, defaultImageHandler,
+        imageHelper.processImage);
 };
 
 var defaultImageHandler = function () {

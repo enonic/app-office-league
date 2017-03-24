@@ -7,14 +7,15 @@ var defaultImage = ioLib.getResource('/site/controllers/default-images/account-m
 var defaultImageType = 'image/svg+xml';
 
 exports.get = function (req) {
-    var teamName = req.path.substr(req.path.lastIndexOf('/') + 1);
+    var teamName = decodeURIComponent(req.path.substr(req.path.lastIndexOf('/') + 1));
 
     var team = storeLib.getTeamByName(teamName);
     if (!team) {
         return defaultImageHandler();
     }
 
-    return attachmentLib.serveAttachment(req, storeLib.getRepoConnection(), team, team.image, defaultImageHandler, imageHelper.processImage);
+    return attachmentLib.serveAttachment(req, storeLib.getRepoConnection(), team, team.image, defaultImageHandler,
+        imageHelper.processImage);
 };
 
 var defaultImageHandler = function () {
