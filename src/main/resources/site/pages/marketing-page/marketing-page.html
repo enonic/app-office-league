@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <link rel="stylesheet" data-th-href="${portal.assetUrl({'_path=css/critical.css'})}"/>
     <link rel="manifest" href="./manifest.json">
     <script th:inline="javascript">
         if (!document.location.href.endsWith('/')) {
@@ -10,19 +12,25 @@
         }
     </script>
 </head>
-<body>
-<h1>Office League</h1>
-<h2>Coming soon...</h2>
-<a data-th-href="${appUrl}" href="./app">Go to App</a>
-
-<div id="mainRegion" data-portal-region="main">
-
-    <div data-th-if="${page.regions['main']}" data-th-remove="tag">
-        <div data-th-each="component : ${page.regions['main'].components}" data-th-remove="tag">
-            <div data-portal-component="${component.path}" data-th-remove="tag"></div>
+<body class="marketing">
+<div class="container">
+    <header class="marketing__header">
+        <a data-th-href="${appUrl}" href="./app">
+            <img class="marketing__logo" data-th-src="${portal.assetUrl({'_path=img/logo1.svg'})}"/>
+        </a>
+    </header>
+    <main id="mainRegion" data-portal-region="main">
+        <div data-th-if="${page.regions['main']}" data-th-remove="tag">
+            <div data-th-each="component : ${page.regions['main'].components}" data-th-remove="tag">
+                <div data-portal-component="${component.path}" data-th-remove="tag"></div>
+            </div>
         </div>
-    </div>
+    </main>
+    <footer class="marketing__footer">
+        <a href="https://enonic.com">From the Enonic Team</a>
+    </footer>
 </div>
+
 </body>
 <script th:inline="javascript">
     var live = /*[[${isLive}]]*/false;
