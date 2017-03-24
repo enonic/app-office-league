@@ -1,8 +1,8 @@
 const cacheName = 'office-league-cache';
 const dataCacheName = 'office-league-data-cache';
-const swVersion = '{{appVersion}}';
+const swVersion = '{{appVersion}}/{{userKey}}';
 const debugging = true;
-const filesToCache = [
+const staticAssets = [
     '{{siteUrl}}'.slice(0, - 1),
     '{{siteUrl}}',
     '{{siteUrl}}manifest.json',
@@ -42,10 +42,10 @@ self.addEventListener('install', function(e) {
             consoleLog('Caching App Shell');
             if (debugging) {
                 console.group();
-                filesToCache.forEach(f => consoleLog(f));
+                staticAssets.forEach(f => consoleLog(f));
                 console.groupEnd();
             }
-            return cache.addAll(filesToCache);
+            return cache.addAll(staticAssets);
         }).catch(function(err) {
             console.log(err);
         })
@@ -98,13 +98,31 @@ self.addEventListener("message", function(e) {
     if (e.data.assets) {
         e.waitUntil(
             caches.open(cacheName).then(function(cache) {
-                consoleLog('Caching App Shell');
-                if (debugging) {
-                    console.group();
-                    e.data.assets.forEach(f => consoleLog(f));
-                    console.groupEnd();
-                }
-                return cache.addAll(e.data.assets);
+                let firstAsset = true;
+
+                return Promise.all(e.data.assets.map(
+                    function(asset, index, arr) {
+                        cache
+                            .match(asset)
+                            .then(function (response) {
+                                    if (!response) {
+                                        if (firstAsset) {
+                                            consoleLog('Caching App Shell');
+                                            if (debugging) {
+                                                console.group();
+                                            }
+                                            firstAsset = false;
+                                        }
+                                        consoleLog(asset);
+                                        if (debugging && index == arr.length - 1) {
+                                            console.groupEnd();
+                                        }
+    
+                                        return cache.add(asset);
+                                    }
+                            });
+                    })
+                );
             }).catch(function(err) {
                 console.log(err);
             })
