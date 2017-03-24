@@ -9,16 +9,20 @@ const staticAssets = [
     '{{appUrl}}',
     '{{appUrl}}/',
     '{{appUrl}}?source=web_app_manifest',
+    '{{assetUrl}}/css/critical.css',
     '{{assetUrl}}/img/logo.svg',
+    '{{assetUrl}}/img/logo1.svg',
     '{{assetUrl}}/img/office-league-logo.svg',
     '{{assetUrl}}/icons/apple-touch-icon.png',
     '{{assetUrl}}/icons/favicon-16x16.png',
     '{{assetUrl}}/icons/favicon-32x32.png',
-    '{{assetUrl}}/icons/safari-pinned-tab.svg'
+    '{{assetUrl}}/icons/safari-pinned-tab.svg',
+    'https://fonts.googleapis.com/css?family=Roboto'
 ];
 const dynamicAssets = [
     '{{assetUrl}}/fonts/',
-    '{{assetUrl}}/img/flags/'
+    '{{assetUrl}}/img/flags/',
+    'https://fonts.gstatic.com'
 ];
 
 function consoleLog(message) {
