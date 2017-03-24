@@ -22,7 +22,8 @@
                 <button type="button" class="waves-effect waves-light btn-large home__browse-leagues" routerLink="/leagues"
                         i18n="Browse leagues|Home screen browse leagues button">Browse leagues
                 </button>
-                <button *ngIf="!auth.isAuthenticated()" type="button" class="btn-flat login home__login" (click)="auth.login()">Log in / Sign up</button>
+                <br/><br/>
+                <button *ngIf="!auth.isAuthenticated()" type="button" class="btn-large login home__login" (click)="auth.login()">Log in / Sign up</button>
             </div>
         </div>
     </footer>
