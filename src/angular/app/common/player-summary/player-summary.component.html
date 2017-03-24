@@ -2,14 +2,15 @@
     <loading></loading>
 </template>
 <template [ngIf]="player != null">
-
     <rating class="right" [rating]="player.rating" [previousRating]="player.previousRating"></rating>
 
     <span *ngIf="index != undefined" class="index">{{index}}</span>
 
     <img src="{{player.imageUrl}}?size=42" alt="{{player.name}}" class="circle">
     <span class="title">{{player.name}}</span>
-    <span *ngIf="ranking > 0" class="badge right blue-grey white-text" title="{{rating}}" (click)="onRankingClicked($event)">
-        {{showPoints?ratingPoints():ranking}}<small>{{showPoints?'':rankingText()}}</small></span>
+    <div class="secondary-content ranking-badges">
+        <span *ngIf="ranking > 0" class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
+        <span *ngIf="ranking > 0" class="badge grey darken-1 white-text"><small>{{ratingPoints()}}</small></span>
+    </div>
     <p *ngIf="player.nickname">{{player.nickname}}</p>
 </template>

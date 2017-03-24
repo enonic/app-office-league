@@ -12,7 +12,6 @@ export class LeagueTeamListComponent extends List2Component implements OnInit {
     @Input() leagueTeams: LeagueTeam[];
     @Input() displayTeams: boolean;
     @Input() displayLeagues: boolean;
-    showRankingPoints: boolean;
 
     constructor(route: ActivatedRoute, router: Router) {
         super(route, router);
@@ -24,9 +23,5 @@ export class LeagueTeamListComponent extends List2Component implements OnInit {
         } else if (this.displayTeams) {
             this.router.navigate(['teams', leagueTeam.team.name.toLowerCase()]);
         }
-    }
-
-    onRankingClicked() {
-        this.showRankingPoints = !this.showRankingPoints;
     }
 }

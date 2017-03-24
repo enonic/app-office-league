@@ -9,12 +9,12 @@ import {RankingHelper} from '../../../graphql/schemas/RankingHelper';
     templateUrl: 'league-summary.component.html',
     styleUrls: ['league-summary.component.less']
 })
-export class LeagueSummaryComponent extends BaseComponent {
+export class LeagueSummaryComponent
+    extends BaseComponent {
 
     @Input() league: League;
     @Input() rating: number = 0;
     @Input() ranking: number = 0;
-    @Input() showPoints: boolean;
 
     constructor(route: ActivatedRoute) {
         super(route);
@@ -26,10 +26,5 @@ export class LeagueSummaryComponent extends BaseComponent {
 
     ratingPoints(): string {
         return String(this.rating);
-    }
-
-    onRankingClicked(event) {
-        event.stopPropagation();
-        this.showPoints = !this.showPoints;
     }
 }

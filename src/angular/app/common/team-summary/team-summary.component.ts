@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {BaseComponent} from '../base.component';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -7,16 +7,16 @@ import {RankingHelper} from '../../../graphql/schemas/RankingHelper';
 
 @Component({
     selector: 'team-summary',
-    templateUrl: 'team-summary.component.html'
+    templateUrl: 'team-summary.component.html',
+    styleUrls: ['team-summary.component.less']
 })
-export class TeamSummaryComponent extends BaseComponent {
+export class TeamSummaryComponent
+    extends BaseComponent {
 
     @Input() team: Team;
     @Input() index: number;
     @Input() rating: number = 0;
     @Input() ranking: number = 0;
-    @Input() showPoints: boolean;
-    @Output() rankingClicked: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(route: ActivatedRoute, protected service: GraphQLService, protected router: Router) {
         super(route);
@@ -24,7 +24,7 @@ export class TeamSummaryComponent extends BaseComponent {
 
     ngOnInit(): void {
         super.ngOnInit();
-        
+
         let name = this.route.snapshot.params['name'];
 
         if (!this.team && name) {
@@ -61,14 +61,5 @@ export class TeamSummaryComponent extends BaseComponent {
 
     ratingPoints(): string {
         return String(this.rating);
-    }
-
-    onRankingClicked(event) {
-        event.stopPropagation();
-        this.notifyRankingClick();
-    }
-
-    private notifyRankingClick() {
-        this.rankingClicked.emit();
     }
 }

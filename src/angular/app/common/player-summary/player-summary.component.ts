@@ -1,4 +1,4 @@
-import {Component, Input, HostListener, Output, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import {Player} from '../../../graphql/schemas/Player';
 import {BaseComponent} from '../base.component';
 import {GraphQLService} from '../../services/graphql.service';
@@ -10,16 +10,15 @@ import {RankingHelper} from '../../../graphql/schemas/RankingHelper';
     templateUrl: 'player-summary.component.html',
     styleUrls: ['player-summary.component.less']
 })
-export class PlayerSummaryComponent extends BaseComponent {
+export class PlayerSummaryComponent
+    extends BaseComponent {
 
     @Input() player: Player;
     @Input() index: number;
     @Input() playerId: string;
     @Input() rating: number = 0;
     @Input() ranking: number = 0;
-    @Input() showPoints: boolean;
     @Input() disableClick: boolean;
-    @Output() rankingClicked: EventEmitter<void> = new EventEmitter<void>();
 
     @HostListener('click') onClick() {
         if (!this.disableClick) {
@@ -73,14 +72,5 @@ export class PlayerSummaryComponent extends BaseComponent {
 
     ratingPoints(): string {
         return String(this.rating);
-    }
-
-    onRankingClicked(event) {
-        event.stopPropagation();
-        this.notifyRankingClick();
-    }
-
-    private notifyRankingClick() {
-        this.rankingClicked.emit();
     }
 }
