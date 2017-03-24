@@ -214,7 +214,7 @@ exports.gamePlayerType = graphQlLib.createObjectType({
         ratingDelta: {
             type: graphQlLib.GraphQLInt,
             data: function (env) {
-                return graphQlUtilLib.toInt(env.source.ratingDelta);
+                return graphQlUtilLib.toInt(env.source.ratingDelta, 0);
             }
         },
         player: {
@@ -277,7 +277,7 @@ exports.gameTeamType = graphQlLib.createObjectType({
         ratingDelta: {
             type: graphQlLib.GraphQLInt,
             data: function (env) {
-                return graphQlUtilLib.toInt(env.source.ratingDelta);
+                return graphQlUtilLib.toInt(env.source.ratingDelta, 0);
             }
         },
         team: {
