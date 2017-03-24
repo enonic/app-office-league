@@ -47,7 +47,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
     @Input() league: League;
     @Input() leaguePlayers: LeaguePlayer[];
     private leagueName: string;
-    private pages = [1];
+    private pageCount: number = 1;
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private authService: AuthService, private router: Router) {
         super(route);
@@ -66,12 +66,8 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
                 this.league = League.fromJson(data.league);
                 this.leaguePlayers = data.league.leaguePlayersConnection.edges.map((edge) => LeaguePlayer.fromJson(edge.node));
 
-                this.pages = [];
                 let totalCount = data.league.leaguePlayersConnection.totalCount;
-                let pagesCount = (totalCount == 0 ? 0 : totalCount - 1) / LeagueProfilePlayersComponent.paging + 1;
-                for (var i = Math.max(1,currentPage - 5); i <= Math.min(pagesCount,currentPage + 5); i++) {
-                    this.pages.push(i);
-                }
+                this.pageCount = Math.floor((totalCount == 0 ? 0: totalCount - 1) / LeagueProfilePlayersComponent.paging) + 1;
             });
     }
 }

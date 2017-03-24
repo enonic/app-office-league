@@ -24,7 +24,7 @@ export class TeamListPageComponent extends BaseComponent {
     }`;
 
     private teams: Team[];
-    private pages = [1];
+    private pageCount: number = 1;
 
     constructor(private router: Router, private service: GraphQLService,
                 private pageTitleService: PageTitleService, route: ActivatedRoute) {
@@ -41,13 +41,8 @@ export class TeamListPageComponent extends BaseComponent {
         this.service.post(TeamListPageComponent.getTeamsQuery,{after: after,first: TeamListPageComponent.paging, search: search}).
             then((data: any) => {
                 this.teams = data.teamsConnection.edges.map(edge => Team.fromJson(edge.node));
-                let pages = [];
                 let totalCount = data.teamsConnection.totalCount;
-                let pagesCount = (totalCount == 0 ? 0: totalCount - 1) / TeamListPageComponent.paging + 1;
-                for (var i = Math.max(1,currentPage - 5); i <= Math.min(pagesCount,currentPage + 5); i++) {
-                    pages.push(i);
-                }
-                this.pages= pages;
+                this.pageCount = Math.floor((totalCount == 0 ? 0: totalCount - 1) / TeamListPageComponent.paging) + 1;
             });
         this.pageTitleService.setTitle('Teams');
     }

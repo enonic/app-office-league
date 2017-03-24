@@ -35,7 +35,7 @@ export class PlayerTeamListComponent extends BaseComponent {
     private playerName: string;
     private player: Player;
     private teams: Team[];
-    private pages = [1];
+    private pageCount: number = 1;
 
     constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
         super(route);
@@ -53,13 +53,8 @@ export class PlayerTeamListComponent extends BaseComponent {
             then((data: any) => {
                 this.player = Player.fromJson(data.player);
                 this.teams = data.player.teamsConnection.edges.map(edge => Team.fromJson(edge.node));
-                
-                this.pages = [];
                 let totalCount = data.player.teamsConnection.totalCount;
-                let pagesCount = (totalCount == 0 ? 0: totalCount - 1) / PlayerTeamListComponent.paging + 1;
-                for (var i = 1; i <= pagesCount; i++) {
-                    this.pages.push(i);
-                }
+                this.pageCount = Math.floor((totalCount == 0 ? 0: totalCount - 1) / PlayerTeamListComponent.paging) + 1;
             });
     }
 }

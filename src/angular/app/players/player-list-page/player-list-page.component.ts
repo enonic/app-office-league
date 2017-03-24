@@ -23,7 +23,7 @@ export class PlayerListPageComponent extends BaseComponent {
     }`;
 
     private players: Player[];
-    private pages = [1];
+    private pageCount: number = 1;
 
     constructor(private router: Router, private service: GraphQLService, private pageTitleService: PageTitleService, route: ActivatedRoute) {
         super(route);
@@ -39,12 +39,8 @@ export class PlayerListPageComponent extends BaseComponent {
         this.service.post(PlayerListPageComponent.getPlayersQuery,{after: after,first: PlayerListPageComponent.paging, search: search}).
             then((data: any) => {
                 this.players = data.playersConnection.edges.map(edge => Player.fromJson(edge.node));
-                this.pages = [];
                 let totalCount = data.playersConnection.totalCount;
-                let pagesCount = (totalCount == 0 ? 0 : totalCount - 1) / PlayerListPageComponent.paging + 1;
-                for (var i = 1; i <= pagesCount; i++) {
-                    this.pages.push(i);
-                }
+                this.pageCount = Math.floor((totalCount == 0 ? 0: totalCount - 1) / PlayerListPageComponent.paging) + 1;
             });
 
         this.pageTitleService.setTitle('Players');
