@@ -708,14 +708,19 @@ exports.getActiveGamesByLeagueId = function (leagueId, start, count) {
     var now = new Date();
     var lastModifiedPlaying = now;
     var finishedRecently = now;
+    var startedWithinOneDayAgo = now;
 
     lastModifiedPlaying.setSeconds(lastModifiedPlaying.getSeconds() - (60 * 30)); // 30 minutes ago
     finishedRecently.setSeconds(finishedRecently.getSeconds() - (60 * 10)); // 10 minutes ago
+    startedWithinOneDayAgo.setSeconds(startedWithinOneDayAgo.getSeconds() - (60 * 60 * 24)); // 24h ago
 
     var query = "type = '" + TYPE.GAME + "' AND leagueId = '" + leagueId + "' " +
                 "AND (" +
                 "(finished = 'false' AND _timestamp >= instant('" + lastModifiedPlaying.toISOString() + "')) " +
-                "OR (_timestamp >= instant('" + finishedRecently.toISOString() + "')) )";
+                "OR ((time >= instant('" + startedWithinOneDayAgo.toISOString() + "')) "
+                + "AND (_timestamp >= instant('" + finishedRecently.toISOString() + "')) )" +
+                ")";
+
 
     var result = repoConn.query({
         start: start,
@@ -2291,7 +2296,6 @@ var getImageUrl = function (node) {
 var setImageUrl = function (node) {
     if (node && (node.type === TYPE.LEAGUE || node.type === TYPE.PLAYER || node.type === TYPE.TEAM)) {
         node.imageUrl = getImageUrl(node);
-        log.info(node.imageUrl);
     }
     return node;
 };
