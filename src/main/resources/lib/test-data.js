@@ -1,7 +1,19 @@
+var contextLib = require('/lib/xp/context');
 var storeLib = require('/lib/office-league-store');
 var ratingLib = require('/lib/office-league-rating');
 
+
 exports.createTestData = function () {
+    contextLib.run({
+        user: {
+            login: 'su',
+            userStore: 'system'
+        },
+        principals: ["role:system.admin"]
+    }, doCreateTestData);
+};
+
+function doCreateTestData() {
 
     var player1 = storeLib.getPlayerByName('Player1');
     if (!player1) {

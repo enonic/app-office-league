@@ -2151,7 +2151,7 @@ var newConnection = function () {
     return nodeLib.connect({
         repoId: REPO_NAME,
         branch: 'master',
-        principals: ["role:system.admin"]
+        principals: ["role:system.admin"] //TODO Remove once import data is fixed
     });
 };
 
