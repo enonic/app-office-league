@@ -4,6 +4,7 @@ import {Handedness} from '../../../graphql/schemas/Handedness';
 import {Player} from '../../../graphql/schemas/Player';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
+import {AuthService} from '../../services/auth.service';
 import {Countries} from '../../common/countries';
 import {Game} from '../../../graphql/schemas/Game';
 import {Team} from '../../../graphql/schemas/Team';
@@ -24,7 +25,7 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
     private editable: boolean;
 
 
-    constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
+    constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,private authService: AuthService,
                 private pageTitleService: PageTitleService) {
         super(route);
     }
@@ -52,7 +53,7 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
         this.games = data.player.gamePlayers.map((gm) => Game.fromJson(gm.game));
         this.teams = data.player.teamsConnection.edges.map((edge) => Team.fromJson(edge.node));
         this.teamDetailsPath = data.player.teamsConnection.pageInfo.hasNext ? ['players', data.player.name, 'teams'] : undefined;
-        let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
+        let currentPlayerId = this.authService.getPlayerId();
         this.editable = this.player.id === currentPlayerId;
 
         this.pageTitleService.setTitle(this.player.name);

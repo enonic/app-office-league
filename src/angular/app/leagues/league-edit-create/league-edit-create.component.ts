@@ -65,7 +65,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             leagueId: this.leagueId,
             name: this.name,
             description: this.description || '',
-            playerId: XPCONFIG.user.playerId
+            playerId: this.authService.getPlayerId()
         };
         this.graphQLService.post(LeagueEditCreateComponent.updateLeagueMutation, updateLeagueParams).then(data => {
             return data && data.updateLeague;
@@ -85,7 +85,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             name: this.name,
             description: this.description || '',
             sport: this.sport,
-            playerId: XPCONFIG.user.playerId
+            playerId: this.authService.getPlayerId()
         };
         this.graphQLService.post(LeagueEditCreateComponent.createLeagueMutation, createLeagueParams).then(data => {
             return data && data.createLeague;

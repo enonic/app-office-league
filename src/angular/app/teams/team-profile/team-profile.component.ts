@@ -2,6 +2,7 @@ import {Component, Input, SimpleChanges, OnChanges, OnInit} from '@angular/core'
 import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
+import {AuthService} from '../../services/auth.service';
 import {Game} from '../../../graphql/schemas/Game';
 import {Team} from '../../../graphql/schemas/Team';
 import {XPCONFIG} from '../../app.config';
@@ -18,7 +19,7 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
     games: Game[] = [];
     editable: boolean;
 
-    constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
+    constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,private authService: AuthService,
                 private pageTitleService: PageTitleService) {
         super(route);
     }
@@ -46,7 +47,7 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
     private handleResponse(data) {
         this.team = Team.fromJson(data.team);
         this.games = data.team.gameTeams.map((gm) => Game.fromJson(gm.game));
-        let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
+        let currentPlayerId = this.authService.getPlayerId();
         this.editable =
             this.team.players.length === 2 && ( this.team.players[0].id === currentPlayerId || this.team.players[1].id === currentPlayerId);
 

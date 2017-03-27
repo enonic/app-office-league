@@ -1,5 +1,6 @@
 import {Component, OnInit, Input, OnChanges, SimpleChanges, SimpleChange} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
+import {AuthService} from '../../services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
 import {XPCONFIG} from '../../app.config';
@@ -27,7 +28,7 @@ export class NewGameComponent implements OnInit {
     title: string;
     playerSelectionReady: boolean;
 
-    constructor(private graphQLService: GraphQLService, private route: ActivatedRoute,
+    constructor(private graphQLService: GraphQLService, private authService: AuthService, private route: ActivatedRoute,
                 private pageTitleService: PageTitleService, private router: Router) {
     }
 
@@ -38,7 +39,7 @@ export class NewGameComponent implements OnInit {
             return;
         }
 
-        let playerId = XPCONFIG.user && XPCONFIG.user.playerId;
+        let playerId = this.authService.getPlayerId();
         if (playerId) {
             this.graphQLService.post(NewGameComponent.getPlayerLeagueQuery, {playerId: playerId, leagueId: this.leagueId}).then(data => {
                 this.bluePlayer1 = Player.fromJson(data.player);

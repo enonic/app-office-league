@@ -29,17 +29,16 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
     @ViewChild('fileInput') inputEl: ElementRef;
     nameClasses: {} = {invalid: false};
 
-    constructor(private http: Http, route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
-                private pageTitleService: PageTitleService,
-                private auth: AuthService) {
+    constructor(private http: Http, route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService, private authService: AuthService,
+                private pageTitleService: PageTitleService) {
         super(route);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
 
-        const user = this.auth.getUser();
-        if (!this.auth.isNewUser()) {
+        const user = this.authService.getUser();
+        if (!this.authService.isNewUser()) {
             this.router.navigate(['players', user.playerName]);
             return;
         }
@@ -78,7 +77,7 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
     }
 
     onCancelClicked() {
-        window.location.href = XPCONFIG.logoutUrl;
+        this.authService.logout();
     }
 
     savePlayer() {
@@ -94,7 +93,7 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
             return data && data.createPlayer;
         }).then(createdPlayer => {
             if (createdPlayer) {
-                const user = this.auth.getUser();
+                const user = this.authService.getUser();
                 user.playerName = createdPlayer.name;
                 user.playerId = createdPlayer.id;
                 this.uploadImage(createdPlayer.id).then(uploadResp => {

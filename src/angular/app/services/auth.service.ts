@@ -1,35 +1,57 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {XPCONFIG, ConfigUser} from '../app.config';
+import {XPCONFIG} from '../app.config';
+import {SessionInfo, ConfigUser} from '../app.session';
+import {SessionService} from './session.service';
 
 @Injectable()
 export class AuthService {
 
-    private user: ConfigUser;
-
-    constructor(private activatedRoute: ActivatedRoute) {
-        this.user = XPCONFIG.user;
+    constructor(private activatedRoute: ActivatedRoute, private sessionService: SessionService) {
     }
 
     public login() {
-        this.navigateToUrl(XPCONFIG.loginUrl);
+        let sessionInfo: SessionInfo = this.sessionService.getSessionInfo();
+        if (sessionInfo) {
+            this.navigateToUrl(sessionInfo.loginUrl);
+        }
         return false;
     }
 
     public isNewUser(): boolean {
-        return this.user && !this.user.playerId;
+        let sessionInfo: SessionInfo = this.sessionService.getSessionInfo();
+        if (sessionInfo) {
+            return sessionInfo.user && !sessionInfo.user.playerId;
+        }
+        return false;
     }
 
     public isAuthenticated() {
-        return !!this.user;
+        let sessionInfo: SessionInfo = this.sessionService.getSessionInfo();
+        if (sessionInfo) {
+            return !!sessionInfo.user;
+        }
+        return false;
     }
 
     public getUser(): ConfigUser {
-        return this.user;
+        let sessionInfo: SessionInfo = this.sessionService.getSessionInfo();
+        if (sessionInfo) {
+            return sessionInfo.user;
+        }
+        return null;
+    }
+
+    public getPlayerId(): string {
+        let user= this.getUser();
+        return user && user.playerId;
     }
 
     public logout() {
-        this.navigateToUrl(XPCONFIG.logoutUrl);
+        let sessionInfo: SessionInfo = this.sessionService.getSessionInfo();
+        if (sessionInfo) {
+            this.navigateToUrl(sessionInfo.logoutUrl);
+        }
         return false;
     }
 

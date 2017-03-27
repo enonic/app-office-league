@@ -30,12 +30,10 @@
 <script type="text/javascript">
     var XPCONFIG = {
         locale: '{{{locale}}}',
-        {{#user}}user: {{{.}}},{{/user}}
         baseHref: '{{{baseHref}}}',
         assetsUrl: '{{{assetsUrl}}}',
-        loginUrl: '{{{loginUrl}}}',
-        logoutUrl: '{{{logoutUrl}}}',
         graphQlUrl: '{{baseHref}}/api/graphql',
+        sessionServiceUrl: '{{servicesUrl}}/sessionServiceUrl',
         setImageUrl: '{{setImageUrl}}',
         liveGameUrl: '{{liveGameUrl}}'
     }

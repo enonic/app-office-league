@@ -1,6 +1,6 @@
 import {Component, Input, ElementRef, AfterViewInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ConfigUser} from '../../app.config';
+import {ConfigUser} from '../../app.session';
 import {GraphQLService} from '../../services/graphql.service';
 import {AuthService} from '../../services/auth.service';
 import {League} from '../../../graphql/schemas/League';
@@ -36,16 +36,15 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
     @Input() teamId: string;
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private pageTitleService: PageTitleService,
-                private authService: AuthService,
-                private elementRef: ElementRef) {
+                private authService: AuthService, private elementRef: ElementRef) {
         super(route);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
 
-        let user: ConfigUser = this.authService.getUser();
-        this.graphQLService.post(LeagueBrowserComponent.getLeaguesQuery, {playerId: user ? user.playerId : 'unknown'}).then((data: any) => {
+        let playerId = this.authService.getPlayerId();
+        this.graphQLService.post(LeagueBrowserComponent.getLeaguesQuery, {playerId: playerId || 'unknown'}).then((data: any) => {
             this.myLeagues = data.myLeagues.map(league => League.fromJson(league));
             let myLeagueIds = data.myLeagues.map(league => league.id);
 
