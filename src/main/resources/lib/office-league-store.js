@@ -1321,7 +1321,7 @@ exports.generateCreateGameParams = function (params) {
             }
         }
     }
-    var finished = blueScore >= 10 || redScore >= 10 && (Math.abs(blueScore - redScore) >= 2);
+    var finished = (blueScore >= 10 || redScore >= 10) && Math.abs(blueScore - redScore) >= 2;
     var winnerSide = blueScore > redScore ? 'blue' : 'red';
     var gamePlayers = [];
     for (p = 0; p < params.gamePlayers.length; p++) {
