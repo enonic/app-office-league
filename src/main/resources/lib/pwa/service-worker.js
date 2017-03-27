@@ -4,13 +4,11 @@ const swVersion = '{{appVersion}}/{{userKey}}';
 const offlineUrl = '{{siteUrl}}offline';
 const debugging = true;
 const appUrl = '{{appUrl}}';
+const homePageUrl = '{{appUrl}}?source=web_app_manifest';
 const staticAssets = [
     '{{siteUrl}}'.slice(0, - 1),
     '{{siteUrl}}',
     '{{siteUrl}}manifest.json',
-    '{{appUrl}}',
-    '{{appUrl}}/',
-    '{{appUrl}}?source=web_app_manifest',
     '{{assetUrl}}/css/critical.css',
     '{{assetUrl}}/img/logo.svg',
     '{{assetUrl}}/img/logo1.svg',
@@ -38,8 +36,12 @@ function isRequestToDynamicAsset(url) {
     return dynamicAssets.some(asset => (url.indexOf(asset) > -1));
 }
 
+function isRequestToAppRoot(url) {
+    return url.endsWith(appUrl) || url.endsWith(appUrl + '/') || url.endsWith(homePageUrl);
+}
+
 function isRequestToAppPage(url) {
-    return url.endsWith(appUrl) || url.indexOf(appUrl) > -1;
+    return url.indexOf(appUrl) > -1;
 }
 
 function getFallbackPage() {
@@ -87,15 +89,49 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
-   
+
+    if (isRequestToAppRoot(e.request.url)) {
+        consoleLog('Request to the main page.');
+
+        e.respondWith(
+            caches.open(dataCacheName)
+                .then(function(cache) {
+
+                    return fetch(e.request)
+                        .then(function (response) {
+                            consoleLog('Fetched and cached ' + e.request.url);
+                            cache.put(e.request.url, response.clone());
+                            return response;
+                        })
+                        .catch(function () {
+                            consoleLog('Network is down. Trying to serve from cache...');
+                            return cache
+                                .match(e.request, {
+                                    ignoreVary: true
+                                })
+                                .then(function (response) {
+                                    consoleLog((response ?
+                                                'Serving from cache: ' + e.request.url : 
+                                                'No cached response found. Serving offline page.'));
+
+                                    return response || getFallbackPage(e.request.url);
+                                });
+                        });
+                })
+        );
+
+        return;
+    }
+
     if (isRequestToAppPage(e.request.url)) {
-        consoleLog('Request to application page. Fetching: ' + e.request.url);
+        consoleLog('Request to application page: ' + e.request.url);
         e.respondWith(
             fetch(e.request)
             .then(function (response) {
+                consoleLog('Fetched ' + e.request.url);
                 return response;
             })
-            .catch(function (ex) {
+            .catch(function () {
                 if (e.request.method == 'GET') {
                     consoleLog('Network is down. Serving offline page...');
 
@@ -106,30 +142,32 @@ self.addEventListener('fetch', function(e) {
                 }
             })
         );
-    }
-    else
-        e.respondWith(
-            caches
-                .match(e.request, {
-                    ignoreVary: true
-                })
-                .then(function (response) {
-                    consoleLog((response ? 'Serving from cache' : 'Fetching from the server') + ': ' + e.request.url);
 
-                    return response ||
-                           fetch(e.request)
-                            .then(function (response) {
-                                if (isRequestToDynamicAsset(e.request.url)) {
-                                    let clonedResponse = response.clone();
-                                    consoleLog('Caching dynamic asset: ' + e.request.url);
-                                    caches.open(cacheName).then(function(cache) {
-                                        cache.put(e.request.url, clonedResponse);
-                                    });
-                                }
-                                return response;
-                            });
-                })
-        );
+        return;
+    }
+
+    e.respondWith(
+        caches
+            .match(e.request, {
+                ignoreVary: true
+            })
+            .then(function (response) {
+                consoleLog((response ? 'Serving from cache' : 'Fetching from the server') + ': ' + e.request.url);
+
+                return response ||
+                       fetch(e.request)
+                        .then(function (response) {
+                            if (isRequestToDynamicAsset(e.request.url)) {
+                                let clonedResponse = response.clone();
+                                consoleLog('Caching dynamic asset: ' + e.request.url);
+                                caches.open(cacheName).then(function(cache) {
+                                    cache.put(e.request.url, clonedResponse);
+                                });
+                            }
+                            return response;
+                        });
+            })
+    );
 });
 
 self.addEventListener("message", function(e) {
