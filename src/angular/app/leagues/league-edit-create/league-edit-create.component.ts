@@ -1,20 +1,23 @@
-import {Component, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {XPCONFIG} from '../../app.config';
-import {Http, Headers, RequestOptions} from '@angular/http';
+import {Headers, Http, RequestOptions} from '@angular/http';
 import {Sport, SportUtil} from '../../../graphql/schemas/Sport';
 import {League} from '../../../graphql/schemas/League';
 import {AuthService} from '../../services/auth.service';
 import {PageTitleService} from '../../services/page-title.service';
+import {ImageService} from '../../services/image.service';
 
 @Component({
     selector: 'league-edit-create',
     templateUrl: 'league-edit-create.component.html',
     styleUrls: ['league-edit-create.component.less']
 })
-export class LeagueEditCreateComponent extends BaseComponent implements AfterViewInit {
+export class LeagueEditCreateComponent
+    extends BaseComponent
+    implements AfterViewInit {
 
     @ViewChild('fileInput') inputEl: ElementRef;
     name: string;
@@ -35,7 +38,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
         super.ngOnInit();
 
         let name = this.route.snapshot.params['name'];
-        this.leagueImageUrl = this.getLeagueImageUrl();
+        this.leagueImageUrl = ImageService.leagueDefault();
         this.editMode = !!name;
         if (this.editMode) {
             this.loadLeague(name);
@@ -109,7 +112,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             this.name = league.name;
             this.description = league.description;
             this.leagueId = league.id;
-            this.leagueImageUrl = this.getLeagueImageUrl();
+            this.leagueImageUrl = league.imageUrl;
             const sport = SportUtil.parse(league.sport) || Sport.FOOS;
             this.sport = Sport[sport].toLowerCase();
 
@@ -140,10 +143,6 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
                 .toPromise();
         }
         return Promise.resolve();
-    }
-
-    getLeagueImageUrl(): string {
-        return new League('1', this.name || '_').imageUrl;
     }
 
     private onFileInputChange(input: HTMLInputElement) {

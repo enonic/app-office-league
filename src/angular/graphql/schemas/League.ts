@@ -20,6 +20,7 @@ export class League
 
     constructor(id: string, name: string) {
         super(id, name);
+        this.imageUrl = ImageService.leagueDefault();
     }
 
     static fromJson(json: any): League {

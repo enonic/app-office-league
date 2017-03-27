@@ -17,6 +17,7 @@ export class Player
 
     constructor(id: string, name: string) {
         super(id, name);
+        this.imageUrl = ImageService.playerDefault();
     }
 
     static fromJson(json: any): Player {

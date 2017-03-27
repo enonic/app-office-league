@@ -13,6 +13,7 @@ export class Team
 
     constructor(id: string, name: string) {
         super(id, name);
+        this.imageUrl = ImageService.teamDefault();
     }
 
     static fromJson(json: any): Team {
