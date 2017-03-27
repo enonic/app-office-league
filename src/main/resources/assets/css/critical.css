@@ -27,6 +27,11 @@ h1 {
     width: 100px;
 }
 
+.marketing__logo.offline {
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+}
+
 .marketing__footer {
     text-align: center;
 }
@@ -38,3 +43,21 @@ h1 {
     padding: 0 10px;
 }
 
+.marketing.offline .marketing__logo {
+    opacity: 0.5;
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+}
+
+.marketing.offline .marketing__header {
+    margin-top: 14rem;
+}
+
+.marketing.offline .offline-text-1 {
+    font-size: 22px;
+    opacity: 0.5;
+}
+
+.marketing.offline .offline-text-2 {
+    font-size: 17px;
+}

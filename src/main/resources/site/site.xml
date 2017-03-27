@@ -26,6 +26,10 @@
       <pattern>/app/assets/.*</pattern>
     </mapping>
 
+    <mapping controller="/site/pages/offline/offline.js">
+      <pattern>/offline</pattern>
+    </mapping>
+
     <!-- mappings for routes handled in Angular -->
     <mapping controller="/site/pages/pwa/pwa.js" order="20">
       <pattern>/app/teams(/[^/]+)?.*</pattern>

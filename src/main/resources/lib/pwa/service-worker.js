@@ -1,7 +1,9 @@
 const cacheName = 'office-league-cache';
 const dataCacheName = 'office-league-data-cache';
 const swVersion = '{{appVersion}}/{{userKey}}';
+const offlineUrl = '{{siteUrl}}offline';
 const debugging = true;
+const appUrl = '{{appUrl}}';
 const staticAssets = [
     '{{siteUrl}}'.slice(0, - 1),
     '{{siteUrl}}',
@@ -17,7 +19,8 @@ const staticAssets = [
     '{{assetUrl}}/icons/favicon-16x16.png',
     '{{assetUrl}}/icons/favicon-32x32.png',
     '{{assetUrl}}/icons/safari-pinned-tab.svg',
-    'https://fonts.googleapis.com/css?family=Roboto'
+    'https://fonts.googleapis.com/css?family=Roboto',
+    offlineUrl
 ];
 const dynamicAssets = [
     '{{assetUrl}}/fonts/',
@@ -33,6 +36,16 @@ function consoleLog(message) {
 
 function isRequestToDynamicAsset(url) {
     return dynamicAssets.some(asset => (url.indexOf(asset) > -1));
+}
+
+function isRequestToAppPage(url) {
+    return url.endsWith(appUrl) || url.indexOf(appUrl) > -1;
+}
+
+function getFallbackPage() {
+    consoleLog('Serving fallback page');
+
+    return caches.match(offlineUrl);
 }
 
 self.addEventListener('install', function(e) {
@@ -74,28 +87,49 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
-    e.respondWith(
-        caches
-            .match(e.request, {
-                ignoreVary: true
-            })
+   
+    if (isRequestToAppPage(e.request.url)) {
+        consoleLog('Request to application page. Fetching: ' + e.request.url);
+        e.respondWith(
+            fetch(e.request)
             .then(function (response) {
-                consoleLog((response ? 'Serving from cache' : 'Fetching from the server') + ': ' + e.request.url);
-
-                return response || 
-                       fetch(e.request)
-                        .then(function (response) {
-                            if (isRequestToDynamicAsset(e.request.url)) {
-                                let clonedResponse = response.clone();
-                                consoleLog('Caching dynamic asset: ' + e.request.url);
-                                caches.open(cacheName).then(function(cache) {
-                                    cache.put(e.request.url, clonedResponse);
-                                });
-                            }
-                            return response;
-                        });
+                return response;
             })
-    );
+            .catch(function (ex) {
+                if (e.request.method == 'GET') {
+                    consoleLog('Network is down. Serving offline page...');
+
+                    return getFallbackPage();
+                }
+                else {
+                    consoleLog('Network is down. Failed to send ' + e.request.method + ' request');
+                }
+            })
+        );
+    }
+    else
+        e.respondWith(
+            caches
+                .match(e.request, {
+                    ignoreVary: true
+                })
+                .then(function (response) {
+                    consoleLog((response ? 'Serving from cache' : 'Fetching from the server') + ': ' + e.request.url);
+
+                    return response ||
+                           fetch(e.request)
+                            .then(function (response) {
+                                if (isRequestToDynamicAsset(e.request.url)) {
+                                    let clonedResponse = response.clone();
+                                    consoleLog('Caching dynamic asset: ' + e.request.url);
+                                    caches.open(cacheName).then(function(cache) {
+                                        cache.put(e.request.url, clonedResponse);
+                                    });
+                                }
+                                return response;
+                            });
+                })
+        );
 });
 
 self.addEventListener("message", function(e) {

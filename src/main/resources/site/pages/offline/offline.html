@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <link rel="stylesheet" data-th-href="${portal.assetUrl({'_path=css/critical.css'})}"/>
+</head>
+<body class="marketing offline">
+<div class="container">
+    <header class="marketing__header">
+        <a data-th-href="${appUrl}" href="./app">
+            <img class="marketing__logo" data-th-src="${portal.assetUrl({'_path=img/logo1.svg'})}"/>
+        </a>
+    </header>
+    <footer class="marketing__footer">
+        <p class="offline-text-1">Seems like your internet connection is away playing foos.</p>
+        <p class="offline-text-2"><a data-th-href="${appUrl}" href="./app">Try again</a> in a little while.</p>
+    </footer>
+</div>
+
+</body>
+</html>
