@@ -14,7 +14,7 @@ export class GameFlowComponent
 
     @Input() game: Game;
 
-    lineChartData: Array<any> = [
+    chartDatasets: Array<any> = [
         {
             lineTension: 0,
             fill: false,
@@ -37,6 +37,7 @@ export class GameFlowComponent
                 position: 'bottom',
                 ticks: {
                     min: 0,
+                    suggestedMax: 60,
                     callback: function (label, index, labels) {
                         return label == -1 ? '' : GameFlowComponent.formatSeconds(parseInt(label, 10));
                     }
@@ -46,6 +47,7 @@ export class GameFlowComponent
                 id: 'y-axis-0',
                 ticks: {
                     min: 0,
+                    suggestedMax: 10,
                     stepSize: 1
                 }
             }]
@@ -167,12 +169,14 @@ export class GameFlowComponent
             }
         }));
 
-        this.lineChartData[0].data = dataRed;
-        this.lineChartData[0].label = redLabel;
-        this.lineChartData[1].data = dataBlue;
-        this.lineChartData[1].label = blueLabel;
+        this.chartDatasets[0].data = dataRed;
+        this.chartDatasets[0].label = redLabel;
+        this.chartDatasets[1].data = dataBlue;
+        this.chartDatasets[1].label = blueLabel;
 
         this.lineChartOptions.annotation.annotations[0].value = midTime;
+
+        this.chartDatasets = this.chartDatasets.slice(); // force refresh of chart
     }
 
     public static formatSeconds = function (s) {
