@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, OnChanges, SimpleChanges, SimpleChange} from '@angular/core';
+import {Component, OnInit, ViewChildren, QueryList} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
@@ -7,6 +7,7 @@ import {League} from '../../../graphql/schemas/League';
 import {GameParameters} from '../GameParameters';
 import {GamePlayComponent} from '../game-play/game-play.component';
 import {PageTitleService} from '../../services/page-title.service';
+import {NewGamePlayerComponent} from '../new-game-player/new-game-player.component';
 
 @Component({
     selector: 'new-game',
@@ -23,9 +24,13 @@ export class NewGameComponent implements OnInit {
     redPlayer2: Player;
     possiblePlayerIds: string[] = [];
 
+    @ViewChildren(NewGamePlayerComponent)
+    playerCmps: QueryList<NewGamePlayerComponent>;
+
     league: League;
     title: string;
     playerSelectionReady: boolean;
+    shuffleDisabled: boolean;
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute,
                 private pageTitleService: PageTitleService, private router: Router) {
@@ -70,44 +75,79 @@ export class NewGameComponent implements OnInit {
         });
     }
 
+    private shuffleActions: {from: NewGamePlayerComponent, to: NewGamePlayerComponent, player: Player, side: string}[];
+
     onShuffleClicked() {
-        let players: Player[] = [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2];
-        this.bluePlayer1 = this.randomPlayer(players);
-        this.bluePlayer2 = this.randomPlayer(players);
-        this.redPlayer1 = this.randomPlayer(players);
-        this.redPlayer2 = this.randomPlayer(players);
+        this.shuffleDisabled = true;
+        let playerCmps: NewGamePlayerComponent[] = this.playerCmps.toArray();
+        let cmpTo;
+
+        this.shuffleActions = [];
+        // first calculate positions without updating them to not interfere the calculations
+        this.playerCmps.forEach((cmpFrom, i) => {
+            cmpTo = this.randomPlayerCmp(playerCmps);
+            if (cmpTo != cmpFrom) {
+                this.shuffleActions[i] = {
+                    from: cmpFrom,
+                    to: cmpTo,
+                    player: cmpFrom.player,
+                    side: cmpTo.sideClass
+                };
+            }
+        });
+        // then apply calculated positions
+        this.playerCmps.forEach((cmp, i) => {
+            // there may be players that were not moved
+            let action = this.shuffleActions[i];
+            if (action) {
+                cmp.setPosition(action.to.getPosition());
+                cmp.sideClass = action.side;
+            }
+        });
         this.updatePlayerSelectionState();
     }
-    
-    private randomPlayer(players: Player[]) {
-        return players.splice(Math.floor(Math.random() * players.length), 1)[0];
+
+    private randomPlayerCmp(playerCmps: NewGamePlayerComponent[]): NewGamePlayerComponent {
+        return playerCmps.splice(Math.floor(Math.random() * playerCmps.length), 1)[0];
     }
 
-    onBluePlayer1Selected(p: Player) {
+    onPlayerSelected(position: 'blue1' | 'blue2' | 'red1' | 'red2', p: Player) {
         if (p) {
-            this.bluePlayer1 = p;
+            switch (position) {
+            case 'blue1':
+                this.bluePlayer1 = p;
+                break;
+            case 'blue2':
+                this.bluePlayer2 = p;
+                break;
+            case 'red1':
+                this.redPlayer1 = p;
+                break;
+            case 'red2':
+                this.redPlayer2 = p;
+                break;
+            }
             this.updatePlayerSelectionState();
         }
     }
 
-    onBluePlayer2Selected(p: Player) {
-        if (p) {
-            this.bluePlayer2 = p;
-            this.updatePlayerSelectionState();
-        }
-    }
+    onPlayerAnimationFinished(fromCmp: NewGamePlayerComponent) {
+        let playerCmps: NewGamePlayerComponent[] = this.playerCmps.toArray();
 
-    onRedPlayer1Selected(p: Player) {
-        if (p) {
-            this.redPlayer1 = p;
-            this.updatePlayerSelectionState();
-        }
-    }
+        let i = playerCmps.indexOf(fromCmp),
+            action = this.shuffleActions[i];
 
-    onRedPlayer2Selected(p: Player) {
-        if (p) {
-            this.redPlayer2 = p;
-            this.updatePlayerSelectionState();
+        if (action) {
+            let toCmp = action.to;
+            toCmp.setPlayer(action.player);
+            toCmp.sideClass = action.side;
+            fromCmp.resetPosition(false);
+
+            this.shuffleActions = this.shuffleActions.filter(act => act !== action);
+
+            if (this.shuffleActions.length == 0) {
+                this.shuffleDisabled = false;
+            }
         }
     }
 
@@ -134,11 +174,12 @@ export class NewGameComponent implements OnInit {
         this.playerSelectionReady = singlesGameReady || doublesGameReady;
 
         let possiblePlayerIds = [];
-        let alreadyAssignePlayerIds = [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2].filter((p) => !!p).map((player) => player.id);
+        let alreadyAssignePlayerIds = [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2].filter((p) => !!p).map(
+            (player) => player.id);
         this.league.leaguePlayers.forEach((leaguePlayer) => {
             if (alreadyAssignePlayerIds.indexOf(leaguePlayer.player.id) == -1) {
                 possiblePlayerIds.push(leaguePlayer.player.id);
-            } 
+            }
         });
         this.possiblePlayerIds = possiblePlayerIds;
     }

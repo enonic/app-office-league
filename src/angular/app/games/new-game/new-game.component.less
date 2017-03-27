@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative; // for shuffle animation
 }
 
 .side {
@@ -13,7 +14,7 @@
   flex: 1;
 }
 
-.player {
+new-game-player {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -21,6 +22,14 @@
 
   padding-top: 5vh;
   padding-bottom: 5vh;
+  position: relative; // for shuffle animation
+
+  &.animate {
+    transition-duration: 1000ms;
+    img.circle {
+      transition-duration: 1000ms;
+    }
+  }
 }
 
 .new-game-actions {

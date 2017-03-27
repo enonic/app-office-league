@@ -9,27 +9,32 @@
     </div>-->
 
     <div class="col s12 participants">
-
         <div class="side side-blue">
-            <div class="player">
-                <new-game-player [player]="bluePlayer1" [possiblePlayerIds]="possiblePlayerIds" [sideClass]="'side-blue'"
-                                 (playerSelected)="onBluePlayer1Selected($event)"></new-game-player>
-            </div>
-            <div class="player">
-                <new-game-player [player]="bluePlayer2" [possiblePlayerIds]="possiblePlayerIds" [sideClass]="'side-blue'"
-                                 (playerSelected)="onBluePlayer2Selected($event)"></new-game-player>
-            </div>
+
+            <new-game-player [player]="bluePlayer1" [possiblePlayerIds]="possiblePlayerIds"
+                             [sideClass]="'side-blue'"
+                             (animationFinished)="onPlayerAnimationFinished($event)"
+                             (playerSelected)="onPlayerSelected('blue1', $event)"></new-game-player>
+
+            <new-game-player [player]="bluePlayer2" [possiblePlayerIds]="possiblePlayerIds"
+                             [sideClass]="'side-blue'"
+                             (animationFinished)="onPlayerAnimationFinished($event)"
+                             (playerSelected)="onPlayerSelected('blue2', $event)"></new-game-player>
+
         </div>
         <h5 class="center grey-text text-darken-3 vs">VS</h5>
         <div class="side side-red">
-            <div class="player">
-                <new-game-player [player]="redPlayer1" [possiblePlayerIds]="possiblePlayerIds" [sideClass]="'side-red'"
-                                 (playerSelected)="onRedPlayer1Selected($event)"></new-game-player>
-            </div>
-            <div class="player">
-                <new-game-player [player]="redPlayer2" [possiblePlayerIds]="possiblePlayerIds" [sideClass]="'side-red'"
-                                 (playerSelected)="onRedPlayer2Selected($event)"></new-game-player>
-            </div>
+
+            <new-game-player [player]="redPlayer1"[possiblePlayerIds]="possiblePlayerIds"
+                             [sideClass]="'side-red'"
+                             (animationFinished)="onPlayerAnimationFinished($event)"
+                             (playerSelected)="onPlayerSelected('red1', $event)"></new-game-player>
+
+            <new-game-player [player]="redPlayer2" [possiblePlayerIds]="possiblePlayerIds"
+                             [sideClass]="'side-red'"
+                             (animationFinished)="onPlayerAnimationFinished($event)"
+                             (playerSelected)="onPlayerSelected('red2', $event)"></new-game-player>
+
         </div>
     </div>
 
@@ -37,7 +42,7 @@
 
 <div class="row" *ngIf="playerSelectionReady">
     <div class="col s12 new-game-actions">
-        <a class="waves-effect waves-light btn light-blue accent-4" (click)="onShuffleClicked()">Shuffle</a>
+        <a class="waves-effect waves-light btn light-blue accent-4" (click)="onShuffleClicked()" [class.disabled]="shuffleDisabled">Shuffle</a>
         <a class="waves-effect waves-light btn green" (click)="onPlayClicked()">Play</a>
     </div>
 </div>
