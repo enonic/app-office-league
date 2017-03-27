@@ -11,6 +11,9 @@ import {FormsModule} from '@angular/forms';
 import {GamePlayComponent} from './game-play/game-play.component';
 import {GamePointsComponent} from './game-points/game-points.component';
 import {AuthRouteGuard} from '../auth.route.guard';
+import {ChartsModule} from 'ng2-charts';
+import {GameFlowComponent} from './game-flow/game-flow.component';
+
 
 const gameRoutes: Routes = [
     {
@@ -43,13 +46,15 @@ const gameRoutes: Routes = [
         NewGameComponent,
         NewGamePlayerComponent,
         GamePlayComponent,
-        GamePointsComponent
+        GamePointsComponent,
+        GameFlowComponent
     ],
     imports: [
         CommonModule,
         MaterializeModule,
         RouterModule.forChild(gameRoutes),
-        FormsModule
+        FormsModule,
+        ChartsModule
     ],
     exports: [GameListComponent],
     providers: [],

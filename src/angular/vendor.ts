@@ -17,3 +17,5 @@ import 'rxjs';
 import 'jquery';
 import 'materialize-css';
 import 'crypto-js';
+import 'chart.js';
+import 'chartjs-plugin-annotation';
