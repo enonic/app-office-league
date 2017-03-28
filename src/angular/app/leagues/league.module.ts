@@ -14,8 +14,10 @@ import {LeagueEditCreateComponent} from './league-edit-create/league-edit-create
 import {FormsModule} from '@angular/forms';
 import {MaterializeModule} from 'angular2-materialize/dist/index';
 import {AuthRouteGuard} from '../auth.route.guard';
+import {AuthenticatedRouteGuard} from '../guards/authenticated.route.guard';
 
 const leagueRoutes: Routes = [
+    {path: '', component: LeagueBrowserComponent, canActivate: [AuthenticatedRouteGuard, AuthRouteGuard]},
     {path: 'leagues', component: LeagueBrowserComponent, canActivate: [AuthRouteGuard]},
     {path: 'leagues/:name', component: LeagueProfileComponent, canActivate: [AuthRouteGuard]},
     {path: 'leagues/:name/players', component: LeagueProfilePlayersComponent, canActivate: [AuthRouteGuard]},

@@ -9,6 +9,7 @@ import {GamesModule} from './games/games.module';
 import {TeamsModule} from './teams/team.module';
 import {LeaguesModule} from './leagues/league.module';
 import {AuthRouteGuard} from './auth.route.guard';
+import {AuthenticatedRouteGuard} from './guards/authenticated.route.guard';
 import {AuthService} from './services/auth.service';
 import {CryptoService} from './services/crypto.service';
 import {HomeComponent} from './home.component';
@@ -17,7 +18,6 @@ import {MaterializeModule} from 'angular2-materialize';
 import {PageTitleService} from './services/page-title.service';
 
 const appRoutes: Routes = [
-    {path: '', component: HomeComponent},
     {path: '**', redirectTo: '', pathMatch: 'full'}
 ];
 
@@ -37,7 +37,7 @@ const appRoutes: Routes = [
         TeamsModule,
         LeaguesModule
     ],
-    providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthRouteGuard],
+    providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthRouteGuard, AuthenticatedRouteGuard],
     bootstrap: [AppComponent]
 })
 export class AppModule {
