@@ -8,8 +8,8 @@ import {GraphQLService} from './services/graphql.service';
 import {GamesModule} from './games/games.module';
 import {TeamsModule} from './teams/team.module';
 import {LeaguesModule} from './leagues/league.module';
-import {AuthRouteGuard} from './auth.route.guard';
 import {AuthenticatedRouteGuard} from './guards/authenticated.route.guard';
+import {PlayerRouteGuard} from './guards/player.route.guard';
 import {AuthService} from './services/auth.service';
 import {CryptoService} from './services/crypto.service';
 import {HomeComponent} from './home.component';
@@ -37,7 +37,7 @@ const appRoutes: Routes = [
         TeamsModule,
         LeaguesModule
     ],
-    providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthRouteGuard, AuthenticatedRouteGuard],
+    providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard],
     bootstrap: [AppComponent]
 })
 export class AppModule {

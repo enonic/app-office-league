@@ -7,14 +7,14 @@ import {LeaguesModule} from '../leagues/league.module';
 import {TeamEditCreateComponent} from './team-edit-create/team-edit-create.component';
 import {TeamListPageComponent} from './team-list-page/team-list-page.component';
 import {FormsModule} from '@angular/forms';
-import {AuthRouteGuard} from '../auth.route.guard';
+import {PlayerRouteGuard, } from '../guards/player.route.guard';
 import {MaterializeModule} from 'angular2-materialize/dist/index';
 
 const teamRoutes: Routes = [
-    {path: 'teams', component: TeamListPageComponent, canActivate: [AuthRouteGuard]},
-    {path: 'teams/:name', component: TeamProfileComponent, canActivate: [AuthRouteGuard]},
-    {path: 'teams/:name/edit', component: TeamEditCreateComponent, canActivate: [AuthRouteGuard]},
-    {path: 'team-create', component: TeamEditCreateComponent, canActivate: [AuthRouteGuard]},
+    {path: 'teams', component: TeamListPageComponent, canActivate: [PlayerRouteGuard,]},
+    {path: 'teams/:name', component: TeamProfileComponent, canActivate: [PlayerRouteGuard,]},
+    {path: 'teams/:name/edit', component: TeamEditCreateComponent, canActivate: [PlayerRouteGuard,]},
+    {path: 'team-create', component: TeamEditCreateComponent, canActivate: [PlayerRouteGuard,]},
 ];
 
 @NgModule({
