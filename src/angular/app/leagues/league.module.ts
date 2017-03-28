@@ -13,11 +13,9 @@ import {LeagueProfileTeamsComponent} from './league-profile-teams/league-profile
 import {LeagueEditCreateComponent} from './league-edit-create/league-edit-create.component';
 import {FormsModule} from '@angular/forms';
 import {MaterializeModule} from 'angular2-materialize/dist/index';
-import {AuthenticatedRouteGuard} from '../guards/authenticated.route.guard';
 import {PlayerRouteGuard, } from '../guards/player.route.guard';
 
 const leagueRoutes: Routes = [
-    {path: '', component: LeagueBrowserComponent, canActivate: [AuthenticatedRouteGuard, PlayerRouteGuard,]},
     {path: 'leagues', component: LeagueBrowserComponent, canActivate: [PlayerRouteGuard,]},
     {path: 'leagues/:name', component: LeagueProfileComponent, canActivate: [PlayerRouteGuard,]},
     {path: 'leagues/:name/players', component: LeagueProfilePlayersComponent, canActivate: [PlayerRouteGuard,]},

@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Handedness} from '../../../graphql/schemas/Handedness';
 import {Player} from '../../../graphql/schemas/Player';
 import {BaseComponent} from '../../common/base.component';
+import {AuthService} from '../../services/auth.service';
 import {GraphQLService} from '../../services/graphql.service';
 import {Countries} from '../../common/countries';
 import {Game} from '../../../graphql/schemas/Game';
@@ -24,7 +25,7 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
     private editable: boolean;
 
 
-    constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
+    constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService, private authService: AuthService,
                 private pageTitleService: PageTitleService) {
         super(route);
     }
@@ -32,7 +33,7 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
     ngOnInit(): void {
         super.ngOnInit();
 
-        let name = this.route.snapshot.params['name'];
+        let name = this.route.snapshot.params['name'] || this.authService.getUser().playerName ;
 
         this.graphQLService.post(PlayerProfileComponent.getPlayerQuery, {name: name}).then(
             data => this.handleResponse(data));

@@ -11,9 +11,11 @@ import {PlayerTeamListComponent} from './player-team-list/player-team-list.compo
 import {PlayerListPageComponent} from './player-list-page/player-list-page.component';
 import {PlayerCreateComponent} from './player-new/player-create.component';
 import {FormsModule} from '@angular/forms';
+import {AuthenticatedRouteGuard, } from '../guards/authenticated.route.guard';
 import {PlayerRouteGuard, } from '../guards/player.route.guard';
 
 const playersRoutes: Routes = [
+    {path: '', component: PlayerProfileComponent, canActivate: [AuthenticatedRouteGuard, PlayerRouteGuard,]},
     {path: 'players', component: PlayerListPageComponent, canActivate: [PlayerRouteGuard,]},
     {path: 'players/:name', component: PlayerProfileComponent, canActivate: [PlayerRouteGuard,]},
     {path: 'players/:name/teams', component: PlayerTeamListComponent, canActivate: [PlayerRouteGuard,]},
