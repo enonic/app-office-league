@@ -213,7 +213,9 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
     }
 
     onEndGameClicked() {
-
+        this.deleteGame().then(ids => {
+            return this.router.navigate(['leagues', this.league.name]);
+        })
     }
 
     onBlueGoalClick() {
@@ -470,6 +472,14 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
             });
     }
 
+    private deleteGame(): Promise<string> {
+        return this.graphQLService.post(GamePlayComponent.deleteGameMutation, {gameId: this.gameId}).then(
+            data => {
+                console.log('Game deleted', data);
+                return data.deleteGame;
+            });
+    }
+
     private replayPoints() {
         this.blueScore = 0;
         this.redScore = 0;
@@ -654,5 +664,9 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         updateGame(gameId: $gameId, points: $points, gamePlayers: $players) {
             id
         }
+    }`;
+
+    private static readonly deleteGameMutation = `mutation ($gameId: ID!) {
+        deleteGame(id: $gameId)
     }`;
 }
