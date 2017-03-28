@@ -33,6 +33,9 @@ export class NewGamePlayerComponent {
 
     @HostListener('transitionend', ['$event'])
     private onTransitionFinished(event: TransitionEvent) {
+        if (this.animatedProperties.length == 0) {
+            return;
+        }
         this.animatedProperties = this.animatedProperties.filter(prop => {
             return prop !== event.propertyName;
         });

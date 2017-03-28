@@ -75,35 +75,36 @@ export class NewGameComponent implements OnInit {
         });
     }
 
-    private shuffleActions: {from: NewGamePlayerComponent, to: NewGamePlayerComponent, player: Player, side: string}[];
+    private shuffleActions: {[id: string]: {from: NewGamePlayerComponent, to: NewGamePlayerComponent, player: Player, side: string, done: boolean}};
 
     onShuffleClicked() {
-        this.shuffleDisabled = true;
         let playerCmps: NewGamePlayerComponent[] = this.playerCmps.toArray();
         let cmpTo;
 
-        this.shuffleActions = [];
+        this.shuffleActions = {};
+
         // first calculate positions without updating them to not interfere the calculations
         this.playerCmps.forEach((cmpFrom, i) => {
             cmpTo = this.randomPlayerCmp(playerCmps);
             if (cmpTo != cmpFrom) {
-                this.shuffleActions[i] = {
+                this.shuffleActions[cmpFrom.player.id] = {
                     from: cmpFrom,
                     to: cmpTo,
                     player: cmpFrom.player,
-                    side: cmpTo.sideClass
+                    side: cmpTo.sideClass,
+                    done: false,
                 };
             }
         });
+
         // then apply calculated positions
-        this.playerCmps.forEach((cmp, i) => {
-            // there may be players that were not moved
-            let action = this.shuffleActions[i];
-            if (action) {
-                cmp.setPosition(action.to.getPosition());
-                cmp.sideClass = action.side;
-            }
+        Object.keys(this.shuffleActions).forEach(playerId => {
+            let action = this.shuffleActions[playerId];
+            action.from.setPosition(action.to.getPosition());
+            action.from.sideClass = action.side;
         });
+
+        this.shuffleDisabled = Object.keys(this.shuffleActions).length > 0;
         this.updatePlayerSelectionState();
     }
 
@@ -132,23 +133,26 @@ export class NewGameComponent implements OnInit {
     }
 
     onPlayerAnimationFinished(fromCmp: NewGamePlayerComponent) {
-        let playerCmps: NewGamePlayerComponent[] = this.playerCmps.toArray();
+        let action = this.shuffleActions[fromCmp.player.id];
+        action.done = true;
 
-        let i = playerCmps.indexOf(fromCmp),
-            action = this.shuffleActions[i];
+        if (this.areAllActionFinished()) {
+            Object.keys(this.shuffleActions).forEach(playerId => {
+                action = this.shuffleActions[playerId];
 
-        if (action) {
-            let toCmp = action.to;
-            toCmp.setPlayer(action.player);
-            toCmp.sideClass = action.side;
-            fromCmp.resetPosition(false);
+                action.to.setPlayer(action.player);
+                action.to.sideClass = action.side;
 
-            this.shuffleActions = this.shuffleActions.filter(act => act !== action);
+                action.from.resetPosition(false);
+            });
 
-            if (this.shuffleActions.length == 0) {
-                this.shuffleDisabled = false;
-            }
+            this.shuffleDisabled = false;
+            delete this.shuffleActions;
         }
+    }
+
+    private areAllActionFinished(): boolean {
+        return Object.keys(this.shuffleActions).every(playerId => this.shuffleActions[playerId].done);
     }
 
     private createGame(): Promise<string> {
@@ -172,6 +176,7 @@ export class NewGameComponent implements OnInit {
         let singlesGameReady = !!(this.bluePlayer1 && this.redPlayer1 && !this.bluePlayer2 && !this.redPlayer2);
         let doublesGameReady = !!(this.bluePlayer1 && this.redPlayer1 && this.bluePlayer2 && this.redPlayer2);
         this.playerSelectionReady = singlesGameReady || doublesGameReady;
+        this.shuffleDisabled = !doublesGameReady;
 
         let possiblePlayerIds = [];
         let alreadyAssignePlayerIds = [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2].filter((p) => !!p).map(
