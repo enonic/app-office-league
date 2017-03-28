@@ -52,7 +52,6 @@ export class List2Component extends BaseComponent { //TODO Rename
             pages.push(this.pageCount.toString());
         }
         this.pages = pages;
-        console.log('pages', pages);
     }
 
 
@@ -62,7 +61,6 @@ export class List2Component extends BaseComponent { //TODO Rename
     }
 
     setCurrentPage(page) {
-        console.log('setCurrentPage', page);
         if (page != '...') {
             let pageNumber: number = parseInt(page);
 

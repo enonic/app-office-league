@@ -8,7 +8,7 @@
         </template>
         <form>
             <div class="row">
-                <div class="input-field col s12">
+                <div class="input-field col s12 l8 offset-l2">
                     <i class="material-icons prefix">label_outline</i>
                     <input id="name" type="text" class="validate" name="name" autocomplete="off" [(ngModel)]="name" (ngModelChange)="updatePageTitle($event)"
                            required=""
@@ -17,13 +17,14 @@
                 </div>
             </div>
             <div class="row">
-                <div class="input-field col s12">
+                <div class="input-field col s12 l8 offset-l2">
                     <i class="material-icons prefix">info_outline</i>
                     <input id="description" type="text" class="validate" autocomplete="off" name="description" [(ngModel)]="description">
                     <label class="active" for="description">Description</label>
                 </div>
             </div>
             <div class="row">
+<!--
                 <div class="col s6">
                     <label>Sport</label>
                     <p>
@@ -36,8 +37,8 @@
                         <label for="tennisSport">Table tennis</label>
                     </p>
                 </div>
-
-                <div class="col s6">
+-->
+                <div class="col s6 offset-s6">
                     <div class="right">
                         <input type="file" accept="image/*" #fileInput style="display:none;">
                         <div class="league-icon-frame">
@@ -51,7 +52,7 @@
 </div>
 
 <div class="row">
-    <div class="col s12">
+    <div class="col s12 l8 offset-l2">
         <template [ngIf]="!editMode">
             <button class="btn waves-effect waves-light light-blue darken-3 right" type="submit" name="create" (click)="onCreateClicked()">Create
                 <i class="material-icons right">send</i>
