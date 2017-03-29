@@ -11,12 +11,10 @@ const staticAssets = [
     '{{siteUrl}}manifest.json',
     '{{assetUrl}}/css/critical.css',
     '{{assetUrl}}/img/logo.svg',
-    '{{assetUrl}}/img/logo1.svg',
     '{{assetUrl}}/img/office-league-logo.svg',
     '{{assetUrl}}/icons/apple-touch-icon.png',
     '{{assetUrl}}/icons/favicon-16x16.png',
     '{{assetUrl}}/icons/favicon-32x32.png',
-    '{{assetUrl}}/icons/safari-pinned-tab.svg',
     'https://fonts.googleapis.com/css?family=Roboto',
     offlineUrl
 ];
