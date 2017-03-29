@@ -4,8 +4,11 @@
 
             <div class="game-score">
                 <div class="game-play__team-score game-play__red-score" [ngClass]="nameClassesGamePlayScoreRed">{{redScore}}</div>
-                <div class="game-time" (click)="onGameTimeClicked()">
-                    <span [hidden]="showPlay">{{elapsedTime}}</span>
+                <div class="game-play__time" (click)="onGameTimeClicked()">
+                    <span [hidden]="showPlay">
+                        <span>{{elapsedTime}}</span>
+                        <span class="game-play__pause"></span>
+                    </span>
                     <span [hidden]="!showPlay">pause</span>
                 </div>
                 <div class="game-play__team-score game-play__blue-score"[ngClass]="nameClassesGamePlayScoreBlue">{{blueScore}}</div>
