@@ -12,7 +12,6 @@ import {AuthenticatedRouteGuard} from './guards/authenticated.route.guard';
 import {PlayerRouteGuard} from './guards/player.route.guard';
 import {AuthService} from './services/auth.service';
 import {CryptoService} from './services/crypto.service';
-import {HomeComponent} from './home.component';
 import {CommonModule} from './common/common.module';
 import {MaterializeModule} from 'angular2-materialize';
 import {PageTitleService} from './services/page-title.service';
@@ -23,8 +22,7 @@ const appRoutes: Routes = [
 
 @NgModule({
     declarations: [
-        AppComponent,
-        HomeComponent
+        AppComponent
     ],
     imports: [
         CommonModule,

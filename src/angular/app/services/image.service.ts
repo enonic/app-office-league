@@ -22,9 +22,4 @@ export class ImageService {
     public static logoUrl(): string {
         return `${XPCONFIG.assetsUrl}/img/logo.svg`;
     }
-
-    public static homeLogoUrl(): string {
-        return `${XPCONFIG.assetsUrl}/img/office-league-logo.svg`;
-    }
-
 }
