@@ -12,6 +12,14 @@ h1 {
     font-size: 4rem;
 }
 
+a {
+    color: #142663;
+}
+
+a:hover {
+    color: #CC0003;
+}
+
 .marketing {
     font-family: 'Roboto', sans-serif;
     font-size: 1.4rem;
@@ -34,6 +42,7 @@ h1 {
 
 .marketing__footer {
     text-align: center;
+    margin-top: 100px;
 }
 
 .container {
@@ -60,4 +69,45 @@ h1 {
 
 .marketing.offline .offline-text-2 {
     font-size: 17px;
+}
+
+.cta {
+    position: relative;
+    text-align: center;
+}
+
+.cta__image {
+    position: relative;
+    max-width: 100%;
+}
+
+.cta__link {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    background: #142663;
+    color: #fff;
+    padding: 2rem 3rem;
+    font-size: 40px;
+    text-decoration: none;
+    text-transform: uppercase;
+
+
+}
+
+@media (max-width: 600px) {
+    .cta__link {
+        position: relative;
+        transform: none;
+        left: auto;
+        top: auto;
+        font-size: 20px;
+        padding: 1rem 2rem;
+    }
+}
+
+.cta__link:hover {
+    color: #CC0003;
+    border-color: #CC0003;
 }
