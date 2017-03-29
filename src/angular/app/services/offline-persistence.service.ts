@@ -8,6 +8,7 @@ import {League} from '../../graphql/schemas/League';
 import {GamePlayer} from '../../graphql/schemas/GamePlayer';
 import {GameTeam} from '../../graphql/schemas/GameTeam';
 import {Team} from '../../graphql/schemas/Team';
+import {GraphQLService} from './graphql.service';
 
 interface OfflineGameJson {
     gameId?: string;
@@ -51,6 +52,14 @@ export class OfflinePersistenceService {
     private static readonly dbName = 'officeleague';
     private static readonly dbStoreName = 'game';
 
+    constructor(private graphQLService: GraphQLService) {
+        this.bindEvents();
+    }
+
+    isOnline(): boolean {
+        return navigator.onLine;
+    }
+
     saveGame(game: Game): Promise<Game> {
         return new Promise((resolve, reject) => {
             let gameJson = this.gameToJson(game);
@@ -86,6 +95,86 @@ export class OfflinePersistenceService {
             });
 
         });
+    }
+
+    private pushOfflineGames() {
+        this.fetchOfflineGames().then((offlineGamesJson: OfflineGameJson[]) => {
+            offlineGamesJson.forEach((offlineGameJson: OfflineGameJson) => {
+                this.fetchServerGame(offlineGameJson.gameId).then((game) => {
+                    if (!game || game.points.length < offlineGameJson.points.length) {
+                        console.log('Pushing offline game state: ', offlineGameJson);
+                        this.updateGame(offlineGameJson).then((gameId) => {
+                            // delete pushed game from local storage
+                            this.deleteOfflineGame(gameId);
+                        })
+                    }
+                })
+            })
+        });
+    }
+
+    private updateGame(offlineGameJson: OfflineGameJson): Promise<string> {
+        let players = offlineGameJson.players.map((p) => {
+            return {"playerId": p.playerId, "side": p.side.toLowerCase()};
+        });
+        let points = offlineGameJson.points.map((p) => {
+            return {time: p.time, playerId: p.playerId, against: p.against}
+        });
+        let updateGameParams = {points: points, players: players, gameId: offlineGameJson.gameId};
+        return this.graphQLService.post(OfflinePersistenceService.updateGameMutation, updateGameParams)
+            .then(data => {
+                console.log('Game updated', data);
+                return data.updateGame && data.updateGame.id;
+            });
+    }
+
+    private fetchServerGame(gameId: string): Promise<Game> {
+        return this.graphQLService.post(OfflinePersistenceService.getGameQuery, {gameId: gameId})
+            .then(data => {
+                return data.game && Game.fromJson(data.game);
+            });
+    }
+
+    private fetchOfflineGames(): Promise<OfflineGameJson[]> {
+        return new Promise((resolve, reject) => {
+            let db = this.getDb();
+
+            this.openStore(db).then(() => {
+                db.getAll(OfflinePersistenceService.dbStoreName).then((games) => {
+                    resolve(games);
+                }, (error) => {
+                    reject(error);
+                });
+            });
+        });
+    }
+
+    private deleteOfflineGame(gameId: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            let db = this.getDb();
+
+            this.openStore(db).then(() => {
+                db.delete(OfflinePersistenceService.dbStoreName, gameId).then(() => {
+                    resolve();
+                }, (error) => {
+                    reject();
+                });
+            });
+        });
+    }
+
+    private bindEvents() {
+        window.addEventListener('offline', () => this.onOfflineStatus());
+        window.addEventListener('online', () => this.onOnlineStatus());
+    }
+
+    private onOfflineStatus() {
+        console.log('Going offline');
+    }
+
+    private onOnlineStatus() {
+        console.log('Back online');
+        this.pushOfflineGames();
     }
 
     private getDb(): AngularIndexedDB {
@@ -185,4 +274,20 @@ export class OfflinePersistenceService {
 
         return game;
     }
+
+    private static readonly getGameQuery = `query ($gameId: ID!) {
+      game(id: $gameId) {
+        id
+        finished
+        points {
+          time
+        }
+      }
+    }`;
+
+    private static readonly updateGameMutation = `mutation ($gameId: ID!, $points: [PointCreation], $players: [GamePlayerCreation]!) {
+        updateGame(gameId: $gameId, points: $points, gamePlayers: $players) {
+            id
+        }
+    }`;
 }
