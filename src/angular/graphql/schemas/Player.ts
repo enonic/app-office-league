@@ -4,6 +4,7 @@ import {Handedness, HandednessUtil} from './Handedness';
 import {Team} from './Team';
 import {LeaguePlayer} from './LeaguePlayer';
 import {XPCONFIG} from '../../app/app.config';
+import {UrlHelper} from './UrlHelper';
 
 export class Player
     extends NamedEntity {
@@ -28,7 +29,7 @@ export class Player
         player.description = json.description;
         player.teams = json.teams ? json.teams.map((team) => Team.fromJson(team)) : [];
         player.leaguePlayers = json.leaguePlayers ? json.leaguePlayers.map((leaguePlayer) => LeaguePlayer.fromJson(leaguePlayer)) : [];
-        player.imageUrl = json.imageUrl ? (XPCONFIG.baseHref + json.imageUrl) : ImageService.playerDefault();
+        player.imageUrl = json.imageUrl ? (UrlHelper.trimSlash(XPCONFIG.baseHref) + json.imageUrl) : ImageService.playerDefault();
         return player;
     }
 }

@@ -24,7 +24,8 @@
     "rxjs": "5.0.1",
     "zone.js": "^0.7.7",
     "chart.js": "^2.5.0",
-    "chartjs-plugin-annotation": "^0.5.2"
+    "chartjs-plugin-annotation": "^0.5.2",
+    "angular2-indexeddb": "^1.0.8"
   },
   "devDependencies": {
     "@angular/compiler-cli": "^2.4.8",

@@ -1,23 +1,28 @@
 import {
-    Component,
-    OnInit,
-    Input,
-    Output,
-    OnChanges,
-    SimpleChanges,
-    SimpleChange,
-    EventEmitter,
-    ElementRef,
     AfterViewInit,
-    HostListener
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    SimpleChange,
+    SimpleChanges
 } from '@angular/core';
-import {ActivatedRoute, Router, Params} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../services/graphql.service';
 import {GameParameters} from '../GameParameters';
 import {League} from '../../../graphql/schemas/League';
 import {Point} from '../../../graphql/schemas/Point';
 import {Side, SideUtil} from '../../../graphql/schemas/Side';
+import {OfflinePersistenceService} from '../../services/offline-persistence.service';
+import {Game} from '../../../graphql/schemas/Game';
+import {GamePlayer} from '../../../graphql/schemas/GamePlayer';
+import {GameTeam} from '../../../graphql/schemas/GameTeam';
+import {Team} from '../../../graphql/schemas/Team';
 
 enum GameState {
     NotStarted, Playing, Paused, Finished
@@ -32,7 +37,8 @@ enum PlayerPosition {
     templateUrl: 'game-play.component.html',
     styleUrls: ['game-play.component.less']
 })
-export class GamePlayComponent implements OnInit, AfterViewInit {
+export class GamePlayComponent
+    implements OnInit, AfterViewInit {
 
     bluePlayer1: Player;
     bluePlayer2: Player;
@@ -40,6 +46,7 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
     redPlayer2: Player;
     league: League;
     points: Point[];
+    gameTeams: GameTeam[];
     gameId: string;
     onlineMode: boolean;
 
@@ -78,7 +85,8 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
     nameClassesGamePlayScoreRed: {} = {};
     nameClassesGamePlayCommentator: {} = {};
 
-    constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router, private elRef: ElementRef) {
+    constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router, private elRef: ElementRef,
+                private offlineService: OfflinePersistenceService) {
     }
 
     ngOnInit(): void {
@@ -92,7 +100,7 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
                 redPlayer1: gameParams.redPlayer1,
                 redPlayer2: gameParams.redPlayer2
             };
-            this.loadGameData(gameParams).then(() => this.startGame());
+            this.loadGameData(gameParams).then(() => this.startGame()); // TODO make offline
         });
     }
 
@@ -185,6 +193,7 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
             }).catch((ex) => {
                 console.log('Could not update game. Offline mode On.');
                 this.onlineMode = false;
+                this.saveGameOffline();
             });
         }
 
@@ -272,6 +281,7 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
                 }).catch((ex) => {
                     console.log('Could not create game. Offline mode On.');
                     this.onlineMode = false;
+                    this.saveGameOffline();
                 });
             }
         }
@@ -359,10 +369,12 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
             this.gameState = GameState.Finished;
             this.saveGame().then((gameId) => {
                 console.log('Game created: ' + gameId);
-                this.router.navigate(['games', gameId]);
             }).catch((ex) => {
                 console.warn('Could not save final game. TODO: Save data in local storage');
                 this.onlineMode = false;
+                this.saveGameOffline().then((game) => {
+                    this.router.navigate(['games', game.id]);
+                });
             });
         } else {
             this.saveGame().then((gameId) => {
@@ -370,6 +382,7 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
             }).catch((ex) => {
                 console.log('Could not update game. Offline mode On.');
                 this.onlineMode = false;
+                this.saveGameOffline();
             });
         }
     }
@@ -387,7 +400,7 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
                 data => {
                     this.gameId = gameParams.gameId;
                     this.league = League.fromJson(data.game.league);
-                    let playerMap: {[id: string]: Player} = {};
+                    let playerMap: { [id: string]: Player } = {};
 
                     data.game.gamePlayers.forEach((gp) => {
                         const p = Player.fromJson(gp.player);
@@ -425,7 +438,7 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
             {playerIds: playerIds, leagueId: gameParams.leagueId}).then(
             data => {
                 this.league = League.fromJson(data.league);
-                let playerMap: {[id: string]: Player} = {};
+                let playerMap: { [id: string]: Player } = {};
                 data.players.forEach((p) => playerMap[p.id] = Player.fromJson(p));
                 this.bluePlayer1 = playerMap[gameParams.bluePlayer1];
                 this.bluePlayer2 = playerMap[gameParams.bluePlayer2];
@@ -442,7 +455,44 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
         }
     }
 
-    private buildSaveGameParams(): {[key: string]: any} {
+    private saveGameOffline(): Promise<Game> {
+        let game = new Game(this.gameId);
+        game.points = this.points.slice(0);
+        game.league = this.league;
+        let gamePlayers: GamePlayer[] = [
+            this.gamePlayerForOffline(this.bluePlayer1, Side.BLUE),
+            this.gamePlayerForOffline(this.redPlayer1, Side.RED),
+        ];
+        if (this.bluePlayer2) {
+            gamePlayers.push(this.gamePlayerForOffline(this.bluePlayer2, Side.BLUE));
+        }
+        if (this.redPlayer2) {
+            gamePlayers.push(this.gamePlayerForOffline(this.redPlayer2, Side.RED));
+        }
+
+        game.gamePlayers = gamePlayers;
+
+        if (!this.gameTeams && this.redPlayer2) {
+            let blueGameTeam = new GameTeam(null);
+            blueGameTeam.side = Side.BLUE;
+            blueGameTeam.team = new Team(null, [this.bluePlayer1.name, this.bluePlayer2.name].join(' & '));
+            let redGameTeam = new GameTeam(null);
+            redGameTeam.side = Side.RED;
+            redGameTeam.team = new Team(null, [this.redPlayer1.name, this.redPlayer2.name].join(' & '));
+
+            game.gameTeams = [blueGameTeam, redGameTeam];
+        }
+        return this.offlineService.saveGame(game);
+    }
+
+    private gamePlayerForOffline(player: Player, side: Side): GamePlayer {
+        let gp = new GamePlayer(null);
+        gp.player = player;
+        gp.side = side;
+        return gp;
+    }
+
+    private buildSaveGameParams(): { [key: string]: any } {
         let players = [this.bluePlayer1, this.redPlayer1, this.bluePlayer2, this.redPlayer2].filter((p) => !!p).map((p) => {
             return {"playerId": p.id, "side": Side[this.getPlayerSide(p)].toLowerCase()};
         });
@@ -643,6 +693,14 @@ export class GamePlayComponent implements OnInit, AfterViewInit {
             nationality
             handedness
             description
+          }
+        }
+        gameTeams {
+          side
+          team {
+            id
+            name
+            imageUrl
           }
         }
         league {

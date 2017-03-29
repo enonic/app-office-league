@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import {AppComponent} from './app.component';
-import {Routes, RouterModule} from '@angular/router';
+import {RouterModule, Routes} from '@angular/router';
 import {PlayersModule} from './players/players.module';
 import {GraphQLService} from './services/graphql.service';
 import {GamesModule} from './games/games.module';
@@ -15,6 +15,7 @@ import {CryptoService} from './services/crypto.service';
 import {CommonModule} from './common/common.module';
 import {MaterializeModule} from 'angular2-materialize';
 import {PageTitleService} from './services/page-title.service';
+import {OfflinePersistenceService} from './services/offline-persistence.service';
 
 const appRoutes: Routes = [
     {path: '**', redirectTo: '', pathMatch: 'full'}
@@ -35,7 +36,8 @@ const appRoutes: Routes = [
         TeamsModule,
         LeaguesModule
     ],
-    providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard],
+    providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard,
+        OfflinePersistenceService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

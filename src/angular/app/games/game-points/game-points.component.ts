@@ -1,4 +1,4 @@
-import {Component, OnInit, OnChanges, Input, SimpleChange, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Game} from '../../../graphql/schemas/Game';
 import {TimelineEntry} from '../TimelineEntry';
@@ -13,7 +13,8 @@ import {GamePlayer} from '../../../graphql/schemas/GamePlayer';
     templateUrl: 'game-points.component.html',
     styleUrls: ['game-points.component.less']
 })
-export class GamePointsComponent implements OnInit, OnChanges {
+export class GamePointsComponent
+    implements OnInit, OnChanges {
 
     @Input() game: Game;
 
@@ -36,8 +37,8 @@ export class GamePointsComponent implements OnInit, OnChanges {
     }
 
     private processTimeline(game: Game) {
-        const teamMap: {[playerName: string]: GameTeam} = {};
-        const playerMap: {[playerName: string]: GamePlayer} = {};
+        const teamMap: { [playerName: string]: GameTeam } = {};
+        const playerMap: { [playerName: string]: GamePlayer } = {};
 
         game.gameTeams.forEach((gt: GameTeam) => {
             gt.team.players.forEach((player: Player) => {
@@ -79,8 +80,8 @@ export class GamePointsComponent implements OnInit, OnChanges {
         });
 
         // process comments
-        const baseTimeOffset = game.time.getTime() / 1000;
-        const commentAuthorSides: {[playerName: string]: Side} = {};
+        const baseTimeOffset = game.time ? game.time.getTime() / 1000 : 0;
+        const commentAuthorSides: { [playerName: string]: Side } = {};
         let nextCommenterSide = Side.BLUE;
         for (let c = game.comments.length - 1; c >= 0; c--) {
             const comment = game.comments[c];

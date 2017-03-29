@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {XPCONFIG} from '../app.config';
+import {UrlHelper} from '../../graphql/schemas/UrlHelper';
 
 @Injectable()
 export class ImageService {
@@ -8,18 +9,18 @@ export class ImageService {
     }
 
     public static playerDefault(): string {
-        return `${XPCONFIG.baseHref}/players/image/__/__`;
+        return `${UrlHelper.trimSlash(XPCONFIG.baseHref)}/players/image/__/__`;
     }
 
     public static teamDefault(): string {
-        return `${XPCONFIG.baseHref}/teams/image/__/__`;
+        return `${UrlHelper.trimSlash(XPCONFIG.baseHref)}/teams/image/__/__`;
     }
 
     public static leagueDefault(): string {
-        return `${XPCONFIG.baseHref}/leagues/image/__/__`;
+        return `${UrlHelper.trimSlash(XPCONFIG.baseHref)}/leagues/image/__/__`;
     }
 
     public static logoUrl(): string {
-        return `${XPCONFIG.assetsUrl}/img/logo.svg`;
+        return `${UrlHelper.trimSlash(XPCONFIG.baseHref)}/img/logo.svg`;
     }
 }

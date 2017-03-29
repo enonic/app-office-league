@@ -9,4 +9,8 @@ export class SideUtil {
         }
         return null;
     }
+
+    static toString(side: Side): string {
+        return side != null ? Side[side] : '';
+    }
 }

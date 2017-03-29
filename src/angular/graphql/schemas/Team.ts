@@ -3,6 +3,7 @@ import {ImageService} from '../../app/services/image.service';
 import {Player} from './Player';
 import {LeagueTeam} from './LeagueTeam';
 import {XPCONFIG} from '../../app/app.config';
+import {UrlHelper} from './UrlHelper';
 
 export class Team
     extends NamedEntity {
@@ -21,7 +22,7 @@ export class Team
         team.description = json.description;
         team.players = json.players && json.players.map((player) => Player.fromJson(player));
         team.leagueTeams = json.leagueTeams && json.leagueTeams.map((leagueTeam) => LeagueTeam.fromJson(leagueTeam));
-        team.imageUrl = json.imageUrl ? (XPCONFIG.baseHref + json.imageUrl) : ImageService.teamDefault();
+        team.imageUrl = json.imageUrl ? (UrlHelper.trimSlash(XPCONFIG.baseHref) + json.imageUrl) : ImageService.teamDefault();
         return team;
     }
 

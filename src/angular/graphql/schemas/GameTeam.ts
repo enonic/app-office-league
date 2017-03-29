@@ -3,13 +3,14 @@ import {DateUtil} from './DateUtil';
 import {Team} from './Team';
 import {Side, SideUtil} from './Side';
 
-export class GameTeam extends Entity {
+export class GameTeam
+    extends Entity {
     time: Date;
-    score: number;
-    scoreAgainst: number;
+    score: number = 0;
+    scoreAgainst: number = 0;
     side: Side;
     winner: boolean;
-    ratingDelta: number;
+    ratingDelta: number = 0;
     team: Team;
 
     constructor(id: string) {

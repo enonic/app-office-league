@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, OnChanges, SimpleChanges, SimpleChange} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute} from '@angular/router';
 import {Game} from '../../../graphql/schemas/Game';
@@ -7,13 +7,15 @@ import {Player} from '../../../graphql/schemas/Player';
 import {Team} from '../../../graphql/schemas/Team';
 import {GameTeam} from '../../../graphql/schemas/GameTeam';
 import {Side} from '../../../graphql/schemas/Side';
+import {OfflinePersistenceService} from '../../services/offline-persistence.service';
 
 @Component({
     selector: 'game',
     templateUrl: 'game.component.html',
     styleUrls: ['game.component.less']
 })
-export class GameComponent implements OnInit, OnChanges {
+export class GameComponent
+    implements OnInit, OnChanges {
 
     @Input() game: Game;
 
@@ -24,7 +26,8 @@ export class GameComponent implements OnInit, OnChanges {
     private redPlayers: Player[] = [];
     private bluePlayers: Player[] = [];
 
-    constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute) {
+    constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute,
+                protected offlineService: OfflinePersistenceService) {
     }
 
     ngOnInit(): void {
@@ -49,7 +52,15 @@ export class GameComponent implements OnInit, OnChanges {
                 this.game = Game.fromJson(data.game);
                 this.processGame(this.game);
                 this.afterGameLoaded(this.game);
-            });
+            }).catch(error => {
+            this.offlineService.loadGame(gameId).then(game => {
+                this.game = game;
+                this.processGame(this.game);
+                this.afterGameLoaded(this.game);
+            }).catch (error => {
+                console.log('Error, redirect...'); // TODO
+            })
+        });
     }
 
     protected getGameQuery(): string {

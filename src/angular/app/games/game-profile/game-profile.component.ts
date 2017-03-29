@@ -7,6 +7,7 @@ import {Game} from '../../../graphql/schemas/Game';
 import {Comment} from '../../../graphql/schemas/Comment';
 import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
 import {AuthService} from '../../services/auth.service';
+import {OfflinePersistenceService} from '../../services/offline-persistence.service';
 
 @Component({
     selector: 'game-profile',
@@ -29,8 +30,8 @@ export class GameProfileComponent
     private keepAliveIntervalId: any;
 
     constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, private authService: AuthService,
-                private _renderer: Renderer) {
-        super(graphQLService, route);
+                private _renderer: Renderer, protected offlineService: OfflinePersistenceService) {
+        super(graphQLService, route, offlineService);
     }
 
     ngOnInit(): void {
