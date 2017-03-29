@@ -369,6 +369,7 @@ export class GamePlayComponent
             this.gameState = GameState.Finished;
             this.saveGame().then((gameId) => {
                 console.log('Game created: ' + gameId);
+                this.router.navigate(['games', gameId]);
             }).catch((ex) => {
                 console.warn('Could not save final game. TODO: Save data in local storage');
                 this.onlineMode = false;
