@@ -48,6 +48,7 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
         this.handedness = Handedness[Handedness.RIGHT].toLowerCase();
         this.countries = Countries.getCountries();
         this.imageUrl = ImageService.playerDefault();
+        this.pageTitleService.setTitle('Create Player');
     }
 
     ngAfterViewInit(): void {

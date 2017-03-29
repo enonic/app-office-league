@@ -3,8 +3,8 @@
 </template>
 <template [ngIf]="id != ''">
     <div class="card">
-        <div class="card-content blue-grey-text">
-            <span class="card-title">Player Profile</span>
+        <div class="card-content blue-grey-text"><!--
+            <span class="card-title">Player Profile</span>-->
             <form>
                 <div class="row">
                     <div class="input-field col s12">
@@ -13,15 +13,25 @@
                                (ngModelChange)="updatePageTitle($event)" required=""
                                aria-required="true" [ngClass]="nameClasses">
                         <label class="active" for="name">Player Name</label>
+
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
                         <i class="material-icons prefix">pets</i>
-                        <input id="nickname" type="text" name="nickname" autocomplete="off" [(ngModel)]="nickname"
+                        <input id="nickname" type="text" name="nickname" class="validate" autocomplete="off" [(ngModel)]="nickname"
                                required=""
                                aria-required="true">
                         <label class="active" for="name">Nickname</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input type="file" accept="image/*" #fileInput style="display:none;">
+                        <div class="player-icon-frame">
+                            <img src="{{imageUrl}}?size=128" alt="Player Image" class="player-icon circle preview"
+                                 (click)="fileInput.click()">
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -44,7 +54,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="row">
+               <!-- <div class="row">
                     <div class="col s6">
                         <i class="material-icons prefix">thumbs_up_down</i>
                         <label class="handedness">Handedness</label>
@@ -64,26 +74,18 @@
                             <label for="handBoth">Ambidextrous</label>
                         </p>
                     </div>
-                    <div class="col s6">
-                        <div class="right">
-                            <input type="file" accept="image/*" #fileInput style="display:none;">
-                            <div class="player-icon-frame">
-                                <img src="{{imageUrl}}?size=128" alt="Player Image" class="player-icon circle preview"
-                                     (click)="fileInput.click()">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+                </div>-->
             </form>
         </div>
     </div>
 
     <div class="row">
-        <div class="col s6">
+      <!--  <div class="col s6">
             <button class="btn waves-effect waves-light grey darken-1 left" type="submit" name="create" (click)="onCancelClicked()">
                 Cancel
             </button>
-        </div>
+        </div>-->
         <div class="col s6">
             <button class="btn waves-effect waves-light light-blue darken-3 right" type="submit" name="create" (click)="onSaveClicked()">
                 Save

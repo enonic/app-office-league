@@ -14,19 +14,23 @@
     </div>
     <div class="row">
 
-        <div *ngIf="editable" class="col s6 center-align" (click)="onEditClicked()">
-            <a class="waves-effect waves-light btn light-blue darken-3"><i class="material-icons left">mode_edit</i>Edit</a>
-        </div>
+        <!--
         <div *ngIf="editable" class="col s6 center-align" (click)="onCreateTeamClicked()">
             <a class="waves-effect waves-light btn green"><i class="material-icons left">person_add</i>Create Team</a>
-        </div>
+        </div>-->
     </div>
     <div class="row player-profile__details">
-        <div class="col s8">
+        <div class="col s4 m2">
+            <img src="{{player.imageUrl}}?size=512" alt="{{player.name}}" class="circle">
+        </div>
+        <div class="col s8 m8">
             <form>
                 <div>
-                    <label>Nickname</label>
-                    <span>{{player.nickname}}</span>
+
+                    <div class="player-profile__nickname">
+                        <label>Nickname</label>
+                        <span>{{player.nickname}}</span>
+                    </div>
 
                     <div>
                         <label>About</label>
@@ -41,11 +45,12 @@
                         <label>Handedness</label>
                         <span>{{getHandedness()}}</span>
                     </div>
+
                 </div>
             </form>
         </div>
-        <div class="col s4">
-            <img src="{{player.imageUrl}}?size=512" alt="{{player.name}}" class="circle">
+        <div *ngIf="editable" class="col s12 m2 right-align" (click)="onEditClicked()">
+            <a class="waves-effect waves-light btn light-blue darken-3"><i class="material-icons left">mode_edit</i>Edit</a>
         </div>
     </div>
 

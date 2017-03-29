@@ -40,6 +40,7 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
         super.ngOnInit();
 
         let name = this.route.snapshot.params['name'];
+        this.pageTitleService.setTitle('Edit Player');
         this.loadPlayer(name);
     }
 
