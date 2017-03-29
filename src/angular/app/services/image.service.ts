@@ -9,15 +9,15 @@ export class ImageService {
     }
 
     public static playerDefault(): string {
-        return `${UrlHelper.trimSlash(XPCONFIG.baseHref)}/players/image/__/__`;
+        return `${UrlHelper.trimSlash(XPCONFIG.baseHref)}/players/image/-/default`;
     }
 
     public static teamDefault(): string {
-        return `${UrlHelper.trimSlash(XPCONFIG.baseHref)}/teams/image/__/__`;
+        return `${UrlHelper.trimSlash(XPCONFIG.baseHref)}/teams/image/-/default`;
     }
 
     public static leagueDefault(): string {
-        return `${UrlHelper.trimSlash(XPCONFIG.baseHref)}/leagues/image/__/__`;
+        return `${UrlHelper.trimSlash(XPCONFIG.baseHref)}/leagues/image/-/default`;
     }
 
     public static logoUrl(): string {

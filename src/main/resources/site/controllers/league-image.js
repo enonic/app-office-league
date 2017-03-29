@@ -11,7 +11,7 @@ exports.get = function (req) {
     var leagueName = decodeURIComponent(pathParts[pathParts.length - 1]);
 
     var league = storeLib.getLeagueByName(leagueName);
-    if (!league) {
+    if (!league || req.path.endsWith('/-/default')) {
         return defaultImageHandler();
     }
 
