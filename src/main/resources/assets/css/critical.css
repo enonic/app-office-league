@@ -8,6 +8,12 @@ html {
     font-size: 62.5%;
 }
 
+body {
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+}
+
 h1 {
     font-size: 4rem;
 }
@@ -43,6 +49,13 @@ a:hover {
 .marketing__footer {
     text-align: center;
     margin-top: 100px;
+    background-color: #142663;
+    color: #fff;
+    padding: 50px 0;
+}
+
+.marketing__footer a {
+    color: #fff;
 }
 
 .container {
