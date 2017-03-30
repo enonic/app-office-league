@@ -8,6 +8,7 @@ import {Comment} from '../../../graphql/schemas/Comment';
 import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
 import {AuthService} from '../../services/auth.service';
 import {OfflinePersistenceService} from '../../services/offline-persistence.service';
+import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
     selector: 'game-profile',
@@ -30,7 +31,7 @@ export class GameProfileComponent
     private keepAliveIntervalId: any;
 
     constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, private authService: AuthService,
-                private _renderer: Renderer, protected offlineService: OfflinePersistenceService) {
+                private _renderer: Renderer, private pageTitleService: PageTitleService, protected offlineService: OfflinePersistenceService) {
         super(graphQLService, route, offlineService);
     }
 
@@ -40,6 +41,7 @@ export class GameProfileComponent
         this.gameId = this.route.snapshot.params['id'];
         const user = this.authService.getUser();
         this.playerId = user && user.playerId;
+
     }
 
     protected afterGameLoaded(game: Game) {
@@ -47,8 +49,12 @@ export class GameProfileComponent
             if (this.wsConnected) {
                 this.wsDisconnect();
             }
+
+            this.pageTitleService.setTitle('Game profile');
         } else {
             this.wsConnect(this.gameId);
+
+            this.pageTitleService.setTitle('Live game');
         }
     }
 
