@@ -18,15 +18,12 @@ var pluralize = function (str) {
         return str + 's';
     }
     if (str.endsWith('y')) {
-        return str + 'ies';
+        return str.substring(0, str.length - 1) + 'ies';
     }
     if (str.endsWith('us')) {
         return str + 'es';
     }
     if (str.endsWith('x')) {
-        return str + 'es';
-    }
-    if (str.endsWith('us')) {
         return str + 'es';
     }
     if (str.endsWith('to')) {
