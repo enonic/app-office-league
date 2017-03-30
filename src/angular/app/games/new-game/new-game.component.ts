@@ -1,20 +1,21 @@
-import {Component, OnInit, ViewChildren, QueryList} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
 import {XPCONFIG} from '../../app.config';
 import {League} from '../../../graphql/schemas/League';
-import {GameParameters} from '../GameParameters';
 import {GamePlayComponent} from '../game-play/game-play.component';
 import {PageTitleService} from '../../services/page-title.service';
 import {NewGamePlayerComponent} from '../new-game-player/new-game-player.component';
+import {GameSelection} from '../GameSelection';
 
 @Component({
     selector: 'new-game',
     templateUrl: 'new-game.component.html',
     styleUrls: ['new-game.component.less']
 })
-export class NewGameComponent implements OnInit {
+export class NewGameComponent
+    implements OnInit {
 
     leagueId: string;
 
@@ -34,7 +35,7 @@ export class NewGameComponent implements OnInit {
     shuffleDisabled: boolean;
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute,
-                private pageTitleService: PageTitleService, private router: Router) {
+                private pageTitleService: PageTitleService, private router: Router, private gameSelection: GameSelection) {
     }
 
     ngOnInit(): void {
@@ -52,32 +53,32 @@ export class NewGameComponent implements OnInit {
                 this.title = this.league.name;
                 this.leaguePlayerIds = this.league.leaguePlayers.map((leaguePlayer) => leaguePlayer.player.id);
 
-                this.pageTitleService.setTitle(this.league.name);                
+                this.pageTitleService.setTitle(this.league.name);
                 this.updatePlayerSelectionState();
-                
+
             });
         }
     }
 
     onPlayClicked() {
-        let gameParams: GameParameters = {
-            bluePlayer1: this.bluePlayer1 && this.bluePlayer1.id,
-            bluePlayer2: this.bluePlayer2 && this.bluePlayer2.id,
-            redPlayer1: this.redPlayer1 && this.redPlayer1.id,
-            redPlayer2: this.redPlayer2 && this.redPlayer2.id
-        };
+        this.gameSelection.bluePlayer1 = this.bluePlayer1;
+        this.gameSelection.bluePlayer2 = this.bluePlayer2;
+        this.gameSelection.redPlayer1 = this.redPlayer1;
+        this.gameSelection.redPlayer2 = this.redPlayer2;
+        this.gameSelection.league = this.league;
 
         this.createGame().then((gameId) => {
             console.log('Initial game created: ' + gameId);
-            gameParams.gameId = gameId;
-            this.router.navigate(['games', this.leagueId, 'game-play'], {queryParams: gameParams});
+            this.gameSelection.gameId = gameId;
+            this.router.navigate(['games', this.leagueId, 'game-play']);
         }).catch((ex) => {
             console.log('Could not create game');
-            this.router.navigate(['games', this.leagueId, 'game-play'], {queryParams: gameParams});
+            this.gameSelection.gameId = null;
+            this.router.navigate(['games', this.leagueId, 'game-play']);
         });
     }
 
-    private shuffleActions: {[id: string]: {from: NewGamePlayerComponent, to: NewGamePlayerComponent, player: Player, side: string, done: boolean}};
+    private shuffleActions: { [id: string]: { from: NewGamePlayerComponent, to: NewGamePlayerComponent, player: Player, side: string, done: boolean } };
 
     onShuffleClicked() {
         let playerCmps: NewGamePlayerComponent[] = this.playerCmps.toArray();
@@ -181,7 +182,7 @@ export class NewGameComponent implements OnInit {
         this.shuffleDisabled = !doublesGameReady;
 
         this.selectedPlayerIds = [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2].filter((p) => !!p).map(
-        (player) => player.id);
+            (player) => player.id);
     }
 
     static readonly getPlayerLeagueQuery = `query ($playerId: ID!, $leagueId: ID!) {

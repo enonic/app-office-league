@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Renderer, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {GameComponent} from '../game/game.component';
 import {XPCONFIG} from '../../app.config';
 import {Game} from '../../../graphql/schemas/Game';
@@ -30,9 +30,10 @@ export class GameProfileComponent
     private wsConnected: boolean;
     private keepAliveIntervalId: any;
 
-    constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, private authService: AuthService,
-                private _renderer: Renderer, private pageTitleService: PageTitleService, protected offlineService: OfflinePersistenceService) {
-        super(graphQLService, route, offlineService);
+    constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, protected router: Router,
+                private authService: AuthService, private _renderer: Renderer, private pageTitleService: PageTitleService,
+                protected offlineService: OfflinePersistenceService) {
+        super(graphQLService, route, router, offlineService);
     }
 
     ngOnInit(): void {

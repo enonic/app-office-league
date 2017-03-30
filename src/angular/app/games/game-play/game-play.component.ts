@@ -14,7 +14,6 @@ import {
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../services/graphql.service';
-import {GameParameters} from '../GameParameters';
 import {League} from '../../../graphql/schemas/League';
 import {Point} from '../../../graphql/schemas/Point';
 import {Side, SideUtil} from '../../../graphql/schemas/Side';
@@ -23,6 +22,7 @@ import {Game} from '../../../graphql/schemas/Game';
 import {GamePlayer} from '../../../graphql/schemas/GamePlayer';
 import {GameTeam} from '../../../graphql/schemas/GameTeam';
 import {Team} from '../../../graphql/schemas/Team';
+import {GameSelection} from '../GameSelection';
 
 enum GameState {
     NotStarted, Playing, Paused, Finished
@@ -86,22 +86,15 @@ export class GamePlayComponent
     nameClassesGamePlayCommentator: {} = {};
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router, private elRef: ElementRef,
-                private offlineService: OfflinePersistenceService) {
+                private offlineService: OfflinePersistenceService, private gameSelection: GameSelection) {
     }
 
     ngOnInit(): void {
-        this.route.queryParams.subscribe(params => {
-            let gameParams: GameParameters = <GameParameters> params;
-            gameParams = {
-                leagueId: this.route.snapshot.params['leagueId'],
-                gameId: gameParams.gameId,
-                bluePlayer1: gameParams.bluePlayer1,
-                bluePlayer2: gameParams.bluePlayer2,
-                redPlayer1: gameParams.redPlayer1,
-                redPlayer2: gameParams.redPlayer2
-            };
-            this.loadGameData(gameParams).then(() => this.startGame()); // TODO make offline
-        });
+        this.loadGameData()
+            .then(() => this.startGame())
+            .catch((error) => {
+                console.log('Could not start game');
+            });
     }
 
     ngAfterViewInit() {
@@ -189,6 +182,7 @@ export class GamePlayComponent
             }
 
             this.saveGame().then((gameId) => {
+
                 // TODO show point feedback
             }).catch((ex) => {
                 console.log('Could not update game. Offline mode On.');
@@ -223,7 +217,7 @@ export class GamePlayComponent
 
     onEndGameClicked() {
         this.deleteGame().then(ids => {
-            return this.router.navigate(['leagues', this.league.name]);
+            return this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
         })
     }
 
@@ -269,7 +263,7 @@ export class GamePlayComponent
 
         if (this.hasGameEnded()) {
             this.gameState = GameState.Finished;
-            this.router.navigate(['games', this.gameId]);
+            this.router.navigate(['games', this.gameId], {replaceUrl: true});
         } else {
             this.startGameTimer();
 
@@ -373,12 +367,14 @@ export class GamePlayComponent
             this.gameState = GameState.Finished;
             this.saveGame().then((gameId) => {
                 console.log('Game created: ' + gameId);
-                this.router.navigate(['games', gameId]);
+                this.router.navigate(['games', gameId], {replaceUrl: true});
             }).catch((ex) => {
                 console.warn('Could not save final game. TODO: Save data in local storage');
                 this.onlineMode = false;
                 this.saveGameOffline().then((game) => {
-                    this.router.navigate(['games', game.id]);
+                    this.router.navigate(['games', game.id], {replaceUrl: true});
+                }).catch((ex) => {
+                    console.log(ex); // TODO retry?
                 });
             });
         } else {
@@ -397,13 +393,13 @@ export class GamePlayComponent
                ((this.blueScore >= 10 || this.redScore >= 10) && Math.abs(this.blueScore - this.redScore) >= 2);
     }
 
-    private loadGameData(gameParams: GameParameters) {
-        if (gameParams.gameId) {
+    private loadGameData(): Promise<any> {
+        if (this.gameSelection.gameId) {
             // load existing game data
             return this.graphQLService.post(GamePlayComponent.getGamePlayersLeagueQuery,
-                {gameId: gameParams.gameId}).then(
+                {gameId: this.gameSelection.gameId}).then(
                 data => {
-                    this.gameId = gameParams.gameId;
+                    this.gameId = this.gameSelection.gameId;
                     this.league = League.fromJson(data.game.league);
                     let playerMap: { [id: string]: Player } = {};
 
@@ -438,29 +434,54 @@ export class GamePlayComponent
         }
 
         // load league and players for new game
-        let playerIds = [gameParams.bluePlayer1, gameParams.redPlayer1, gameParams.bluePlayer2, gameParams.redPlayer2].filter((p) => !!p);
+        let playerIds = [this.gameSelection.bluePlayer1, this.gameSelection.redPlayer1, this.gameSelection.bluePlayer2,
+            this.gameSelection.redPlayer2].filter((p) => p && p.id);
         return this.graphQLService.post(GamePlayComponent.getPlayersLeagueQuery,
-            {playerIds: playerIds, leagueId: gameParams.leagueId}).then(
-            data => {
+            {playerIds: playerIds, leagueId: this.gameSelection.league.id})
+            .then(data => {
                 this.league = League.fromJson(data.league);
                 let playerMap: { [id: string]: Player } = {};
                 data.players.forEach((p) => playerMap[p.id] = Player.fromJson(p));
-                this.bluePlayer1 = playerMap[gameParams.bluePlayer1];
-                this.bluePlayer2 = playerMap[gameParams.bluePlayer2];
-                this.redPlayer1 = playerMap[gameParams.redPlayer1];
-                this.redPlayer2 = playerMap[gameParams.redPlayer2];
+                this.bluePlayer1 = playerMap[this.gameSelection.bluePlayer1 && this.gameSelection.bluePlayer1.id];
+                this.bluePlayer2 = playerMap[this.gameSelection.bluePlayer2 && this.gameSelection.bluePlayer2.id];
+                this.redPlayer1 = playerMap[this.gameSelection.redPlayer1 && this.gameSelection.redPlayer1.id];
+                this.redPlayer2 = playerMap[this.gameSelection.redPlayer2 && this.gameSelection.redPlayer2.id];
+
+            }).catch((error) => {
+                console.log('Could not create game before starting. Offline mode On.');
+                this.onlineMode = false;
+                this.bluePlayer1 = this.gameSelection.bluePlayer1;
+                this.bluePlayer2 = this.gameSelection.bluePlayer2;
+                this.redPlayer1 = this.gameSelection.redPlayer1;
+                this.redPlayer2 = this.gameSelection.redPlayer2;
+                this.league = this.gameSelection.league;
             });
     }
 
     private saveGame(): Promise<string> {
-        if (this.gameId) {
-            return this.updateGame();
+        if (this.gameId && !Game.isClientId(this.gameId)) {
+            return this.updateGame()
+                .then((gameId) => {
+                    if (this.gameId) {
+                        this.gameId = gameId;
+                    }
+                    return gameId;
+                });
         } else {
-            return this.createGame();
+            return this.createGame()
+                .then((gameId) => {
+                    if (this.gameId) {
+                        this.gameId = gameId;
+                    }
+                    return gameId;
+                });
         }
     }
 
     private saveGameOffline(): Promise<Game> {
+        if (!this.gameId) {
+            this.gameId = Game.generateClientId();
+        }
         let game = new Game(this.gameId);
         game.points = this.points.slice(0);
         game.league = this.league;
