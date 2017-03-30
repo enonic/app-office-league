@@ -6,7 +6,8 @@ import {Comment} from './Comment';
 import {GamePlayer} from './GamePlayer';
 import {GameTeam} from './GameTeam';
 
-export class Game extends Entity {
+export class Game
+    extends Entity {
     time: Date;
     finished: boolean;
     points: Point[] = [];
@@ -31,5 +32,13 @@ export class Game extends Entity {
         game.gameTeams = json.gameTeams && json.gameTeams.map(gameTeam => GameTeam.fromJson(gameTeam));
         game.league = json.league && League.fromJson(json.league);
         return game;
+    }
+
+    static generateClientId(): string {
+        return 'game-id-' + Date.now() + '-' + (Math.floor(Math.random() * 100000));
+    }
+
+    static isClientId(id: string): boolean {
+        return id.indexOf('game-id-') === 0;
     }
 }

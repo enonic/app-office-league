@@ -54,6 +54,11 @@ export class OfflinePersistenceService {
 
     constructor(private graphQLService: GraphQLService) {
         this.bindEvents();
+        setTimeout(() => {
+            if (this.isOnline()) {
+                this.pushOfflineGames();
+            }
+        }, 5000);
     }
 
     isOnline(): boolean {
@@ -61,6 +66,9 @@ export class OfflinePersistenceService {
     }
 
     saveGame(game: Game): Promise<Game> {
+        if (!game.id) {
+            throw "Missing id for game: " + JSON.stringify(game);
+        }
         return new Promise((resolve, reject) => {
             let gameJson = this.gameToJson(game);
             let db = this.getDb();
@@ -103,14 +111,23 @@ export class OfflinePersistenceService {
                 this.fetchServerGame(offlineGameJson.gameId).then((game) => {
                     if (!game || game.points.length < offlineGameJson.points.length) {
                         console.log('Pushing offline game state: ', offlineGameJson);
-                        this.updateGame(offlineGameJson).then((gameId) => {
+                        this.storeGame(offlineGameJson).then((gameId) => {
                             // delete pushed game from local storage
-                            this.deleteOfflineGame(gameId);
+                            this.deleteOfflineGame(offlineGameJson.gameId);
                         })
                     }
                 })
             })
         });
+    }
+
+    private storeGame(offlineGameJson: OfflineGameJson): Promise<string> {
+        debugger;
+        if (!offlineGameJson.gameId || Game.isClientId(offlineGameJson.gameId)) {
+            return this.createGame(offlineGameJson);
+        } else {
+            return this.updateGame(offlineGameJson);
+        }
     }
 
     private updateGame(offlineGameJson: OfflineGameJson): Promise<string> {
@@ -125,6 +142,21 @@ export class OfflinePersistenceService {
             .then(data => {
                 console.log('Game updated', data);
                 return data.updateGame && data.updateGame.id;
+            });
+    }
+
+    private createGame(offlineGameJson: OfflineGameJson): Promise<string> {
+        let players = offlineGameJson.players.map((p) => {
+            return {"playerId": p.playerId, "side": p.side.toLowerCase()};
+        });
+        let points = offlineGameJson.points.map((p) => {
+            return {time: p.time, playerId: p.playerId, against: p.against}
+        });
+        let updateGameParams = {points: points, players: players, leagueId: offlineGameJson.league.leagueId};
+        return this.graphQLService.post(OfflinePersistenceService.createGameMutation, updateGameParams)
+            .then(data => {
+                console.log('Game created', data);
+                return data.createGame && data.createGame.id;
             });
     }
 
@@ -185,7 +217,6 @@ export class OfflinePersistenceService {
         return db.createStore(OfflinePersistenceService.dbVersion, (evt) => {
             let objectStore = evt.currentTarget.result.createObjectStore(OfflinePersistenceService.dbStoreName);
             objectStore.createIndex('gameId', 'gameId', {unique: true});
-
         });
     };
 
@@ -287,6 +318,12 @@ export class OfflinePersistenceService {
 
     private static readonly updateGameMutation = `mutation ($gameId: ID!, $points: [PointCreation], $players: [GamePlayerCreation]!) {
         updateGame(gameId: $gameId, points: $points, gamePlayers: $players) {
+            id
+        }
+    }`;
+
+    static readonly createGameMutation = `mutation ($leagueId: ID!, $points: [PointCreation], $players: [GamePlayerCreation]!) {
+        createGame(leagueId: $leagueId, points: $points, gamePlayers: $players) {
             id
         }
     }`;

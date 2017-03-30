@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Game} from '../../../graphql/schemas/Game';
 import {GamePlayer} from '../../../graphql/schemas/GamePlayer';
 import {Player} from '../../../graphql/schemas/Player';
@@ -26,7 +26,7 @@ export class GameComponent
     private redPlayers: Player[] = [];
     private bluePlayers: Player[] = [];
 
-    constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute,
+    constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, protected router: Router,
                 protected offlineService: OfflinePersistenceService) {
     }
 
@@ -57,8 +57,9 @@ export class GameComponent
                 this.game = game;
                 this.processGame(this.game);
                 this.afterGameLoaded(this.game);
-            }).catch (error => {
-                console.log('Error, redirect...'); // TODO
+            }).catch(error => {
+                console.log('Could not load game: ' + gameId);
+                this.router.navigate([''], {replaceUrl: true});
             })
         });
     }

@@ -10,32 +10,33 @@ import {MaterializeModule} from 'angular2-materialize/dist/index';
 import {FormsModule} from '@angular/forms';
 import {GamePlayComponent} from './game-play/game-play.component';
 import {GamePointsComponent} from './game-points/game-points.component';
-import {PlayerRouteGuard, } from '../guards/player.route.guard';
+import {PlayerRouteGuard} from '../guards/player.route.guard';
 import {ChartsModule} from 'ng2-charts';
 import {GameFlowComponent} from './game-flow/game-flow.component';
+import {GameSelection} from './GameSelection';
 
 
 const gameRoutes: Routes = [
     {
         path: 'games',
         component: GameListComponent,
-        canActivate: [PlayerRouteGuard, ]
+        canActivate: [PlayerRouteGuard]
     },
     {
         path: 'games/:id',
         component: GameProfileComponent,
-        canActivate: [PlayerRouteGuard, ]
+        canActivate: [PlayerRouteGuard]
     },
     {
         path: 'games/:leagueId/new-game',
         component: NewGameComponent,
-        canActivate: [PlayerRouteGuard, ]
+        canActivate: [PlayerRouteGuard]
     },
     {
         path: 'games/:leagueId/game-play',
         component: GamePlayComponent,
-        canActivate: [PlayerRouteGuard, ]
-    },
+        canActivate: [PlayerRouteGuard]
+    }
 ];
 
 @NgModule({
@@ -57,7 +58,7 @@ const gameRoutes: Routes = [
         ChartsModule
     ],
     exports: [GameListComponent],
-    providers: [],
+    providers: [GameSelection],
     bootstrap: []
 })
 export class GamesModule {
