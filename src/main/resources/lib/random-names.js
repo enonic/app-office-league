@@ -11,6 +11,9 @@ var capitalize = function (str) {
 };
 
 var pluralize = function (str) {
+    if (str.endsWith('f')) {
+        return str.slice(0, -1) + "ves";
+    }
     if (str.endsWith('sh')) {
         return str + 'es';
     }
@@ -18,15 +21,12 @@ var pluralize = function (str) {
         return str + 's';
     }
     if (str.endsWith('y')) {
-        return str + 'ies';
+        return str.slice(0, -1) + 'ies';
     }
     if (str.endsWith('us')) {
         return str + 'es';
     }
     if (str.endsWith('x')) {
-        return str + 'es';
-    }
-    if (str.endsWith('us')) {
         return str + 'es';
     }
     if (str.endsWith('to')) {
