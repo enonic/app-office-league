@@ -76,7 +76,9 @@ export class GamePointsComponent
                 }
             }
             const score = `${blueScore}-${redScore}`;
-            this.timeline.push(new TimelineEntry(name, gameTeam && gameTeam.team.name, point.time, comment, score, gamePlayer.side));
+            const timelineEntry = new TimelineEntry(name, gameTeam && gameTeam.team.name, point.time, comment, score, gamePlayer.side);
+            timelineEntry.imageUrl = point.player.imageUrl;
+            this.timeline.push(timelineEntry);
         });
 
         // process comments
@@ -108,6 +110,7 @@ export class GamePointsComponent
             const timelineEntry = new TimelineEntry(comment.author.name, comment.text, timeOffset, '', '', side);
             timelineEntry.isComment = true;
             timelineEntry.time = '';
+            timelineEntry.imageUrl = comment.author.imageUrl;
             this.timeline.push(timelineEntry);
         }
 

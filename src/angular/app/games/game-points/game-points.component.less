@@ -76,16 +76,31 @@
     border: 7px solid transparent;
     border-right: 7px solid @white-color;
   }
-  .name {
-    font-size: 1.25em;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+
+  .timeline__avatar {
+    width: 42px;
+    height: 42px;
   }
-  .team, .comment, .score {
-    margin-bottom: 0.75rem;
+
+  .description-details {
+    margin-left: 5px;
+
+    .name {
+      font-size: 1.25em;
+    }
+    .team, .comment, .score {
+      margin-bottom: 0.75rem;
+    }
+    .team {
+      color: @unimportant-color;
+      font-size: 1.0em;
+    }
   }
-  .team {
-    color: @unimportant-color;
-    font-size: 1.0em;
-  }
+  
   .score {
     position: absolute;
     top: 1rem;
@@ -99,12 +114,16 @@
   }
 }
 
-.team-red .name {
-  color: @red-team-color;
+.team-red {
+  .name {
+    color: @red-team-color;
+  }
 }
 
-.team-blue .name {
-  color: @blue-team-color;
+.team-blue {
+  .name {
+    color: @blue-team-color;
+  }
 }
 
 .team-blue.comment .name {
@@ -140,6 +159,12 @@
       margin-right: -2.2rem;
     }
     .description {
+      flex-direction: row-reverse;
+      .description-details {
+        margin-right: 5px;
+        margin-left: 0;
+      }
+
       margin: 0 3.2rem 0 auto;
       box-shadow: @box-shadow-card, 8px 0px 15px -5px rgba(0, 0, 0, 0.2);
       &::before {
@@ -152,6 +177,7 @@
       text-align: right;
     }
     .score {
+      position: absolute;
       right: -6.6rem;
     }
   }
@@ -168,6 +194,7 @@
       }
     }
     .score {
+      position: absolute;
       left: -6.6rem;
       text-align: right;
     }

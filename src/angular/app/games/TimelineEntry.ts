@@ -9,6 +9,7 @@ export class TimelineEntry {
     score: string;
     side: string;
     isComment: boolean;
+    imageUrl: string;
 
     constructor(name: string, teamName: string, timeOffset: number, text: string, score: string, side: Side) {
         this.name = name;

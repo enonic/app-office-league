@@ -16,9 +16,12 @@
                         </template>
                     </div>
                     <div class="description">
-                        <div class="name">{{entry.name}}</div>
-                        <div class="team">{{entry.teamName}}</div>
-                        <div class="comment">{{entry.text}}</div>
+                        <img *ngIf="entry.imageUrl" src="{{entry.imageUrl}}?size=200" class="circle timeline__avatar"/>
+                        <div class="description-details">
+                            <div class="name">{{entry.name}}</div>
+                            <div class="team">{{entry.teamName}}</div>
+                            <div class="comment">{{entry.text}}</div>
+                        </div>
                         <div class="score">{{entry.time}}</div>
                     </div>
                 </div>
