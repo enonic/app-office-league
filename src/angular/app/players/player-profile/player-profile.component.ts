@@ -21,6 +21,7 @@ import {PlayerSelectComponent} from '../../common/player-select/player-select.co
 export class PlayerProfileComponent extends BaseComponent implements OnChanges {
 
     @Input() player: Player;
+    private profile: boolean;
     private games: Game[] = [];
     private teams: Team[] = [];
     private teamDetailsPath: string[];
@@ -35,7 +36,8 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
     ngOnInit(): void {
         super.ngOnInit();
 
-        let name = this.route.snapshot.params['name'] || this.authService.getUser().playerName;
+        this.profile = !this.route.snapshot.params['name'];
+        let name = this.profile ? this.authService.getUser().playerName : this.route.snapshot.params['name'];
 
         this.graphQLService.post(PlayerProfileComponent.getPlayerQuery, {name: name}).then(
                 data => this.handleResponse(data));

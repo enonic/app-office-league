@@ -14,6 +14,7 @@ export class LeagueSummaryComponent
     extends BaseComponent {
 
     @Input() league: League;
+    @Input() displayPlayBtn: boolean = false;
     @Input() rating: number = 0;
     @Input() ranking: number = 0;
 

@@ -12,10 +12,10 @@
         </div>
         <div class="col s3 secondary" *ngIf="ranking > 0">
             <div class="badges-container">
-                <span *ngIf="ranking > 0" class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
-                <span *ngIf="ranking > 0" class="badge grey darken-1 white-text"><small>{{ratingPoints()}}</small></span>
+                <span class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
+                <span class="badge grey darken-1 white-text"><small>{{ratingPoints()}}</small></span>
             </div>
-            <a class="waves-effect waves-light btn green"><i class="material-icons center">play_arrow</i>Play</a>
+            <a class="waves-effect waves-light btn green" *ngIf="displayPlayBtn"><i class="material-icons center">play_arrow</i>Play</a>
         </div>
     </div>
 </template>

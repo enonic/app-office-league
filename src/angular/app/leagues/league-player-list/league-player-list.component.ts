@@ -12,6 +12,7 @@ export class LeaguePlayerListComponent
     @Input() leaguePlayers: LeaguePlayer[];
     @Input() displayPlayers: boolean;
     @Input() displayLeagues: boolean;
+    @Input() displayPlayBtn: boolean;
 
     constructor(route: ActivatedRoute, router: Router) {
         super(route, router);
