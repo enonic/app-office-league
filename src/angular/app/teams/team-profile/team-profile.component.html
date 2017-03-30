@@ -32,15 +32,15 @@
 
     <ul class="row">
 
-        <li class="col s12 m6">
-            <player-list [players]="team.players" [title]="'Players'" hideSearchField="true"></player-list>
-        </li>
-
-        <li class="col s12 m6">
+        <li class="col s12">
             <league-team-list [leagueTeams]="team.leagueTeams" displayLeagues="true" title="Leagues"></league-team-list>
         </li>
 
-        <li class="col s12 m8">
+        <li class="col s12">
+            <player-list [players]="team.players" [title]="'Players'" hideSearchField="true"></player-list>
+        </li>
+
+        <li class="col s12">
             <game-list [games]="games" [title]="'Latest games'"></game-list>
         </li>
 

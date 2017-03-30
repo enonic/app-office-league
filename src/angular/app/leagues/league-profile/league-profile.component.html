@@ -38,10 +38,6 @@
 
         </div>
     </div>
-    <div class="row">
-        <game-list [title]="'Latest games'"
-                   [games]="league.games"></game-list>
-    </div>
 
     <div class="row">
         <div class="col s12">
@@ -57,17 +53,24 @@
                                       [detailsPath]="['leagues', league.name.toLowerCase(), 'teams']"></league-team-list>
                 </li>
                 <!--<li class="col s12 m6 l12">-->
-                    <!--<div class="card">-->
-                        <!--<div class="card-content">-->
-                            <!--<p>League rules.</p>-->
-                        <!--</div>-->
-                    <!--</div>-->
+                <!--<div class="card">-->
+                <!--<div class="card-content">-->
+                <!--<p>League rules.</p>-->
+                <!--</div>-->
+                <!--</div>-->
                 <!--</li>-->
 
             </ul>
         </div>
 
     </div>
+    
+    <div class="row">
+        <game-list [title]="'Latest games'"
+                   [games]="league.games"></game-list>
+    </div>
+
+    
 
     <div class="modal center player-select-modal" materialize="modal"
          [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">

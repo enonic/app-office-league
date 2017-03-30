@@ -40,15 +40,14 @@
 
     <ul class="row">
 
-        <li class="col s12 l6">
+        <li class="col s12">
             <league-player-list [leaguePlayers]="player.leaguePlayers" displayPlayBtn="profile" displayLeagues="true" title="Leagues"></league-player-list>
         </li>
-
-        <li class="col s12 l6">
-            <game-list [games]="games" [title]="'Latest games'"></game-list>
-        </li>
-        <li class="col s12 l6">
+        <li class="col s12">
             <team-list [teams]="teams" [title]="'Teams'" [detailsPath]="teamDetailsPath" hideSearchField="true"></team-list>
+        </li>
+        <li class="col s12">
+            <game-list [games]="games" [title]="'Latest games'"></game-list>
         </li>
 
     </ul>
