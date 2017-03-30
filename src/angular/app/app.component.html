@@ -20,7 +20,7 @@
             <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
             <li *ngIf="auth.isAuthenticated()">
                 <ul id="user-dropdown" class="dropdown-content">
-                    <li><a href="#" routerLink="/players/{{auth.getUser().playerName.toLowerCase()}}">{{auth.getUser().playerName}}</a></li>
+                    <li><a href="#" routerLink="/">{{auth.getUser().playerName}}</a></li>
                     <li><a href="#!" (click)="auth.logout()">Logout</a></li>
                 </ul>
 
