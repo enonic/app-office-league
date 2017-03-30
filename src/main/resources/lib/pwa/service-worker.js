@@ -4,10 +4,12 @@ const swVersion = '{{appVersion}}/{{userKey}}';
 const offlineUrl = '{{siteUrl}}offline';
 const debugging = true;
 const appUrl = '{{appUrl}}';
+const APIUrl = '{{appUrl}}/api/graphql?etag';
 const homePageUrl = '{{appUrl}}?source=web_app_manifest';
 const staticAssets = [
     '{{siteUrl}}'.slice(0, - 1),
     '{{siteUrl}}',
+    '{{appUrl}}/',
     '{{siteUrl}}manifest.json',
     '{{assetUrl}}/css/critical.css',
     '{{assetUrl}}/img/logo.svg',
@@ -42,9 +44,11 @@ function isRequestToAppPage(url) {
     return url.indexOf(appUrl) > -1;
 }
 
-function getFallbackPage() {
-    consoleLog('Serving fallback page');
+function isRequestToAPI(url) {
+    return url.indexOf(APIUrl) > -1;
+}
 
+function getFallbackPage() {
     return caches.match(offlineUrl);
 }
 
@@ -87,12 +91,18 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
+    let apiRequest = isRequestToAPI(e.request.url);
+    let rootRequest = isRequestToAppRoot(e.request.url);
 
-    if (isRequestToAppRoot(e.request.url)) {
-        consoleLog('Request to the main page.');
+    if (apiRequest || rootRequest) {
+
+        // Requests to API and app root will go Network first, then into Cache.
+        // For requests to the root we will try to fall back to Cache/static page if network is down.
+
+        consoleLog('API or root request: ' + e.request.url);
 
         e.respondWith(
-            caches.open(dataCacheName)
+            caches.open(apiRequest ? dataCacheName : cacheName)
                 .then(function(cache) {
 
                     return fetch(e.request)
@@ -102,18 +112,23 @@ self.addEventListener('fetch', function(e) {
                             return response;
                         })
                         .catch(function () {
-                            consoleLog('Network is down. Trying to serve from cache...');
-                            return cache
-                                .match(e.request, {
-                                    ignoreVary: true
-                                })
-                                .then(function (response) {
-                                    consoleLog((response ?
-                                                'Serving from cache: ' + e.request.url : 
-                                                'No cached response found. Serving offline page.'));
+                            if (rootRequest) {
+                                consoleLog('Network is down. Trying to serve from cache...');
+                                return cache
+                                    .match(apiRequest ? e.request : '{{appUrl}}/', {
+                                        ignoreVary: true
+                                    })
+                                    .then(function (response) {
+                                        consoleLog((response ?
+                                                    'Serving from cache: ' + e.request.url :
+                                                    'No cached response found. Serving offline page.'));
 
-                                    return response || getFallbackPage(e.request.url);
-                                });
+                                        return response || getFallbackPage(e.request.url);
+                                    });
+                            }
+                            else {
+                                consoleLog('Network is down. Failed to get response from API.');
+                            }
                         });
                 })
         );
@@ -122,6 +137,10 @@ self.addEventListener('fetch', function(e) {
     }
 
     if (isRequestToAppPage(e.request.url)) {
+
+        // Requests to application pages will go Network only (for now) and not be cached.
+        // If network is down we will serve the Offline page.
+
         consoleLog('Request to application page: ' + e.request.url);
         e.respondWith(
             fetch(e.request)
@@ -144,6 +163,10 @@ self.addEventListener('fetch', function(e) {
         return;
     }
 
+
+    // Requests to App Shell will go Cache first, with fallback to Network only.
+    // Dynamic assets (with hash in URL) will be cached on the fly.
+    
     e.respondWith(
         caches
             .match(e.request, {

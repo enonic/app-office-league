@@ -38,9 +38,9 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
 
         this.profile = !this.route.snapshot.params['name'];
         let name = this.profile ? this.authService.getUser().playerName : this.route.snapshot.params['name'];
+        const responseCallback = data => this.handleResponse(data);
 
-        this.graphQLService.post(PlayerProfileComponent.getPlayerQuery, {name: name}).then(
-                data => this.handleResponse(data));
+        this.graphQLService.post(PlayerProfileComponent.getPlayerQuery, {name: name}, responseCallback);
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -65,12 +65,16 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
     }
 
     private precacheNewGameRequests() {
+        const responseCallback = (data) => {
+            let playerIds = data.league.leaguePlayers.map((leaguePlayer) => leaguePlayer.player.id);
+            this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {playerIds: playerIds, first: -1});
+        };
         this.player.leaguePlayers.forEach((leaguePlayer) => {
-            this.graphQLService.post(NewGameComponent.getPlayerLeagueQuery, {playerId: this.player.id, leagueId: leaguePlayer.league.id}).
-                then((data) => {
-                    let playerIds = data.league.leaguePlayers.map((leaguePlayer) => leaguePlayer.player.id);
-                    this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {playerIds: playerIds, first: -1});
-                });
+            this.graphQLService.post(
+                NewGameComponent.getPlayerLeagueQuery,
+                {playerId: this.player.id, leagueId: leaguePlayer.league.id},
+                responseCallback
+            );
         });
     }
 

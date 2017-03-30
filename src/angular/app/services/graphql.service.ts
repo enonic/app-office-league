@@ -19,18 +19,46 @@ export class GraphQLService {
 
     constructor(private http: Http, private cryptoService: CryptoService) {
     }
-
-    post(query: string, variables?: {[key: string]: any}): Promise<any> {
+    post(query: string, variables?: {[key: string]: any}, responseCallback?: (data) => void): Promise<any> {
         var body = JSON.stringify({query: query, variables: variables});
         var hash = this.cryptoService.sha1(body);
+        var url = this.url + '?etag=' + hash;
 
         let headers = new Headers();
         headers.append('Content-Type', 'application/json; charset=utf-8');
         let options = new RequestOptions({headers: headers});
-        return this.http.post(this.url + '?etag=' + hash, body, options)
+
+        let networkPromise = this.http.post(url, body, options)
             .map(this.extractData)
             .catch(this.handleError)
             .toPromise();
+
+        return (!!responseCallback) ? this.getCachePromise(url, networkPromise, responseCallback) : networkPromise;
+    }
+
+    private getCachePromise(url: string, fallbackPromise: Promise<any>, responseCallback: (data) => void): Promise<any> {
+        var responseReceived = false;
+
+        fallbackPromise
+            .then(data => { responseReceived = true; return data; })
+            .then(responseCallback);
+
+        return caches.match(url)
+            .then(
+                res => this.extractCachedData(res),
+                error => this.handleError
+            )
+            // don't overwrite newer network data
+            .then(
+                json => responseReceived ? null : (json.data || {}) 
+            )
+            // fall back to network if we didn't get cached data
+            .catch(() => fallbackPromise)
+            .then(responseCallback);
+    }
+
+    private extractCachedData(res: Response) {
+        return res.json();
     }
 
     private extractData(res: Response) {
