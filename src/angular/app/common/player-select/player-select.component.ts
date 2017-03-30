@@ -89,7 +89,7 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
         this.notifySelected();
     }
 
-    private static readonly GetPlayersQuery = `query ($playerIds: [ID], $first:Int) {
+    static readonly GetPlayersQuery = `query ($playerIds: [ID], $first:Int) {
         players(ids: $playerIds, first: $first) {
             id
             name

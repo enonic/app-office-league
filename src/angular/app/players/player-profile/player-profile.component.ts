@@ -11,6 +11,7 @@ import {Team} from '../../../graphql/schemas/Team';
 import {XPCONFIG} from '../../app.config';
 import {PageTitleService} from '../../services/page-title.service';
 import {NewGameComponent} from '../../games/new-game/new-game.component';
+import {PlayerSelectComponent} from '../../common/player-select/player-select.component';
 
 @Component({
     selector: 'player-profile',
@@ -34,10 +35,10 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
     ngOnInit(): void {
         super.ngOnInit();
 
-        let name = this.route.snapshot.params['name'] || this.authService.getUser().playerName ;
+        let name = this.route.snapshot.params['name'] || this.authService.getUser().playerName;
 
         this.graphQLService.post(PlayerProfileComponent.getPlayerQuery, {name: name}).then(
-            data => this.handleResponse(data));
+                data => this.handleResponse(data));
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -57,14 +58,18 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
         this.editable = this.player.id === currentPlayerId;
 
-        this.pageTitleService.setTitle(this.player.name);        
+        this.pageTitleService.setTitle(this.player.name);
         this.precacheNewGameRequests();
     }
-    
+
     private precacheNewGameRequests() {
         this.player.leaguePlayers.forEach((leaguePlayer) => {
-            this.graphQLService.post(NewGameComponent.getPlayerLeagueQuery, {playerId: this.player.id, leagueId: leaguePlayer.league.id});
-        });        
+            this.graphQLService.post(NewGameComponent.getPlayerLeagueQuery, {playerId: this.player.id, leagueId: leaguePlayer.league.id}).
+                then((data) => {
+                    let playerIds = data.league.leaguePlayers.map((leaguePlayer) => leaguePlayer.player.id);
+                    this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {playerIds: playerIds, first: -1});
+                });
+        });
     }
 
     getNationality(): string {
