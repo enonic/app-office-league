@@ -184,7 +184,7 @@ export class NewGameComponent implements OnInit {
         (player) => player.id);
     }
 
-    private static readonly getPlayerLeagueQuery = `query ($playerId: ID!, $leagueId: ID!) {
+    static readonly getPlayerLeagueQuery = `query ($playerId: ID!, $leagueId: ID!) {
         player(id: $playerId) {
             id
             name

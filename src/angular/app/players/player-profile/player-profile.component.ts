@@ -10,6 +10,7 @@ import {Game} from '../../../graphql/schemas/Game';
 import {Team} from '../../../graphql/schemas/Team';
 import {XPCONFIG} from '../../app.config';
 import {PageTitleService} from '../../services/page-title.service';
+import {NewGameComponent} from '../../games/new-game/new-game.component';
 
 @Component({
     selector: 'player-profile',
@@ -56,7 +57,14 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
         this.editable = this.player.id === currentPlayerId;
 
-        this.pageTitleService.setTitle(this.player.name);
+        this.pageTitleService.setTitle(this.player.name);        
+        this.precacheNewGameRequests();
+    }
+    
+    private precacheNewGameRequests() {
+        this.player.leaguePlayers.forEach((leaguePlayer) => {
+            this.graphQLService.post(NewGameComponent.getPlayerLeagueQuery, {playerId: this.player.id, leagueId: leaguePlayer.league.id});
+        });        
     }
 
     getNationality(): string {
