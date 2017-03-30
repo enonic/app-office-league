@@ -23,33 +23,17 @@
         <div class="col s4 m2">
             <img src="{{player.imageUrl}}?size=512" alt="{{player.name}}" class="circle">
         </div>
-        <div class="col s8 m8">
-            <form>
-                <div>
-
-                    <div class="player-profile__nickname">
-                        <label>Nickname</label>
-                        <span>{{player.nickname}}</span>
-                    </div>
-
-                    <div>
-                        <label>About</label>
-                        <span>{{player.description}}</span>
-                    </div>
-                    <div *ngIf="player.nationality != null">
-                        <label>Nationality</label>
-                        <span class="flag-icon flag-icon-{{player.nationality}}"></span>
-                        <span>{{getNationality()}}</span>
-                    </div>
-                    <div>
-                        <label>Handedness</label>
-                        <span>{{getHandedness()}}</span>
-                    </div>
-
-                </div>
-            </form>
+        <div class="col s5 m8">
+            <div class="player-profile__nickname">
+                {{player.nickname}}
+            </div>
+            <div>{{player.description}}</div>
+            <div *ngIf="player.nationality != null">
+                <span class="flag-icon flag-icon-{{player.nationality}}"></span>
+                <span>{{getNationality()}}</span>
+            </div>
         </div>
-        <div *ngIf="editable" class="col s12 m2 right-align" (click)="onEditClicked()">
+        <div *ngIf="editable" class="col s3 m2 right-align" (click)="onEditClicked()">
             <a class="waves-effect waves-light btn light-blue darken-3"><i class="material-icons left">mode_edit</i>Edit</a>
         </div>
     </div>
