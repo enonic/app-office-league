@@ -11,6 +11,9 @@ var capitalize = function (str) {
 };
 
 var pluralize = function (str) {
+    if (str.endsWith('f')) {
+        return str.substring(0, str.length - 1) + "ves";
+    }
     if (str.endsWith('sh')) {
         return str + 'es';
     }
