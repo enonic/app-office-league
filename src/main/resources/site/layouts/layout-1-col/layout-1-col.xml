@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<layout>
+    <display-name>1 column layout</display-name>
+    <config>
+        <input type="Checkbox" name="paddingTop">
+            <label>Top padding</label>
+            <occurrences minimum="0" maximum="1"/>
+        </input>
+        <input type="Checkbox" name="paddingBottom">
+            <label>Bottom padding</label>
+            <occurrences minimum="0" maximum="1"/>
+        </input>
+    </config>
+    <regions>
+        <region name="main"/>
+    </regions>
+</layout>
