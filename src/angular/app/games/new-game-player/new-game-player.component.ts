@@ -12,7 +12,8 @@ export class NewGamePlayerComponent {
     materializeActions = new EventEmitter<string|MaterializeAction>();
 
     @Input() player: Player;
-    @Input() possiblePlayerIds: string[];
+    @Input() leaguePlayerIds: string[];
+    @Input() selectedPlayerIds: string[];
     @Input() sideClass: string;
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
     @Output() animationFinished: EventEmitter<NewGamePlayerComponent>;

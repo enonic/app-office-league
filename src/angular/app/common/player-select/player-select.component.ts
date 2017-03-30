@@ -14,7 +14,9 @@ import {GraphQLService} from '../../services/graphql.service';
 export class PlayerSelectComponent implements OnInit, OnChanges {
 
     @Input() playerIds: string[];
+    @Input() excludedPlayerIds: string[] = [];
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
+    allPlayers: Player[] = [];
     players: Player[] = [];
     private selectedPlayer: Player;
     private ready: boolean;
@@ -27,20 +29,26 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         let playerIdsChange = changes['playerIds'];
+        let excludedPlayerIdsChange = changes['excludedPlayerIds'];
         if (playerIdsChange) {
-            this.loadPlayers();
-        } else {
-            this.players = [];
-            this.ready = false;
+            this.loadAllPlayers();
+        } else if (excludedPlayerIdsChange) {
+            this.filterPlayers();
         }
+
     }
 
-    private loadPlayers() {
+    private loadAllPlayers() {
         this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {playerIds: this.playerIds, first: -1}).then(
-            data => {
-                this.players = data.players.map((player) => Player.fromJson(player));
+                data => {
+                this.allPlayers = data.players.map((player) => Player.fromJson(player));
+                this.filterPlayers();
                 this.ready = true;
             });
+    }
+
+    private filterPlayers() {
+        this.players = this.allPlayers.filter((player => this.excludedPlayerIds.indexOf(player.id) == -1));
     }
 
     onPlayerClicked(player: Player) {
