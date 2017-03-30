@@ -18,12 +18,20 @@ h1 {
     font-size: 4rem;
 }
 
+h2 {
+    font-size: 3rem;
+}
+
 a {
     color: #142663;
 }
 
 a:hover {
     color: #CC0003;
+}
+
+img {
+    max-width: 100%;
 }
 
 .marketing {
@@ -84,6 +92,15 @@ a:hover {
     font-size: 17px;
 }
 
+.global__button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background-color: #142663;
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
 .cta {
     position: relative;
     text-align: center;
@@ -123,4 +140,13 @@ a:hover {
 .cta__link:hover {
     color: #CC0003;
     border-color: #CC0003;
+}
+
+.video {
+    text-align: center;
+}
+
+.video__player {
+    max-width: 100%;
+    margin-bottom: 3rem;
 }
