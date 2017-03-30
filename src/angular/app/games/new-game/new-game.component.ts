@@ -22,7 +22,8 @@ export class NewGameComponent implements OnInit {
     bluePlayer2: Player;
     redPlayer1: Player;
     redPlayer2: Player;
-    possiblePlayerIds: string[] = [];
+    leaguePlayerIds: string[] = [];
+    selectedPlayerIds: string[] = [];
 
     @ViewChildren(NewGamePlayerComponent)
     playerCmps: QueryList<NewGamePlayerComponent>;
@@ -49,10 +50,11 @@ export class NewGameComponent implements OnInit {
                 this.bluePlayer1 = Player.fromJson(data.player);
                 this.league = League.fromJson(data.league);
                 this.title = this.league.name;
+                this.leaguePlayerIds = this.league.leaguePlayers.map((leaguePlayer) => leaguePlayer.player.id);
 
-                this.pageTitleService.setTitle(this.league.name);
-
+                this.pageTitleService.setTitle(this.league.name);                
                 this.updatePlayerSelectionState();
+                
             });
         }
     }
@@ -178,18 +180,11 @@ export class NewGameComponent implements OnInit {
         this.playerSelectionReady = singlesGameReady || doublesGameReady;
         this.shuffleDisabled = !doublesGameReady;
 
-        let possiblePlayerIds = [];
-        let alreadyAssignePlayerIds = [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2].filter((p) => !!p).map(
-            (player) => player.id);
-        this.league.leaguePlayers.forEach((leaguePlayer) => {
-            if (alreadyAssignePlayerIds.indexOf(leaguePlayer.player.id) == -1) {
-                possiblePlayerIds.push(leaguePlayer.player.id);
-            }
-        });
-        this.possiblePlayerIds = possiblePlayerIds;
+        this.selectedPlayerIds = [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2].filter((p) => !!p).map(
+        (player) => player.id);
     }
 
-    private static readonly getPlayerLeagueQuery = `query ($playerId: ID!, $leagueId: ID!) {
+    static readonly getPlayerLeagueQuery = `query ($playerId: ID!, $leagueId: ID!) {
         player(id: $playerId) {
             id
             name
