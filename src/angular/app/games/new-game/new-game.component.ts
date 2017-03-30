@@ -33,6 +33,7 @@ export class NewGameComponent
     title: string;
     playerSelectionReady: boolean;
     shuffleDisabled: boolean;
+    shuffleCount: number = 0;
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute,
                 private pageTitleService: PageTitleService, private router: Router, private gameSelection: GameSelection) {
@@ -81,6 +82,11 @@ export class NewGameComponent
     private shuffleActions: { [id: string]: { from: NewGamePlayerComponent, to: NewGamePlayerComponent, player: Player, side: string, done: boolean } };
 
     onShuffleClicked() {
+        this.shuffleCount = 5;
+        this.shuffleStep();
+    }
+
+    private shuffleStep() {
         let playerCmps: NewGamePlayerComponent[] = this.playerCmps.toArray();
         let cmpTo;
 
@@ -107,7 +113,7 @@ export class NewGameComponent
             action.from.sideClass = action.side;
         });
 
-        this.shuffleDisabled = Object.keys(this.shuffleActions).length > 0;
+        this.shuffleDisabled = (Object.keys(this.shuffleActions).length > 0) || (this.shuffleCount > 0);
         this.updatePlayerSelectionState();
     }
 
@@ -149,8 +155,14 @@ export class NewGameComponent
                 action.from.resetPosition(false);
             });
 
-            this.shuffleDisabled = false;
             delete this.shuffleActions;
+
+            this.shuffleCount = this.shuffleCount <= 0 ? 0 : this.shuffleCount - 1;
+            if (this.shuffleCount > 0) {
+                setTimeout(() => this.shuffleStep(), 100);
+            } else {
+                this.shuffleDisabled = false;
+            }
         }
     }
 
@@ -179,7 +191,7 @@ export class NewGameComponent
         let singlesGameReady = !!(this.bluePlayer1 && this.redPlayer1 && !this.bluePlayer2 && !this.redPlayer2);
         let doublesGameReady = !!(this.bluePlayer1 && this.redPlayer1 && this.bluePlayer2 && this.redPlayer2);
         this.playerSelectionReady = singlesGameReady || doublesGameReady;
-        this.shuffleDisabled = !doublesGameReady;
+        this.shuffleDisabled = !doublesGameReady || (this.shuffleCount > 0);
 
         this.selectedPlayerIds = [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2].filter((p) => !!p).map(
             (player) => player.id);
