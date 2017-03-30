@@ -318,16 +318,20 @@ export class GamePlayComponent
     private scoreGoal(team: string) {
         if (team === 'blue') {
             this.nameClassesGamePlayScoreBlue['game-play__blue-score--goal'] = true;
+            this.nameClassesGamePlayCommentator['game-play__commentator--blue'] = true;
             this.blueScore++;
             setTimeout(() => {
                 this.nameClassesGamePlayScoreBlue['game-play__blue-score--goal'] = false;
+                this.nameClassesGamePlayCommentator['game-play__commentator--blue'] = false;
             }, 2000);
         }
         else {
             this.nameClassesGamePlayScoreRed['game-play__red-score--goal'] = true;
+            this.nameClassesGamePlayCommentator['game-play__commentator--red'] = true;
             this.redScore++;
             setTimeout(() => {
                 this.nameClassesGamePlayScoreRed['game-play__red-score--goal'] = false;
+                this.nameClassesGamePlayCommentator['game-play__commentator--red'] = false;
             }, 2000);
         }
 
