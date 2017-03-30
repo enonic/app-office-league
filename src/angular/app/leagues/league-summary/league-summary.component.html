@@ -5,10 +5,18 @@
     <img src="{{league.imageUrl}}" alt="{{league.name}}" class="circle">
 
     <h2 class="title">{{league.name}}</h2>
-    <div class="secondary-content ranking-badges">
-        <span *ngIf="ranking > 0" class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
-        <span *ngIf="ranking > 0" class="badge grey darken-1 white-text"><small>{{ratingPoints()}}</small></span>
-    </div>
+
     <p>{{league.description}}</p>
 
+
+    <div class="secondary-content">
+        <div class="ranking-badges">
+            <span *ngIf="ranking > 0" class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
+            <span *ngIf="ranking > 0" class="badge grey darken-1 white-text"><small>{{ratingPoints()}}</small></span>
+        </div>
+        <div *ngIf="authService.isAuthenticated()" (click)="onPlayClicked()">
+            <a class="waves-effect waves-light btn green"><i class="material-icons left">play_arrow</i>Play</a>
+        </div>
+
+    </div>
 </template>

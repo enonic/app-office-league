@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {AuthService} from '../../services/auth.service';
 import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
 import {RankingHelper} from '../../../graphql/schemas/RankingHelper';
@@ -16,7 +17,7 @@ export class LeagueSummaryComponent
     @Input() rating: number = 0;
     @Input() ranking: number = 0;
 
-    constructor(route: ActivatedRoute) {
+    constructor(route: ActivatedRoute, private router: Router, private authService: AuthService) {
         super(route);
     }
 
@@ -26,5 +27,9 @@ export class LeagueSummaryComponent
 
     ratingPoints(): string {
         return String(this.rating);
+    }
+
+    onPlayClicked() {
+        this.router.navigate(['games', this.league.id, 'new-game']);
     }
 }
