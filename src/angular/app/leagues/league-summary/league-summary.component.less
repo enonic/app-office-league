@@ -4,31 +4,23 @@ img {
   max-width: 100%;
 }
 
-.secondary-content {
+:host-context(.collection .collection-item.avatar ) div.secondary-content.ranking-badges {
+  top: 0;
+  height: 100%;
+}
+
+.badges-container {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  top: 12px;
-}
-
-.ranking-badges {
-  display: flex;
-  margin-bottom: 8px;
-  justify-content: space-around;
+  height: 100px;
 }
 
 span.badge {
   margin-left: 0;
-  width: 50%;
 }
 
 .btn {
-  height: 24px;
-  line-height: 24px;
-  font-size: 75%;
-}
-
-:host-context(.collection .collection-item.avatar ) div.secondary-content.ranking-badges {
-  top: 0;
-  height: 100%;
+  display: flex;
+  justify-content: center;
 }
