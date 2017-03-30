@@ -3,14 +3,12 @@
 </template>
 <template [ngIf]="league != null">
     <div class="row">
-        <div class="col s3">
-            <img src="{{league.imageUrl}}" alt="{{league.name}}">
-        </div>
-        <div class="col s6">
+        <img src="{{league.imageUrl}}" alt="{{league.name}}" class="circle">
+        <div class="col s10 m9">
             <h2 class="title">{{league.name}}</h2>
             <p>{{league.description}}</p>
         </div>
-        <div class="col s3 secondary" *ngIf="ranking > 0">
+        <div class="col s2 m3 secondary" *ngIf="ranking > 0">
             <div class="badges-container">
                 <span class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
                 <span class="badge grey darken-1 white-text"><small>{{ratingPoints()}}</small></span>
