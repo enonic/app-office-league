@@ -2,21 +2,33 @@
     <loading></loading>
 </template>
 <template [ngIf]="league != null">
-    <img src="{{league.imageUrl}}" alt="{{league.name}}" class="circle">
+    <div class="row">
+        <div class="col s4">
+            <img src="{{league.imageUrl}}" alt="{{league.name}}">
+        </div>
+        <div class="col s8">
+            <h2 class="title">{{league.name}}</h2>
+            <p>{{league.description}}</p>
+        </div>
+    </div>
+<!--
+    <div class="row">
+        <div *ngIf="authService.isAuthenticated()" (click)="onPlayClicked()">
+            <a class="waves-effect waves-light btn green"><i class="material-icons center">play_arrow</i>Play</a>
+        </div>
+    </div>
+-->
 
-    <h2 class="title">{{league.name}}</h2>
-
-    <p>{{league.description}}</p>
 
 
-    <div class="secondary-content">
+
+
+<!--    <div class="secondary-content">
         <div class="ranking-badges">
             <span *ngIf="ranking > 0" class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
             <span *ngIf="ranking > 0" class="badge grey darken-1 white-text"><small>{{ratingPoints()}}</small></span>
         </div>
-        <div *ngIf="authService.isAuthenticated()" (click)="onPlayClicked()">
-            <a class="waves-effect waves-light btn green"><i class="material-icons left">play_arrow</i>Play</a>
-        </div>
 
-    </div>
+
+    </div>-->
 </template>

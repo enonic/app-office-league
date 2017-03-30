@@ -9,10 +9,14 @@
         </div>
     </div>
 
-    <div class="row league-profile">
-        <div *ngIf="playerInLeague" class="col s12 m4" (click)="onPlayClicked()">
+    <div class="row">
+        <div *ngIf="playerInLeague" class="col s12 m4 center" (click)="onPlayClicked()">
             <a class="waves-effect waves-light btn green"><i class="material-icons left">play_arrow</i>Play Game</a>
         </div>
+    </div>
+
+    <div class="row league-profile">
+
         <div *ngIf="authService.isAuthenticated() && !playerInLeague" class="col s12" (click)="onJoinClicked()">
             <a class="waves-effect waves-light btn green"><i class="material-icons left">person_add</i>Join</a>
         </div>
@@ -24,15 +28,30 @@
         </div>
     </div>
 
+
     <div class="row">
-        <div class="col s12 l5 push-l7 no-margin">
+        <div class="col s12">
+            <template [ngIf]="activeGames.length > 0">
+                <game-list [title]="'Active games'"
+                           [games]="activeGames"></game-list>
+            </template>
+
+        </div>
+    </div>
+    <div class="row">
+        <game-list [title]="'Latest games'"
+                   [games]="league.games"></game-list>
+    </div>
+
+    <div class="row">
+        <div class="col s12">
             <ul class="row list">
-                <li class="col s12 m6 l12">
+                <li class="col s12">
                     <league-player-list title="Top players" displayPlayers="true"
                                         [leaguePlayers]="league.leaguePlayers"
                                         [detailsPath]="['leagues', league.name.toLowerCase(), 'players']"></league-player-list>
                 </li>
-                <li class="col s12 m6 l12">
+                <li class="col s12">
                     <league-team-list title="Top teams" displayTeams="true"
                                       [leagueTeams]="league.leagueTeams"
                                       [detailsPath]="['leagues', league.name.toLowerCase(), 'teams']"></league-team-list>
@@ -47,14 +66,7 @@
 
             </ul>
         </div>
-        <div class="col s12 l7 pull-l5">
-            <template [ngIf]="activeGames.length > 0">
-                <game-list [title]="'Active games'"
-                           [games]="activeGames"></game-list>
-            </template>
-            <game-list [title]="'Latest games'"
-                       [games]="league.games"></game-list>
-        </div>
+
     </div>
 
     <div class="modal center player-select-modal" materialize="modal"
