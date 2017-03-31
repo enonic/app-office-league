@@ -6,7 +6,7 @@
         <div class="col s12 m12 l10 offset-l1">
             <div class="header">Timeline</div>
             <section class="timeline">
-                <div *ngFor="let entry of timeline" class="block team-{{entry.side}} {{entry.isComment&&'comment'}}">
+                <div *ngFor="let entry of timeline" class="block team-{{entry.side}} {{entry.isComment?'comment':''}}">
                     <div class="time">
                         <template [ngIf]="!entry.isComment">
                             <span class="fix">{{entry.score}}</span>

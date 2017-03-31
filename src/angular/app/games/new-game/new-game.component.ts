@@ -8,6 +8,7 @@ import {GamePlayComponent} from '../game-play/game-play.component';
 import {PageTitleService} from '../../services/page-title.service';
 import {NewGamePlayerComponent} from '../new-game-player/new-game-player.component';
 import {GameSelection} from '../GameSelection';
+import {RankingService} from '../../services/ranking.service';
 
 @Component({
     selector: 'new-game',
@@ -31,12 +32,16 @@ export class NewGameComponent
 
     league: League;
     title: string;
+    expectedScoreRed: string;
+    expectedScoreBlue: string;
     playerSelectionReady: boolean;
     shuffleDisabled: boolean;
-    shuffleCount: number = 0;
+    private shuffleCount: number = 0;
+    private playerRatings: { [playerId: string]: number } = {};
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute,
-                private pageTitleService: PageTitleService, private router: Router, private gameSelection: GameSelection) {
+                private pageTitleService: PageTitleService, private router: Router, private gameSelection: GameSelection,
+                private rankingService: RankingService) {
     }
 
     ngOnInit(): void {
@@ -52,7 +57,10 @@ export class NewGameComponent
                 this.bluePlayer1 = Player.fromJson(data.player);
                 this.league = League.fromJson(data.league);
                 this.title = this.league.name;
-                this.leaguePlayerIds = this.league.leaguePlayers.map((leaguePlayer) => leaguePlayer.player.id);
+                this.leaguePlayerIds = this.league.leaguePlayers.map((leaguePlayer) => {
+                    this.playerRatings[leaguePlayer.player.id] = leaguePlayer.rating;
+                    return leaguePlayer.player.id;
+                });
 
                 this.pageTitleService.setTitle(this.league.name);
                 this.updatePlayerSelectionState();
@@ -195,6 +203,31 @@ export class NewGameComponent
 
         this.selectedPlayerIds = [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2].filter((p) => !!p).map(
             (player) => player.id);
+        this.updateExpectedScore();
+    }
+
+    private updateExpectedScore() {
+        if (this.playerSelectionReady) {
+            let bluePlayer1Rating = this.getPlayerRating(this.bluePlayer1 && this.bluePlayer1.id);
+            let bluePlayer2Rating = this.getPlayerRating(this.bluePlayer2 && this.bluePlayer2.id);
+            let redPlayer1Rating = this.getPlayerRating(this.redPlayer1 && this.redPlayer1.id);
+            let redPlayer2Rating = this.getPlayerRating(this.redPlayer2 && this.redPlayer2.id);
+            let expectedScore = this.rankingService.getExpectedScore([bluePlayer1Rating, bluePlayer2Rating],
+                [redPlayer1Rating, redPlayer2Rating]);
+
+            this.expectedScoreBlue = `${expectedScore[0]}`;
+            this.expectedScoreRed = `${expectedScore[1]}`;
+        } else {
+            this.expectedScoreRed = '';
+            this.expectedScoreBlue = '';
+        }
+    }
+
+    private getPlayerRating(playerId: string): number {
+        if (!playerId) {
+            return undefined;
+        }
+        return this.playerRatings[playerId] || this.rankingService.defaultRating();
     }
 
     static readonly getPlayerLeagueQuery = `query ($playerId: ID!, $leagueId: ID!) {
@@ -214,6 +247,7 @@ export class NewGameComponent
             imageUrl
             description
             leaguePlayers(first:-1) {
+                rating
                 player {
                     id
                     imageUrl

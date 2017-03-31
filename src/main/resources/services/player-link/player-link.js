@@ -4,6 +4,7 @@ var storeLib = require('/lib/office-league-store');
 // Assign currently logged in user with a player. For testing purposes.
 exports.get = function (req) {
     var playerName = req.params['player'];
+    var unlink = req.params['unlink'] === 'true';
     if (!playerName) {
         return {
             contentType: 'application/json',
@@ -32,6 +33,20 @@ exports.get = function (req) {
             status: 400,
             body: {
                 message: 'Player not found'
+            }
+        }
+    }
+    if (unlink) {
+        storeLib.updatePlayer({
+            playerId: player._id,
+            userKey: ''
+        });
+
+        return {
+            contentType: 'application/json',
+            status: 200,
+            body: {
+                message: 'Player [' + player.name + '] unlinked from user'
             }
         }
     }

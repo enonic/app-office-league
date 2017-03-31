@@ -16,6 +16,7 @@ import {CommonModule} from './common/common.module';
 import {MaterializeModule} from 'angular2-materialize';
 import {PageTitleService} from './services/page-title.service';
 import {OfflinePersistenceService} from './services/offline-persistence.service';
+import {RankingService} from './services/ranking.service';
 
 const appRoutes: Routes = [
     {path: '**', redirectTo: '', pathMatch: 'full'}
@@ -37,7 +38,7 @@ const appRoutes: Routes = [
         LeaguesModule
     ],
     providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard,
-        OfflinePersistenceService],
+        OfflinePersistenceService, RankingService],
     bootstrap: [AppComponent]
 })
 export class AppModule {
