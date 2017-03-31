@@ -54,11 +54,11 @@ export class OfflinePersistenceService {
 
     constructor(private graphQLService: GraphQLService) {
         this.bindEvents();
-        setTimeout(() => {
-            if (this.isOnline()) {
-                this.pushOfflineGames();
-            }
-        }, 5000);
+        // setTimeout(() => {
+        //     if (this.isOnline()) {
+        //         this.pushOfflineGames();
+        //     }
+        // }, 5000);
     }
 
     isOnline(): boolean {
