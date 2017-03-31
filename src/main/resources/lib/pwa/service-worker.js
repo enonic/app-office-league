@@ -44,7 +44,7 @@ function isRequestToAppRoot(url) {
 }
 
 function isRequestToAppPage(url) {
-    return url.indexOf(appUrl) > -1;
+    return !url.endsWith('.css') && !url.endsWith('.js') && url.indexOf(appUrl) > -1;
 }
 
 function isRequestToAPI(url) {
