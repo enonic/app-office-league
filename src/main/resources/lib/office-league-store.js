@@ -3,6 +3,7 @@ var valueLib = require('/lib/xp/value');
 var ratingLib = require('/lib/office-league-rating');
 var eventLib = require('/lib/xp/event');
 var randomLib = require('/lib/random-names');
+var imageLib = require('/lib/image');
 
 var REPO_NAME = 'office-league';
 var LEAGUES_PATH = '/leagues';
@@ -2166,12 +2167,18 @@ var newConnection = function () {
  */
 var newAttachment = function (attachmentName, attachmentBinary, mimeType, label) {
     var bin = valueLib.binary(notNull(attachmentName, 'attachmentName'), notNull(attachmentBinary, 'attachmentBinary'));
+    var orientation;
+    if (mimeType !== 'image/svg+xml') {
+        orientation = imageLib.getImageOrientation(attachmentBinary);
+    }
+
     return {
         name: attachmentName,
         binary: bin,
         mimeType: notNull(mimeType, 'mimeType'),
         label: label,
-        size: attachmentBinary.size()
+        size: attachmentBinary.size(),
+        orientation: orientation
     };
 };
 
@@ -2223,6 +2230,8 @@ var extensionFromMimeType = function (mimeType) {
         ext = '.jpg';
     } else if (mimeType.indexOf('image/gif') > -1) {
         ext = '.gif';
+    } else if (mimeType.indexOf('image/svg+xml') > -1) {
+        ext = '.svg';
     }
     return ext;
 };
@@ -2289,6 +2298,9 @@ var getImageUrl = function (node) {
         return '';
     }
 
+    if (!node.image) {
+        return '/' + type + '/image/-/default';
+    }
     var version = node._versionKey;
     return '/' + type + '/image/' + version + '/' + node.name;
 };

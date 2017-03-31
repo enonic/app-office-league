@@ -16,14 +16,15 @@ exports.processImage = function (node, attachment, params) {
             id: node._id,
             name: attachment.binary,
             scale: 'square(' + size + ')',
-            mimeType: attachment.mimeType
+            mimeType: attachment.mimeType,
+            orientation: attachment.orientation
         })
     });
 };
 
 var isProcessableImage = function (mimeType) {
     return mimeType.indexOf('image/png') === 0 ||
-           mimeType.indexOf('image/gif') === 0 ||
+           // mimeType.indexOf('image/gif') === 0 ||
            mimeType.indexOf('image/jpeg') === 0 ||
            mimeType.indexOf('image/pjpeg') === 0 ||
            mimeType.indexOf('image/tiff') === 0 ||

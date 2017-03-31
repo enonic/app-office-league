@@ -9,6 +9,8 @@ import com.enonic.xp.content.ContentId;
 import com.enonic.xp.image.ImageService;
 import com.enonic.xp.image.ReadImageParams;
 import com.enonic.xp.image.ScaleParams;
+import com.enonic.xp.media.ImageOrientation;
+import com.enonic.xp.media.MediaInfoService;
 import com.enonic.xp.script.bean.BeanContext;
 import com.enonic.xp.script.bean.ScriptBean;
 import com.enonic.xp.util.BinaryReference;
@@ -18,6 +20,8 @@ public final class ImageHandler
 {
     private Supplier<ImageService> imageService;
 
+    private Supplier<MediaInfoService> mediaInfoService;
+
     private String id;
 
     private String name;
@@ -25,6 +29,8 @@ public final class ImageHandler
     private String scale;
 
     private Double quality;
+
+    private Double orientation;
 
     private String background;
 
@@ -40,6 +46,17 @@ public final class ImageHandler
         final ImageService imgSvc = imageService.get();
         final ReadImageParams params = getImageParams();
         return imgSvc.readImage( params );
+    }
+
+    public int getImageOrientation( final Object imageSource )
+    {
+        if ( !( imageSource instanceof ByteSource ) )
+        {
+            return ImageOrientation.TopLeft.getValue();
+        }
+        ImageOrientation orientation = this.mediaInfoService.get().getImageOrientation( (ByteSource) imageSource );
+        orientation = orientation == null ? ImageOrientation.TopLeft : orientation;
+        return orientation.getValue();
     }
 
     private ReadImageParams getImageParams()
@@ -61,6 +78,11 @@ public final class ImageHandler
         }
 
         params.format( format );
+        if ( orientation != null )
+        {
+            params.orientation( ImageOrientation.valueOf( orientation.intValue() ) );
+        }
+
         return params.build();
     }
 
@@ -72,7 +94,7 @@ public final class ImageHandler
         {
             name = params.substring( 0, params.indexOf( "(" ) );
             final int end = params.contains( ")" ) ? params.indexOf( ")" ) : params.length();
-            final String paramStr = params.substring( params.indexOf( "(" )+1, end );
+            final String paramStr = params.substring( params.indexOf( "(" ) + 1, end );
             args = paramStr.split( "," );
         }
         else
@@ -122,9 +144,15 @@ public final class ImageHandler
         this.filter = filter;
     }
 
+    public void setOrientation( final Double orientation )
+    {
+        this.orientation = orientation;
+    }
+
     @Override
     public void initialize( final BeanContext context )
     {
         this.imageService = context.getService( ImageService.class );
+        this.mediaInfoService = context.getService( MediaInfoService.class );
     }
 }
