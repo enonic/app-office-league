@@ -1,5 +1,6 @@
 const cacheName = 'office-league-cache';
 const dataCacheName = 'office-league-data-cache';
+const imageCacheName = 'office-league-image-cache';
 const swVersion = '{{appVersion}}/{{userKey}}';
 const offlineUrl = '{{siteUrl}}offline';
 const debugging = true;
@@ -7,9 +8,9 @@ const appUrl = '{{appUrl}}';
 const APIUrl = '{{appUrl}}/api/graphql?etag';
 const homePageUrl = '{{appUrl}}?source=web_app_manifest';
 const staticAssets = [
-    '{{siteUrl}}'.slice(0, - 1),
+    /*'{{siteUrl}}'.slice(0, - 1),
     '{{siteUrl}}',
-    '{{appUrl}}/',
+    '{{appUrl}}/',*/
     '{{siteUrl}}manifest.json',
     '{{assetUrl}}/css/critical.css',
     '{{assetUrl}}/img/logo.svg',
@@ -25,6 +26,8 @@ const dynamicAssets = [
     '{{assetUrl}}/img/flags/',
     'https://fonts.gstatic.com'
 ];
+const defaultImagePostfix = '-/default?size=512';
+const imageUrls = ['/teams/image/', '/players/image/', '/leagues/image/'];
 
 function consoleLog(message) {
     if (debugging) {
@@ -48,6 +51,31 @@ function isRequestToAPI(url) {
     return url.indexOf(APIUrl) > -1;
 }
 
+function isRequestToImage(url) {
+    return !url.endsWith(defaultImagePostfix) &&
+           imageUrls.some(u => url.indexOf(u) > -1);
+}
+
+function getImageFallbackPage(url) {
+    let imgUrl = '{{appUrl}}' + imageUrls.find(u => url.indexOf(u) > -1) + defaultImagePostfix;
+    
+    return caches
+        .match(imgUrl, {
+            ignoreVary: true
+        })
+        .then(function (response) {
+            if (response) {
+                return response;
+            }
+
+        })
+        .catch(function(err) {
+            if (debugging) {
+                console.log(err);
+            }
+        });
+}
+
 function getFallbackPage() {
     return caches.match(offlineUrl);
 }
@@ -61,12 +89,13 @@ self.addEventListener('install', function(e) {
     e.waitUntil(
         caches.open(cacheName).then(function(cache) {
             consoleLog('Caching App Shell');
+            let cacheAssets = staticAssets.concat(imageUrls.map(u => '{{appUrl}}' + u + defaultImagePostfix));
             if (debugging) {
                 console.group();
-                staticAssets.forEach(f => consoleLog(f));
+                cacheAssets.forEach(f => consoleLog(f));
                 console.groupEnd();
             }
-            return cache.addAll(staticAssets);
+            return cache.addAll(cacheAssets);
         }).catch(function(err) {
             console.log(err);
         })
@@ -91,12 +120,15 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
+    
     let apiRequest = isRequestToAPI(e.request.url);
     let rootRequest = isRequestToAppRoot(e.request.url);
 
     if (apiRequest || rootRequest) {
 
-        // Requests to API and app root will go Network first, then into Cache.
+        // Requests to API and app root will go Network first.
+        // We will not try to get API responses from the cache here - it will be done in the API
+        // service class, otherwise it won't be able to tell cached data from the fresh one.
         // For requests to the root we will try to fall back to Cache/static page if network is down.
 
         consoleLog('API or root request: ' + e.request.url);
@@ -115,7 +147,7 @@ self.addEventListener('fetch', function(e) {
                             if (rootRequest) {
                                 consoleLog('Network is down. Trying to serve from cache...');
                                 return cache
-                                    .match(apiRequest ? e.request : '{{appUrl}}/', {
+                                    .match(e.request.url.endsWith('/') ? e.request : e.request.url + '/', {
                                         ignoreVary: true
                                     })
                                     .then(function (response) {
@@ -136,6 +168,46 @@ self.addEventListener('fetch', function(e) {
         return;
     }
 
+    if (isRequestToImage(e.request.url)) {
+
+        // Requests to images will go Cache first, then Network, with fallback to default image.
+
+        consoleLog('Image request: ' + e.request.url);
+
+        e.respondWith(
+            caches
+                .match(e.request, {
+                    ignoreVary: true
+                })
+                .then(function (response) {
+                    if (response) {
+                        consoleLog('Serving from cache: ' + e.request.url);
+                    }
+
+                    return response ||
+                           fetch(e.request)
+                               .then(function (response) {
+                                   consoleLog('Fetched and cached new image: ' + e.request.url);
+                                   return caches
+                                       .open(imageCacheName)
+                                       .then(function(cache) {
+                                           cache.put(e.request.url, response.clone());
+
+                                           return response;
+                                       });
+                               })
+                               .catch(function () {
+                                   consoleLog('Failed to fetch ' + e.request.url + '. Serving default image.');
+
+                                   return getImageFallbackPage(e.request.url);
+                               });
+                })
+
+        );
+
+        return;
+    }
+    
     if (isRequestToAppPage(e.request.url)) {
 
         // Requests to application pages will go Network only (for now) and not be cached.

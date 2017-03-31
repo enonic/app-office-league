@@ -43,20 +43,19 @@ export class GraphQLService {
 
         fallbackPromise
             .then(data => { responseReceived = true; return data; })
-            .then(responseCallback);
-
+            .then(responseCallback)
+            .catch(this.handleError);
+        
         return caches.match(url)
-            .then(
-                res => this.extractCachedData(res),
-                error => this.handleError
-            )
-            // don't overwrite newer network data
-            .then(
-                json => responseReceived ? null : (json.data || {}) 
-            )
+            .then(res => this.extractCachedData(res))
+            .then(json => {
+                // don't overwrite newer network data
+                    if (json && !responseReceived) {
+                        responseCallback(json.data);
+                    }
+                })
             // fall back to network if we didn't get cached data
-            .catch(() => fallbackPromise)
-            .then(responseCallback);
+            .catch(() => fallbackPromise);
     }
 
     private extractCachedData(res: Response) {
