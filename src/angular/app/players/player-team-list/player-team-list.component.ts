@@ -52,12 +52,15 @@ export class PlayerTeamListComponent extends BaseComponent {
 
     private refresh(currentPage: number = 1) {
         let after = currentPage > 1 ? ((currentPage - 1) * PlayerTeamListComponent.paging - 1) : undefined;
-        this.service.post(PlayerTeamListComponent.getPlayerQuery,{name: this.playerName, after: after, first:PlayerTeamListComponent.paging }).
-            then((data: any) => {
+        this.service.post(
+            PlayerTeamListComponent.getPlayerQuery,
+            {name: this.playerName, after: after, first:PlayerTeamListComponent.paging },
+            data => {
                 this.player = Player.fromJson(data.player);
                 this.teams = data.player.teamsConnection.edges.map(edge => Team.fromJson(edge.node));
                 let totalCount = data.player.teamsConnection.totalCount;
                 this.pageCount = Math.floor((totalCount == 0 ? 0: totalCount - 1) / PlayerTeamListComponent.paging) + 1;
-            });
+            }
+        );
     }
 }

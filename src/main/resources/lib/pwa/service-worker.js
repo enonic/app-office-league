@@ -3,14 +3,14 @@ const dataCacheName = 'office-league-data-cache';
 const imageCacheName = 'office-league-image-cache';
 const swVersion = '{{appVersion}}/{{userKey}}';
 const offlineUrl = '{{siteUrl}}offline';
-const debugging = true;
+const debugging = false;
 const appUrl = '{{appUrl}}';
 const APIUrl = '{{appUrl}}/api/graphql?etag';
 const homePageUrl = '{{appUrl}}?source=web_app_manifest';
 const staticAssets = [
     /*'{{siteUrl}}'.slice(0, - 1),
-    '{{siteUrl}}',
-    '{{appUrl}}/',*/
+    '{{siteUrl}}',*/
+    '{{appUrl}}/',
     '{{siteUrl}}manifest.json',
     '{{assetUrl}}/css/critical.css',
     '{{assetUrl}}/img/logo.svg',

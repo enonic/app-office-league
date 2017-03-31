@@ -44,9 +44,11 @@ export class GameListComponent extends ListComponent implements OnInit, OnChange
     }
 
     private loadGames() {
-        this.service.post(this.getQuery()).then((data: any) => {
-            this.games = data.games.map(game => Game.fromJson(game)).sort(this.gameSorter.bind(this));
-        })
+        this.service.post(
+            this.getQuery(),
+            undefined,
+            data => this.games = data.games.map(game => Game.fromJson(game)).sort(this.gameSorter.bind(this))
+        );
     }
 
     private gameSorter(first: Game, second: Game): number {

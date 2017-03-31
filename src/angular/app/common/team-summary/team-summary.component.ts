@@ -54,7 +54,11 @@ export class TeamSummaryComponent
                         }
                     }
                 }`;
-                this.service.post(query).then(data => this.team = Team.fromJson(data.team));
+                this.service.post(
+                    query,
+                    undefined,
+                    data => this.team = Team.fromJson(data.team)
+                );
             }
         }
     }

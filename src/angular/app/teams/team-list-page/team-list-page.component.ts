@@ -39,12 +39,15 @@ export class TeamListPageComponent extends BaseComponent {
 
     private refresh(currentPage: number = 1, search: string = '') {
         let after = currentPage > 1 ? ((currentPage - 1) * TeamListPageComponent.paging - 1) : undefined;
-        this.service.post(TeamListPageComponent.getTeamsQuery,{after: after,first: TeamListPageComponent.paging, search: search}).
-            then((data: any) => {
+        this.service.post(
+            TeamListPageComponent.getTeamsQuery,
+            {after: after,first: TeamListPageComponent.paging, search: search},
+            data => {
                 this.teams = data.teamsConnection.edges.map(edge => Team.fromJson(edge.node));
                 let totalCount = data.teamsConnection.totalCount;
                 this.pageCount = Math.floor((totalCount == 0 ? 0: totalCount - 1) / TeamListPageComponent.paging) + 1;
-            });
+            }
+        );
         this.pageTitleService.setTitle('Teams');
     }
 }

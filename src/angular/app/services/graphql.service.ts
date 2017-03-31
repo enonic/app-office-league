@@ -46,17 +46,25 @@ export class GraphQLService {
 
     private getCachePromise(url: string, fallbackPromise: Promise<any>, responseCallback: (data) => void): Promise<any> {
         var responseReceived = false;
+        var cacheFound = false;
 
         fallbackPromise
             .then(data => { responseReceived = true; return data; })
             .then(responseCallback)
-            .catch(this.handleError);
+            .catch(() => {
+                if (!cacheFound) {
+                    // Temporary solution: redirect to the offline page 
+                    // when we are offline and there's no cached API response
+                    document.location.href = XPCONFIG.baseHref.replace('/app/', '/offline');
+                }
+            });
         
         return caches.match(url)
             .then(res => this.extractCachedData(res))
             .then(json => {
                 // don't overwrite newer network data
                     if (json && !responseReceived) {
+                        cacheFound = true;
                         responseCallback(json.data);
                     }
                 })
