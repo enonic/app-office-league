@@ -8,11 +8,15 @@ import {BaseComponent} from './base.component';
 })
 export class ListComponent extends BaseComponent {
 
-    @Input() protected limit: number;
-    @Input() protected title: string;
+    @Input() public limit: any;
+    @Input() public title: any;
 
-    constructor(route: ActivatedRoute, query?: string, limit: number = 10) {
-        super(route, query);
+    constructor(route: ActivatedRoute) {
+        super(route);
+    }
+
+    setLimit(limit: number = 10): ListComponent {
         this.limit = limit;
+        return this;
     }
 }

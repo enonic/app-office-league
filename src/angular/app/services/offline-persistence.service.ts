@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {AngularIndexedDB} from 'angular2-indexeddb';
+// import {AngularIndexedDB} from 'angular2-indexeddb';
 import {Game} from '../../graphql/schemas/Game';
 import {SideUtil} from '../../graphql/schemas/Side';
 import {Point} from '../../graphql/schemas/Point';
@@ -209,11 +209,11 @@ export class OfflinePersistenceService {
         this.pushOfflineGames();
     }
 
-    private getDb(): AngularIndexedDB {
-        return new AngularIndexedDB(OfflinePersistenceService.dbName, OfflinePersistenceService.dbVersion);
+    private getDb() /*AngularIndexedDB */ {
+        return null;//new AngularIndexedDB(OfflinePersistenceService.dbName, OfflinePersistenceService.dbVersion);
     }
 
-    private openStore(db: AngularIndexedDB): Promise<any> {
+    private openStore(db /*AngularIndexedDB*/): Promise<any> {
         return db.createStore(OfflinePersistenceService.dbVersion, (evt) => {
             let objectStore = evt.currentTarget.result.createObjectStore(OfflinePersistenceService.dbStoreName);
             objectStore.createIndex('gameId', 'gameId', {unique: true});
@@ -266,7 +266,7 @@ export class OfflinePersistenceService {
         game.league = new League(gameJson.league.leagueId, gameJson.league.name);
         game.league.imageUrl = gameJson.league.imageUrl;
 
-        const playerById: { [playerId: string]: GamePlayer } = {};
+        const playerById: {[playerId: string]: GamePlayer} = {};
         let gamePlayers: GamePlayer[] = gameJson.players.map((p) => {
             let gp = new GamePlayer(null);
             gp.side = SideUtil.parse(p.side);
@@ -277,7 +277,7 @@ export class OfflinePersistenceService {
             playerById[player.id] = gp;
             return gp;
         });
-        const teamById: { [teamId: string]: GameTeam } = {};
+        const teamById: {[teamId: string]: GameTeam} = {};
         let gameTeams: GameTeam[] = gameJson.teams.map((p) => {
             let gp = new GameTeam(null);
             gp.side = SideUtil.parse(p.side);

@@ -18,5 +18,9 @@
   },
   "angularCompilerOptions": {
     "genDir": "src/angular/assets/locale"
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "**/main.aot.ts"
+  ]
 }

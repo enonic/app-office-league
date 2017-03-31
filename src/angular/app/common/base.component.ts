@@ -1,4 +1,4 @@
-import {Input, Component, OnChanges, SimpleChanges, OnInit} from '@angular/core';
+import {Component, OnChanges, SimpleChanges, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
@@ -9,10 +9,9 @@ import {Observable} from 'rxjs/Observable';
 })
 export class BaseComponent implements OnInit, OnChanges {
 
-    protected query: string;
+    protected query: any;
 
-    constructor(protected route: ActivatedRoute, query?: string) {
-        this.query = query;
+    constructor(protected route: ActivatedRoute) {
     }
 
     ngOnInit(): void {
@@ -20,6 +19,11 @@ export class BaseComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         //console.log('BaseComponent.ngOnChanges()', changes);
+    }
+
+    protected setQuery(query: string): BaseComponent {
+        this.query = query;
+        return this;
     }
 
     protected extractData(res: Response) {

@@ -1,9 +1,8 @@
-import {Component, Input, SimpleChanges} from '@angular/core';
+import {Component} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {Team} from '../../../graphql/schemas/Team';
 import {GraphQLService} from '../../services/graphql.service';
-import {MaterializeDirective} from '../../../../../node_modules/angular2-materialize/dist/index.d';
 import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
@@ -24,8 +23,8 @@ export class TeamListPageComponent extends BaseComponent {
         }
     }`;
 
-    private teams: Team[];
-    private pageCount: number = 1;
+    public teams: Team[];
+    public pageCount: number = 1;
 
     constructor(private router: Router, private service: GraphQLService,
                 private pageTitleService: PageTitleService, route: ActivatedRoute) {

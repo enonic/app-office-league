@@ -1,4 +1,4 @@
-import {Component, Input, SimpleChanges} from '@angular/core';
+import {Component} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {Player} from '../../../graphql/schemas/Player';
@@ -23,8 +23,8 @@ export class PlayerListPageComponent extends BaseComponent {
         }
     }`;
 
-    private players: Player[];
-    private pageCount: number = 1;
+    public players: Player[];
+    public pageCount: number = 1;
 
     constructor(private router: Router, private service: GraphQLService, private pageTitleService: PageTitleService, route: ActivatedRoute) {
         super(route);

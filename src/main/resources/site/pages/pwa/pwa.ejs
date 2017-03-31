@@ -17,7 +17,7 @@
 
     <% for (key in htmlWebpackPlugin.files.css) { %>
     <% item = htmlWebpackPlugin.files.css[key]; %>
-    <link rel="stylesheet" href="<%= '{{assetsUrl}}/' + item %>"/>
+    <link rel="stylesheet" href="<%= '{{baseHref}}' + item %>" media="none" onload="if(media!='all')media='all'"/>
     <% }; %>
 </head>
 
@@ -69,11 +69,11 @@
                 let assets = [];
                 <% for (key in htmlWebpackPlugin.files.chunks) { %>
                 <%      item = htmlWebpackPlugin.files.chunks[key].entry; %>
-                assets.push('<%= '{{assetsUrl}}/' + item %>');
+                assets.push('<%= '{{baseHref}}' + item %>');
                 <% }; %>
                 <% for (key in htmlWebpackPlugin.files.css) { %>
                 <%      item = htmlWebpackPlugin.files.css[key]; %>
-                assets.push('<%= '{{assetsUrl}}/' + item %>');
+                assets.push('<%= '{{baseHref}}' + item %>');
                 <% }; %>
 
                 if (assets.length > 0) {
@@ -88,7 +88,7 @@
 
 <% for (key in htmlWebpackPlugin.files.chunks) { %>
 <% item = htmlWebpackPlugin.files.chunks[key].entry; %>
-<script type="text/javascript" src="<%= '{{assetsUrl}}/' + item %>"></script>
+<script type="text/javascript" src="<%= '{{baseHref}}' + item %>"></script>
 <% }; %>
 
 </html>

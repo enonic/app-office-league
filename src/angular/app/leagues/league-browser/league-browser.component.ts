@@ -36,7 +36,7 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
     @Input() teamId: string;
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private pageTitleService: PageTitleService,
-                private authService: AuthService,
+                public authService: AuthService,
                 private elementRef: ElementRef) {
         super(route);
     }

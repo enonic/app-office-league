@@ -6,17 +6,33 @@ var commonConfig = require('./webpack.common.js');
 var helpers = require('./helpers');
 
 module.exports = webpackMerge(commonConfig, {
-    devtool: 'source-map',
+
     entry: {
-        // 'xp': './src/main/resources/assets/js/main.js',
         'app': './src/angular/main.ts'
     },
 
     output: {
         path: helpers.root('build/resources/main/assets'),
-        publicPath: '',
+        publicPath: 'assets/',
         filename: 'js/[name].js',
         chunkFilename: 'js/[id].chunk.js'
+    },
+
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                loaders: [
+                    {
+                        loader: 'awesome-typescript-loader',
+                        options: {configFileName: helpers.root('tsconfig.json')}
+                    },
+                    'angular2-template-loader',
+                    // https://medium.com/@daviddentoom/angular-2-lazy-loading-with-webpack-d25fe71c29c1#.2l9gygqbr
+                    'angular2-router-loader'
+                ]
+            }
+        ]
     },
 
     plugins: [
@@ -28,12 +44,6 @@ module.exports = webpackMerge(commonConfig, {
             template: 'src/main/resources/site/pages/pwa/pwa.ejs',
             filename: '../site/pages/pwa/pwa.html',
             inject: false
-        })/*,
-        new webpack.optimize.UglifyJsPlugin({
-            minimize: true,
-            compress: {
-                warnings: false
-            }
-         })*/
+        })
     ]
 });

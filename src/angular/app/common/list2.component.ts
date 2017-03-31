@@ -16,7 +16,7 @@ export class List2Component extends BaseComponent { //TODO Rename
     @Input() pageCount: number = 1;
     private searchValue: string;
     private currentPage = 1;
-    private pages: string[];
+    public pages: string[];
     private static readonly pagesCountBeforeAfter: number = 3;
 
     constructor(route: ActivatedRoute, protected router: Router) {

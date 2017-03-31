@@ -1,4 +1,4 @@
-import {Component, Input, SimpleChanges} from '@angular/core';
+import {Component} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {Player} from '../../../graphql/schemas/Player';
@@ -36,7 +36,7 @@ export class PlayerTeamListComponent extends BaseComponent {
     }`;
 
     private playerName: string;
-    private player: Player;
+    public player: Player;
     private teams: Team[];
     private pageCount: number = 1;
 

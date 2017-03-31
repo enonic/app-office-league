@@ -14,10 +14,10 @@ export class AppComponent {
     logoUrl: string;
     isPlayingGame: boolean;
     playerImage: string;
-    private pageTitle: string;
-    private topLevelPage: boolean;
+    pageTitle: string;
+    topLevelPage: boolean;
 
-    constructor(private auth: AuthService, private pageTitleService: PageTitleService, private location: Location, private router: Router) {
+    constructor(public auth: AuthService, private pageTitleService: PageTitleService, private location: Location, private router: Router) {
         this.logoUrl = ImageService.logoUrl();
         this.isPlayingGame = new RegExp('/games/.*/game-play').test(location.path());
         let user = auth.getUser();

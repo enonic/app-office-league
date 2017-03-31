@@ -1,4 +1,3 @@
-import './polyfills.ts';
 import './styles.less';
 import {enableProdMode, LOCALE_ID, TRANSLATIONS_FORMAT, TRANSLATIONS} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';

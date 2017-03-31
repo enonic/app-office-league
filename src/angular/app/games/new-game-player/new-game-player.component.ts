@@ -19,21 +19,21 @@ export class NewGamePlayerComponent {
     @Output() animationFinished: EventEmitter<NewGamePlayerComponent>;
 
     playerSelectEnabled: boolean;
-    private modalTitle: string = 'Select a player';
+    public modalTitle: string = 'Select a player';
 
     @HostBinding('style.left.px')
-    private x: number = 0;
+    public x: number = 0;
 
     @HostBinding('style.top.px')
-    private y: number = 0;
+    public y: number = 0;
 
     @HostBinding('class.animate')
-    private animate: boolean = true;
+    public animate: boolean = true;
     private animatedProperties: string[] = [];
 
 
     @HostListener('transitionend', ['$event'])
-    private onTransitionFinished(event: TransitionEvent) {
+    public onTransitionFinished(event: TransitionEvent) {
         if (this.animatedProperties.length == 0) {
             return;
         }

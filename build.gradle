@@ -60,9 +60,9 @@ repositories {
     }
 }
 
-task runWebpackBuild( type: NpmTask ) {
-    args = ['run', 'build']
+task webpackBuild( type: NpmTask ) {
+    args = ['run', 'build:aot']
 }
 
-runWebpackBuild.dependsOn 'npmInstall'
-jar.dependsOn runWebpackBuild
+webpackBuild.dependsOn 'npmInstall'
+jar.dependsOn webpackBuild

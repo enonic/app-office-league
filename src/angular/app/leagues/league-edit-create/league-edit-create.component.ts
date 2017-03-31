@@ -50,7 +50,7 @@ export class LeagueEditCreateComponent
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
     }
 
-    private updatePageTitle(title: string) {
+    public updatePageTitle(title: string) {
         this.pageTitleService.setTitle(title);
     }
 
