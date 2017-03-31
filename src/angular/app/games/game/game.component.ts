@@ -3,8 +3,6 @@ import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Game} from '../../../graphql/schemas/Game';
 import {GamePlayer} from '../../../graphql/schemas/GamePlayer';
-import {Player} from '../../../graphql/schemas/Player';
-import {Team} from '../../../graphql/schemas/Team';
 import {GameTeam} from '../../../graphql/schemas/GameTeam';
 import {Side} from '../../../graphql/schemas/Side';
 import {OfflinePersistenceService} from '../../services/offline-persistence.service';
@@ -21,10 +19,10 @@ export class GameComponent
 
     private redScore: number = 0;
     private blueScore: number = 0;
-    private redTeam: Team;
-    private blueTeam: Team;
-    private redPlayers: Player[] = [];
-    private bluePlayers: Player[] = [];
+    private redTeam: GameTeam;
+    private blueTeam: GameTeam;
+    private redPlayers: GamePlayer[] = [];
+    private bluePlayers: GamePlayer[] = [];
 
     constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, protected router: Router,
                 protected offlineService: OfflinePersistenceService) {
@@ -78,21 +76,23 @@ export class GameComponent
         this.bluePlayers = [];
 
         game.gamePlayers.forEach((gp: GamePlayer) => {
+            gp.ratingDelta = game.finished ? gp.ratingDelta : null;
             if (gp.side === Side.RED) {
                 this.redScore += gp.score;
                 this.blueScore += gp.scoreAgainst;
-                this.redPlayers.push(gp.player);
+                this.redPlayers.push(gp);
             } else if (gp.side === Side.BLUE) {
                 this.blueScore += gp.score;
                 this.redScore += gp.scoreAgainst;
-                this.bluePlayers.push(gp.player);
+                this.bluePlayers.push(gp);
             }
         });
         game.gameTeams.forEach((gt: GameTeam) => {
+            gt.ratingDelta = game.finished ? gt.ratingDelta : null;
             if (gt.side === Side.RED) {
-                this.redTeam = gt.team;
+                this.redTeam = gt;
             } else if (gt.side === Side.BLUE) {
-                this.blueTeam = gt.team
+                this.blueTeam = gt;
             }
         });
     }
