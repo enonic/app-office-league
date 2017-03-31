@@ -14,6 +14,7 @@ import {PlayerRouteGuard} from '../guards/player.route.guard';
 import {ChartsModule} from 'ng2-charts';
 import {GameFlowComponent} from './game-flow/game-flow.component';
 import {GameSelection} from './GameSelection';
+import {RatingPointsComponent} from './rating-points/rating-points.component';
 
 
 const gameRoutes: Routes = [
@@ -48,7 +49,8 @@ const gameRoutes: Routes = [
         NewGamePlayerComponent,
         GamePlayComponent,
         GamePointsComponent,
-        GameFlowComponent
+        GameFlowComponent,
+        RatingPointsComponent
     ],
     imports: [
         CommonModule,

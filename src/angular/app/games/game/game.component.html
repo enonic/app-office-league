@@ -10,15 +10,22 @@
         <div class="game__result">
             <div class="game__side game__side--1">
                 <template [ngIf]="blueTeam">
-                    <img src="{{blueTeam?.imageUrl}}?size=200" alt="{{blueTeam?.name}}" class="game__side-logo logo circle">
-                    <div class="game__team-name">{{blueTeam?.name}}</div>
+                    <img src="{{blueTeam?.team.imageUrl}}?size=200" alt="{{blueTeam?.team.name}}" class="game__side-logo logo circle">
+                    <div class="game__team-name">{{blueTeam?.team.name}}
+                        <rating-points [points]="blueTeam?.ratingDelta"></rating-points>
+                    </div>
                     <ul class="game__players">
-                        <li *ngFor="let bluePlayer of bluePlayers">{{bluePlayer.name}}</li>
+                        <li *ngFor="let bluePlayer of bluePlayers">{{bluePlayer.player.name}}
+                            <rating-points [points]="bluePlayer.ratingDelta"></rating-points>
+                        </li>
                     </ul>
                 </template>
                 <template [ngIf]="!blueTeam">
-                    <img src="{{bluePlayers[0]?.imageUrl}}?size=200" alt="{{bluePlayers[0]?.name}}" class="game__side-logo logo circle">
-                    <div class="team">{{bluePlayers[0]?.name}}</div>
+                    <img src="{{bluePlayers[0]?.player.imageUrl}}?size=200" alt="{{bluePlayers[0]?.player.name}}"
+                         class="game__side-logo logo circle">
+                    <div class="team">{{bluePlayers[0]?.name}}
+                        <rating-points [points]="bluePlayers[0]?.ratingDelta"></rating-points>
+                    </div>
                 </template>
             </div>
             <div class="game__score">
@@ -28,53 +35,27 @@
             </div>
             <div class="game__side game__side--2">
                 <template [ngIf]="redTeam">
-                    <img src="{{redTeam?.imageUrl}}?size=200" alt="{{redTeam?.name}}" class="game__side-logo logo circle">
-                    <div class="game__team-name">{{redTeam?.name}}</div>
+                    <img src="{{redTeam?.team.imageUrl}}?size=200" alt="{{redTeam?.team.name}}" class="game__side-logo logo circle">
+                    <div class="game__team-name">{{redTeam?.team.name}}
+                        <rating-points [points]="redTeam?.ratingDelta"></rating-points>
+                    </div>
                     <ul class="game__players">
-                        <li *ngFor="let redPlayer of redPlayers">{{redPlayer.name}}</li>
+                        <li *ngFor="let redPlayer of redPlayers">{{redPlayer.player.name}}
+                            <rating-points [points]="redPlayer.ratingDelta"></rating-points>
+                        </li>
                     </ul>
                 </template>
                 <template [ngIf]="!redTeam">
-                    <img src="{{redPlayers[0]?.imageUrl}}?size=200" alt="{{redPlayers[0]?.name}}" class="game__side-logo logo circle">
-                    <div class="team">{{redPlayers[0]?.name}}</div>
+                    <img src="{{redPlayers[0]?.player.imageUrl}}?size=200" alt="{{redPlayers[0]?.player.name}}"
+                         class="game__side-logo logo circle">
+                    <div class="team">{{redPlayers[0]?.name}}
+                        <rating-points [points]="redPlayers[0]?.ratingDelta"></rating-points>
+                    </div>
                 </template>
             </div>
         </div>
 
-
- <!--       <div class="results">
-            <div class="score score&#45;&#45;blue side-blue">{{blueScore}}</div>
-            <span class="colon">:</span>
-            <div class="score score&#45;&#45;red side-red">{{redScore}}</div>
-        </div>-->
-
-        <!--<div class="teams">
-            <div class="side side&#45;&#45;blue side-blue">
-                <template [ngIf]="blueTeam">
-                    <div class="team">{{blueTeam?.name}}</div>
-                    <ul class="players">
-                        <li *ngFor="let bluePlayer of bluePlayers">{{bluePlayer.name}}</li>
-                    </ul>
-                </template>
-                <template [ngIf]="!blueTeam">
-                    <div class="team">{{bluePlayers[0]?.name}}</div>
-                </template>
-            </div>
-
-            <div class="side side&#45;&#45;red side-red">
-                <template [ngIf]="redTeam">
-                    <div class="team">{{redTeam?.name}}</div>
-                    <ul class="players">
-                        <li *ngFor="let redPlayer of redPlayers">{{redPlayer.name}}</li>
-                    </ul>
-                </template>
-                <template [ngIf]="!redTeam">
-                    <div class="team">{{redPlayers[0]?.name}}</div>
-                </template>
-            </div>
-        </div>-->
-<!--
-        <div class="date">{{game.time | date}}</div>-->
+        <small class="date">{{game.time | date}}</small>
     </div>
 
 </template>

@@ -3,6 +3,7 @@ package com.enonic.app.officeleague.image;
 import java.io.IOException;
 import java.util.function.Supplier;
 
+import com.google.common.base.Strings;
 import com.google.common.io.ByteSource;
 
 import com.enonic.xp.content.ContentId;
@@ -18,6 +19,8 @@ import com.enonic.xp.util.BinaryReference;
 public final class ImageHandler
     implements ScriptBean
 {
+    private final static int DEFAULT_BACKGROUND = 0x00FFFFFF;
+
     private Supplier<ImageService> imageService;
 
     private Supplier<MediaInfoService> mediaInfoService;
@@ -66,6 +69,10 @@ public final class ImageHandler
         params.contentId( ContentId.from( this.id ) );
         params.binaryReference( BinaryReference.from( this.name ) );
         params.scaleParams( parseScaleParams( this.scale ) );
+        if ( this.background != null )
+        {
+            params.backgroundColor( getBackgroundColor() );
+        }
 
         String format = this.format;
         if ( format == null && this.mimeType != null )
@@ -102,6 +109,29 @@ public final class ImageHandler
             name = params;
         }
         return new ScaleParams( name, args );
+    }
+
+    private int getBackgroundColor()
+    {
+        if ( Strings.isNullOrEmpty( this.background ) )
+        {
+            return DEFAULT_BACKGROUND;
+        }
+
+        String color = this.background;
+        if ( color.startsWith( "0x" ) )
+        {
+            color = this.background.substring( 2 );
+        }
+
+        try
+        {
+            return Integer.parseInt( color, 16 );
+        }
+        catch ( final Exception e )
+        {
+            return DEFAULT_BACKGROUND;
+        }
     }
 
     public void setId( final String id )

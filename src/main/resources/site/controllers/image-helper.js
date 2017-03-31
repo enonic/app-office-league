@@ -16,6 +16,7 @@ exports.processImage = function (node, attachment, params) {
             id: node._id,
             name: attachment.binary,
             scale: 'square(' + size + ')',
+            background: 'ffffff',
             mimeType: attachment.mimeType,
             orientation: attachment.orientation
         })
@@ -24,7 +25,7 @@ exports.processImage = function (node, attachment, params) {
 
 var isProcessableImage = function (mimeType) {
     return mimeType.indexOf('image/png') === 0 ||
-           // mimeType.indexOf('image/gif') === 0 ||
+           mimeType.indexOf('image/gif') === 0 ||
            mimeType.indexOf('image/jpeg') === 0 ||
            mimeType.indexOf('image/pjpeg') === 0 ||
            mimeType.indexOf('image/tiff') === 0 ||
