@@ -32,7 +32,7 @@ exports.get = function (req) {
         var player = storeLib.getPlayerByUserKey(user.key);
         userObj.playerId = player && player._id;
         userObj.playerName = (player && player.name) || user.displayName;
-        userObj.playerImageUrl = player ? appBaseUrl + '/' + player.imageUrl : '';
+        userObj.playerImageUrl = player ? appBaseUrl + player.imageUrl : '';
     }
 
     var params = {
