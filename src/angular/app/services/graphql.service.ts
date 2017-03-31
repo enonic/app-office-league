@@ -33,7 +33,9 @@ export class GraphQLService {
             .catch(this.handleError)
             .toPromise();
 
-        return (!!responseCallback) ? this.getCachePromise(url, networkPromise, responseCallback) : networkPromise;
+        return (typeof CacheStorage !== "undefined" && !!responseCallback) ?
+               this.getCachePromise(url, networkPromise, responseCallback) :
+               networkPromise.then(responseCallback);
     }
 
     private getCachePromise(url: string, fallbackPromise: Promise<any>, responseCallback: (data) => void): Promise<any> {
