@@ -663,8 +663,7 @@ export class GamePlayComponent
         let playerImg = this.elRef.nativeElement.querySelectorAll('.game-play__player-img');
         let orientation = this.getWindowAspectRatio() > 1 ? 'landscape' : 'portrait';
 
-        playerImg.forEach((img) => {
-
+        Array.prototype.forEach.call(playerImg, (img) => {
             if (orientation === 'portrait') {
                 img.style.width = playerImgPlaceholder.clientHeight + 'px';
                 img.style.height = playerImgPlaceholder.clientHeight + 'px';
@@ -674,8 +673,6 @@ export class GamePlayComponent
                 img.style.width = playerImgPlaceholder.clientWidth + 'px';
             }
         });
-
-
     }
 
     private static readonly getPlayersLeagueQuery = `query ($leagueId: ID!, $playerIds: [ID]!) {
