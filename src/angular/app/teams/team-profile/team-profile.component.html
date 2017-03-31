@@ -1,9 +1,9 @@
 <template [ngIf]="team == null">
     <loading></loading>
 </template>
-<div *ngIf="team != null">
+<div *ngIf="team != null" class="team-profile">
 
-    <div class="row">
+    <div class="row team-profile__header">
 
         <div class="col s4 m2">
             <img src="{{team.imageUrl}}?size=200" alt="{{team.name}}" class="circle">

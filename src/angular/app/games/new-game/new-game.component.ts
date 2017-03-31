@@ -66,9 +66,12 @@ export class NewGameComponent
         this.league = League.fromJson(data.league);
         this.title = this.league.name;
         this.leaguePlayerIds = this.league.leaguePlayers.map((leaguePlayer) => {
+            if (!leaguePlayer.player) {
+                return null;
+            }
             this.playerRatings[leaguePlayer.player.id] = leaguePlayer.rating;
             return leaguePlayer.player.id;
-        });
+        }).filter((id) => !!id);
 
         this.pageTitleService.setTitle(this.league.name);
         this.updatePlayerSelectionState();
