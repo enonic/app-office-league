@@ -29,8 +29,11 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
         let name = this.route.snapshot.params['name'];
 
         if (!this.team) {
-            this.graphQLService.post(TeamProfileComponent.getTeamQuery, {name: name}).then(
-                data => this.handleResponse(data));
+            this.graphQLService.post(
+                TeamProfileComponent.getTeamQuery,
+                {name: name},
+                data => this.handleTeamQueryResponse(data)
+            );
         }
     }
 
@@ -43,7 +46,7 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
         }
     }
 
-    private handleResponse(data) {
+    private handleTeamQueryResponse(data) {
         this.team = Team.fromJson(data.team);
         this.games = data.team.gameTeams.map((gm) => Game.fromJson(gm.game));
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;

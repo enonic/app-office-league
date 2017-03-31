@@ -65,13 +65,18 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
 
     refresh(currentPage: number = 1) {
         let after = currentPage > 1 ? ((currentPage - 1) * LeagueProfilePlayersComponent.paging - 1) : undefined;
-        this.graphQLService.post(LeagueProfilePlayersComponent.getLeagueQuery,  {name: this.leagueName, after: after, first: LeagueProfilePlayersComponent.paging, sort: 'rating DESC, name ASC'}).
-            then(data => {
-                this.league = League.fromJson(data.league);
-                this.leaguePlayers = data.league.leaguePlayersConnection.edges.map((edge) => LeaguePlayer.fromJson(edge.node));
+        this.graphQLService.post(
+            LeagueProfilePlayersComponent.getLeagueQuery,
+            {name: this.leagueName, after: after, first: LeagueProfilePlayersComponent.paging, sort: 'rating DESC, name ASC'},
+            data => this.handleLeagueQueryResponse(data)
+        );
+    }
 
-                let totalCount = data.league.leaguePlayersConnection.totalCount;
-                this.pageCount = Math.floor((totalCount == 0 ? 0: totalCount - 1) / LeagueProfilePlayersComponent.paging) + 1;
-            });
+    private handleLeagueQueryResponse(data) {
+        this.league = League.fromJson(data.league);
+        this.leaguePlayers = data.league.leaguePlayersConnection.edges.map((edge) => LeaguePlayer.fromJson(edge.node));
+
+        let totalCount = data.league.leaguePlayersConnection.totalCount;
+        this.pageCount = Math.floor((totalCount == 0 ? 0: totalCount - 1) / LeagueProfilePlayersComponent.paging) + 1;
     }
 }

@@ -54,25 +54,30 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
     }
 
     private loadPlayer(name) {
-        this.graphQLService.post(PlayerEditComponent.getPlayerQuery, {name: name}).then(
-            data => {
-                const player = Player.fromJson(data.player);
-                this.name = player.name;
-                this.nickname = player.nickname;
-                this.id = player.id;
-                this.nationality = player.nationality;
-                this.handedness = Handedness[player.handedness || Handedness.RIGHT].toLowerCase();
-                this.description = player.description;
-                this.imageUrl = player.imageUrl;
-
-                this.countries = Countries.getCountries();
-
-                this.pageTitleService.setTitle(player.name);
-
-                // TODO, if not current player, redirect to profile view
-            });
+        this.graphQLService.post(
+            PlayerEditComponent.getPlayerQuery, 
+            {name: name},
+            data => this.handlePlayerQueryResponse(data)
+        );
     }
 
+    private handlePlayerQueryResponse(data) {
+        const player = Player.fromJson(data.player);
+        this.name = player.name;
+        this.nickname = player.nickname;
+        this.id = player.id;
+        this.nationality = player.nationality;
+        this.handedness = Handedness[player.handedness || Handedness.RIGHT].toLowerCase();
+        this.description = player.description;
+        this.imageUrl = player.imageUrl;
+
+        this.countries = Countries.getCountries();
+
+        this.pageTitleService.setTitle(player.name);
+
+        // TODO, if not current player, redirect to profile view
+    }
+    
     getNationality(): string {
         return Countries.getCountryName(this.nationality);
     }

@@ -59,58 +59,68 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
     }
 
     private loadTeam(name) {
-        this.graphQLService.post(TeamEditCreateComponent.getTeamQuery, {name: name}).then(
-            data => {
-                const team = Team.fromJson(data.team);
-                this.name = team.name;
-                this.id = team.id;
-                this.description = team.description;
-                this.imageUrl = team.imageUrl;
-                this.players = team.players || [];
-                this.pageTitleService.setTitle(team.name);
-            });
+        this.graphQLService.post(
+            TeamEditCreateComponent.getTeamQuery,
+            {name: name},
+            data => this.handleTeamQueryResponse(data)
+        );
     }
 
+    private handleTeamQueryResponse(data) {
+        const team = Team.fromJson(data.team);
+        this.name = team.name;
+        this.id = team.id;
+        this.description = team.description;
+        this.imageUrl = team.imageUrl;
+        this.players = team.players || [];
+        this.pageTitleService.setTitle(team.name);
+    }
+    
     private setupCreate() {
         let playerId = this.authService.getUser().playerId;
-        this.graphQLService.post(TeamEditCreateComponent.getPlayerByIdQuery, {playerId: playerId}).then(
-                data => {
-                let playerTeamMateIds = data.player.teams.map((team) => {
-                    return team.players.map((p) => p.id).filter((id) => id != playerId)[0];
-                });
-                console.log('playerTeamMateIds: ', playerTeamMateIds);
-
-                let possibleTeamMateIds = new Set();
-                data.player.leaguePlayers.forEach((leaguePlayer => {
-                    leaguePlayer.league.leaguePlayers.forEach((relatedLeaguePlayer) => {
-                        if (relatedLeaguePlayer.player.id != data.player.id) {
-                            possibleTeamMateIds.add(relatedLeaguePlayer.player.id);
-                        }
-                    });
-                }));
-                playerTeamMateIds.forEach((playerTeamMateId) => {
-                    possibleTeamMateIds.delete(playerTeamMateId);
-                });
-                this.possibleTeamMateIds = Array.from(possibleTeamMateIds);
-
-                delete data.player.teams;
-                const player = Player.fromJson(data.player);
-                this.name = '';
-                this.id = '';
-                this.description = '';
-                this.imageUrl = ImageService.teamDefault();
-                this.players = [player];
-                this.currentPlayer = player;
-                this.createMode = true;
-                this.excludePlayerIds[player.id] = true;
-                playerTeamMateIds.forEach((playerId) => this.excludePlayerIds[playerId] = true);
-
-                if (data.player && data.player.leaguePlayers) {
-                    this.leagueIds = data.player.leaguePlayers.map((lp) => lp.league.id);
-                }
-            });
+        this.graphQLService.post(
+            TeamEditCreateComponent.getPlayerByIdQuery, 
+            {playerId: playerId},
+            data => this.handlePlayerByIdQueryResponse(data, playerId)
+        );
     }
 
+    private handlePlayerByIdQueryResponse(data, playerId) {
+        let playerTeamMateIds = data.player.teams.map((team) => {
+            return team.players.map((p) => p.id).filter((id) => id != playerId)[0];
+        });
+        console.log('playerTeamMateIds: ', playerTeamMateIds);
+
+        let possibleTeamMateIds = new Set();
+        data.player.leaguePlayers.forEach((leaguePlayer => {
+            leaguePlayer.league.leaguePlayers.forEach((relatedLeaguePlayer) => {
+                if (relatedLeaguePlayer.player.id != data.player.id) {
+                    possibleTeamMateIds.add(relatedLeaguePlayer.player.id);
+                }
+            });
+        }));
+        playerTeamMateIds.forEach((playerTeamMateId) => {
+            possibleTeamMateIds.delete(playerTeamMateId);
+        });
+        this.possibleTeamMateIds = Array.from(possibleTeamMateIds);
+
+        delete data.player.teams;
+        const player = Player.fromJson(data.player);
+        this.name = '';
+        this.id = '';
+        this.description = '';
+        this.imageUrl = ImageService.teamDefault();
+        this.players = [player];
+        this.currentPlayer = player;
+        this.createMode = true;
+        this.excludePlayerIds[player.id] = true;
+        playerTeamMateIds.forEach((playerId) => this.excludePlayerIds[playerId] = true);
+
+        if (data.player && data.player.leaguePlayers) {
+            this.leagueIds = data.player.leaguePlayers.map((lp) => lp.league.id);
+        }
+    }
+    
     onSaveClicked() {
         if (!this.validate()) {
             return;

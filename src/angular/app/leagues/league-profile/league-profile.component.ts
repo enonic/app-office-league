@@ -196,19 +196,25 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
         let playerId = this.authService.isAuthenticated() ? this.authService.getUser().playerId : '-1';
 
         const getLeagueParams = {name: leagueName, first: 3, sort: 'rating DESC, name ASC', playerId: playerId};
-        this.graphQLService.post(LeagueProfileComponent.getLeagueQuery, getLeagueParams).then(data => {
-            this.league = League.fromJson(data.league);
-            this.playerInLeague = !!data.league.myLeaguePlayer;
-            this.adminInLeague = data.league.isAdmin;
-            this.activeGames = data.league.activeGames.map((gameJson) => {
-                let game = Game.fromJson(gameJson);
-                game.live = true;
-                return game;
-            });
-            this.nonMembersPlayerIds = data.league.nonMemberPlayers.map((player) => player.id);
+        this.graphQLService.post(
+            LeagueProfileComponent.getLeagueQuery,
+            getLeagueParams,
+            data => this.handleLeagueQueryResponse(data)
+        );
+    }
 
-            this.pageTitleService.setTitle(this.league.name);
+    private handleLeagueQueryResponse(data) {
+        this.league = League.fromJson(data.league);
+        this.playerInLeague = !!data.league.myLeaguePlayer;
+        this.adminInLeague = data.league.isAdmin;
+        this.activeGames = data.league.activeGames.map((gameJson) => {
+            let game = Game.fromJson(gameJson);
+            game.live = true;
+            return game;
         });
+        this.nonMembersPlayerIds = data.league.nonMemberPlayers.map((player) => player.id);
+
+        this.pageTitleService.setTitle(this.league.name);
     }
 
     onPlayClicked() {
