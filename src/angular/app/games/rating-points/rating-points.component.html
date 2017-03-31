@@ -1,6 +1,6 @@
 <template [ngIf]="points != null">
     <small class="rating-points"
-           [ngClass]="{'rating-point__zero': points==0, 'rating-point__plus': points<0, 'rating-point__minus': points>0}"><span
+           [ngClass]="{'rating-point__zero': points==0, 'rating-point__plus': points>0, 'rating-point__minus': points<0}"><span
             [innerHTML]="ratingIcon"></span>{{ratingText}}
     </small>
 </template>
