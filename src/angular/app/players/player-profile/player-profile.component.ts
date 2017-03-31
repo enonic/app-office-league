@@ -38,9 +38,12 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
 
         this.profile = !this.route.snapshot.params['name'];
         let name = this.profile ? this.authService.getUser().playerName : this.route.snapshot.params['name'];
-        const responseCallback = data => this.handleResponse(data);
 
-        this.graphQLService.post(PlayerProfileComponent.getPlayerQuery, {name: name}, responseCallback);
+        this.graphQLService.post(
+            PlayerProfileComponent.getPlayerQuery,
+            {name: name},
+            data => this.handlePlayerQueryResponse(data)
+        );
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -52,7 +55,7 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
         }
     }
 
-    private handleResponse(data) {
+    private handlePlayerQueryResponse(data) {
         this.player = Player.fromJson(data.player);
         this.games = data.player.gamePlayers.map((gm) => Game.fromJson(gm.game));
         this.teams = data.player.teamsConnection.edges.map((edge) => Team.fromJson(edge.node));
@@ -65,19 +68,20 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
     }
 
     private precacheNewGameRequests() {
-        const responseCallback = (data) => {
-            let playerIds = data.league.leaguePlayers.map((leaguePlayer) => leaguePlayer.player.id);
-            this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {playerIds: playerIds, first: -1});
-        };
         this.player.leaguePlayers.forEach((leaguePlayer) => {
             this.graphQLService.post(
                 NewGameComponent.getPlayerLeagueQuery,
                 {playerId: this.player.id, leagueId: leaguePlayer.league.id},
-                responseCallback
+                data => this.handlePlayerLeagueQueryResponse(data)
             );
         });
     }
 
+    private handlePlayerLeagueQueryResponse(data) {
+        let playerIds = data.league.leaguePlayers.map((leaguePlayer) => leaguePlayer.player.id);
+        this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {playerIds: playerIds, first: -1});
+    }
+    
     getNationality(): string {
         return Countries.getCountryName(this.player.nationality);
     }

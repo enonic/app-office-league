@@ -393,61 +393,58 @@ export class GamePlayComponent
                ((this.blueScore >= 10 || this.redScore >= 10) && Math.abs(this.blueScore - this.redScore) >= 2);
     }
 
+    private handleGamePlayersLeagueQueryResponse(data) {
+        this.gameId = this.gameSelection.gameId;
+        this.league = League.fromJson(data.game.league);
+        let playerMap: { [id: string]: Player } = {};
+
+        data.game.gamePlayers.forEach((gp) => {
+            const p = Player.fromJson(gp.player);
+            playerMap[p.id] = p;
+            const side = SideUtil.parse(gp.side);
+            if (side === Side.BLUE) {
+                if (this.bluePlayer1) {
+                    this.bluePlayer2 = p;
+                } else {
+                    this.bluePlayer1 = p;
+                }
+            } else if (side === Side.RED) {
+                if (this.redPlayer1) {
+                    this.redPlayer2 = p;
+                } else {
+                    this.redPlayer1 = p;
+                }
+            }
+        });
+
+        this.points = [];
+        data.game.points.map((p) => {
+            const point = new Point();
+            point.time = p.time;
+            point.against = p.against;
+            point.player = playerMap[p.player.id];
+            this.points.push(point);
+        });
+    }
+
     private loadGameData(): Promise<any> {
         if (this.gameSelection.gameId) {
             // load existing game data
-            return this.graphQLService.post(GamePlayComponent.getGamePlayersLeagueQuery,
-                {gameId: this.gameSelection.gameId}).then(
-                data => {
-                    this.gameId = this.gameSelection.gameId;
-                    this.league = League.fromJson(data.game.league);
-                    let playerMap: { [id: string]: Player } = {};
-
-                    data.game.gamePlayers.forEach((gp) => {
-                        const p = Player.fromJson(gp.player);
-                        playerMap[p.id] = p;
-                        const side = SideUtil.parse(gp.side);
-                        if (side === Side.BLUE) {
-                            if (this.bluePlayer1) {
-                                this.bluePlayer2 = p;
-                            } else {
-                                this.bluePlayer1 = p;
-                            }
-                        } else if (side === Side.RED) {
-                            if (this.redPlayer1) {
-                                this.redPlayer2 = p;
-                            } else {
-                                this.redPlayer1 = p;
-                            }
-                        }
-                    });
-
-                    this.points = [];
-                    data.game.points.map((p) => {
-                        const point = new Point();
-                        point.time = p.time;
-                        point.against = p.against;
-                        point.player = playerMap[p.player.id];
-                        this.points.push(point);
-                    });
-                });
+            return this.graphQLService.post(
+                GamePlayComponent.getGamePlayersLeagueQuery,
+                {gameId: this.gameSelection.gameId},
+                data => this.handleGamePlayersLeagueQueryResponse(data)
+            );
         }
 
         // load league and players for new game
         let playerIds = [this.gameSelection.bluePlayer1, this.gameSelection.redPlayer1, this.gameSelection.bluePlayer2,
             this.gameSelection.redPlayer2].filter((p) => p && p.id);
-        return this.graphQLService.post(GamePlayComponent.getPlayersLeagueQuery,
-            {playerIds: playerIds, leagueId: this.gameSelection.league.id})
-            .then(data => {
-                this.league = League.fromJson(data.league);
-                let playerMap: { [id: string]: Player } = {};
-                data.players.forEach((p) => playerMap[p.id] = Player.fromJson(p));
-                this.bluePlayer1 = playerMap[this.gameSelection.bluePlayer1 && this.gameSelection.bluePlayer1.id];
-                this.bluePlayer2 = playerMap[this.gameSelection.bluePlayer2 && this.gameSelection.bluePlayer2.id];
-                this.redPlayer1 = playerMap[this.gameSelection.redPlayer1 && this.gameSelection.redPlayer1.id];
-                this.redPlayer2 = playerMap[this.gameSelection.redPlayer2 && this.gameSelection.redPlayer2.id];
-
-            }).catch((error) => {
+        return this.graphQLService.post(
+                GamePlayComponent.getPlayersLeagueQuery,
+                {playerIds: playerIds, leagueId: this.gameSelection.league.id},
+                data => this.handlePlayersLeagueQueryResponse(data)
+            ).catch((error) => {
                 console.log('Could not create game before starting. Offline mode On.');
                 this.onlineMode = false;
                 this.bluePlayer1 = this.gameSelection.bluePlayer1;
@@ -456,6 +453,16 @@ export class GamePlayComponent
                 this.redPlayer2 = this.gameSelection.redPlayer2;
                 this.league = this.gameSelection.league;
             });
+    }
+
+    private handlePlayersLeagueQueryResponse(data) {
+        this.league = League.fromJson(data.league);
+        let playerMap: { [id: string]: Player } = {};
+        data.players.forEach((p) => playerMap[p.id] = Player.fromJson(p));
+        this.bluePlayer1 = playerMap[this.gameSelection.bluePlayer1 && this.gameSelection.bluePlayer1.id];
+        this.bluePlayer2 = playerMap[this.gameSelection.bluePlayer2 && this.gameSelection.bluePlayer2.id];
+        this.redPlayer1 = playerMap[this.gameSelection.redPlayer1 && this.gameSelection.redPlayer1.id];
+        this.redPlayer2 = playerMap[this.gameSelection.redPlayer2 && this.gameSelection.redPlayer2.id];
     }
 
     private saveGame(): Promise<string> {
@@ -531,29 +538,41 @@ export class GamePlayComponent
     private createGame(): Promise<string> {
         let createGameParams = this.buildSaveGameParams();
         createGameParams['leagueId'] = this.league.id;
-        return this.graphQLService.post(GamePlayComponent.createGameMutation, createGameParams).then(
+        return this.graphQLService.post(
+            GamePlayComponent.createGameMutation,
+            createGameParams
+        ).then(
             data => {
                 console.log('Game created', data);
                 return data.createGame.id;
-            });
+            }
+        );
     }
 
     private updateGame(): Promise<string> {
         let updateGameParams = this.buildSaveGameParams();
         updateGameParams['gameId'] = this.gameId;
-        return this.graphQLService.post(GamePlayComponent.updateGameMutation, updateGameParams).then(
+        return this.graphQLService.post(
+            GamePlayComponent.updateGameMutation,
+            updateGameParams
+        ).then(
             data => {
                 console.log('Game updated', data);
                 return data.updateGame.id;
-            });
+            }
+        );
     }
 
     private deleteGame(): Promise<string> {
-        return this.graphQLService.post(GamePlayComponent.deleteGameMutation, {gameId: this.gameId}).then(
+        return this.graphQLService.post(
+            GamePlayComponent.deleteGameMutation,
+            {gameId: this.gameId}
+        ).then(
             data => {
                 console.log('Game deleted', data);
                 return data.deleteGame;
-            });
+            }
+        );
     }
 
     private replayPoints() {

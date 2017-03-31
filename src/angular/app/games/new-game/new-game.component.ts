@@ -53,20 +53,25 @@ export class NewGameComponent
 
         let playerId = XPCONFIG.user && XPCONFIG.user.playerId;
         if (playerId) {
-            this.graphQLService.post(NewGameComponent.getPlayerLeagueQuery, {playerId: playerId, leagueId: this.leagueId}).then(data => {
-                this.bluePlayer1 = Player.fromJson(data.player);
-                this.league = League.fromJson(data.league);
-                this.title = this.league.name;
-                this.leaguePlayerIds = this.league.leaguePlayers.map((leaguePlayer) => {
-                    this.playerRatings[leaguePlayer.player.id] = leaguePlayer.rating;
-                    return leaguePlayer.player.id;
-                });
-
-                this.pageTitleService.setTitle(this.league.name);
-                this.updatePlayerSelectionState();
-
-            });
+            this.graphQLService.post(
+                NewGameComponent.getPlayerLeagueQuery,
+                {playerId: playerId, leagueId: this.leagueId},
+                data => this.handlePlayerLeagueQueryResponse(data)
+            );
         }
+    }
+
+    private handlePlayerLeagueQueryResponse(data) {
+        this.bluePlayer1 = Player.fromJson(data.player);
+        this.league = League.fromJson(data.league);
+        this.title = this.league.name;
+        this.leaguePlayerIds = this.league.leaguePlayers.map((leaguePlayer) => {
+            this.playerRatings[leaguePlayer.player.id] = leaguePlayer.rating;
+            return leaguePlayer.player.id;
+        });
+
+        this.pageTitleService.setTitle(this.league.name);
+        this.updatePlayerSelectionState();
     }
 
     onPlayClicked() {
@@ -188,7 +193,10 @@ export class NewGameComponent
             leagueId: this.leagueId
         };
         createGameParams['leagueId'] = this.league.id;
-        return this.graphQLService.post(GamePlayComponent.createGameMutation, createGameParams).then(
+        return this.graphQLService.post(
+            GamePlayComponent.createGameMutation,
+            createGameParams
+        ).then(
             data => {
                 console.log('Game created', data);
                 return data.createGame.id;

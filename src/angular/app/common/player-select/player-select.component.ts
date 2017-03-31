@@ -39,12 +39,17 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
     }
 
     private loadAllPlayers() {
-        this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {playerIds: this.playerIds, first: -1}).then(
-                data => {
-                this.allPlayers = data.players.map((player) => Player.fromJson(player));
-                this.filterPlayers();
-                this.ready = true;
-            });
+        this.graphQLService.post(
+            PlayerSelectComponent.GetPlayersQuery,
+            {playerIds: this.playerIds, first: -1},
+            data => this.handleResponse(data)
+        );
+    }
+
+    private handleResponse(data) {
+        this.allPlayers = data.players.map((player) => Player.fromJson(player));
+        this.filterPlayers();
+        this.ready = true;
     }
 
     private filterPlayers() {

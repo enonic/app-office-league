@@ -45,12 +45,15 @@ export class GameComponent
 
     protected loadGame(gameId: string) {
         const query = this.getGameQuery();
-        this.graphQLService.post(query, {gameId: gameId}).then(
+        this.graphQLService.post(
+            query,
+            {gameId: gameId},
             data => {
                 this.game = Game.fromJson(data.game);
                 this.processGame(this.game);
                 this.afterGameLoaded(this.game);
-            }).catch(error => {
+            }
+        ).catch(error => {
             this.offlineService.loadGame(gameId).then(game => {
                 this.game = game;
                 this.processGame(this.game);

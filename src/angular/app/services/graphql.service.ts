@@ -19,7 +19,7 @@ export class GraphQLService {
 
     constructor(private http: Http, private cryptoService: CryptoService) {
     }
-    post(query: string, variables?: {[key: string]: any}, responseCallback?: (data) => void): Promise<any> {
+    post(query: string, variables?: {[key: string]: any}, successCallback?: (data) => void): Promise<any> {
         var body = JSON.stringify({query: query, variables: variables});
         var hash = this.cryptoService.sha1(body);
         var url = this.url + '?etag=' + hash;
@@ -33,9 +33,15 @@ export class GraphQLService {
             .catch(this.handleError)
             .toPromise();
 
-        return (typeof CacheStorage !== "undefined" && !!responseCallback) ?
-               this.getCachePromise(url, networkPromise, responseCallback) :
-               networkPromise.then(responseCallback);
+        if (typeof CacheStorage !== "undefined" && !!successCallback) {
+            return this.getCachePromise(url, networkPromise, successCallback);
+        }
+        
+        if (!!successCallback) {
+            return networkPromise.then(successCallback);
+        }
+        
+        return networkPromise;
     }
 
     private getCachePromise(url: string, fallbackPromise: Promise<any>, responseCallback: (data) => void): Promise<any> {

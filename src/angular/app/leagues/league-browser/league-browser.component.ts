@@ -45,18 +45,25 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
         super.ngOnInit();
 
         let user: ConfigUser = this.authService.getUser();
-        this.graphQLService.post(LeagueBrowserComponent.getLeaguesQuery, {playerId: user ? user.playerId : 'unknown'}).then((data: any) => {
-            this.myLeagues = data.myLeagues.map(league => League.fromJson(league));
-            let myLeagueIds = data.myLeagues.map(league => league.id);
-
-            this.discoverLeagues = data.allLeagues.
-                filter((league) => myLeagueIds.indexOf(league.id) == -1).
-                map(league => League.fromJson(league));
-        });
+        this.graphQLService.post(
+            LeagueBrowserComponent.getLeaguesQuery, 
+            {playerId: user ? user.playerId : 'unknown'},
+            data => this.handleLeaguesQueryResponse(data)
+        );
 
         this.pageTitleService.setTitle('Leagues');
     }
 
+    private handleLeaguesQueryResponse(data) {
+        this.myLeagues = data.myLeagues.map(league => League.fromJson(league));
+        let myLeagueIds = data.myLeagues.map(league => league.id);
+
+        this.discoverLeagues = 
+            data.allLeagues
+                .filter((league) => myLeagueIds.indexOf(league.id) == -1)
+                .map(league => League.fromJson(league));
+    }
+    
     ngAfterViewInit(): void {
         $(this.elementRef.nativeElement).find('ul.tabs').tabs();
     }
