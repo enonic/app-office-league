@@ -18,7 +18,9 @@ import {PlayerSelectComponent} from '../../common/player-select/player-select.co
     templateUrl: 'player-profile.component.html',
     styleUrls: ['player-profile.component.less']
 })
-export class PlayerProfileComponent extends BaseComponent implements OnChanges {
+export class PlayerProfileComponent
+    extends BaseComponent
+    implements OnChanges {
 
     @Input() player: Player;
     private profile: boolean;
@@ -78,10 +80,10 @@ export class PlayerProfileComponent extends BaseComponent implements OnChanges {
     }
 
     private handlePlayerLeagueQueryResponse(data) {
-        let playerIds = data.league.leaguePlayers.map((leaguePlayer) => leaguePlayer.player.id);
+        let playerIds = data.league.leaguePlayers.map((leaguePlayer) => leaguePlayer.player && leaguePlayer.player.id).filter((id) => !!id);
         this.graphQLService.post(PlayerSelectComponent.GetPlayersQuery, {playerIds: playerIds, first: -1});
     }
-    
+
     getNationality(): string {
         return Countries.getCountryName(this.player.nationality);
     }
