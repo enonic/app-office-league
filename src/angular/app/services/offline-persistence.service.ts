@@ -122,7 +122,6 @@ export class OfflinePersistenceService {
     }
 
     private storeGame(offlineGameJson: OfflineGameJson): Promise<string> {
-        debugger;
         if (!offlineGameJson.gameId || Game.isClientId(offlineGameJson.gameId)) {
             return this.createGame(offlineGameJson);
         } else {

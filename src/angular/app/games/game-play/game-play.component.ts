@@ -90,11 +90,23 @@ export class GamePlayComponent
     }
 
     ngOnInit(): void {
-        this.loadGameData()
-            .then(() => this.startGame())
-            .catch((error) => {
-                console.log('Could not start game');
-            });
+        this.route.queryParams.subscribe(params => {
+            if (!this.gameSelection.gameId) {
+                this.gameSelection.gameId = params['gameId'];
+            }
+            if (!this.gameSelection.league) {
+                let leagueId = this.route.snapshot.params['leagueId'];
+                if (leagueId) {
+                    this.gameSelection.league = new League(leagueId, 'League');
+                }
+            }
+            this.loadGameData()
+                .then(() => this.startGame())
+                .catch((error) => {
+                    console.log('Could not start game', error);
+                    this.router.navigate([''], {replaceUrl: true});
+                });
+        });
     }
 
     ngAfterViewInit() {
@@ -441,18 +453,18 @@ export class GamePlayComponent
         let playerIds = [this.gameSelection.bluePlayer1, this.gameSelection.redPlayer1, this.gameSelection.bluePlayer2,
             this.gameSelection.redPlayer2].filter((p) => p && p.id);
         return this.graphQLService.post(
-                GamePlayComponent.getPlayersLeagueQuery,
-                {playerIds: playerIds, leagueId: this.gameSelection.league.id},
-                data => this.handlePlayersLeagueQueryResponse(data)
-            ).catch((error) => {
-                console.log('Could not create game before starting. Offline mode On.');
-                this.onlineMode = false;
-                this.bluePlayer1 = this.gameSelection.bluePlayer1;
-                this.bluePlayer2 = this.gameSelection.bluePlayer2;
-                this.redPlayer1 = this.gameSelection.redPlayer1;
-                this.redPlayer2 = this.gameSelection.redPlayer2;
-                this.league = this.gameSelection.league;
-            });
+            GamePlayComponent.getPlayersLeagueQuery,
+            {playerIds: playerIds, leagueId: this.gameSelection.league.id},
+            data => this.handlePlayersLeagueQueryResponse(data)
+        ).catch((error) => {
+            console.log('Could not create game before starting. Offline mode On.');
+            this.onlineMode = false;
+            this.bluePlayer1 = this.gameSelection.bluePlayer1;
+            this.bluePlayer2 = this.gameSelection.bluePlayer2;
+            this.redPlayer1 = this.gameSelection.redPlayer1;
+            this.redPlayer2 = this.gameSelection.redPlayer2;
+            this.league = this.gameSelection.league;
+        });
     }
 
     private handlePlayersLeagueQueryResponse(data) {

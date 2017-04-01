@@ -87,7 +87,7 @@ export class NewGameComponent
         this.createGame().then((gameId) => {
             console.log('Initial game created: ' + gameId);
             this.gameSelection.gameId = gameId;
-            this.router.navigate(['games', this.leagueId, 'game-play']);
+            this.router.navigate(['games', this.leagueId, 'game-play'], {queryParams: {gameId: gameId}});
         }).catch((ex) => {
             console.log('Could not create game');
             this.gameSelection.gameId = null;
