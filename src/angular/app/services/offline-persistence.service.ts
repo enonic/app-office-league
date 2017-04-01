@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-// import {AngularIndexedDB} from 'angular2-indexeddb';
 import {Game} from '../../graphql/schemas/Game';
 import {SideUtil} from '../../graphql/schemas/Side';
 import {Point} from '../../graphql/schemas/Point';
@@ -9,6 +8,7 @@ import {GamePlayer} from '../../graphql/schemas/GamePlayer';
 import {GameTeam} from '../../graphql/schemas/GameTeam';
 import {Team} from '../../graphql/schemas/Team';
 import {GraphQLService} from './graphql.service';
+import {IndexedDB} from './indexeddb';
 
 interface OfflineGameJson {
     gameId?: string;
@@ -54,11 +54,11 @@ export class OfflinePersistenceService {
 
     constructor(private graphQLService: GraphQLService) {
         this.bindEvents();
-        // setTimeout(() => {
-        //     if (this.isOnline()) {
-        //         this.pushOfflineGames();
-        //     }
-        // }, 5000);
+        setTimeout(() => {
+            if (this.isOnline()) {
+                this.pushOfflineGames();
+            }
+        }, 5000);
     }
 
     isOnline(): boolean {
@@ -74,7 +74,7 @@ export class OfflinePersistenceService {
             let db = this.getDb();
 
             this.openStore(db).then(() => {
-                db.update(OfflinePersistenceService.dbStoreName, gameJson, gameJson.gameId).then(() => {
+                db.put(OfflinePersistenceService.dbStoreName, gameJson, gameJson.gameId).then(() => {
                     resolve(game);
 
                 }, (error) => {
@@ -93,7 +93,7 @@ export class OfflinePersistenceService {
             let db = this.getDb();
 
             this.openStore(db).then(() => {
-                db.getByKey(OfflinePersistenceService.dbStoreName, gameId).then((gameJson) => {
+                db.get(OfflinePersistenceService.dbStoreName, gameId).then((gameJson) => {
                     let game = gameJson ? this.gameFromJson(gameJson) : null;
                     resolve(game);
                 }, (error) => {
@@ -186,7 +186,7 @@ export class OfflinePersistenceService {
             let db = this.getDb();
 
             this.openStore(db).then(() => {
-                db.delete(OfflinePersistenceService.dbStoreName, gameId).then(() => {
+                db.remove(OfflinePersistenceService.dbStoreName, gameId).then(() => {
                     resolve();
                 }, (error) => {
                     reject();
@@ -209,13 +209,13 @@ export class OfflinePersistenceService {
         this.pushOfflineGames();
     }
 
-    private getDb() /*AngularIndexedDB */ {
-        return null;//new AngularIndexedDB(OfflinePersistenceService.dbName, OfflinePersistenceService.dbVersion);
+    private getDb(): IndexedDB {
+        return new IndexedDB(OfflinePersistenceService.dbName, OfflinePersistenceService.dbVersion);
     }
 
-    private openStore(db /*AngularIndexedDB*/): Promise<any> {
-        return db.createStore(OfflinePersistenceService.dbVersion, (evt) => {
-            let objectStore = evt.currentTarget.result.createObjectStore(OfflinePersistenceService.dbStoreName);
+    private openStore(db: IndexedDB): Promise<any> {
+        return db.createStore((evt) => {
+            let objectStore = (<any>evt.currentTarget).result.createObjectStore(OfflinePersistenceService.dbStoreName);
             objectStore.createIndex('gameId', 'gameId', {unique: true});
         });
     };
@@ -266,7 +266,7 @@ export class OfflinePersistenceService {
         game.league = new League(gameJson.league.leagueId, gameJson.league.name);
         game.league.imageUrl = gameJson.league.imageUrl;
 
-        const playerById: {[playerId: string]: GamePlayer} = {};
+        const playerById: { [playerId: string]: GamePlayer } = {};
         let gamePlayers: GamePlayer[] = gameJson.players.map((p) => {
             let gp = new GamePlayer(null);
             gp.side = SideUtil.parse(p.side);
@@ -277,7 +277,7 @@ export class OfflinePersistenceService {
             playerById[player.id] = gp;
             return gp;
         });
-        const teamById: {[teamId: string]: GameTeam} = {};
+        const teamById: { [teamId: string]: GameTeam } = {};
         let gameTeams: GameTeam[] = gameJson.teams.map((p) => {
             let gp = new GameTeam(null);
             gp.side = SideUtil.parse(p.side);
