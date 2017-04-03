@@ -19,7 +19,7 @@ export class GraphQLService {
 
     constructor(private http: Http, private cryptoService: CryptoService) {
     }
-    post(query: string, variables?: {[key: string]: any}, successCallback?: (data) => void): Promise<any> {
+    post(query: string, variables?: {[key: string]: any}, successCallback?: (data) => void, failureCallback?: (error) => void): Promise<any> {
         var body = JSON.stringify({query: query, variables: variables});
         var hash = this.cryptoService.sha1(body);
         var url = this.url + '?etag=' + hash;
@@ -34,7 +34,7 @@ export class GraphQLService {
             .toPromise();
 
         if (typeof CacheStorage !== "undefined" && !!successCallback) {
-            return this.getCachePromise(url, networkPromise, successCallback);
+            return this.getCachePromise(url, networkPromise, successCallback, failureCallback);
         }
         
         if (!!successCallback) {
@@ -44,18 +44,24 @@ export class GraphQLService {
         return networkPromise;
     }
 
-    private getCachePromise(url: string, fallbackPromise: Promise<any>, responseCallback: (data) => void): Promise<any> {
+    private getCachePromise(url: string, fallbackPromise: Promise<any>, responseCallback: (data) => void, failureCallback?: (error) => void): Promise<any> {
         var responseReceived = false;
         var cacheFound = false;
 
         fallbackPromise
             .then(data => { responseReceived = true; return data; })
             .then(responseCallback)
-            .catch(() => {
+            .catch(error => {
                 if (!cacheFound) {
-                    // Temporary solution: redirect to the offline page 
-                    // when we are offline and there's no cached API response
-                    document.location.href = XPCONFIG.baseHref.replace('/app/', '/offline');
+                    if (!!failureCallback) {
+                        failureCallback(error);
+                    }
+                    else {
+                        // Temporary solution: redirect to the offline page 
+                        // when we are offline and there's no cached API response
+                        
+                        document.location.href = XPCONFIG.baseHref.replace('/app/', '/offline');
+                    }
                 }
             });
         

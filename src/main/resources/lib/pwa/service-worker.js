@@ -259,7 +259,9 @@ self.addEventListener('fetch', function(e) {
                                 });
                             }
                             return response;
-                        });
+                        }).catch(function(err) {
+                           console.log(err);
+                       });
             })
     );
 });

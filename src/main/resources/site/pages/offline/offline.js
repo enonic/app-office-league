@@ -15,7 +15,8 @@ exports.get = function (req) {
     var appUrl = appContent.count === 0 ? '#' : portal.pageUrl({id: appContent.hits[0]._id}) + '/';
     var params = {
         page: content.page,
-        appUrl: appUrl
+        appUrl: appUrl,
+        assetUrl: appUrl === '#' ? './app/assets' : appUrl + 'assets'
     };
     var body = thymeleaf.render(view, params);
 

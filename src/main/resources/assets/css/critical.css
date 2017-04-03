@@ -94,6 +94,7 @@ img {
 .marketing.offline .offline-text-1 {
     font-size: 22px;
     opacity: 0.5;
+    padding: 0 15px;
 }
 
 .marketing.offline .offline-text-2 {

@@ -101,11 +101,7 @@ export class GamePlayComponent
                 }
             }
             this.loadGameData()
-                .then(() => this.startGame())
-                .catch((error) => {
-                    console.log('Could not start game', error);
-                    this.router.navigate([''], {replaceUrl: true});
-                });
+                .then(() => this.startGame());
         });
     }
 
@@ -228,9 +224,11 @@ export class GamePlayComponent
     }
 
     onEndGameClicked() {
-        this.deleteGame().then(id => {
-            return this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
-        })
+        this.onlineMode ?
+            this.deleteGame().then(id => {
+                return this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
+            })
+        : this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
     }
 
     onBlueGoalClick() {
@@ -453,18 +451,22 @@ export class GamePlayComponent
         let playerIds = [this.gameSelection.bluePlayer1, this.gameSelection.redPlayer1, this.gameSelection.bluePlayer2,
             this.gameSelection.redPlayer2].filter((p) => p && p.id);
         return this.graphQLService.post(
-            GamePlayComponent.getPlayersLeagueQuery,
-            {playerIds: playerIds, leagueId: this.gameSelection.league.id},
-            data => this.handlePlayersLeagueQueryResponse(data)
-        ).catch((error) => {
-            console.log('Could not create game before starting. Offline mode On.');
-            this.onlineMode = false;
-            this.bluePlayer1 = this.gameSelection.bluePlayer1;
-            this.bluePlayer2 = this.gameSelection.bluePlayer2;
-            this.redPlayer1 = this.gameSelection.redPlayer1;
-            this.redPlayer2 = this.gameSelection.redPlayer2;
-            this.league = this.gameSelection.league;
-        });
+                GamePlayComponent.getPlayersLeagueQuery,
+                {playerIds: playerIds, leagueId: this.gameSelection.league.id},
+                data => this.handlePlayersLeagueQueryResponse(data),
+                error => this.handleOfflineGame(error)
+            );
+    }
+
+    private handleOfflineGame(error) {
+        console.log('Could not create game before starting. Offline mode On.');
+
+        this.onlineMode = false;
+        this.bluePlayer1 = this.gameSelection.bluePlayer1;
+        this.bluePlayer2 = this.gameSelection.bluePlayer2;
+        this.redPlayer1 = this.gameSelection.redPlayer1;
+        this.redPlayer2 = this.gameSelection.redPlayer2;
+        this.league = this.gameSelection.league;
     }
 
     private handlePlayersLeagueQueryResponse(data) {
