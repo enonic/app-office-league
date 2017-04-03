@@ -2062,29 +2062,29 @@ exports.updateGameRanking = function (game) {
 /**
  * Delete a league by its name.
  * @param  {string} name Name of the league.
- * @return {string[]} Deleted node IDs.
+ * @return {string|null} Deleted node ID.
  */
 exports.deleteLeagueByName = function (name) {
     var league = exports.getLeagueByName(name);
     if (league) {
         var repoConn = newConnection();
-        return repoConn.delete(league._id);
+        return repoConn.delete(league._id) ? league._id : null;
     }
-    return [];
+    return null;
 };
 
 /**
  * Delete a league by its name.
  * @param  {string} id ID of the game.
- * @return {string[]} Deleted node IDs.
+ * @return {string|null} Delete node ID.
  */
 exports.deleteGameById = function (id) {
     var game = exports.getGameById(id);
     if (game) {
         var repoConn = newConnection();
-        return repoConn.delete(game._id);
+        return repoConn.delete(game._id) ? game._id : null;
     }
-    return [];
+    return null;
 };
 
 /**

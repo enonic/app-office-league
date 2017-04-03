@@ -180,7 +180,7 @@ export class OfflinePersistenceService {
         });
     }
 
-    private deleteOfflineGame(gameId: string): Promise<any> {
+    deleteOfflineGame(gameId: string): Promise<any> {
         return new Promise((resolve, reject) => {
             let db = this.getDb();
 

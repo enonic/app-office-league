@@ -228,7 +228,7 @@ export class GamePlayComponent
     }
 
     onEndGameClicked() {
-        this.deleteGame().then(ids => {
+        this.deleteGame().then(id => {
             return this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
         })
     }
@@ -576,14 +576,14 @@ export class GamePlayComponent
     }
 
     private deleteGame(): Promise<string> {
-        return this.graphQLService.post(
-            GamePlayComponent.deleteGameMutation,
-            {gameId: this.gameId}
-        ).then(
-            data => {
+        return this.offlineService.deleteOfflineGame(this.gameId).then(() =>
+            this.graphQLService.post(
+                GamePlayComponent.deleteGameMutation,
+                {gameId: this.gameId}
+            ).then(data => {
                 console.log('Game deleted', data);
                 return data.deleteGame;
-            }
+            })
         );
     }
 
