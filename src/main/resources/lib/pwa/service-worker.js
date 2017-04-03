@@ -211,26 +211,39 @@ self.addEventListener('fetch', function(e) {
     
     if (isRequestToAppPage(e.request.url)) {
 
-        // Requests to application pages will go Network only (for now) and not be cached.
+        // Requests to application pages will go Network first, then Cache.
         // If network is down we will serve the Offline page.
 
         consoleLog('Request to application page: ' + e.request.url);
         e.respondWith(
             fetch(e.request)
-            .then(function (response) {
-                consoleLog('Fetched ' + e.request.url);
-                return response;
-            })
-            .catch(function () {
-                if (e.request.method == 'GET') {
-                    consoleLog('Network is down. Serving offline page...');
+                .then(function (response) {
 
-                    return getFallbackPage();
-                }
-                else {
-                    consoleLog('Network is down. Failed to send ' + e.request.method + ' request');
-                }
-            })
+                    return caches
+                        .open(cacheName)
+                        .then(function(cache) {
+                            consoleLog('Fetched and cached ' + e.request.url);
+                            cache.put(e.request.url, response.clone());
+
+                            return response;
+                        });
+                })
+                .catch(function () {
+                    if (e.request.method == 'GET') {
+                        consoleLog('Network is down. Serving offline page...');
+                        return caches
+                            .match(e.request, {
+                                ignoreVary: true
+                            })
+                            .then(function (response) {
+                                return response || getFallbackPage();
+                            });
+                    }
+                    else {
+                        consoleLog('Network is down. Failed to send ' + e.request.method + ' request');
+                        return null;
+                    }
+                })
         );
 
         return;
