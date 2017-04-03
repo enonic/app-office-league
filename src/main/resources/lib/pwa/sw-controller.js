@@ -6,10 +6,13 @@ exports.get = function(req) {
     var sitePath = portalLib.getSite()._path;
     var siteUrl = portalLib.pageUrl({path: sitePath});
     var user = authLib.getUser();
+
+    siteUrl = (siteUrl == '/') ? '' : siteUrl;
+    
     var params = {
-        siteUrl: (siteUrl == '/') ? '/' : siteUrl + '/',
-        appUrl: (siteUrl == '/') ? '/app' : siteUrl + '/app',
-        assetUrl : portalLib.assetUrl(''),
+        siteUrl: siteUrl + '/',
+        appUrl: siteUrl + '/app',
+        assetUrl : siteUrl + '/app/assets',
         appVersion: app.version,
         userKey: user ? user.key : ''
     };

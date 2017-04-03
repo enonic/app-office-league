@@ -11,10 +11,11 @@ const staticAssets = [
     /*'{{siteUrl}}'.slice(0, - 1),
     '{{siteUrl}}',*/
     '{{appUrl}}/',
+    '{{appUrl}}',
     '{{siteUrl}}manifest.json',
     '{{assetUrl}}/css/critical.css',
-    '{{assetUrl}}/img/logo.svg',
     '{{assetUrl}}/img/office-league-logo.svg',
+    '{{assetUrl}}/img/logo.svg',
     '{{assetUrl}}/icons/apple-touch-icon.png',
     '{{assetUrl}}/icons/favicon-16x16.png',
     '{{assetUrl}}/icons/favicon-32x32.png',
@@ -44,7 +45,7 @@ function isRequestToAppRoot(url) {
 }
 
 function isRequestToAppPage(url) {
-    return !url.endsWith('.css') && !url.endsWith('.js') && url.indexOf(appUrl) > -1;
+    return url.indexOf('{{assetUrl}}') == -1 && url.indexOf(appUrl) > -1;
 }
 
 function isRequestToAPI(url) {
@@ -147,7 +148,7 @@ self.addEventListener('fetch', function(e) {
                             if (rootRequest) {
                                 consoleLog('Network is down. Trying to serve from cache...');
                                 return cache
-                                    .match(e.request.url.endsWith('/') ? e.request : e.request.url + '/', {
+                                    .match(e.request, {
                                         ignoreVary: true
                                     })
                                     .then(function (response) {

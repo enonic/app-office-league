@@ -4,13 +4,18 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <link rel="stylesheet" data-th-href="${portal.assetUrl({'_path=css/critical.css'})}"/>
+    <link rel="stylesheet" href="./app/assets/css/critical.css"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="./app/assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="./app/assets/icons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="./app/assets/icons/favicon-16x16.png" sizes="16x16">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="./app/assets/css/critical.css"/>
 </head>
 <body class="marketing offline">
 <div class="container">
     <header class="marketing__header">
         <a data-th-href="${appUrl}" href="./app">
-            <img class="marketing__logo" data-th-src="${portal.assetUrl({'_path=img/office-league-logo.svg'})}"/>
+            <img class="marketing__logo" src="./app/assets/img/office-league-logo.svg"/>
         </a>
     </header>
     <footer class="marketing__footer">
