@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <div class="row league-profile">
+    <div class="row league-profile" *ngIf="adminInLeague || (authService.isAuthenticated() && !playerInLeague)">
 
         <div *ngIf="authService.isAuthenticated() && !playerInLeague" class="col s12" (click)="onJoinClicked()">
             <a class="waves-effect waves-light btn green"><i class="material-icons left">person_add</i>Join</a>
@@ -28,29 +28,20 @@
         </div>
     </div>
 
-
-    <div class="row">
-        <div class="col s12">
-            <template [ngIf]="activeGames.length > 0">
-                <game-list [title]="'Active games'"
-                           [games]="activeGames"></game-list>
-            </template>
-
-        </div>
-    </div>
-
     <div class="row">
         <div class="col s12">
             <ul class="row list">
                 <li class="col s12">
                     <league-player-list title="Top players" displayPlayers="true"
                                         [leaguePlayers]="league.leaguePlayers"
-                                        [detailsPath]="['leagues', league.name.toLowerCase(), 'players']"></league-player-list>
+                                        [detailsPath]="['leagues', league.name.toLowerCase(), 'players']"
+                                        [seeMoreText]="'See full player ranking…'"></league-player-list>
                 </li>
                 <li class="col s12">
                     <league-team-list title="Top teams" displayTeams="true"
                                       [leagueTeams]="league.leagueTeams"
-                                      [detailsPath]="['leagues', league.name.toLowerCase(), 'teams']"></league-team-list>
+                                      [detailsPath]="['leagues', league.name.toLowerCase(), 'teams']"
+                                      [seeMoreText]="'See full team ranking…'"></league-team-list>
                 </li>
                 <!--<li class="col s12 m6 l12">-->
                 <!--<div class="card">-->
@@ -64,13 +55,22 @@
         </div>
 
     </div>
-    
+
+    <div class="row">
+        <div class="col s12">
+            <template [ngIf]="activeGames.length > 0">
+                <game-list [title]="'Active games'"
+                           [games]="activeGames"></game-list>
+            </template>
+
+        </div>
+    </div>
+
     <div class="row">
         <game-list [title]="'Latest games'"
                    [games]="league.games"></game-list>
     </div>
 
-    
 
     <div class="modal center player-select-modal" materialize="modal"
          [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">

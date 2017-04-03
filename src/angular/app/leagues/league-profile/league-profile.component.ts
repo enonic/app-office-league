@@ -16,7 +16,7 @@ import {MaterializeDirective, MaterializeAction} from 'angular2-materialize/dist
 })
 export class LeagueProfileComponent extends BaseComponent implements OnChanges {
 
-    private static readonly getLeagueQuery = `query ($name: String, $first:Int, $sort: String, $playerId: ID!) {
+    private static readonly getLeagueQuery = `query ($name: String, $first:Int, $sort: String, $playerId: ID!, $activeGameCount:Int, $gameCount:Int) {
         league(name: $name) {
             id
             name
@@ -56,7 +56,7 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                     imageUrl
                 }
             }
-            games(finished: true){
+            games(first: $gameCount, finished: true){
                 id
                 time
                 finished
@@ -103,7 +103,7 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                     imageUrl
                 }
             }
-            activeGames {
+            activeGames(first: $activeGameCount) {
                 id
                 time
                 finished
@@ -197,7 +197,8 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
     refreshData(leagueName: String): void {
         let playerId = this.authService.isAuthenticated() ? this.authService.getUser().playerId : '-1';
 
-        const getLeagueParams = {name: leagueName, first: 3, sort: 'rating DESC, name ASC', playerId: playerId};
+        const getLeagueParams = {name: leagueName, first: 3, sort: 'rating DESC, name ASC', playerId: playerId,
+            activeGameCount: 3, gameCount: 3};
         this.graphQLService.post(
             LeagueProfileComponent.getLeagueQuery,
             getLeagueParams,

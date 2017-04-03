@@ -11,7 +11,7 @@
         <h5 *ngIf="displayTeams">No teams</h5>
     </li>
     <li *ngIf="leagueTeams?.length > 0 && this.detailsPath" href="#!" class="collection-item empty" (click)="onDetailsClicked()">
-        <h5>See more</h5>
+        <h5 class="grey-text darkened-4">{{seeMoreText}}</h5>
     </li>
     <li *ngIf="pages?.length > 1">
         <ul class="pagination center">

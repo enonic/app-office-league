@@ -12,6 +12,7 @@ export class LeagueTeamListComponent extends List2Component implements OnInit {
     @Input() leagueTeams: LeagueTeam[];
     @Input() displayTeams: boolean;
     @Input() displayLeagues: boolean;
+    @Input() seeMoreText: string = 'See more';
 
     constructor(route: ActivatedRoute, router: Router) {
         super(route, router);

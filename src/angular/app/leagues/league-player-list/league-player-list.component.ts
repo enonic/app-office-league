@@ -13,6 +13,7 @@ export class LeaguePlayerListComponent
     @Input() displayPlayers: boolean;
     @Input() displayLeagues: boolean;
     @Input() displayPlayBtn: boolean;
+    @Input() seeMoreText: string = 'See more';
 
     constructor(route: ActivatedRoute, router: Router) {
         super(route, router);
