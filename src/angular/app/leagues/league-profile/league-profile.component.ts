@@ -32,6 +32,7 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                 player {
                     name
                     imageUrl
+                    nickname
                 }
                 league {
                     name
@@ -47,6 +48,7 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
                     players {
                         name
                         imageUrl
+                        nickname
                     }
                 }
                 league {

@@ -18,6 +18,11 @@ export class TeamListPageComponent extends BaseComponent {
                 node {
                   name
                   imageUrl
+                  players {
+                    id
+                    name
+                    imageUrl
+                  }
                 }
             }
         }

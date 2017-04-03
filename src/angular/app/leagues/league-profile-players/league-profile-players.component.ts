@@ -28,6 +28,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
                         player {
                             name
                             imageUrl
+                            nickname
                         }    
                     }
                 }
@@ -37,6 +38,7 @@ export class LeagueProfilePlayersComponent extends BaseComponent {
                 id
                 name
                 imageUrl
+                nickname
             }
         }
     }`;

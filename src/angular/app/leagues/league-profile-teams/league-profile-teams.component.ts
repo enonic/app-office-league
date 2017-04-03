@@ -28,6 +28,11 @@ export class LeagueProfileTeamsComponent extends BaseComponent {
                         team {
                             name
                             imageUrl
+                            players {
+                                id
+                                name
+                                imageUrl
+                            }
                         }    
                     }
                 }

@@ -1,10 +1,26 @@
-.ranking-badges {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+.team-summary {
+  display: flex;
 }
 
-:host-context(.collection .collection-item.avatar ) div.secondary-content.ranking-badges {
-    top: 0;
-    height: 100%;
+.primary {
+  flex-grow: 1;
+}
+
+.secondary {
+  display: flex;
+  flex-direction: column;
+  height: 60px;
+  margin-left: auto;
+}
+
+.badges-container {
+  display: flex;
+  .rating-points {
+    vertical-align: middle;
+  }
+}
+
+span.badge {
+  margin-left: 0;
+  width: 50%;
 }

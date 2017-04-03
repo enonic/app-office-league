@@ -93,6 +93,7 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
                     id
                     name
                     imageUrl
+                    nickname
                   }
                 }
                 gameTeams {
@@ -133,6 +134,7 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
                 id
                 name
                 imageUrl
+                nickname
             }
         }
     }`;

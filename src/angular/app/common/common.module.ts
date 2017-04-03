@@ -4,7 +4,6 @@ import {NgModule} from '@angular/core';
 import {ListComponent} from './list.component';
 import {List2Component} from './list2.component';
 import {BaseComponent} from './base.component';
-import {RatingComponent} from './rating/rating.component';
 import {PlayerSummaryComponent} from './player-summary/player-summary.component';
 import {PlayerListComponent} from './player-list/player-list.component';
 import {TeamSummaryComponent} from './team-summary/team-summary.component';
@@ -16,7 +15,6 @@ import {PlayerSelectComponent} from './player-select/player-select.component';
 
 @NgModule({
     declarations: [
-        RatingComponent,
         PlayerSummaryComponent,
         PlayerListComponent,
         TeamSummaryComponent,
@@ -34,7 +32,6 @@ import {PlayerSelectComponent} from './player-select/player-select.component';
     ],
     exports: [
         BrowserModule,
-        RatingComponent,
         PlayerSummaryComponent,
         PlayerListComponent,
         TeamSummaryComponent,

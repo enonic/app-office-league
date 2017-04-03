@@ -14,7 +14,6 @@ export class TeamSummaryComponent
     extends BaseComponent {
 
     @Input() team: Team;
-    @Input() index: number;
     @Input() rating: number = 0;
     @Input() ranking: number = 0;
 

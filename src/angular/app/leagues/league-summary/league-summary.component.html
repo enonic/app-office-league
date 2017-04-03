@@ -6,12 +6,12 @@
         <img src="{{league.imageUrl}}" alt="{{league.name}}" class="circle">
         <div class="primary">
             <h2 class="title">{{league.name}}</h2>
-            <p>{{league.description}}</p>
+            <p class="grey-text darken-3">{{league.description}}</p>
         </div>
         <div class="secondary" *ngIf="ranking > 0">
             <div class="badges-container">
                 <span class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
-                <span class="badge grey darken-1 white-text"><small>{{ratingPoints()}}</small></span>
+                <span class="badge grey darken-1 white-text"><small class="rating-points">{{ratingPoints()}}</small></span>
             </div>
             <a class="waves-effect waves-light btn green" *ngIf="displayPlayBtn" (click)="onPlayClicked()"><i class="material-icons center">play_arrow</i>Play</a>
         </div>

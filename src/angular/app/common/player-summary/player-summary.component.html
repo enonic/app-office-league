@@ -2,15 +2,17 @@
     <loading></loading>
 </template>
 <template [ngIf]="player != null">
-    <rating class="right" [rating]="player.rating" [previousRating]="player.previousRating"></rating>
-
-    <span *ngIf="index != undefined" class="index">{{index}}</span>
-
-    <img src="{{player.imageUrl}}?size=42" alt="{{player.name}}" class="circle">
-    <span class="title">{{player.name}}</span>
-    <div class="secondary-content ranking-badges">
-        <span *ngIf="ranking > 0" class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
-        <span *ngIf="ranking > 0" class="badge grey darken-1 white-text"><small>{{ratingPoints()}}</small></span>
+    <div class="player-summary">
+        <img src="{{player.imageUrl}}?size=42" alt="{{player.name}}" class="circle">
+        <div class="primary">
+            <span class="title">{{player.name}}</span>
+            <p *ngIf="player.nickname" class="grey-text darken-3">{{player.nickname}}</p>
+        </div>
+        <div class="secondary" *ngIf="ranking > 0">
+            <div class="badges-container">
+                <span class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
+                <span class="badge grey darken-1 white-text"><small class="rating-points">{{ratingPoints()}}</small></span>
+            </div>
+        </div>
     </div>
-    <p *ngIf="player.nickname">{{player.nickname}}</p>
 </template>

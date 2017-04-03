@@ -18,6 +18,7 @@ export class PlayerListPageComponent extends BaseComponent {
                 node {
                   name
                   imageUrl
+                  nickname
                 }
             }
         }

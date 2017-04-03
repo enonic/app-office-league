@@ -207,6 +207,7 @@ export class GameProfileComponent
             player {
                 name
                 imageUrl
+                nickname
             }
         }
         gameTeams {
@@ -221,6 +222,7 @@ export class GameProfileComponent
                 players {
                     name
                     imageUrl
+                    nickname
                 }
             }
         }
