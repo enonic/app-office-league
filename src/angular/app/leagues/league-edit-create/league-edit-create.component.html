@@ -13,14 +13,14 @@
                     <input id="name" type="text" class="validate" name="name" autocomplete="off" [(ngModel)]="name" (ngModelChange)="updatePageTitle($event)"
                            required=""
                            aria-required="true" [ngClass]="nameClasses">
-                    <label class="active" for="name">League Name</label>
+                    <label [ngClass]="{'active': !!name}" for="name">League Name</label>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col s12 l8 offset-l2">
                     <i class="material-icons prefix">info_outline</i>
                     <input id="description" type="text" class="validate" autocomplete="off" name="description" [(ngModel)]="description">
-                    <label class="active" for="description">Description</label>
+                    <label [ngClass]="{'active': !!description}" for="description">Description</label>
                 </div>
             </div>
             <div class="row">

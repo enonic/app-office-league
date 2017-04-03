@@ -12,7 +12,7 @@
                         <input id="name" type="text" class="validate" name="name" autocomplete="off" [(ngModel)]="name"
                                (ngModelChange)="updatePageTitle($event)" required=""
                                aria-required="true" [ngClass]="nameClasses">
-                        <label class="active" for="name">Player Name</label>
+                        <label [ngClass]="{'active': !!name}" for="name">Player Name</label>
 
                     </div>
                 </div>
@@ -22,7 +22,7 @@
                         <input id="nickname" type="text" name="nickname" class="validate" autocomplete="off" [(ngModel)]="nickname"
                                required=""
                                aria-required="true">
-                        <label class="active" for="name">Nickname</label>
+                        <label [ngClass]="{'active': !!nickname}" for="name">Nickname</label>
                     </div>
                 </div>
                 <div class="row">
@@ -39,7 +39,7 @@
                         <i class="material-icons prefix">info_outline</i>
                         <textarea id="description" class="materialize-textarea" autocomplete="off" spellcheck="false" name="description"
                                   [(ngModel)]="description"></textarea>
-                        <label class="active" for="description">About</label>
+                        <label [ngClass]="{'active': !!description}" for="description">About</label>
                     </div>
                 </div>
                 <div class="row">
