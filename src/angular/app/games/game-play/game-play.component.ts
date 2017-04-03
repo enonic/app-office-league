@@ -101,7 +101,12 @@ export class GamePlayComponent
                 }
             }
             this.loadGameData()
-                .then(() => this.startGame());
+                .then(() => this.startGame())
+                .catch((error) => {
+                    console.log('Could not start game', error);
+                    // this.router.navigate([''], {replaceUrl: true});
+                    this.startGame()
+                });
         });
     }
 
@@ -224,11 +229,9 @@ export class GamePlayComponent
     }
 
     onEndGameClicked() {
-        this.onlineMode ?
-            this.deleteGame().then(id => {
-                return this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
-            })
-        : this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
+        this.deleteGame().then(id => {
+            this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
+        });
     }
 
     onBlueGoalClick() {
@@ -449,16 +452,16 @@ export class GamePlayComponent
 
         // load league and players for new game
         let playerIds = [this.gameSelection.bluePlayer1, this.gameSelection.redPlayer1, this.gameSelection.bluePlayer2,
-            this.gameSelection.redPlayer2].filter((p) => p && p.id);
+            this.gameSelection.redPlayer2].map((p) => p && p.id).filter((id) => !!id);
         return this.graphQLService.post(
-                GamePlayComponent.getPlayersLeagueQuery,
-                {playerIds: playerIds, leagueId: this.gameSelection.league.id},
-                data => this.handlePlayersLeagueQueryResponse(data),
-                error => this.handleOfflineGame(error)
-            );
+            GamePlayComponent.getPlayersLeagueQuery,
+            {playerIds: playerIds, leagueId: this.gameSelection.league.id},
+            data => this.handlePlayersLeagueQueryResponse(data),
+            error => this.handleOfflineGame()
+        );
     }
 
-    private handleOfflineGame(error) {
+    private handleOfflineGame() {
         console.log('Could not create game before starting. Offline mode On.');
 
         this.onlineMode = false;
