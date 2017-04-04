@@ -101,12 +101,11 @@ export class GamePlayComponent
                 }
             }
             this.loadGameData()
-                .then(() => this.startGame())
                 .catch((error) => {
                     console.log('Could not start game', error);
-                    // this.router.navigate([''], {replaceUrl: true});
-                    this.startGame()
-                });
+                })
+                .then(() => this.startGame())
+            ;
         });
     }
 

@@ -52,17 +52,17 @@ export class GameComponent
                 this.game = Game.fromJson(data.game);
                 this.processGame(this.game);
                 this.afterGameLoaded(this.game);
-            }
-        ).catch(error => {
-            this.offlineService.loadGame(gameId).then(game => {
-                this.game = game;
-                this.processGame(this.game);
-                this.afterGameLoaded(this.game);
-            }).catch(error => {
-                console.log('Could not load game: ' + gameId);
-                this.router.navigate([''], {replaceUrl: true});
-            })
-        });
+            },
+            error => {
+                this.offlineService.loadGame(gameId).then(game => {
+                    this.game = game;
+                    this.processGame(this.game);
+                    this.afterGameLoaded(this.game);
+                }).catch(error => {
+                    console.log('Could not load game: ' + gameId);
+                    this.router.navigate([''], {replaceUrl: true});
+                })
+            });
     }
 
     protected getGameQuery(): string {

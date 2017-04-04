@@ -8,8 +8,6 @@ const appUrl = '{{appUrl}}';
 const APIUrl = '{{appUrl}}/api/graphql?etag';
 const homePageUrl = '{{appUrl}}?source=web_app_manifest';
 const staticAssets = [
-    /*'{{siteUrl}}'.slice(0, - 1),
-    '{{siteUrl}}',*/
     '{{appUrl}}/',
     '{{appUrl}}',
     '{{siteUrl}}manifest.json',
