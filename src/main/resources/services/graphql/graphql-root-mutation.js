@@ -18,6 +18,12 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID)
             },
             data: function (env) {
+                var currentPlayerId = getCurrentPlayerId();
+                var adminPlayerIds = env.args.adminPlayerIds || [];
+                if (!currentPlayerId || (adminPlayerIds.indexOf(currentPlayerId) === -1)) {
+                    throw "The current player must be set as admin for a new league.";
+                }
+
                 var createdLeague = storeLib.createLeague({
                     name: env.args.name,
                     sport: env.args.sport,
@@ -26,6 +32,9 @@ exports.rootMutationType = graphQlLib.createObjectType({
                     adminPlayerIds: env.args.adminPlayerIds
                 });
                 storeLib.refresh();
+                storeLib.joinPlayerLeague(createdLeague._id, currentPlayerId);
+                storeLib.refresh();
+
                 return createdLeague;
             }
         },
@@ -39,6 +48,21 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID)
             },
             data: function (env) {
+                var currentPlayerId = getCurrentPlayerId();
+                var league = storeLib.getLeagueById(env.args.id);
+                if (!league) {
+                    return null;
+                }
+
+                if (!currentPlayerId || (league.adminPlayerIds.indexOf(currentPlayerId) === -1)) {
+                    throw "The league '" + league.name + "' cannot be updated. The current user is not an admin for the league.";
+                }
+
+                var adminPlayerIds = env.args.adminPlayerIds;
+                if (adminPlayerIds && (adminPlayerIds.indexOf(currentPlayerId) === -1)) {
+                    throw "The current player must be set as admin for the league.";
+                }
+
                 var updatedLeague = storeLib.updateLeague({
                     leagueId: env.args.id,
                     name: env.args.name,
