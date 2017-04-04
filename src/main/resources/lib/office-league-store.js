@@ -745,6 +745,36 @@ exports.getActiveGamesByLeagueId = function (leagueId, start, count) {
 };
 
 /**
+ * Retrieve the list of games that are not finished.
+ * @param  {number} [start=0] First index of the games.
+ * @param  {number} [count=10] Number of games to fetch.
+ * @return {GamesResponse} Games.
+ */
+exports.getUnfinishedGames = function (start, count) {
+    var repoConn = newConnection();
+
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.GAME + "' AND finished = 'false'",
+        sort: "time ASC"
+    });
+
+    var games = [];
+    if (result.count > 0) {
+        games = result.hits.map(function (hit) {
+            return exports.getGameById(hit.id);
+        });
+    }
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "hits": games
+    };
+};
+
+/**
  * Retrieve the list of leagues a player is a member of.
  * @param  {string} playerId Player id.
  * @param  {number} [start=0] First index of the leagues.
