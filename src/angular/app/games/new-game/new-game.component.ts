@@ -78,6 +78,9 @@ export class NewGameComponent
     }
 
     onPlayClicked() {
+        if (!this.playerSelectionReady || (this.shuffleCount > 0)) {
+            return;
+        }
         this.gameSelection.bluePlayer1 = this.bluePlayer1;
         this.gameSelection.bluePlayer2 = this.bluePlayer2;
         this.gameSelection.redPlayer1 = this.redPlayer1;
@@ -98,29 +101,33 @@ export class NewGameComponent
     private shuffleActions: { [id: string]: { from: NewGamePlayerComponent, to: NewGamePlayerComponent, player: Player, side: string, done: boolean } };
 
     onShuffleClicked() {
+        if (this.shuffleDisabled) {
+            return;
+        }
         this.shuffleCount = 5;
         this.shuffleStep();
     }
 
     private shuffleStep() {
-        let playerCmps: NewGamePlayerComponent[] = this.playerCmps.toArray();
-        let cmpTo;
-
         this.shuffleActions = {};
 
-        // first calculate positions without updating them to not interfere the calculations
-        this.playerCmps.forEach((cmpFrom, i) => {
-            cmpTo = this.randomPlayerCmp(playerCmps);
-            if (cmpTo != cmpFrom) {
-                this.shuffleActions[cmpFrom.player.id] = {
-                    from: cmpFrom,
-                    to: cmpTo,
-                    player: cmpFrom.player,
-                    side: cmpTo.sideClass,
-                    done: false,
-                };
-            }
-        });
+        while (Object.keys(this.shuffleActions).length === 0) {
+            let playerCmps: NewGamePlayerComponent[] = this.playerCmps.toArray();
+
+            // first calculate positions without updating them to not interfere the calculations
+            this.playerCmps.forEach((cmpFrom, i) => {
+                let cmpTo = this.randomPlayerCmp(playerCmps);
+                if (cmpTo != cmpFrom) {
+                    this.shuffleActions[cmpFrom.player.id] = {
+                        from: cmpFrom,
+                        to: cmpTo,
+                        player: cmpFrom.player,
+                        side: cmpTo.sideClass,
+                        done: false,
+                    };
+                }
+            });
+        }
 
         // then apply calculated positions
         Object.keys(this.shuffleActions).forEach(playerId => {
@@ -175,9 +182,10 @@ export class NewGameComponent
 
             this.shuffleCount = this.shuffleCount <= 0 ? 0 : this.shuffleCount - 1;
             if (this.shuffleCount > 0) {
-                setTimeout(() => this.shuffleStep(), 100);
+                setTimeout(() => this.shuffleStep(), 0);
             } else {
                 this.shuffleDisabled = false;
+                this.updatePlayerSelectionState();
             }
         }
     }

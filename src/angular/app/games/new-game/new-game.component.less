@@ -5,6 +5,8 @@
   flex-direction: column;
   justify-content: space-between;
   position: relative; // for shuffle animation
+  padding-top: 5vh;
+  padding-bottom: 5vh;
 }
 
 .side {
@@ -20,8 +22,6 @@ new-game-player {
   flex-direction: column;
   align-items: center;
 
-  padding-top: 5vh;
-  padding-bottom: 5vh;
   position: relative; // for shuffle animation
 
   &.animate {
@@ -38,9 +38,32 @@ new-game-player {
   justify-content: space-around;
 }
 
-h5.vs {
+h4.vs {
   margin-bottom: 0;
   margin-top: 0;
+
+  animation: vs-pulse 2s ease-in-out infinite;
+}
+
+@keyframes vs-pulse {
+  0% {
+    font-size: 2.28rem;
+    color: #424242;
+  }
+  25% {
+    color: @red-team-color;
+  }
+  50% {
+    font-size: 2.92rem;
+    color: #424242;
+  }
+  75% {
+    color: @blue-team-color;
+  }
+  100% {
+    font-size: 2.28rem;
+    color: #424242;
+  }
 }
 
 .league-header {
@@ -58,7 +81,6 @@ h5.vs {
 }
 
 h6.expected-score {
-  margin-bottom: 0;
   margin-top: 0;
 }
 
@@ -74,4 +96,8 @@ h6.expected-score {
   &.team-blue {
     background-color: @blue-team-color;
   }
+}
+
+.new-game-actions {
+  padding-top: 20px;
 }
