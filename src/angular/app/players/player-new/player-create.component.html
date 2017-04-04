@@ -1,21 +1,21 @@
 <div class="card">
     <div class="card-content blue-grey-text">
-        <form>
+        <form [formGroup]="playerForm">
             <div class="row">
                 <div class="input-field col s12">
                     <i class="material-icons prefix">fingerprint</i>
-                    <input id="name" type="text" class="validate" name="name" autofocus autocomplete="off" [(ngModel)]="name" required="required"
-                           aria-required="true" [ngClass]="nameClasses">
-                    <label class="active" for="name">Full Name</label>
+                    <input id="name" type="text" formControlName="name"
+                           (ngModelChange)="updatePageTitle($event)" [class.invalid]="!!formErrors.name"
+                           required="required" aria-required="true" autofocus autocomplete="off">
+                    <label class="active" [attr.data-error]="formErrors.name" for="name">Full Name</label>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col s12">
                     <i class="material-icons prefix">pets</i>
-                    <input id="nickname" type="text" class="validate" name="nickname" autocomplete="off" [(ngModel)]="nickname"
-                           required="required"
-                           aria-required="true">
-                    <label class="active" for="name">Nickname</label>
+                    <input id="nickname" type="text" formControlName="nickname" [class.invalid]="!!formErrors.nickname"
+                           required="required" aria-required="true" autocomplete="off">
+                    <label class="active" [attr.data-error]="formErrors.nickname" for="name">Nickname</label>
                 </div>
             </div>
             <div class="row">
@@ -30,8 +30,8 @@
             <div class="row">
                 <div class="input-field col s12">
                     <i class="material-icons prefix">info_outline</i>
-                    <textarea id="description" class="materialize-textarea" autocomplete="off" spellcheck="false" name="description"
-                              [(ngModel)]="description"></textarea>
+                    <textarea id="description" class="materialize-textarea" autocomplete="off" spellcheck="false"
+                              formControlName="description"></textarea>
                     <label class="active" for="description">About</label>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                 <div class="col s12">
                     <i class="material-icons prefix">language</i>
                     <label class="nationality">Nationality</label>
-                    <select class="browser-default" [(ngModel)]="nationality" name="nationality">
+                    <select class="browser-default" formControlName="nationality">
                         <option [value]="" disabled>Choose your nationality</option>
                         <option *ngFor="let country of countries;" [value]="country.code" [selected]="country.code == nationality">
                             {{country.name}}
@@ -80,7 +80,8 @@
         </button>
     </div>-->
     <div class="col s6">
-        <button class="btn waves-effect waves-light light-blue darken-3 right" type="submit" name="create" (click)="onSaveClicked()">
+        <button class="btn waves-effect waves-light light-blue darken-3 right" type="submit" name="create" (click)="onSaveClicked()"
+                [disabled]="!playerForm.valid">
             Create Player
         </button>
     </div>

@@ -36,7 +36,7 @@ export class NewGameComponent
     expectedScoreBlue: string;
     playerSelectionReady: boolean;
     shuffleDisabled: boolean;
-    private shuffleCount: number = 0;
+    shuffleCount: number = 0;
     private playerRatings: { [playerId: string]: number } = {};
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute,

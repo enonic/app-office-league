@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild, AfterViewInit, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, ElementRef, ViewChild, AfterViewInit, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Handedness} from '../../../graphql/schemas/Handedness';
@@ -10,6 +10,9 @@ import {Country} from '../../common/country';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
 import {PageTitleService} from '../../services/page-title.service';
+import {FormGroup, FormBuilder, FormControl, Validators} from '@angular/forms';
+import {PlayerValidator} from '../player-validator';
+import {ImageService} from '../../services/image.service';
 
 @Component({
     selector: 'player-edit',
@@ -18,26 +21,47 @@ import {PageTitleService} from '../../services/page-title.service';
 })
 export class PlayerEditComponent extends BaseComponent implements OnInit, AfterViewInit {
 
-    name: string;
-    id: string;
-    nickname: string;
-    nationality: string;
-    handedness: string;
-    description: string;
+    playerForm: FormGroup;
     imageUrl: string;
+    formErrors = {
+        'name': '',
+        'nickname': ''
+    };
 
     countries: Country[] = [];
     @ViewChild('fileInput') inputEl: ElementRef;
-    nameClasses: {} = {invalid: false};
 
-    constructor(private http: Http, route: ActivatedRoute, private pageTitleService: PageTitleService, private graphQLService: GraphQLService,
-                private router: Router,
-                private location: Location) {
+    constructor(private http: Http, route: ActivatedRoute, private pageTitleService: PageTitleService,
+                private graphQLService: GraphQLService,
+                private router: Router, private location: Location, private fb: FormBuilder) {
         super(route);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
+
+        this.playerForm = this.fb.group({
+            name: new FormControl(null,
+                [Validators.required, Validators.minLength(3), Validators.maxLength(30)],
+                PlayerValidator.nameInUseValidator(this.graphQLService)),
+            nickname: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
+            nationality: null,
+            handedness: Handedness[Handedness.RIGHT].toLowerCase(),
+            description: null,
+            id: null
+        });
+
+        const updateFormErrors = (data?: any) => {
+            PlayerValidator.updateFormErrors(this.playerForm, this.formErrors);
+        };
+
+        this.playerForm.valueChanges.subscribe(data => updateFormErrors(data));
+        this.playerForm.statusChanges.subscribe(data => updateFormErrors(data));
+
+        updateFormErrors(); // (re)set validation messages now
+
+        this.imageUrl = ImageService.playerDefault();
+        this.countries = Countries.getCountries();
 
         let name = this.route.snapshot.params['name'];
         this.pageTitleService.setTitle('Edit Player');
@@ -49,13 +73,13 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
     }
 
-    private updatePageTitle(title: string) {
+    public updatePageTitle(title: string) {
         this.pageTitleService.setTitle(title);
     }
 
     private loadPlayer(name) {
         this.graphQLService.post(
-            PlayerEditComponent.getPlayerQuery, 
+            PlayerEditComponent.getPlayerQuery,
             {name: name},
             data => this.handlePlayerQueryResponse(data)
         );
@@ -63,37 +87,29 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
 
     private handlePlayerQueryResponse(data) {
         const player = Player.fromJson(data.player);
-        this.name = player.name;
-        this.nickname = player.nickname;
-        this.id = player.id;
-        this.nationality = player.nationality;
-        this.handedness = Handedness[player.handedness || Handedness.RIGHT].toLowerCase();
-        this.description = player.description;
+
         this.imageUrl = player.imageUrl;
 
-        this.countries = Countries.getCountries();
+        this.playerForm.setValue({
+            name: player.name,
+            nickname: player.nickname,
+            nationality: player.nationality,
+            handedness: Handedness[player.handedness].toLowerCase(),
+            description: player.description,
+            id: player.id
+        });
 
         this.pageTitleService.setTitle(player.name);
 
         // TODO, if not current player, redirect to profile view
     }
-    
-    getNationality(): string {
-        return Countries.getCountryName(this.nationality);
-    }
 
     onSaveClicked() {
-        if (!this.validate()) {
+        if (!this.playerForm.valid) {
             return;
         }
 
-        this.checkPlayerNameInUse(this.name).then(playerNameInUse => {
-            if (playerNameInUse) {
-                this.nameClasses['invalid'] = true;
-            } else {
-                this.savePlayer();
-            }
-        });
+        this.savePlayer();
     }
 
     onCancelClicked() {
@@ -101,15 +117,7 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
     }
 
     savePlayer() {
-        const updatePlayerParams = {
-            playerId: this.id,
-            name: this.name,
-            description: this.description || '',
-            nickname: this.nickname || '',
-            nationality: this.nationality || '',
-            handedness: this.handedness || Handedness[Handedness.RIGHT],
-        };
-        this.graphQLService.post(PlayerEditComponent.updatePlayerMutation, updatePlayerParams).then(data => {
+        this.graphQLService.post(PlayerEditComponent.updatePlayerMutation, this.playerForm.value).then(data => {
             return data && data.updatePlayer;
         }).then(updatedPlayer => {
             this.uploadImage(updatedPlayer.id).then(uploadResp => {
@@ -118,11 +126,6 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
         });
     }
 
-    private checkPlayerNameInUse(name: string): Promise<boolean> {
-        return this.graphQLService.post(PlayerEditComponent.playerNameInUseQuery, {name: name}).then(data => {
-            return data && data.player ? data.player.id !== this.id : false;
-        });
-    }
 
     private uploadImage(id: string): Promise<any> {
         let inputEl: HTMLInputElement = this.inputEl.nativeElement;
@@ -147,18 +150,11 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
         return Promise.resolve();
     }
 
-    private validate(): boolean {
-        this.nameClasses['invalid'] = !this.name;
-        return !!this.name;
-    }
-
     private onFileInputChange(input: HTMLInputElement) {
         let preview = document.getElementsByClassName('preview')[0];
         if (input.files && input.files[0]) {
             let reader = new FileReader();
-            reader.onload = function (e) {
-                preview.setAttribute('src', (<any>e.target).result);
-            };
+            reader.onload = (e) => this.imageUrl = (<any>e.target).result;
             reader.readAsDataURL(input.files[0]);
         }
     }
@@ -172,13 +168,6 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
             nationality
             handedness
             description
-        }
-    }`;
-
-    private static readonly playerNameInUseQuery = `query($name: String){
-        player(name: $name) {
-            id
-            imageUrl
         }
     }`;
 

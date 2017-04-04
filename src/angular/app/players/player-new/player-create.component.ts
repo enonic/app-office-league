@@ -1,37 +1,39 @@
-import {Component, Input, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Handedness} from '../../../graphql/schemas/Handedness';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
 import {Countries} from '../../common/countries';
 import {Country} from '../../common/country';
-import {Http, Headers, RequestOptions, Response} from '@angular/http';
+import {Http, Headers, RequestOptions} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
 import {ImageService} from '../../services/image.service';
 import {AuthService} from '../../services/auth.service';
 import {PageTitleService} from '../../services/page-title.service';
+import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
+import {PlayerValidator} from '../player-validator';
 
 @Component({
     selector: 'player-create',
     templateUrl: 'player-create.component.html',
     styleUrls: ['player-create.component.less']
 })
+
 export class PlayerCreateComponent extends BaseComponent implements AfterViewInit {
 
-    name: string;
-    nickname: string;
-    nationality: string;
-    handedness: string;
-    description: string;
+    playerForm: FormGroup;
     imageUrl: string;
+    formErrors = {
+        'name': '',
+        'nickname': ''
+    };
 
     countries: Country[] = [];
     @ViewChild('fileInput') inputEl: ElementRef;
-    nameClasses: {} = {invalid: false};
 
     constructor(private http: Http, route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService,
-                private auth: AuthService) {
+                private auth: AuthService, private fb: FormBuilder) {
         super(route);
     }
 
@@ -44,11 +46,28 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
             return;
         }
 
-        this.name = user.playerName || '';
-        this.handedness = Handedness[Handedness.RIGHT].toLowerCase();
-        this.countries = Countries.getCountries();
+        this.playerForm = this.fb.group({
+            name: new FormControl(user.playerName || null,
+                [Validators.required, Validators.minLength(3), Validators.maxLength(30)],
+                PlayerValidator.nameInUseValidator(this.graphQLService)),
+            nickname: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
+            nationality: null,
+            handedness: Handedness[Handedness.RIGHT].toLowerCase(),
+            description: null
+        });
+
         this.imageUrl = ImageService.playerDefault();
+        this.countries = Countries.getCountries();
         this.pageTitleService.setTitle('Create Player');
+
+        const updateFormErrors = (data?: any) => {
+            PlayerValidator.updateFormErrors(this.playerForm, this.formErrors);
+        };
+
+        this.playerForm.valueChanges.subscribe(data => updateFormErrors(data));
+        this.playerForm.statusChanges.subscribe(data => updateFormErrors(data));
+
+        updateFormErrors(); // (re)set validation messages now
     }
 
     ngAfterViewInit(): void {
@@ -56,26 +75,16 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
     }
 
-    private updatePageTitle(title: string) {
+    public updatePageTitle(title: string) {
         this.pageTitleService.setTitle(title);
     }
 
-    getNationality(): string {
-        return Countries.getCountryName(this.nationality);
-    }
-
     onSaveClicked() {
-        if (!this.validate()) {
+        if (!this.playerForm.valid) {
             return;
         }
 
-        this.checkPlayerNameInUse(this.name).then(playerNameInUse => {
-            if (playerNameInUse) {
-                this.nameClasses['invalid'] = true;
-            } else {
-                this.savePlayer();
-            }
-        });
+        this.savePlayer();
     }
 
     onCancelClicked() {
@@ -83,15 +92,7 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
     }
 
     savePlayer() {
-        const createPlayerParams = {
-            name: this.name,
-            description: this.description || '',
-            nickname: this.nickname || '',
-            nationality: this.nationality || '',
-            handedness: this.handedness || Handedness[Handedness.RIGHT],
-        };
-
-        this.graphQLService.post(PlayerCreateComponent.createPlayerMutation, createPlayerParams).then(data => {
+        this.graphQLService.post(PlayerCreateComponent.createPlayerMutation, this.playerForm.value).then(data => {
             return data && data.createPlayer;
         }).then(createdPlayer => {
             if (createdPlayer) {
@@ -102,12 +103,6 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
                     this.router.navigate(['players', createdPlayer.name]);
                 });
             }
-        });
-    }
-
-    private checkPlayerNameInUse(name: string): Promise<boolean> {
-        return this.graphQLService.post(PlayerCreateComponent.playerNameInUseQuery, {name: name}).then(data => {
-            return data && data.player;
         });
     }
 
@@ -134,28 +129,14 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
         return Promise.resolve();
     }
 
-    private validate(): boolean {
-        this.nameClasses['invalid'] = !this.name;
-        return !!this.name;
-    }
-
     private onFileInputChange(input: HTMLInputElement) {
         let preview = document.getElementsByClassName('preview')[0];
         if (input.files && input.files[0]) {
             let reader = new FileReader();
-            reader.onload = function (e) {
-                preview.setAttribute('src', (<any>e.target).result);
-            };
+            reader.onload = (e) => this.imageUrl = (<any>e.target).result;
             reader.readAsDataURL(input.files[0]);
         }
     }
-
-    private static readonly playerNameInUseQuery = `query($name: String){
-        player(name: $name) {
-            id
-            imageUrl
-        }
-    }`;
 
     private static readonly createPlayerMutation = `mutation ($name: String!, $nickname: String, $description: String, $nationality: String, $handedness: Handedness) {
         createPlayer(name: $name, nickname: $nickname, description: $description, nationality: $nationality, handedness: $handedness) {

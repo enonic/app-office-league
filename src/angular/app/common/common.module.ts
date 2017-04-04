@@ -11,6 +11,7 @@ import {TeamListComponent} from './team-list/team-list.component';
 import {TeamPlayersComponent} from './team-players/team-players.component';
 import {LoadingComponent} from './loading/loading.component';
 import {PlayerSelectComponent} from './player-select/player-select.component';
+import {ReactiveFormsModule} from "@angular/forms";
 
 
 @NgModule({
@@ -28,10 +29,12 @@ import {PlayerSelectComponent} from './player-select/player-select.component';
     ],
     imports: [
         BrowserModule,
-        FormsModule
+        FormsModule,
+        ReactiveFormsModule
     ],
     exports: [
         BrowserModule,
+        ReactiveFormsModule,
         PlayerSummaryComponent,
         PlayerListComponent,
         TeamSummaryComponent,
