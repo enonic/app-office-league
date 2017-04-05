@@ -37,14 +37,14 @@
 
         </div>
     </div>
-    <h6 *ngIf="expectedScoreBlue && expectedScoreRed" class="center blue-grey-text text-darken-3 expected-score">Score prediction</h6>
-    <div *ngIf="expectedScoreBlue && expectedScoreRed" class="center">
+    <h6 [class.invisible]="!expectedScoreBlue || !expectedScoreRed" class="center blue-grey-text text-darken-3 expected-score">Score prediction</h6>
+    <div [class.invisible]="!expectedScoreBlue || !expectedScoreRed" class="center">
         <span class="expected-score__value team-blue">{{expectedScoreBlue}}</span> &mdash; <span class="expected-score__value team-red">{{expectedScoreRed}}</span>
     </div>
 
 </div>
 
-<div class="row new-game-actions">
+<div class="row">
     <div class="col s12 new-game-actions">
         <a class="waves-effect waves-light btn light-blue accent-4" (click)="onShuffleClicked()"
            [class.disabled]="shuffleDisabled">Shuffle</a>
