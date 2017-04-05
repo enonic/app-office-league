@@ -53,7 +53,7 @@ export class PlayerProfileComponent
 
         let playerChange = changes['player'];
         if (playerChange && playerChange.currentValue) {
-            this.pageTitleService.setTitle((<Player>playerChange.currentValue).nickname);
+            this.pageTitleService.setTitle((<Player>playerChange.currentValue).name);
         }
     }
 
@@ -65,7 +65,7 @@ export class PlayerProfileComponent
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
         this.editable = this.player.id === currentPlayerId;
 
-        this.pageTitleService.setTitle(this.player.nickname);
+        this.pageTitleService.setTitle(this.player.name);
         this.precacheNewGameRequests();
     }
 
