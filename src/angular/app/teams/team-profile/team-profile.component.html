@@ -3,7 +3,27 @@
 </template>
 <div *ngIf="team != null" class="team-profile">
 
-    <div class="row team-profile__header">
+
+    <div *ngIf="editable" class="fixed-action-btn" (click)="onEditClicked()">
+        <a class="btn-floating btn-large waves-effect waves-light light-blue"><i class="material-icons">mode_edit</i></a>
+    </div>
+
+    <div class="row team-profile__details">
+        <div class="col s4">
+            <img src="{{team.imageUrl}}?size=200" class="team-profile__avatar" alt="{{team.name}}">
+        </div>
+        <div class="col s8">
+            <div class="team-profile__name-wrapper">
+                <span class="team-profile__name">{{team.name}}</span>
+            </div>
+            <div class="team-profile__description">{{team.description}}</div>
+        </div>
+    </div>
+
+
+
+
+   <!-- <div class="row team-profile__header">
 
         <div class="col s4 m2">
             <img src="{{team.imageUrl}}?size=200" alt="{{team.name}}" class="circle">
@@ -16,7 +36,7 @@
             <a class="waves-effect waves-light btn light-blue darken-3"><i class="material-icons left">mode_edit</i>Edit</a>
         </div>
 
-    </div>
+    </div>-->
    <!-- <div class="row">
         <div class="col s12">
             <form>

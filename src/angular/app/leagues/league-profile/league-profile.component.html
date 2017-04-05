@@ -3,14 +3,48 @@
 </template>
 <template [ngIf]="league != null">
 
-    <div class="row league-profile">
+ <!--   <div class="row league-profile">
         <div class="col s12 m12 l12">
             <league-summary [league]="league"></league-summary>
         </div>
+    </div>-->
+
+
+    <div class="row league-profile__details">
+
+        <div class="col s4">
+            <img src="{{league.imageUrl}}?size=200" class="league-profile__avatar" alt="{{league.name}}">
+        </div>
+        <div class="col s8">
+            <div class="league-profile__name-wrapper">
+                <span class="league-profile__name">{{league.name}}</span>
+             </div>
+            <div class="league-profile__description">{{league.description}}</div>
+
+        </div>
+      <!--
+        <img src="{{league.imageUrl}}" class="league-profile__avatar" alt="{{league.name}}">
+        <div class="primary">
+            <span class="title">{{league.name}}</span>
+            <p class="grey-text darken-3">{{league.description}}</p>
+        </div>
+        <div class="secondary" *ngIf="ranking > 0">
+            <div class="badges-container">
+                <span class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
+                <span class="badge grey darken-1 white-text"><small class="rating-points">{{ratingPoints()}}</small></span>
+            </div>
+            <a class="waves-effect waves-light btn green" *ngIf="displayPlayBtn" (click)="onPlayClicked()"><i class="material-icons center">play_arrow</i>Play</a>
+        </div>-->
     </div>
 
-    <div class="row">
-        <div *ngIf="playerInLeague" class="col s12 m4 center" (click)="onPlayClicked()">
+
+
+
+
+
+
+    <div class="row league-profile__play">
+        <div *ngIf="playerInLeague" class="center" (click)="onPlayClicked()">
             <a class="waves-effect waves-light btn green"><i class="material-icons left">play_arrow</i>Play Game</a>
         </div>
     </div>
