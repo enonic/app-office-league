@@ -73,7 +73,10 @@ export class List2Component extends BaseComponent { //TODO Rename
 
     }
 
-    onDetailsClicked() {
+    onDetailsClicked(event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+
         this.router.navigate(this.detailsPath);
     }
 

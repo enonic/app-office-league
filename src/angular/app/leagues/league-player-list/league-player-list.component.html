@@ -1,21 +1,26 @@
-<ul class="collection list" [class.with-header]="!!title">
-    <li *ngIf="title" class="collection-header"><h4>{{title}}</h4></li>
-    <li href="#!" class="collection-item avatar" *ngFor="let leaguePlayer of leaguePlayers" (click)="onLeaguePlayerClicked(leaguePlayer)">
-        <league-summary *ngIf="displayLeagues" [league]="leaguePlayer.league" displayPlayBtn="displayPlayBtn" [rating]="leaguePlayer.rating" [ranking]="leaguePlayer.ranking"></league-summary>
-        <player-summary *ngIf="displayPlayers" [player]="leaguePlayer.player" [rating]="leaguePlayer.rating" [ranking]="leaguePlayer.ranking"></player-summary>
-    </li>
-    <li *ngIf="leaguePlayers?.length == 0" class="collection-item empty">
-        <h5 *ngIf="displayLeagues">No leagues</h5>
-        <h5 *ngIf="displayPlayers">No players</h5>
-    </li>
-    <li *ngIf="leaguePlayers?.length > 0 && this.detailsPath"  href="#!" class="collection-item empty" (click)="onDetailsClicked()">
-        <h5 class="grey-text darkened-4">{{seeMoreText}}</h5>
-    </li>
-    <li *ngIf="pages?.length > 1">
-        <ul class="pagination center">
-            <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i class="material-icons">chevron_left</i></a></li>
-            <li *ngFor="let page of pages;" [class.active]="page == currentPage" class="waves-effect"><a (click)="setCurrentPage(page)">{{page}}</a></li>
-            <li [class.disabled]="currentPage === pageCount" class="waves-effect"><a (click)="setCurrentPage(currentPage + 1)"><i class="material-icons">chevron_right</i></a></li>
-        </ul>
-    </li>
-</ul>
+<div class="collection list" [class.with-header]="!!title">
+    <h4 *ngIf="title" class="collection-header">{{title}}</h4>
+    <a href="#!" class="collection-item avatar" *ngFor="let leaguePlayer of leaguePlayers"
+       (click)="onLeaguePlayerClicked(leaguePlayer, $event)">
+        <league-summary *ngIf="displayLeagues" [league]="leaguePlayer.league" displayPlayBtn="displayPlayBtn" [rating]="leaguePlayer.rating"
+                        [ranking]="leaguePlayer.ranking"></league-summary>
+        <player-summary *ngIf="displayPlayers" [player]="leaguePlayer.player" [rating]="leaguePlayer.rating"
+                        [ranking]="leaguePlayer.ranking"></player-summary>
+    </a>
+    <h5 *ngIf="leaguePlayers?.length == 0" class="collection-item empty">
+        {{displayLeagues ? 'No leagues' : displayPlayers ? 'No players' : ''}}
+    </h5>
+    <a *ngIf="leaguePlayers?.length > 0 && this.detailsPath" href="#!" class="collection-item empty grey-text darkened-4"
+       (click)="onDetailsClicked($event)">
+        <h5>{{seeMoreText}}</h5>
+    </a>
+
+    <ul class="pagination center" *ngIf="pages?.length > 1">
+        <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i
+                class="material-icons">chevron_left</i></a></li>
+        <li *ngFor="let page of pages;" [class.active]="page == currentPage" class="waves-effect"><a
+                (click)="setCurrentPage(page)">{{page}}</a></li>
+        <li [class.disabled]="currentPage === pageCount" class="waves-effect"><a (click)="setCurrentPage(currentPage + 1)"><i
+                class="material-icons">chevron_right</i></a></li>
+    </ul>
+</div>

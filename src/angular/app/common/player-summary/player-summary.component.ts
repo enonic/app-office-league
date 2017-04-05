@@ -17,13 +17,6 @@ export class PlayerSummaryComponent
     @Input() playerId: string;
     @Input() rating: number = 0;
     @Input() ranking: number = 0;
-    @Input() disableClick: boolean;
-
-    @HostListener('click') onClick() {
-        if (!this.disableClick) {
-            this.router.navigate(['players', this.playerId || this.player.name]);
-        }
-    }
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private router: Router) {
         super(route);

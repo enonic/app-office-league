@@ -38,7 +38,10 @@ export class GameListComponent extends ListComponent implements OnInit, OnChange
         }
     }
 
-    onGameClicked(game: Game) {
+    onGameClicked(game: Game, event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+
         this.service.game = game;
         this.router.navigate(['games', game.id]);
     }

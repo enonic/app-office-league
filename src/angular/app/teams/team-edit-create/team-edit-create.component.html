@@ -30,7 +30,7 @@
                             <h6 class="team__players-title">Team Players</h6>
                         </li>
                         <li *ngFor="let player of players" class="collection-item avatar">
-                            <player-summary [player]="player" [disableClick]="true"></player-summary>
+                            <player-summary [player]="player"></player-summary>
                         </li>
                     </ul>
                     <template [ngIf]="createMode">

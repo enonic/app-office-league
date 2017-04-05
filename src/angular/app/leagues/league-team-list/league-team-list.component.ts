@@ -18,7 +18,10 @@ export class LeagueTeamListComponent extends List2Component implements OnInit {
         super(route, router);
     }
 
-    onLeagueTeamClicked(leagueTeam: LeagueTeam) {
+    onLeagueTeamClicked(leagueTeam: LeagueTeam, event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+
         if (this.displayLeagues) {
             this.router.navigate(['leagues', leagueTeam.league.name.toLowerCase()]);
         } else if (this.displayTeams) {

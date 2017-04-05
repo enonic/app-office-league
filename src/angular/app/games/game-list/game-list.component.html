@@ -1,9 +1,9 @@
-<ul class="collection list indexed" [class.with-header]="!!title">
-    <li *ngIf="title" class="collection-header"><h4>{{title}}</h4></li>
-    <li href="#!" class="collection-item" *ngFor="let game of games" (click)="onGameClicked(game)">
+<div class="collection list indexed" [class.with-header]="!!title">
+    <h4 *ngIf="title" class="collection-header">{{title}}</h4>
+    <a href="#!" class="collection-item" *ngFor="let game of games" (click)="onGameClicked(game, $event)">
         <game [game]="game"></game>
-    </li>
-    <li *ngIf="games?.length == 0" class="collection-item empty">
-        <h5 i18n="No games|Games list empty message">No games</h5>
-    </li>
-</ul>
+    </a>
+    <h5 *ngIf="games?.length == 0" class="collection-item empty" i18n="No games|Games list empty message">
+        No games
+    </h5>
+</div>

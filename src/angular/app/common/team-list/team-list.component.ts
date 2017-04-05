@@ -15,7 +15,10 @@ export class TeamListComponent extends List2Component {
         super(route, router);
     }
 
-    onTeamClicked(team: Team) {
+    onTeamClicked(team: Team, event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+
         this.router.navigate(['teams', team.name.toLowerCase()]);
     }
 }

@@ -15,7 +15,10 @@ export class LeagueListComponent extends ListComponent implements OnInit {
         super(route);
     }
 
-    onLeagueClicked(league: League) {
+    onLeagueClicked(league: League, event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+
         this.router.navigate(['leagues', league.name.toLowerCase()]);
     }
 }

@@ -19,7 +19,10 @@ export class LeaguePlayerListComponent
         super(route, router);
     }
 
-    onLeaguePlayerClicked(leaguePlayer: LeaguePlayer) {
+    onLeaguePlayerClicked(leaguePlayer: LeaguePlayer, event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+
         if (this.displayLeagues) {
             this.router.navigate(['leagues', leaguePlayer.league.name.toLowerCase()]);
         } else if (this.displayPlayers) {

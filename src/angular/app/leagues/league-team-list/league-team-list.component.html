@@ -1,26 +1,24 @@
-<ul class="collection list" [class.with-header]="!!title">
-    <li *ngIf="title" class="collection-header"><h4>{{title}}</h4></li>
-    <li href="#!" class="collection-item avatar" *ngFor="let leagueTeam of leagueTeams" (click)="onLeagueTeamClicked(leagueTeam)">
+<div class="collection list" [class.with-header]="!!title">
+    <h4 *ngIf="title" class="collection-header">{{title}}</h4>
+    <a href="#!" class="collection-item avatar" *ngFor="let leagueTeam of leagueTeams" (click)="onLeagueTeamClicked(leagueTeam, $event)">
         <league-summary *ngIf="displayLeagues" [league]="leagueTeam.league" [rating]="leagueTeam.rating"
                         [ranking]="leagueTeam.ranking"></league-summary>
         <team-summary *ngIf="displayTeams" [team]="leagueTeam.team" [rating]="leagueTeam.rating"
                       [ranking]="leagueTeam.ranking"></team-summary>
-    </li>
-    <li *ngIf="leagueTeams?.length == 0" class="collection-item empty">
-        <h5 *ngIf="displayLeagues">No leagues</h5>
-        <h5 *ngIf="displayTeams">No teams</h5>
-    </li>
-    <li *ngIf="leagueTeams?.length > 0 && this.detailsPath" href="#!" class="collection-item empty" (click)="onDetailsClicked()">
+    </a>
+    <h5 *ngIf="leagueTeams?.length == 0" class="collection-item empty">
+        {{displayLeagues ? 'No leagues' : displayTeams ? 'No teams' : ''}}
+    </h5>
+    <a href="#!" *ngIf="leagueTeams?.length > 0 && detailsPath" class="collection-item empty" (click)="onDetailsClicked($event)">
         <h5 class="grey-text darkened-4">{{seeMoreText}}</h5>
-    </li>
-    <li *ngIf="pages?.length > 1">
-        <ul class="pagination center">
-            <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i
-                    class="material-icons">chevron_left</i></a></li>
-            <li *ngFor="let page of pages;" [class.active]="page == currentPage" class="waves-effect"><a (click)="setCurrentPage(page)">{{page}}</a>
-            </li>
-            <li [class.disabled]="currentPage === pageCount" class="waves-effect"><a (click)="setCurrentPage(currentPage + 1)"><i
-                    class="material-icons">chevron_right</i></a></li>
-        </ul>
-    </li>
-</ul>
+    </a>
+    <ul class="pagination center" *ngIf="pages?.length > 1">
+        <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i
+                class="material-icons">chevron_left</i></a></li>
+        <li *ngFor="let page of pages;" [class.active]="page == currentPage" class="waves-effect"><a
+                (click)="setCurrentPage(page)">{{page}}</a>
+        </li>
+        <li [class.disabled]="currentPage === pageCount" class="waves-effect"><a (click)="setCurrentPage(currentPage + 1)"><i
+                class="material-icons">chevron_right</i></a></li>
+    </ul>
+</div>

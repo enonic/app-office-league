@@ -14,7 +14,10 @@ export class PlayerListComponent extends List2Component {
         super(route, router);
     }
 
-    onPlayerClicked(player: Player) {
+    onPlayerClicked(player: Player, event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+
         this.router.navigate(['players', player.name.toLowerCase()]);
     }
 }

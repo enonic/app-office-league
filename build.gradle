@@ -62,7 +62,7 @@ repositories {
 }
 
 task webpackBuild( type: NpmTask ) {
-    args = ['run', 'build:aot']
+    args = ['run', 'build']
 }
 
 webpackBuild.dependsOn 'npmInstall'

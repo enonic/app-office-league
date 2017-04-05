@@ -3,22 +3,21 @@
     <input [(ngModel)]="searchValue" (input)="onSearchFieldModified()" id="searchField" type="text">
     <label for="searchField">Search</label>
 </div>
-<ul class="collection list" [class.with-header]="!!title">
-    <li *ngIf="title" class="collection-header"><h4>{{title}}</h4></li>
-    <li href="#!" class="collection-item avatar" *ngFor="let player of players;" (click)="onPlayerClicked(player)">
+<div class="collection list" [class.with-header]="!!title">
+    <h4 *ngIf="title" class="collection-header">{{title}}</h4>
+    <a href="#!" class="collection-item avatar" *ngFor="let player of players;" (click)="onPlayerClicked(player, $event)">
         <player-summary [player]="player"></player-summary>
-    </li>
-    <li *ngIf="players?.length == 0" class="collection-item empty">
-        <h5>No players</h5>
-    </li>
-    <li *ngIf="pages?.length > 1">
-        <ul class="pagination center">
-            <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i
-                    class="material-icons">chevron_left</i></a></li>
-            <li *ngFor="let page of pages;" [class.active]="page == currentPage" class="waves-effect"><a (click)="setCurrentPage(page)">{{page}}</a>
-            </li>
-            <li [class.disabled]="currentPage === pageCount" class="waves-effect"><a (click)="setCurrentPage(currentPage + 1)"><i
-                    class="material-icons">chevron_right</i></a></li>
-        </ul>
-    </li>
-</ul>
+    </a>
+    <h5 *ngIf="players?.length == 0" class="collection-item empty">
+        No players
+    </h5>
+    <ul class="pagination center" *ngIf="pages?.length > 1">
+        <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i
+                class="material-icons">chevron_left</i></a></li>
+        <li *ngFor="let page of pages;" [class.active]="page == currentPage" class="waves-effect"><a
+                (click)="setCurrentPage(page)">{{page}}</a>
+        </li>
+        <li [class.disabled]="currentPage === pageCount" class="waves-effect"><a (click)="setCurrentPage(currentPage + 1)"><i
+                class="material-icons">chevron_right</i></a></li>
+    </ul>
+</div>
