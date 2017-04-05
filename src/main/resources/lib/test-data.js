@@ -22,7 +22,7 @@ function doCreateTestData() {
             userKey: 'user:system:su',
             description: 'Player One',
             handedness: 'left',
-            nickname: 'The Player',
+            fullname: 'The Player',
             nationality: 'us'
         });
         log.info('Player 1 created');
@@ -34,7 +34,7 @@ function doCreateTestData() {
             userKey: 'user:system:myuser2',
             description: 'Player Two',
             handedness: 'right',
-            nickname: 'The Other Player',
+            fullname: 'The Other Player',
             nationality: 'no'
         });
         log.info('Player 2 created');
@@ -46,7 +46,7 @@ function doCreateTestData() {
             userKey: 'user:system:myuser3',
             description: 'Player Three',
             handedness: 'left',
-            nickname: 'Some Other Player',
+            fullname: 'Some Other Player',
             nationality: 'ru'
         });
         log.info('Player 3 created');
@@ -58,7 +58,7 @@ function doCreateTestData() {
             userKey: 'user:system:myuser4',
             description: 'Player Four',
             handedness: 'right',
-            nickname: 'And Another Player',
+            fullname: 'And Another Player',
             nationality: 'fr'
         });
         log.info('Player 4 created');
