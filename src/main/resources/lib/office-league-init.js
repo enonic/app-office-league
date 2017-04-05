@@ -63,6 +63,50 @@ var createSite = function () {
             x: {}
         });
 
+        log.info('Adding Site page components...');
+        var repoConn = nodeLib.connect({
+            repoId: 'cms-repo',
+            branch: 'draft',
+            principals: ["role:system.admin"]
+        });
+        repoConn.modify({
+            key: siteContent._id,
+            editor: function (node) {
+                node.page = {
+                    "controller": app.name + ":marketing-page",
+                    "region": {
+                        "name": "main",
+                        "component": [
+                            {
+                                "type": "LayoutComponent",
+                                "LayoutComponent": {
+                                    "name": "1 column layout",
+                                    "template": "com.enonic.app.officeleague:layout-1-col",
+                                    "config": {
+                                        "paddingTop": false,
+                                        "paddingBottom": true
+                                    },
+                                    "region": {
+                                        "name": "main",
+                                        "component": {
+                                            "type": "TextComponent",
+                                            "TextComponent": {
+                                                "name": "Text",
+                                                "text": "<h1 style=\"text-align: center;\">Take foosball to the next level!</h1>\n<p class=\"justify\"><img src=\"image://58473b07-08fa-41ef-8df4-7708579eda67?keepSize=true\" alt=\"Frame\" style=\"width: 100%; text-align: justify;\" /></p>\n<h3 style=\"text-align: center;\">Create your league, invite and play to rule your opponents.</h3>\n<p style=\"text-align: center;\"><a href=\"app\" class=\"global__button\">GET STARTED</a></p>"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "config": {},
+                    "customized": true
+                };
+                return node;
+            }
+        });
+
         log.info('Set Site permissions...');
         contentLib.setPermissions({
             key: siteContent._id,
