@@ -89,7 +89,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
             type: graphQlObjectTypesLib.playerType,
             args: {
                 name: graphQlLib.nonNull(graphQlLib.GraphQLString),
-                nickname: graphQlLib.GraphQLString,
+                fullname: graphQlLib.GraphQLString,
                 nationality: graphQlLib.GraphQLString, //TODO
                 handedness: graphQlEnumsLib.handednessEnumType,
                 description: graphQlLib.GraphQLString
@@ -104,7 +104,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 }
                 var createdPlayer = storeLib.createPlayer({
                     name: env.args.name,
-                    nickname: env.args.nickname,
+                    fullname: env.args.fullname,
                     nationality: env.args.nationality,
                     handedness: env.args.handedness,
                     description: env.args.description,
@@ -119,7 +119,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
             args: {
                 id: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 name: graphQlLib.GraphQLString,
-                nickname: graphQlLib.GraphQLString,
+                fullname: graphQlLib.GraphQLString,
                 nationality: graphQlLib.GraphQLString, //TODO
                 handedness: graphQlEnumsLib.handednessEnumType,
                 description: graphQlLib.GraphQLString
@@ -128,7 +128,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 var updatedPlayer = storeLib.updatePlayer({
                     playerId: env.args.id,
                     name: env.args.name,
-                    nickname: env.args.nickname,
+                    fullname: env.args.fullname,
                     nationality: env.args.nationality,
                     handedness: env.args.handedness,
                     description: env.args.description

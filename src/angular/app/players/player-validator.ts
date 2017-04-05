@@ -1,4 +1,4 @@
-import {FormGroup, AsyncValidatorFn, AbstractControl} from '@angular/forms';
+import {AbstractControl, AsyncValidatorFn, FormGroup} from '@angular/forms';
 import {GraphQLService} from '../services/graphql.service';
 
 export class PlayerValidator {
@@ -10,14 +10,14 @@ export class PlayerValidator {
             'maxlength': '30 characters is enough for a name.',
             'nameinuse': 'This name is already taken, sorry.'
         },
-        'nickname': {
-            'required': 'Nickname is required.',
+        'fullname': {
+            'required': 'Full name is required.',
             'minlength': 'Nickame must be at least 3 characters long.',
-            'maxlength': '30 characters is enough for a nickname.'
+            'maxlength': '30 characters is enough for a full name.'
         }
     };
 
-    static updateFormErrors(form: FormGroup, formErrors: {[key: string]: string}) {
+    static updateFormErrors(form: FormGroup, formErrors: { [key: string]: string }) {
         if (!form) {
             return;
         }
@@ -35,11 +35,11 @@ export class PlayerValidator {
         }
     }
 
-    static nameInUseValidator(graphQLService: GraphQLService): AsyncValidatorFn {
-        return (control: AbstractControl): {[key: string]: any} => {
+    static nameInUseValidator(graphQLService: GraphQLService, id?: string): AsyncValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } => {
             const name = control.value;
             return graphQLService.post(PlayerValidator.playerNameInUseQuery, {name: name}).then(data => {
-                return data && data.player ? {'nameinuse': true} : null;
+                return data && data.player && (data.player.id !== id) ? {'nameinuse': true} : null;
             });
         };
     }
@@ -47,7 +47,6 @@ export class PlayerValidator {
     private static readonly playerNameInUseQuery = `query($name: String){
         player(name: $name) {
             id
-            imageUrl
         }
     }`;
 

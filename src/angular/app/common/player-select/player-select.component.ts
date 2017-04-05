@@ -99,7 +99,7 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
             id
             name
             imageUrl
-            nickname
+            description
         }
     }`;
 }

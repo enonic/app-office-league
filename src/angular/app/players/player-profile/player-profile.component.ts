@@ -115,10 +115,10 @@ export class PlayerProfileComponent
             id
             name
             imageUrl
-            nickname
             nationality
             handedness
             description
+            fullname
 
             gamePlayers(first: 5) {
               game {

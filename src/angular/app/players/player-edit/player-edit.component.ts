@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild, AfterViewInit, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Location} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Handedness} from '../../../graphql/schemas/Handedness';
@@ -7,10 +7,10 @@ import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
 import {Countries} from '../../common/countries';
 import {Country} from '../../common/country';
-import {Http, Headers, RequestOptions} from '@angular/http';
+import {Headers, Http, RequestOptions} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
 import {PageTitleService} from '../../services/page-title.service';
-import {FormGroup, FormBuilder, FormControl, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PlayerValidator} from '../player-validator';
 import {ImageService} from '../../services/image.service';
 
@@ -19,13 +19,15 @@ import {ImageService} from '../../services/image.service';
     templateUrl: 'player-edit.component.html',
     styleUrls: ['player-edit.component.less']
 })
-export class PlayerEditComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class PlayerEditComponent
+    extends BaseComponent
+    implements OnInit, AfterViewInit {
 
     playerForm: FormGroup;
     imageUrl: string;
     formErrors = {
         'name': '',
-        'nickname': ''
+        'fullname': ''
     };
 
     countries: Country[] = [];
@@ -44,7 +46,7 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
             name: new FormControl(null,
                 [Validators.required, Validators.minLength(3), Validators.maxLength(30)],
                 PlayerValidator.nameInUseValidator(this.graphQLService)),
-            nickname: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
+            fullname: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
             nationality: null,
             handedness: Handedness[Handedness.RIGHT].toLowerCase(),
             description: null,
@@ -92,7 +94,7 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
 
         this.playerForm.setValue({
             name: player.name,
-            nickname: player.nickname,
+            fullname: player.fullname,
             nationality: player.nationality,
             handedness: Handedness[player.handedness].toLowerCase(),
             description: player.description,
@@ -101,7 +103,10 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
 
         this.pageTitleService.setTitle(player.name);
 
-        // TODO, if not current player, redirect to profile view
+        this.playerForm.removeControl('name');
+        this.playerForm.addControl('name', new FormControl(player.name,
+            [Validators.required, Validators.minLength(3), Validators.maxLength(30)],
+            PlayerValidator.nameInUseValidator(this.graphQLService, player.id)));
     }
 
     onSaveClicked() {
@@ -117,7 +122,16 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
     }
 
     savePlayer() {
-        this.graphQLService.post(PlayerEditComponent.updatePlayerMutation, this.playerForm.value).then(data => {
+        const updatePlayerParams = {
+            playerId: this.playerForm.value.id,
+            name: this.playerForm.value.name,
+            description: this.playerForm.value.description || '',
+            fullname: this.playerForm.value.fullname || '',
+            nationality: this.playerForm.value.nationality || '',
+            handedness: this.playerForm.value.handedness || Handedness[Handedness.RIGHT],
+        };
+
+        this.graphQLService.post(PlayerEditComponent.updatePlayerMutation, updatePlayerParams).then(data => {
             return data && data.updatePlayer;
         }).then(updatedPlayer => {
             this.uploadImage(updatedPlayer.id).then(uploadResp => {
@@ -125,7 +139,6 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
             });
         });
     }
-
 
     private uploadImage(id: string): Promise<any> {
         let inputEl: HTMLInputElement = this.inputEl.nativeElement;
@@ -164,15 +177,15 @@ export class PlayerEditComponent extends BaseComponent implements OnInit, AfterV
             id
             name
             imageUrl
-            nickname
+            fullname
             nationality
             handedness
             description
         }
     }`;
 
-    private static readonly updatePlayerMutation = `mutation ($playerId: ID!, $name: String, $nickname: String, $description: String, $nationality: String, $handedness: Handedness) {
-        updatePlayer(id: $playerId, name: $name, nickname: $nickname, description: $description, nationality: $nationality, handedness: $handedness) {
+    private static readonly updatePlayerMutation = `mutation ($playerId: ID!, $name: String, $fullname: String, $description: String, $nationality: String, $handedness: Handedness) {
+        updatePlayer(id: $playerId, name: $name, fullname: $fullname, description: $description, nationality: $nationality, handedness: $handedness) {
             id
             name
             imageUrl

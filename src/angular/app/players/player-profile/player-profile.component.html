@@ -24,10 +24,10 @@
             <img src="{{player.imageUrl}}?size=200" alt="{{player.name}}" class="circle">
         </div>
         <div class="col s5 m8">
-            <div class="player-profile__nickname">
-                {{player.nickname}}
+            <div class="player-profile__description">
+                {{player.description}}
             </div>
-            <div>{{player.description}}</div>
+            <div>{{player.fullname}}</div>
             <div *ngIf="player.nationality != null">
                 <span class="flag-icon flag-icon-{{player.nationality}}"></span>
                 <span>{{getNationality()}}</span>

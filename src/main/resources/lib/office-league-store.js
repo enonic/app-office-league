@@ -60,7 +60,7 @@ var TYPE = {
  * @property {string} type Object type: 'player'
  * @property {string} userKey User key associated to the player.
  * @property {string} name Name of the player.
- * @property {string} nickname Nickname of the player.
+ * @property {string} fullname Full name of the player.
  * @property {string} image Attachment name of the player's image.
  * @property {string} imageUrl URL for the player's image.
  * @property {string} nationality 2 letter country code of the player (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
@@ -463,7 +463,7 @@ exports.findPlayers = function (searchText, start, count) {
     return query({
         start: start,
         count: count,
-        query: "type = '" + TYPE.PLAYER + "' AND ngram('name^5,nickname^3,description^3', '" + searchText + "', 'AND')"
+        query: "type = '" + TYPE.PLAYER + "' AND ngram('name^5,description^3', '" + searchText + "', 'AND')"
     });
 };
 
@@ -1138,7 +1138,7 @@ exports.createLeague = function (params) {
  * @param {object} params JSON with the player parameters.
  * @param {string} params.userKey User key associated to the player.
  * @param {string} params.name Name of the player.
- * @param {string} [params.nickname] Nickname of the player.
+ * @param {string} [params.fullname] Full name of the player.
  * @param {string} [params.imageStream] Stream with the player's image.
  * @param {string} [params.imageType] Mime type of the player's image.
  * @param {string} [params.nationality] 2 letter country code of the player (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
@@ -1164,7 +1164,7 @@ exports.createPlayer = function (params) {
         type: TYPE.PLAYER,
         userKey: params.userKey,
         name: params.name,
-        nickname: params.nickname,
+        fullname: params.fullname,
         image: imageAttachment && imageAttachment.name,
         nationality: params.nationality,
         handedness: params.handedness,
@@ -1604,7 +1604,7 @@ exports.joinTeamLeague = function (leagueId, teamId, rating) {
  * @param {object} params JSON with the player parameters.
  * @param {string} params.playerId Id of the player to update.
  * @param {string} [params.name] New name of the player.
- * @param {string} [params.nickname] New nickname of the player.
+ * @param {string} [params.fullname] New full name of the player.
  * @param {string} [params.imageStream] New stream with the player's image.
  * @param {string} [params.imageType] New mime type of the player's image.
  * @param {string} [params.nationality] New 2 letter country code of the player.
@@ -1646,8 +1646,8 @@ exports.updatePlayer = function (params) {
             if (params.name != null) {
                 node.name = params.name;
             }
-            if (params.nickname != null) {
-                node.nickname = params.nickname;
+            if (params.fullname != null) {
+                node.fullname = params.fullname;
             }
             if (params.nationality != null) {
                 node.nationality = params.nationality;
