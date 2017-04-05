@@ -11,12 +11,13 @@ var gameGCTaskLastRun;
 exports.launchGameGCTask = function () {
     gameGCTaskId = taskLib.submit({
         description: 'Remove abandoned games',
-        task: function (id) {
+        task: function () {
+            var id = gameGCTaskId;
             log.info('Game GC task started');
             gameGCTaskLastRun = gameGCTaskLastRun || new Date();
             var now, secSinceLastRun, sleepSec;
 
-            while (gameGCTaskId) {
+            while (gameGCTaskId === id) {
                 now = new Date();
                 secSinceLastRun = secondsBetween(gameGCTaskLastRun, now);
 
