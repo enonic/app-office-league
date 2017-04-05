@@ -21,11 +21,11 @@
     </div>-->
     <div class="row player-profile__details">
         <div class="col s4">
-            <img src="{{player.imageUrl}}?size=200" class="player-profile__avatar" alt="{{player.nickname}}">
+            <img src="{{player.imageUrl}}?size=200" class="player-profile__avatar" alt="{{player.name}}">
         </div>
         <div class="col s8">
             <div class="player-profile__nick-wrapper">
-                <span class="player-profile__nick">{{player.nickname}}</span>
+                <span class="player-profile__nick">{{player.name}}</span>
                 <div *ngIf="player.nationality != null" class="player-profile__flag flag-icon flag-icon-{{player.nationality}}"></div>
 
             </div>
