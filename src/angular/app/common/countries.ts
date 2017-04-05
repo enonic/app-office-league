@@ -11,7 +11,7 @@ export class Countries {
     }
 
     static getCountryName(countryCode: string) {
-        countryCode = (countryCode || '').toUpperCase();
+        countryCode = (countryCode || '').toLowerCase();
         return Countries.COUNTRIES[countryCode] || '';
     }
 

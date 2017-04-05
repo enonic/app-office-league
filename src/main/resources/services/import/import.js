@@ -283,8 +283,8 @@ var createPlayer = function (foosPlayer) {
 
     var playerNode = storeLib.createPlayer({
         name: foosPlayer.displayName,
-        nickname: foosPlayer.data.nickname,
-        description: foosPlayer.data.description,
+        fullname: foosPlayer.displayName,
+        description: foosPlayer.data.nickname,
         nationality: 'no',
         handedness: 'right',
         imageStream: stream,

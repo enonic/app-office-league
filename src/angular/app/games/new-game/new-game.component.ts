@@ -254,10 +254,9 @@ export class NewGameComponent
             id
             name
             imageUrl
-            nickname
+            description
             nationality
             handedness
-            description
         }
         
         league(id: $leagueId) {

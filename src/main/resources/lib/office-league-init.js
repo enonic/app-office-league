@@ -3,6 +3,7 @@ var valueLib = require('/lib/xp/value');
 var contextLib = require('/lib/xp/context');
 var nodeLib = require('/lib/xp/node');
 var contentLib = require('/lib/xp/content');
+var ioLib = require('/lib/xp/io');
 
 var REPO_NAME = 'office-league';
 var LEAGUES_PATH = '/leagues';
@@ -61,6 +62,63 @@ var createSite = function () {
                 // }
             },
             x: {}
+        });
+
+        var getStartedStream = ioLib.getResource('/import/get-started.png').getStream();
+        var getStartedMedia = contentLib.createMedia({
+            name: 'Get Started Image',
+            parentPath: DEFAULT_SITE_PATH,
+            mimeType: 'image/png',
+            branch: 'draft',
+            data: getStartedStream
+        });
+
+        log.info('Adding Site page components...');
+        var repoConn = nodeLib.connect({
+            repoId: 'cms-repo',
+            branch: 'draft',
+            principals: ["role:system.admin"]
+        });
+        repoConn.modify({
+            key: siteContent._id,
+            editor: function (node) {
+                node.page = {
+                    "controller": app.name + ":marketing-page",
+                    "region": {
+                        "name": "main",
+                        "component": [
+                            {
+                                "type": "LayoutComponent",
+                                "LayoutComponent": {
+                                    "name": "1 column layout",
+                                    "template": "com.enonic.app.officeleague:layout-1-col",
+                                    "config": {
+                                        "paddingTop": false,
+                                        "paddingBottom": true
+                                    },
+                                    "region": {
+                                        "name": "main",
+                                        "component": {
+                                            "type": "TextComponent",
+                                            "TextComponent": {
+                                                "name": "Text",
+                                                "text": "<h1 style=\"text-align: center;\">Take foosball to the next level!</h1>" +
+                                                        "<p class=\"justify\"><img src=\"image://" + getStartedMedia._id +
+                                                        "?keepSize=true\" alt=\"Frame\" style=\"width: 100%; text-align: justify;\" />" +
+                                                        "</p><h3 style=\"text-align: center;\">Create your league, invite and play to rule your opponents.</h3>" +
+                                                        "<p style=\"text-align: center;\"><a href=\"app\" class=\"global__button\">GET STARTED</a></p>"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "config": {},
+                    "customized": true
+                };
+                return node;
+            }
         });
 
         log.info('Set Site permissions...');

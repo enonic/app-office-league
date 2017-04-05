@@ -8,7 +8,7 @@ import {UrlHelper} from './UrlHelper';
 
 export class Player
     extends NamedEntity {
-    nickname: string;
+    fullname: string;
     nationality: string;
     handedness: Handedness;
     description: string;
@@ -23,7 +23,7 @@ export class Player
 
     static fromJson(json: any): Player {
         let player = new Player(json.id, json.name);
-        player.nickname = json.nickname;
+        player.fullname = json.fullname || '';
         player.nationality = json.nationality;
         player.handedness = HandednessUtil.parse(json.handedness);
         player.description = json.description;

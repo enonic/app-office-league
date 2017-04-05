@@ -44,7 +44,6 @@ export class PlayerSummaryComponent
                     id
                     name
                     imageUrl
-                    nickname
                     nationality
                     handedness
                     description

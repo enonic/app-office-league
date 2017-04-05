@@ -722,7 +722,6 @@ export class GamePlayComponent
             id
             name
             imageUrl
-            nickname
             nationality
             handedness
             description
@@ -747,7 +746,6 @@ export class GamePlayComponent
             id
             name
             imageUrl
-            nickname
             nationality
             handedness
             description

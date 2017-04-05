@@ -25,7 +25,7 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
     imageUrl: string;
     formErrors = {
         'name': '',
-        'nickname': ''
+        'fullname': ''
     };
 
     countries: Country[] = [];
@@ -50,7 +50,7 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
             name: new FormControl(user.playerName || null,
                 [Validators.required, Validators.minLength(3), Validators.maxLength(30)],
                 PlayerValidator.nameInUseValidator(this.graphQLService)),
-            nickname: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
+            fullname: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
             nationality: null,
             handedness: Handedness[Handedness.RIGHT].toLowerCase(),
             description: null
@@ -138,8 +138,8 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
         }
     }
 
-    private static readonly createPlayerMutation = `mutation ($name: String!, $nickname: String, $description: String, $nationality: String, $handedness: Handedness) {
-        createPlayer(name: $name, nickname: $nickname, description: $description, nationality: $nationality, handedness: $handedness) {
+    private static readonly createPlayerMutation = `mutation ($name: String!, $fullname: String, $description: String, $nationality: String, $handedness: Handedness) {
+        createPlayer(name: $name, fullname: $fullname, description: $description, nationality: $nationality, handedness: $handedness) {
             id
             name
             imageUrl

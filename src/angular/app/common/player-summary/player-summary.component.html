@@ -6,7 +6,7 @@
         <img src="{{player.imageUrl}}?size=42" alt="{{player.name}}" class="circle">
         <div class="primary">
             <span class="title">{{player.name}}</span>
-            <p *ngIf="player.nickname" class="grey-text darken-3">{{player.nickname}}</p>
+            <p *ngIf="player.description" class="grey-text darken-3">{{player.description}}</p>
         </div>
         <div class="secondary" *ngIf="ranking > 0">
             <div class="badges-container">

@@ -27,7 +27,7 @@ interface OfflineLeagueJson {
 interface OfflineGamePlayerJson {
     playerId: string;
     name: string;
-    nickname: string;
+    description: string;
     imageUrl: string;
     side: string;
 }
@@ -224,7 +224,7 @@ export class OfflinePersistenceService {
             return {
                 playerId: gp.player && gp.player.id,
                 name: gp.player && gp.player.name,
-                nickname: gp.player && gp.player.nickname,
+                description: gp.player && gp.player.description,
                 imageUrl: gp.player && gp.player.imageUrl,
                 side: SideUtil.toString(gp.side)
             }
@@ -271,7 +271,7 @@ export class OfflinePersistenceService {
             gp.side = SideUtil.parse(p.side);
             let player = new Player(p.playerId, p.name);
             player.imageUrl = p.imageUrl;
-            player.nickname = p.nickname;
+            player.description = p.description;
             gp.player = player;
             playerById[player.id] = gp;
             return gp;

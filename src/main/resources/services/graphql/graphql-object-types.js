@@ -3,6 +3,7 @@ var graphQlEnumsLib = require('./graphql-enums');
 var graphQlUtilLib = require('./graphql-util');
 var graphQlConnectionLib = require('./graphql-connection');
 var storeLib = require('office-league-store');
+var authLib = require('/lib/xp/auth');
 
 /* -----------------------------------------------------------------------
  * Interfaces
@@ -46,10 +47,14 @@ exports.playerType = graphQlLib.createObjectType({
                 return env.source.name;
             }
         },
-        nickname: {
+        fullname: {
             type: graphQlLib.GraphQLString,
             data: function (env) {
-                return env.source.nickname;
+                if (getCurrentPlayerId() === env.source._id) {
+                    return env.source.fullname;
+                } else {
+                    return '';
+                }
             }
         },
         nationality: {
@@ -666,3 +671,12 @@ exports.leagueType = graphQlLib.createObjectType({
         }
     }
 });
+
+var getCurrentPlayerId = function () {
+    var user = authLib.getUser();
+    if (!user) {
+        return null;
+    }
+    var player = storeLib.getPlayerByUserKey(user.key);
+    return player && player._id;
+};
