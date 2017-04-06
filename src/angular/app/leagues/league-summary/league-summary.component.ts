@@ -10,8 +10,7 @@ import {RankingHelper} from '../../../graphql/schemas/RankingHelper';
     templateUrl: 'league-summary.component.html',
     styleUrls: ['league-summary.component.less']
 })
-export class LeagueSummaryComponent
-    extends BaseComponent {
+export class LeagueSummaryComponent extends BaseComponent {
 
     @Input() league: League;
     @Input() displayPlayBtn: boolean = false;
@@ -32,5 +31,6 @@ export class LeagueSummaryComponent
 
     onPlayClicked() {
         this.router.navigate(['games', this.league.id, 'new-game']);
+        return false;
     }
 }
