@@ -228,16 +228,6 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
         this.router.navigate(['leagues', this.league.name.toLowerCase(), 'edit']);
     }
 
-    onJoinClicked() {
-        if (this.authService.isAuthenticated() && !this.playerInLeague) {
-            let playerId = this.authService.getUser().playerId;
-            this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery, {playerId: playerId, leagueId: this.league.id}).then(
-                    data => {
-                    this.refreshData(this.league.name);
-                });
-        }
-    }
-
     onAddPlayerClicked() {
         this.showModal();
     }

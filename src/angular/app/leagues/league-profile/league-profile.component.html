@@ -49,17 +49,14 @@
         </div>
     </div>
 
-    <div class="row league-profile" *ngIf="adminInLeague || (authService.isAuthenticated() && !playerInLeague)">
-
-        <div *ngIf="authService.isAuthenticated() && !playerInLeague" class="col s12" (click)="onJoinClicked()">
-            <a class="waves-effect waves-light btn green"><i class="material-icons left">person_add</i>Join</a>
-        </div>
-        <div *ngIf="adminInLeague" class="col s12 m4" (click)="onEditClicked()">
-            <a class="waves-effect waves-light btn light-blue darken-3"><i class="material-icons left">mode_edit</i>Edit</a>
-        </div>
-        <div *ngIf="adminInLeague" class="col s12 m4" (click)="onAddPlayerClicked()">
-            <a class="waves-effect waves-light btn light-blue darken-3"><i class="material-icons left">add</i>Add player</a>
-        </div>
+    <div *ngIf="adminInLeague" class="fixed-action-btn">
+        <a class="btn-floating btn-large light-blue lighten-2">
+            <i class="material-icons">menu</i>
+        </a>
+        <ul>
+            <li (click)="onAddPlayerClicked()"><a class="btn-floating green" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="material-icons">add</i></a></li>
+            <li (click)="onEditClicked()"><a class="btn-floating blue" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="material-icons">mode_edit</i></a></li>
+        </ul>
     </div>
 
     <div class="row">
