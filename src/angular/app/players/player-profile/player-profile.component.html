@@ -19,6 +19,12 @@
             <a class="waves-effect waves-light btn green"><i class="material-icons left">person_add</i>Create Team</a>
         </div>&ndash;&gt;
     </div>-->
+
+
+    <div *ngIf="editable" class="fixed-action-btn" (click)="onEditClicked()">
+        <a class="btn-floating btn-large waves-effect waves-light light-blue"><i class="material-icons">mode_edit</i></a>
+    </div>
+
     <div class="row player-profile__details">
         <div class="col s4">
             <img src="{{player.imageUrl}}?size=200" class="player-profile__avatar" alt="{{player.name}}">
@@ -51,8 +57,6 @@
 
 
 
-    <div *ngIf="editable" class="fixed-action-btn" (click)="onEditClicked()">
-        <a class="btn-floating btn-large waves-effect waves-light light-blue"><i class="material-icons">mode_edit</i></a>
-    </div>
+
 
 </div>
