@@ -6,4 +6,7 @@
     <h5 *ngIf="games?.length == 0" class="collection-item empty" i18n="No games|Games list empty message">
         No games
     </h5>
+    <a href="#!" *ngIf="games?.length > 0 && detailsPath" class="collection-item empty" (click)="onDetailsClicked($event)">
+        <h5 class="grey-text darkened-4">See all games...</h5>
+    </a>
 </div>

@@ -108,7 +108,8 @@
 
     <div class="row">
         <game-list [title]="'Latest games'"
-                   [games]="league.games"></game-list>
+                   [games]="league.games"
+                   [detailsPath]="['leagues', league.name.toLowerCase(), 'games']"></game-list>
     </div>
 
 
