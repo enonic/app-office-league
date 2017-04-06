@@ -1,6 +1,8 @@
-<div class="collection list" [class.with-header]="!!title">
+<div class="collection list league-player-list" [class.with-header]="!!title">
     <h4 *ngIf="title" class="collection-header">{{title}}</h4>
-    <a href="#!" class="collection-item avatar" *ngFor="let leaguePlayer of leaguePlayers"
+
+
+    <a href="#!" class="league-player-list__item" *ngFor="let leaguePlayer of leaguePlayers"
        (click)="onLeaguePlayerClicked(leaguePlayer, $event)">
         <league-summary *ngIf="displayLeagues" [league]="leaguePlayer.league" displayPlayBtn="displayPlayBtn" [rating]="leaguePlayer.rating"
                         [ranking]="leaguePlayer.ranking"></league-summary>

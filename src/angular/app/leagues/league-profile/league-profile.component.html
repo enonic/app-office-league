@@ -63,6 +63,15 @@
     </div>
 
     <div class="row">
+        <ul>
+            <league-player-list title="Top players" displayPlayers="true"
+                                [leaguePlayers]="league.leaguePlayers"
+                                [detailsPath]="['leagues', league.name.toLowerCase(), 'players']"
+                                [seeMoreText]="'See full player ranking…'"></league-player-list>
+        </ul>
+    </div>
+
+    <div class="row">
         <div class="col s12">
             <ul class="row list">
                 <li class="col s12">

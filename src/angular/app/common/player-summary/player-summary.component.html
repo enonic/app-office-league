@@ -3,16 +3,19 @@
 </template>
 <template [ngIf]="player != null">
     <div class="player-summary">
-        <img src="{{player.imageUrl}}?size=42" alt="{{player.name}}" class="circle">
-        <div class="primary">
-            <span class="title">{{player.name}}</span>
-            <p *ngIf="player.description" class="grey-text darken-3">{{player.description}}</p>
-        </div>
-        <div class="secondary" *ngIf="ranking > 0">
+        <div class="player-summary__ranking" *ngIf="ranking > 0">{{ranking}}</div>
+        <img src="{{player.imageUrl}}?size=42" alt="{{player.name}}" class="player-summary__avatar">
+        <div class="player-summary__name">{{player.name}}</div>
+        <div class="player-summary__rating">{{ratingPoints()}}</div>
+        <!-- <div class="primary">
+             <span class="title">{{player.name}}</span>&lt;!&ndash;
+             <p *ngIf="player.description" class="grey-text darken-3">{{player.description}}</p>&ndash;&gt;
+         </div>-->
+        <!--<div class="player-summary__" *ngIf="ranking > 0">
             <div class="badges-container">
-                <span class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
+
                 <span class="badge grey darken-1 white-text"><small class="rating-points">{{ratingPoints()}}</small></span>
             </div>
-        </div>
+        </div>-->
     </div>
 </template>
