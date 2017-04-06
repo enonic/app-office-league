@@ -29,8 +29,9 @@ export class LeagueSummaryComponent extends BaseComponent {
         return String(this.rating);
     }
 
-    onPlayClicked() {
+    onPlayClicked(event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
         this.router.navigate(['games', this.league.id, 'new-game']);
-        return false;
     }
 }
