@@ -15,7 +15,7 @@ import {ChartsModule} from 'ng2-charts';
 import {GameFlowComponent} from './game-flow/game-flow.component';
 import {GameSelection} from './GameSelection';
 import {RatingPointsComponent} from './rating-points/rating-points.component';
-
+import {MomentModule} from 'angular2-moment';
 
 const gameRoutes: Routes = [
     {
@@ -57,7 +57,8 @@ const gameRoutes: Routes = [
         MaterializeModule,
         RouterModule.forChild(gameRoutes),
         FormsModule,
-        ChartsModule
+        ChartsModule,
+        MomentModule
     ],
     exports: [GameListComponent],
     providers: [GameSelection],
