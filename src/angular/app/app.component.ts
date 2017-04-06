@@ -15,7 +15,7 @@ export class AppComponent {
     isPlayingGame: boolean;
     playerImage: string;
     pageTitle: string;
-    topLevelPage: boolean;
+    displayMenu: boolean;
 
     constructor(public auth: AuthService, private pageTitleService: PageTitleService, private location: Location, private router: Router) {
         this.logoUrl = ImageService.logoUrl();
@@ -25,13 +25,13 @@ export class AppComponent {
 
         this.pageTitleService.subscribeTitle(title => this.pageTitle = title).resetTitle();
 
-        this.topLevelPage = this.isTopLevelPage(this.router.url);
+        this.displayMenu = !this.router.navigated || this.isTopLevelPage(this.router.url);
 
         router.events
             .filter(event => event instanceof NavigationStart)
             .subscribe((event: NavigationStart) => {
                 this.isPlayingGame = new RegExp('/games/.*/game-play').test(event.url);
-                this.topLevelPage = this.isTopLevelPage(event.url);
+                this.displayMenu = !this.router.navigated || this.isTopLevelPage(event.url);
                 this.pageTitleService.resetTitle();
             });
     }
