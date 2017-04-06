@@ -1,9 +1,22 @@
+var authLib = require('/lib/xp/auth');
 var portal = require('/lib/xp/portal');
 var contentLib = require('/lib/xp/content');
 var thymeleaf = require('/lib/xp/thymeleaf');
 var view = resolve('./marketing-page.html');
 
 exports.get = function (req) {
+    
+    //If the user is authenticated, redirect him to the app
+    var site = portal.getSite();
+    if (authLib.getUser()) {
+        return {
+            redirect: portal.pageUrl({
+                path: site._path + '/app',
+                type: 'absolute'
+            })
+        };
+    }
+
     var content = portal.getContent();
     var appContent = contentLib.query({
         start: 0,
@@ -12,8 +25,7 @@ exports.get = function (req) {
             app.name + ":app"
         ]
     });
-    var appUrl = appContent.count === 0 ? '#' : portal.pageUrl({id: appContent.hits[0]._id});
-    var site = portal.getSite();
+    var appUrl = appContent.count === 0 ? '#' : portal.pageUrl({id: appContent.hits[0]._id});    
     var siteUrl = portal.pageUrl({
         path: site._path
     });
