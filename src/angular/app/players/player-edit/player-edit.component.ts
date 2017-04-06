@@ -29,6 +29,7 @@ export class PlayerEditComponent
         'name': '',
         'fullname': ''
     };
+    email: string;
 
     countries: Country[] = [];
     @ViewChild('fileInput') inputEl: ElementRef;
@@ -100,6 +101,7 @@ export class PlayerEditComponent
             description: player.description,
             id: player.id
         });
+        this.email = player.email;
 
         this.pageTitleService.setTitle(player.name);
 
@@ -181,6 +183,7 @@ export class PlayerEditComponent
             nationality
             handedness
             description
+            email
         }
     }`;
 

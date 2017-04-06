@@ -12,22 +12,22 @@
                         <input id="name" type="text" formControlName="name"
                                (ngModelChange)="updatePageTitle($event)" [class.invalid]="!!formErrors.name"
                                required="required" aria-required="true" autofocus autocomplete="off">
-                        <label class="active" [attr.data-error]="formErrors.name" for="name">Full Name</label>
+                        <label class="active" [attr.data-error]="formErrors.name" for="name">Username</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
-                        <i class="material-icons prefix">pets</i>
+                        <i class="material-icons prefix">perm_identity</i>
                         <input id="fullname" type="text" formControlName="fullname" [class.invalid]="!!formErrors.fullname"
                                required="required" aria-required="true" autocomplete="off">
-                        <label class="active" [attr.data-error]="formErrors.fullname" for="name">Full name</label>
+                        <label class="active" [attr.data-error]="formErrors.fullname" for="fullname">Full name</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
                         <input type="file" accept="image/*" #fileInput style="display:none;">
                         <div class="player-icon-frame">
-                            <img src="{{imageUrl}}?size=128" alt="Player Image" class="player-icon circle preview"
+                            <img src="{{imageUrl}}?size=200" alt="Player Image" class="player-icon circle preview"
                                  (click)="fileInput.click()">
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                     <div class="col s12">
                         <i class="material-icons prefix">language</i>
                         <label class="nationality">Nationality</label>
-                        <select class="browser-default" formControlName="nationality">
+                        <select class="browser-default player-nationality" formControlName="nationality">
                             <option [value]="" disabled>Choose your nationality</option>
                             <option *ngFor="let country of countries;" [value]="country.code" [selected]="country.code == nationality">
                                 {{country.name}}
@@ -52,6 +52,15 @@
                         </select>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col s12">
+                        <i class="material-icons prefix">email</i>
+                        <label class="player-email__label">Email</label>
+                        <div class="player-email">{{email}}</div>
+                    </div>
+                </div>
+
+
                 <!-- <div class="row">
                      <div class="col s6">
                          <i class="material-icons prefix">thumbs_up_down</i>

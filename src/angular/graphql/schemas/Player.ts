@@ -15,6 +15,7 @@ export class Player
     teams: Team[] = [];
     leaguePlayers: LeaguePlayer[] = [];
     imageUrl: string;
+    email: string;
 
     constructor(id: string, name: string) {
         super(id, name);
@@ -30,6 +31,7 @@ export class Player
         player.teams = json.teams ? json.teams.map((team) => Team.fromJson(team)) : [];
         player.leaguePlayers = json.leaguePlayers ? json.leaguePlayers.map((leaguePlayer) => LeaguePlayer.fromJson(leaguePlayer)) : [];
         player.imageUrl = json.imageUrl ? (UrlHelper.trimSlash(XPCONFIG.baseHref) + json.imageUrl) : ImageService.playerDefault();
+        player.email = json.email || '';
         return player;
     }
 }

@@ -7,22 +7,22 @@
                     <input id="name" type="text" formControlName="name"
                            (ngModelChange)="updatePageTitle($event)" [class.invalid]="!!formErrors.name"
                            required="required" aria-required="true" autofocus autocomplete="off">
-                    <label class="active" [attr.data-error]="formErrors.name" for="name">Full Name</label>
+                    <label class="active" [attr.data-error]="formErrors.name" for="name">Username</label>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col s12">
-                    <i class="material-icons prefix">pets</i>
+                    <i class="material-icons prefix">perm_identity</i>
                     <input id="fullname" type="text" formControlName="fullname" [class.invalid]="!!formErrors.fullname"
                            required="required" aria-required="true" autocomplete="off">
-                    <label class="active" [attr.data-error]="formErrors.fullname" for="name">Full name</label>
+                    <label class="active" [attr.data-error]="formErrors.fullname" for="fullname">Full name</label>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col s12">
                     <input type="file" accept="image/*" #fileInput style="display:none;">
                     <div class="player-icon-frame">
-                        <img src="{{imageUrl}}?size=128" alt="Player Image" class="player-icon circle preview"
+                        <img src="{{imageUrl}}?size=200" alt="Player Image" class="player-icon circle preview"
                              (click)="fileInput.click()">
                     </div>
                 </div>

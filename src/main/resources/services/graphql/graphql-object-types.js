@@ -57,6 +57,13 @@ exports.playerType = graphQlLib.createObjectType({
                 }
             }
         },
+        email: {
+            type: graphQlLib.GraphQLString,
+            data: function (env) {
+                var user = getCurrentUser(env.source._id);
+                return user ? user.email || '' : '';
+            }
+        },
         nationality: {
             type: graphQlLib.GraphQLString, //TODO Change to enum
             data: function (env) {
@@ -679,4 +686,16 @@ var getCurrentPlayerId = function () {
     }
     var player = storeLib.getPlayerByUserKey(user.key);
     return player && player._id;
+};
+
+var getCurrentUser = function (playerId) {
+    var user = authLib.getUser();
+    if (!user) {
+        return null;
+    }
+    var player = storeLib.getPlayerByUserKey(user.key);
+    if (!player) {
+        return null;
+    }
+    return player._id === playerId ? user : null;
 };
