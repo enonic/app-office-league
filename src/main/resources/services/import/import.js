@@ -1,5 +1,6 @@
 var contentLib = require('/lib/xp/content');
 var storeLib = require('/lib/office-league-store');
+var rankingLib = require('../ranking/ranking');
 
 var LEGACY_APP_NAME = 'systems.rcd.enonic.foos';
 
@@ -8,7 +9,9 @@ exports.get = function (req) {
     var playerContentToNodeId = importPlayers();
     importTeams(playerContentToNodeId);
     storeLib.refresh();
-    importLeague(playerContentToNodeId);
+    var league = importLeague(playerContentToNodeId);
+    rankingLib.updateLeagues([league]);
+    removeRetiredPlayers(playerContentToNodeId);
 
     log.info('Import completed!');
 
@@ -92,6 +95,37 @@ var importLeague = function (playerContentToNodeId) {
             storeLib.setTeamLeagueRating(leagueNode._id, team._id, contentTeam.data.rating);
         }
     });
+    return leagueNode;
+};
+
+var removeRetiredPlayers = function (playerContentToNodeId) {
+    var retiredPlayers = contentLib.query({
+        start: 0,
+        count: -1,
+        contentTypes: [LEGACY_APP_NAME + ":player"],
+        query: "data.retired != 'false'",
+        branch: 'draft'
+    }).hits;
+    log.info('removeRetiredPlayers: ' + JSON.stringify(retiredPlayers, null, 2));
+
+    var p, playerId, leagues, l, teams, t, team;
+    for (p = 0; p < retiredPlayers.length; p++) {
+        playerId = playerContentToNodeId[retiredPlayers[p]._id];
+        // log.info('removeRetiredPlayers: ' + playerId + ' ' + retiredPlayers[p]);
+        leagues = storeLib.getLeaguesByPlayerId(playerId).hits;
+        // log.info('removeRetiredPlayers leagues: ' + JSON.stringify(leagues, null, 2));
+        for (l = 0; l < leagues.length; l++) {
+            log.info('Removing player [' + playerId + '] from league "' + leagues[l].name + '"');
+            storeLib.leavePlayerLeague(leagues[l]._id, playerId);
+
+            teams = storeLib.getTeamsByPlayerId(playerId, 0, -1).hits;
+            for (t = 0; t < teams.length; t++) {
+                team = teams [t];
+                storeLib.leaveTeamLeague(leagues[l]._id, team._id);
+                log.info('Removing team [' + team.name + '] from league "' + leagues[l].name + '"');
+            }
+        }
+    }
 };
 
 var fetchGames = function (from) {

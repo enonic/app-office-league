@@ -10,7 +10,7 @@ exports.get = function (req) {
         leagues = storeLib.getLeagues(0, -1).hits;
     }
 
-    updateLeagues(leagues);
+    exports.updateLeagues(leagues);
 
     return {
         contentType: 'application/json',
@@ -20,7 +20,7 @@ exports.get = function (req) {
     }
 };
 
-var updateLeagues = function (leagues) {
+exports.updateLeagues = function (leagues) {
     var league;
     for (var l = 0; l < leagues.length; l++) {
         league = leagues[l];

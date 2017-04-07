@@ -100,6 +100,7 @@ var TYPE = {
  * @property {string} playerId Player id.
  * @property {string} leagueId League id.
  * @property {number} rating Ranking rating for the player in this league.
+ * @property {boolean} inactive True if the player is inactive in this league.
  */
 
 /**
@@ -115,6 +116,7 @@ var TYPE = {
  * @property {string} teamId Team id.
  * @property {string} leagueId League id.
  * @property {number} rating Ranking rating for the team in this league.
+ * @property {boolean} inactive True if the team is inactive in this league.
  */
 
 /**
@@ -270,7 +272,7 @@ exports.getLeaguePlayersByLeagueId = function (leagueId, start, count, sort) {
     return query({
         start: start,
         count: count,
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "'",
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND (inactive != 'true')",
         sort: sort || "rating DESC, name ASC"
     });
 };
@@ -286,7 +288,7 @@ exports.getLeaguePlayersByPlayerId = function (playerId, start, count, sort) {
     return query({
         start: start,
         count: count,
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "'",
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "' AND (inactive != 'true')",
         sort: sort || "rating DESC, name ASC"
     });
 };
@@ -299,7 +301,8 @@ exports.getLeaguePlayersByPlayerId = function (playerId, start, count, sort) {
  */
 exports.getLeaguePlayerByLeagueIdAndPlayerId = function (leagueId, playerId) {
     return querySingleHit({
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND playerId='" + playerId + "'"
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND playerId='" + playerId +
+               "' AND (inactive != 'true')"
     });
 };
 
@@ -382,7 +385,7 @@ exports.getLeagueTeamsByLeagueId = function (leagueId, start, count, sort) {
     return query({
         start: start,
         count: count,
-        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND leagueId='" + leagueId + "'",
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND leagueId='" + leagueId + "' AND (inactive != 'true')",
         sort: sort || "rating DESC, name ASC"
     });
 };
@@ -398,7 +401,7 @@ exports.getLeagueTeamsByTeamId = function (teamId, start, count, sort) {
     return query({
         start: start,
         count: count,
-        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND teamId='" + teamId + "'",
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND teamId='" + teamId + "' AND (inactive != 'true')",
         sort: sort || "rating DESC, name ASC"
     });
 };
@@ -428,7 +431,7 @@ exports.getPlayersByNotLeagueId = function (leagueId, start, count, sort) {
     var repoConn = newConnection();
     var leaguePlayers = repoConn.query({
         count: -1,
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "'"
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND (inactive != 'true')"
     });
 
     var memberPlayerIds = [];
@@ -787,7 +790,7 @@ exports.getLeaguesByPlayerId = function (playerId, start, count) {
     var result = repoConn.query({
         start: start,
         count: count,
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId = '" + playerId + "'"
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId = '" + playerId + "' AND (inactive != 'true')"
     });
 
     var leaguePlayers = [];
@@ -858,7 +861,7 @@ exports.getLeaguesByTeamId = function (teamId, start, count) {
     var result = repoConn.query({
         start: start,
         count: count,
-        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND teamId = '" + teamId + "'"
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND teamId = '" + teamId + "' AND (inactive != 'true')"
     });
 
     var leagueTeams = [];
@@ -964,7 +967,7 @@ exports.getRankingForPlayerLeague = function (playerId, leagueId) {
     var result = query({
         start: 0,
         count: -1,
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "'",
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND (inactive != 'true')",
         sort: "rating DESC"
     });
 
@@ -996,7 +999,7 @@ exports.getRankingForTeamLeague = function (teamId, leagueId) {
     var result = query({
         start: 0,
         count: -1,
-        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND leagueId='" + leagueId + "'",
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND leagueId='" + leagueId + "' AND (inactive != 'true')",
         sort: "rating DESC"
     });
 
@@ -1530,14 +1533,17 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
         throw "Player not found: " + leagueId;
     }
 
-    var result = repoConn.query({
-        start: 0,
-        count: 1,
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "' AND leagueId='" + leagueId + "'"
-    });
-    if (result.count > 0) {
-        log.info('Player [' + playerId + '] already a member of league [' + leagueId + ']');
-        return;
+    var existingLeaguePlayer = exports.getLeaguePlayerByLeagueIdAndPlayerId(leagueId, playerId);
+    if (existingLeaguePlayer) {
+        var updatedLeaguePlayer = repoConn.modify({
+            key: existingLeaguePlayer._id,
+            editor: function (node) {
+                node.inactive = false;
+                return node;
+            }
+        });
+        repoConn.refresh('SEARCH');
+        return updatedLeaguePlayer;
     }
 
     var leaguePlayer = repoConn.create({
@@ -1551,6 +1557,35 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
     repoConn.refresh('SEARCH');
 
     return leaguePlayer;
+};
+
+/**
+ * Remove a player from an existing league.
+ *
+ * @param {string} leagueId Id of the league.
+ * @param {string} playerId Id of the player.
+ */
+exports.leavePlayerLeague = function (leagueId, playerId) {
+    var repoConn = newConnection();
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "' AND leagueId='" + leagueId + "'"
+    });
+    if (result.count === 0) {
+        return;
+    }
+
+    repoConn.modify({
+        key: result.hits[0].id,
+        editor: function (node) {
+            node.inactive = true;
+            return node;
+        }
+    });
+
+    repoConn.refresh('SEARCH');
 };
 
 /**
@@ -1575,14 +1610,17 @@ exports.joinTeamLeague = function (leagueId, teamId, rating) {
         throw "Team not found: " + leagueId;
     }
 
-    var result = repoConn.query({
-        start: 0,
-        count: 1,
-        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND teamId='" + teamId + "' AND leagueId='" + leagueId + "'"
-    });
-    if (result.count > 0) {
-        log.info('Team [' + teamId + '] already a member of league [' + leagueId + ']');
-        return;
+    var existingLeagueTeam = exports.getLeagueTeamByLeagueIdAndTeamId(leagueId, teamId);
+    if (existingLeagueTeam) {
+        var updatedLeagueTeam = repoConn.modify({
+            key: existingLeagueTeam._id,
+            editor: function (node) {
+                node.inactive = false;
+                return node;
+            }
+        });
+        repoConn.refresh('SEARCH');
+        return updatedLeagueTeam;
     }
 
     var leagueTeam = repoConn.create({
@@ -1596,6 +1634,35 @@ exports.joinTeamLeague = function (leagueId, teamId, rating) {
     repoConn.refresh('SEARCH');
 
     return leagueTeam;
+};
+
+/**
+ * Remove a team from an existing league.
+ *
+ * @param {string} leagueId Id of the league.
+ * @param {string} teamId Id of the team.
+ */
+exports.leaveTeamLeague = function (leagueId, teamId) {
+    var repoConn = newConnection();
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND teamId='" + teamId + "' AND leagueId='" + leagueId + "'"
+    });
+    if (result.count === 0) {
+        return;
+    }
+
+    repoConn.modify({
+        key: result.hits[0].id,
+        editor: function (node) {
+            node.inactive = true;
+            return node;
+        }
+    });
+
+    repoConn.refresh('SEARCH');
 };
 
 /**
