@@ -14,6 +14,38 @@ var LEAGUE_PLAYERS_REL_PATH = '/players';
 var LEAGUE_TEAMS_REL_PATH = '/teams';
 var OFFICE_LEAGUE_GAME_EVENT_ID = 'office-league-game';
 
+var NAME_MAX_LENGTH = 30;
+var NAME_MIN_LENGTH = 3;
+var INVALID_NAME_CHARS = {
+    '$': true,
+    '&': true,
+    '|': true,
+    ':': true,
+    ';': true,
+    '#': true,
+    '/': true,
+    '\\': true,
+    '<': true,
+    '>': true,
+    '\"': true,
+    '*': true,
+    '+': true,
+    ',': true,
+    '=': true,
+    '@': true,
+    '%': true,
+    '{': true,
+    '}': true,
+    '[': true,
+    ']': true,
+    '`': true,
+    '~': true,
+    '^': true,
+    // '_': true,
+    '\'': true,
+    '?': true
+};
+
 var TYPE = {
     PLAYER: 'player',
     TEAM: 'team',
@@ -1099,6 +1131,7 @@ exports.createLeague = function (params) {
     params.config = params.config || {};
     params.sport = params.sport || 'foos';
     required(params, 'name');
+    params.name = validateName(params.name);
 
     var imageAttachment = null;
     if (params.imageStream && required(params, 'imageType')) {
@@ -1154,6 +1187,7 @@ exports.createPlayer = function (params) {
 
     params.handedness = params.handedness || 'right';
     required(params, 'name');
+    params.name = validateName(params.name);
 
     var imageAttachment = null;
     if (params.imageStream && required(params, 'imageType')) {
@@ -1213,6 +1247,7 @@ exports.createTeam = function (params) {
     while (!name || teamWithNameExists(repoConn, name)) {
         name = randomLib.randomName();
     }
+    name = validateName(name);
 
     var imageAttachment = null;
     if (params.imageStream && required(params, 'imageType')) {
@@ -1692,6 +1727,7 @@ exports.updatePlayer = function (params) {
     }
 
     if (params.name != null) {
+        params.name = validateName(params.name);
         var node = repoConn.get(params.playerId);
         if (!node) {
             return null;
@@ -1763,6 +1799,7 @@ exports.updateTeam = function (params) {
     }
 
     if (params.name != null) {
+        params.name = validateName(params.name);
         var node = repoConn.get(params.teamId);
         if (!node) {
             return null;
@@ -1824,6 +1861,7 @@ exports.updateLeague = function (params) {
     }
 
     if (params.name != null) {
+        params.name = validateName(params.name);
         var node = repoConn.get(params.leagueId);
         if (!node) {
             return null;
@@ -2295,30 +2333,6 @@ var notNull = function (value, paramName) {
     return value;
 };
 
-var prettifyName = function (str) {
-    var result = '';
-    for (var i = 0; i < str.length; i++) {
-        var c = str[i];
-        var isNumber = c >= '0' && c <= '9';
-        if (isNumber) {
-            result += c;
-            continue;
-        }
-        var isLetter = c.toUpperCase() !== c.toLowerCase();
-        if (isLetter) {
-            result += c.toLowerCase();
-        } else if ('_-'.indexOf(c) > -1) {
-            result += c;
-        } else if (result && result.slice(-1) !== '-') {
-            result += '-';
-        }
-    }
-    if (result && result.slice(-1) === '-') {
-        result = result.slice(0, -1);
-    }
-    return result;
-};
-
 var extensionFromMimeType = function (mimeType) {
     var ext = '';
     if (mimeType.indexOf('image/png') > -1) {
@@ -2407,4 +2421,33 @@ var setImageUrl = function (node) {
         node.imageUrl = getImageUrl(node);
     }
     return node;
+};
+
+var validateName = function (name) {
+    name = (name || '').trim();
+    if (name.length < NAME_MIN_LENGTH) {
+        throw "Name is too short: '" + name + '"'
+    }
+    if (name.length > NAME_MAX_LENGTH) {
+        throw "Name is too long: '" + name + '"'
+    }
+    if (hasInvalidChars(name)) {
+        throw "Name contains invalid characters: '" + name + '"'
+    }
+    return name;
+};
+
+var prettifyName = function (text) {
+    var namePrettyfier = Java.type('com.enonic.xp.name.NamePrettyfier');
+    return namePrettyfier.create(text);
+};
+
+var hasInvalidChars = function (name) {
+    for (var i = 0; i < name.length; i++) {
+        var chr = name[i];
+        if ((name.charCodeAt(i) < 32) || INVALID_NAME_CHARS[chr]) {
+            return true;
+        }
+    }
+    return false
 };
