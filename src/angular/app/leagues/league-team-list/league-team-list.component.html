@@ -9,9 +9,7 @@
     <h5 *ngIf="leagueTeams?.length == 0" class="collection-item empty">
         {{displayLeagues ? 'No leagues' : displayTeams ? 'No teams' : ''}}
     </h5>
-    <a href="#!" *ngIf="leagueTeams?.length > 0 && detailsPath" class="collection-item empty" (click)="onDetailsClicked($event)">
-        <h5 class="grey-text darkened-4">{{seeMoreText}}</h5>
-    </a>
+    <a href="#!" *ngIf="leagueTeams?.length > 0 && detailsPath" class="league-team-list__more" (click)="onDetailsClicked($event)">{{seeMoreText}}</a>
     <ul class="pagination center" *ngIf="pages?.length > 1">
         <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i
                 class="material-icons">chevron_left</i></a></li>

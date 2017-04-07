@@ -12,10 +12,8 @@
     <h5 *ngIf="leaguePlayers?.length == 0" class="collection-item empty">
         {{displayLeagues ? 'No leagues' : displayPlayers ? 'No players' : ''}}
     </h5>
-    <a *ngIf="leaguePlayers?.length > 0 && this.detailsPath" href="#!" class="collection-item empty grey-text darkened-4"
-       (click)="onDetailsClicked($event)">
-        <h5>{{seeMoreText}}</h5>
-    </a>
+    <a *ngIf="leaguePlayers?.length > 0 && this.detailsPath" href="#!" class="league-player-list__more"
+       (click)="onDetailsClicked($event)">{{seeMoreText}}</a>
 
     <ul class="pagination center" *ngIf="pages?.length > 1">
         <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i

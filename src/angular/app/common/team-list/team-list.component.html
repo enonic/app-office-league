@@ -1,8 +1,17 @@
+<!--
 <div *ngIf="!hideSearchField" class="input-field col s12">
     <i class="material-icons prefix">search</i>
     <input [(ngModel)]="searchValue" (input)="onSearchFieldModified()" id="searchField" type="text">
     <label for="searchField">Search</label>
 </div>
+-->
+
+<div *ngIf="!hideSearchField" class="team-list__search">
+    <i class="material-icons team-list__search-icon global__search-icon">search</i>
+    <input [(ngModel)]="searchValue" (input)="onSearchFieldModified()" id="searchField" type="text" placeholder="Search" class="team-list__search-input global__search-input">
+</div>
+
+
 <div class="team-list" [class.with-header]="!!title">
     <h4 *ngIf="title" class="team-list__heading">{{title}}</h4>
     <a href="#!" class="team-list__item" *ngFor="let team of teams;" (click)="onTeamClicked(team, $event)">

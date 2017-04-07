@@ -7,3 +7,31 @@
 .summary-list-heading-mixin() {
   padding: 0 20px;
 }
+
+.summary-list-more-mixin() {
+  display: block;
+  text-align: center;
+  color: #666;
+}
+
+.summary-list-search-mixin() {
+  position: relative;
+  width: ~"calc(100% - 40px)";
+  margin: 0 auto;
+
+  .global__search-input {
+    border: 1px solid #000;
+    padding: 0 10px;
+    box-sizing: border-box;
+
+    &:focus {
+      background-color: #eee;
+    }
+  }
+
+  .global__search-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+}
