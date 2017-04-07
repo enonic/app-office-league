@@ -1,4 +1,4 @@
-import {Component, Input, Output, SimpleChanges, OnChanges, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {AuthService} from '../../services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -7,7 +7,7 @@ import {BaseComponent} from '../../common/base.component';
 import {Game} from '../../../graphql/schemas/Game';
 import {PageTitleService} from '../../services/page-title.service';
 import {Player} from '../../../graphql/schemas/Player';
-import {MaterializeDirective, MaterializeAction} from 'angular2-materialize/dist/index';
+import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
 
 @Component({
     selector: 'league-profile',
@@ -207,6 +207,10 @@ export class LeagueProfileComponent extends BaseComponent implements OnChanges {
     }
 
     private handleLeagueQueryResponse(data) {
+        if (!data.league) {
+            this.router.navigate(['leagues']);
+            return null;
+        }
         this.league = League.fromJson(data.league);
         this.playerInLeague = !!data.league.myLeaguePlayer;
         this.adminInLeague = data.league.isAdmin;
