@@ -6,7 +6,7 @@
 </div>
 -->
 
-<div *ngIf="!hideSearchField" class="team-list__search">
+<div *ngIf="!hideSearchField" class="team-list__search global__search">
     <i class="material-icons team-list__search-icon global__search-icon">search</i>
     <input [(ngModel)]="searchValue" (input)="onSearchFieldModified()" id="searchField" type="text" placeholder="Search" class="team-list__search-input global__search-input">
 </div>

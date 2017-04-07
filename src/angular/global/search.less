@@ -1,0 +1,22 @@
+.global__search {
+  position: relative;
+  width: ~"calc(100% - 40px)";
+  margin: 0 auto;
+
+  &-input {
+    border: 1px solid #000 !important;
+    padding: 0 10px !important;
+    box-sizing: border-box !important;
+    // remove important when overriding materialize stuff is removed
+
+    &:focus {
+      background-color: #eee;
+    }
+  }
+
+  &-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+}
