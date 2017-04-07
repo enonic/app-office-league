@@ -51,11 +51,19 @@ export class GameProfileComponent
                 this.wsDisconnect();
             }
 
-            this.pageTitleService.setTitle('Game profile');
+            if (game.league) {
+                this.pageTitleService.setTitle(game.league.name + ' - Game');
+            } else {
+                this.pageTitleService.setTitle('Game');
+            }
         } else {
             this.wsConnect(this.gameId);
 
-            this.pageTitleService.setTitle('Live game');
+            if (game.league) {
+                this.pageTitleService.setTitle(game.league.name + ' - Live game');
+            } else {
+                this.pageTitleService.setTitle('Live game');
+            }
         }
     }
 
