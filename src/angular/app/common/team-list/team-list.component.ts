@@ -6,7 +6,8 @@ import {MaterializeDirective} from 'angular2-materialize/dist/index';
 
 @Component({
     selector: 'team-list',
-    templateUrl: 'team-list.component.html'
+    templateUrl: 'team-list.component.html',
+    styleUrls: ['team-list.component.less']
 })
 export class TeamListComponent extends List2Component {
     @Input() teams: Team[];

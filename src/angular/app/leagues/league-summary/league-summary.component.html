@@ -2,7 +2,7 @@
     <loading></loading>
 </template>
 <template [ngIf]="league != null">
-    <div class="league-summary">
+    <!--<div class="league-summary">
         <img src="{{league.imageUrl}}" alt="{{league.name}}" class="circle">
         <div class="primary">
             <span class="title">{{league.name}}</span>
@@ -15,5 +15,22 @@
             </div>
             <a class="waves-effect waves-light btn green" *ngIf="displayPlayBtn" (click)="onPlayClicked($event)"><i class="material-icons center">play_arrow</i>Play</a>
         </div>
+    </div>-->
+
+    <div class="league-summary">
+        <img src="{{league.imageUrl}}?size=42" alt="{{league.name}}" class="league-summary__avatar">
+        <div class="league-summary__name">{{league.name}}</div>
+        <div class="league-summary__ranking" *ngIf="ranking > 0">{{ranking}}<span>{{rankingText()}}</span></div>
+        <div class="league-summary__rating">{{ratingPoints()}}</div>
+        <!-- <div class="primary">
+             <span class="title">{{player.name}}</span>&lt;!&ndash;
+             <p *ngIf="player.description" class="grey-text darken-3">{{player.description}}</p>&ndash;&gt;
+         </div>-->
+        <!--<div class="player-summary__" *ngIf="ranking > 0">
+            <div class="badges-container">
+
+                <span class="badge grey darken-1 white-text"><small class="rating-points">{{ratingPoints()}}</small></span>
+            </div>
+        </div>-->
     </div>
 </template>
