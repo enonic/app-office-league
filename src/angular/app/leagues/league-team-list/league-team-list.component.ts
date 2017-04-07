@@ -5,7 +5,8 @@ import {LeagueTeam} from '../../../graphql/schemas/LeagueTeam';
 
 @Component({
     selector: 'league-team-list',
-    templateUrl: 'league-team-list.component.html'
+    templateUrl: 'league-team-list.component.html',
+    styleUrls: ['league-team-list.component.less']
 })
 export class LeagueTeamListComponent extends List2Component implements OnInit {
 

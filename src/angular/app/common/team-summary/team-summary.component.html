@@ -3,7 +3,11 @@
 </template>
 <template [ngIf]="team != null">
     <div class="team-summary">
-        <img src="{{team.imageUrl}}?size=42" alt="{{team.name}}" class="circle">
+        <div class="team-summary__ranking" *ngIf="ranking > 0">{{ranking}}</div>
+        <img src="{{team.imageUrl}}?size=42" alt="{{team.name}}" class="team-summary__avatar">
+        <div class="team-summary__name">{{team.name}}</div>
+        <div class="team-summary__rating">{{ratingPoints()}}</div>
+        <!--<img src="{{team.imageUrl}}?size=42" alt="{{team.name}}" class="circle">
         <div class="primary">
             <span class="title">{{team.name}}</span>
             <p *ngIf="team.players" class="grey-text darken-3">
@@ -15,7 +19,7 @@
                 <span class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
                 <span class="badge grey darken-1 white-text"><small class="rating-points">{{ratingPoints()}}</small></span>
             </div>
-        </div>
+        </div>-->
     </div>
 
 </template>

@@ -6,7 +6,8 @@ import {List2Component} from '../../common/list2.component';
 
 @Component({
     selector: 'game-list',
-    templateUrl: 'game-list.component.html'
+    templateUrl: 'game-list.component.html',
+    styleUrls: ['game-list.component.less']
 })
 export class GameListComponent extends List2Component {
 

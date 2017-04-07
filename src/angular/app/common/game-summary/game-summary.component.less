@@ -1,0 +1,26 @@
+@import "../../mixins";
+
+.game-summary {
+  .summary-list-mixin;
+
+  &__sides {
+    flex-grow: 1;
+    text-align: left;
+    text-overflow: ellipsis;
+  }
+
+  &__live {
+    font-style: italic;
+    animation: blinker 2s linear infinite;
+  }
+
+  &__result {
+    flex-grow: 0;
+    width: 75px;
+    text-align: right;
+  }
+
+  @keyframes blinker {
+    50% { opacity: 0; }
+  }
+}

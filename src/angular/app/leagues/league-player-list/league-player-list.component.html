@@ -1,5 +1,5 @@
-<div class="collection list league-player-list" [class.with-header]="!!title">
-    <h4 *ngIf="title" class="collection-header">{{title}}</h4>
+<div class="league-player-list" [class.with-header]="!!title">
+    <h4 *ngIf="title" class="league-player-list__heading">{{title}}</h4>
 
 
     <a href="#!" class="league-player-list__item" *ngFor="let leaguePlayer of leaguePlayers"

@@ -1,3 +1,38 @@
+@import "../../mixins";
+
+.team-summary {
+  .summary-list-mixin;
+
+  &__ranking {
+    flex-grow: 0;
+    width: 50px;
+    text-align: left;
+  }
+
+  &__avatar {
+    flex-grow: 0;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+
+  }
+
+  &__name {
+    flex-grow: 1;
+    text-overflow: ellipsis;
+  }
+
+  &__rating {
+    flex-grow: 0;
+    width: 50px;
+    text-align: right;
+  }
+}
+
+
+
+
+/*
 .team-summary {
   display: flex;
 }
@@ -23,4 +58,4 @@
 span.badge {
   margin-left: 0;
   width: 50%;
-}
+}*/

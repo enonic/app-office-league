@@ -4,6 +4,7 @@ import {NgModule} from '@angular/core';
 import {ListComponent} from './list.component';
 import {List2Component} from './list2.component';
 import {BaseComponent} from './base.component';
+import {GameSummaryComponent} from './game-summary/game-summary.component';
 import {PlayerSummaryComponent} from './player-summary/player-summary.component';
 import {PlayerListComponent} from './player-list/player-list.component';
 import {TeamSummaryComponent} from './team-summary/team-summary.component';
@@ -16,6 +17,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
     declarations: [
+        GameSummaryComponent,
         PlayerSummaryComponent,
         PlayerListComponent,
         TeamSummaryComponent,
@@ -35,6 +37,7 @@ import {ReactiveFormsModule} from "@angular/forms";
     exports: [
         BrowserModule,
         ReactiveFormsModule,
+        GameSummaryComponent,
         PlayerSummaryComponent,
         PlayerListComponent,
         TeamSummaryComponent,
