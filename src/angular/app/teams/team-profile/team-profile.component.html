@@ -53,20 +53,17 @@
         </div>
     </div>-->
 
-    <ul class="row">
+    <div class="row">
+        <league-team-list [leagueTeams]="team.leagueTeams" displayLeagues="true" title="Leagues"></league-team-list>
+    </div>
 
-        <li class="col s12">
-            <league-team-list [leagueTeams]="team.leagueTeams" displayLeagues="true" title="Leagues"></league-team-list>
-        </li>
+    <div class="row">
+        <player-list [players]="team.players" [title]="'Players'" hideSearchField="true"></player-list>
+    </div>
 
-        <li class="col s12">
-            <player-list [players]="team.players" [title]="'Players'" hideSearchField="true"></player-list>
-        </li>
+    <div class="row">
+        <game-list [games]="games" [title]="'Latest games'"></game-list>
+    </div>
 
-        <li class="col s12">
-            <game-list [games]="games" [title]="'Latest games'"></game-list>
-        </li>
-
-    </ul>
 
 </div>

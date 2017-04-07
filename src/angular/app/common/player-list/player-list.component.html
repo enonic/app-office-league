@@ -3,9 +3,9 @@
     <input [(ngModel)]="searchValue" (input)="onSearchFieldModified()" id="searchField" type="text">
     <label for="searchField">Search</label>
 </div>
-<div class="collection list" [class.with-header]="!!title">
-    <h4 *ngIf="title" class="collection-header">{{title}}</h4>
-    <a href="#!" class="collection-item avatar" *ngFor="let player of players;" (click)="onPlayerClicked(player, $event)">
+<div class="player-list" [class.with-header]="!!title">
+    <h4 *ngIf="title" class="player-list__heading">{{title}}</h4>
+    <a href="#!" class="player-list__item" *ngFor="let player of players;" (click)="onPlayerClicked(player, $event)">
         <player-summary [player]="player"></player-summary>
     </a>
     <h5 *ngIf="players?.length == 0" class="collection-item empty">

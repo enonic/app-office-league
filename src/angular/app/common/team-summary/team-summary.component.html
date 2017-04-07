@@ -6,7 +6,7 @@
         <div class="team-summary__ranking" *ngIf="ranking > 0">{{ranking}}</div>
         <img src="{{team.imageUrl}}?size=42" alt="{{team.name}}" class="team-summary__avatar">
         <div class="team-summary__name">{{team.name}}</div>
-        <div class="team-summary__rating">{{ratingPoints()}}</div>
+        <div class="team-summary__rating" *ngIf="ratingPoints > 0">{{ratingPoints()}}</div>
         <!--<img src="{{team.imageUrl}}?size=42" alt="{{team.name}}" class="circle">
         <div class="primary">
             <span class="title">{{team.name}}</span>

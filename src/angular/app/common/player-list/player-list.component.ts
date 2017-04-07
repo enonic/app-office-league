@@ -5,7 +5,8 @@ import {Player} from '../../../graphql/schemas/Player';
 
 @Component({
     selector: 'player-list',
-    templateUrl: 'player-list.component.html'
+    templateUrl: 'player-list.component.html',
+    styleUrls: ['player-list.component.less']
 })
 export class PlayerListComponent extends List2Component {
     @Input() players: Player[];
