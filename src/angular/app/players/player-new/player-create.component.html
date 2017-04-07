@@ -1,3 +1,7 @@
+<template [ngIf]="playerForm == null">
+    <loading></loading>
+</template>
+<template [ngIf]="playerForm != null">
 <div class="card">
     <div class="card-content blue-grey-text">
         <form [formGroup]="playerForm">
@@ -86,3 +90,4 @@
         </button>
     </div>
 </div>
+</template>

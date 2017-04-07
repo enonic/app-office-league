@@ -1,16 +1,16 @@
-import {Component, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Handedness} from '../../../graphql/schemas/Handedness';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
 import {Countries} from '../../common/countries';
 import {Country} from '../../common/country';
-import {Http, Headers, RequestOptions} from '@angular/http';
+import {Headers, Http, RequestOptions} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
 import {ImageService} from '../../services/image.service';
 import {AuthService} from '../../services/auth.service';
 import {PageTitleService} from '../../services/page-title.service';
-import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PlayerValidator} from '../player-validator';
 
 @Component({
@@ -19,7 +19,9 @@ import {PlayerValidator} from '../player-validator';
     styleUrls: ['player-create.component.less']
 })
 
-export class PlayerCreateComponent extends BaseComponent implements AfterViewInit {
+export class PlayerCreateComponent
+    extends BaseComponent
+    implements AfterViewInit {
 
     playerForm: FormGroup;
     imageUrl: string;
@@ -71,8 +73,10 @@ export class PlayerCreateComponent extends BaseComponent implements AfterViewIni
     }
 
     ngAfterViewInit(): void {
-        let inputEl: HTMLInputElement = this.inputEl.nativeElement;
-        inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
+        if (this.inputEl) {
+            let inputEl: HTMLInputElement = this.inputEl.nativeElement;
+            inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
+        }
     }
 
     public updatePageTitle(title: string) {
