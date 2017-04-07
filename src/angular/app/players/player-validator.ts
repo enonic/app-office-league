@@ -8,7 +8,8 @@ export class PlayerValidator {
             'required': 'Name is required.',
             'minlength': 'Name must be at least 3 characters long.',
             'maxlength': '30 characters is enough for a name.',
-            'nameinuse': 'This name is already taken, sorry.'
+            'nameinuse': 'This name is already taken, sorry.',
+            'invalidname': 'The name contains invalid characters.'
         },
         'fullname': {
             'required': 'Full name is required.',
