@@ -9,6 +9,9 @@ import {League} from '../../../graphql/schemas/League';
 import {AuthService} from '../../services/auth.service';
 import {PageTitleService} from '../../services/page-title.service';
 import {ImageService} from '../../services/image.service';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {LeagueValidator} from '../league-validator';
+import {CustomValidators} from '../../common/validators';
 
 @Component({
     selector: 'league-edit-create',
@@ -25,17 +28,37 @@ export class LeagueEditCreateComponent
     description: string;
     leagueImageUrl: string;
     sport: string = Sport[Sport.FOOS].toLowerCase();
-    nameClasses: {} = {invalid: false};
     editMode: boolean;
+    leagueForm: FormGroup;
+    formErrors = {
+        'name': '',
+        'description': ''
+    };
+
 
     constructor(private http: Http, private authService: AuthService, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, route: ActivatedRoute,
-                private router: Router) {
+                private router: Router, private fb: FormBuilder) {
         super(route);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
+
+        this.leagueForm = this.fb.group({
+            name: new FormControl(null,
+                [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(30)],
+                LeagueValidator.nameInUseValidator(this.graphQLService)),
+            description: null,
+            id: null
+        });
+        const updateFormErrors = (data?: any) => {
+            LeagueValidator.updateFormErrors(this.leagueForm, this.formErrors);
+        };
+        this.leagueForm.valueChanges.subscribe(data => updateFormErrors(data));
+        this.leagueForm.statusChanges.subscribe(data => updateFormErrors(data));
+
+        updateFormErrors(); // (re)set validation messages now
 
         let name = this.route.snapshot.params['name'];
         this.leagueImageUrl = ImageService.leagueDefault();
@@ -54,13 +77,8 @@ export class LeagueEditCreateComponent
         this.pageTitleService.setTitle(title);
     }
 
-    private validate(): boolean {
-        this.nameClasses['invalid'] = !this.name;
-        return !!this.name && SportUtil.parse(this.sport) != null;
-    }
-
     onUpdateClicked() {
-        if (!this.validate()) {
+        if (!this.leagueForm.valid) {
             return;
         }
 
@@ -80,7 +98,7 @@ export class LeagueEditCreateComponent
     }
 
     onCreateClicked() {
-        if (!this.validate()) {
+        if (!this.leagueForm.valid) {
             return;
         }
 
@@ -103,7 +121,7 @@ export class LeagueEditCreateComponent
         let playerId = this.authService.isAuthenticated() ? this.authService.getUser().playerId : '-1';
 
         return this.graphQLService.post(LeagueEditCreateComponent.getLeagueQuery, {name: name, playerId: playerId}).then(data => {
-            if (!data.league.isAdmin) {
+            if (!data.league || !data.league.isAdmin) {
                 this.router.navigate(['leagues']);
                 return null;
             }
@@ -117,6 +135,17 @@ export class LeagueEditCreateComponent
             this.sport = Sport[sport].toLowerCase();
 
             this.pageTitleService.setTitle(league.name);
+
+            this.leagueForm.setValue({
+                name: league.name,
+                description: league.description,
+                id: league.id
+            });
+
+            this.leagueForm.removeControl('name');
+            this.leagueForm.addControl('name', new FormControl(league.name,
+                [Validators.required, Validators.minLength(3), Validators.maxLength(30)],
+                LeagueValidator.nameInUseValidator(this.graphQLService, league.id)));
 
             return league;
         });

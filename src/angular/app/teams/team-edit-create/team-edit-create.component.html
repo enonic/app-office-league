@@ -5,21 +5,22 @@
     <div class="card">
         <div class="card-content blue-grey-text">
             <span class="card-title">Team Profile</span>
-            <form>
+            <form [formGroup]="teamForm">
                 <div class="row">
                     <div class="input-field col s12">
                         <i class="material-icons prefix">fingerprint</i>
-                        <input id="name" type="text" class="validate" name="name" autocomplete="off" [(ngModel)]="name"
+                        <input id="name" type="text" formControlName="name" name="name" [class.invalid]="!!formErrors.name" 
+                               autocomplete="off" [(ngModel)]="name"
                                (ngModelChange)="updatePageTitle($event)" required=""
-                               aria-required="true" [ngClass]="nameClasses">
-                        <label [ngClass]="{'active': !!name}" for="name">Team Name</label>
+                               aria-required="true">
+                        <label [ngClass]="{'active': !!name}" for="name" [attr.data-error]="formErrors.name">Team Name</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
                         <i class="material-icons prefix">info_outline</i>
                         <textarea id="description" class="materialize-textarea" autocomplete="off" spellcheck="false" name="description"
-                                  [(ngModel)]="description"></textarea>
+                                  [(ngModel)]="description" formControlName="description"></textarea>
                         <label [ngClass]="{'active': !!description}" for="description">About</label>
                     </div>
                 </div>
@@ -60,7 +61,8 @@
 
     <div class="row">
         <div class="col s12">
-            <button class="btn waves-effect waves-light light-blue darken-3 right" type="submit" name="create" (click)="onSaveClicked()">
+            <button class="btn waves-effect waves-light light-blue darken-3 right" type="submit" name="create"
+                    [disabled]="!teamForm.valid" (click)="onSaveClicked()">
                 Save
             </button>
         </div>

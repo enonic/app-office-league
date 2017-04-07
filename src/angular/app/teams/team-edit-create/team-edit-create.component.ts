@@ -10,6 +10,9 @@ import {PageTitleService} from '../../services/page-title.service';
 import {Player} from '../../../graphql/schemas/Player';
 import {ImageService} from '../../services/image.service';
 import {AuthService} from '../../services/auth.service';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {TeamValidator} from '../team-validator';
+import {CustomValidators} from '../../common/validators';
 
 @Component({
     selector: 'team-edit-create',
@@ -28,18 +31,38 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
     excludePlayerIds: {[id: string]: boolean} = {};
     possibleTeamMateIds: string[]= [];
     leagueIds: string[] = [];
+    teamForm: FormGroup;
+    formErrors = {
+        'name': '',
+        'description': ''
+    };
     private currentPlayer: Player;
 
     @ViewChild('fileInput') inputEl: ElementRef;
-    nameClasses: {} = {invalid: false};
 
     constructor(private http: Http, route: ActivatedRoute, private graphQLService: GraphQLService,
-                private pageTitleService: PageTitleService, private router: Router, private authService: AuthService) {
+                private pageTitleService: PageTitleService, private router: Router,
+                private authService: AuthService, private fb: FormBuilder) {
         super(route);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
+
+        this.teamForm = this.fb.group({
+            name: new FormControl(null,
+                [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(30)],
+                TeamValidator.nameInUseValidator(this.graphQLService)),
+            description: null,
+            id: null
+        });
+        const updateFormErrors = (data?: any) => {
+            TeamValidator.updateFormErrors(this.teamForm, this.formErrors);
+        };
+        this.teamForm.valueChanges.subscribe(data => updateFormErrors(data));
+        this.teamForm.statusChanges.subscribe(data => updateFormErrors(data));
+
+        updateFormErrors(); // (re)set validation messages now
 
         let name = this.route.snapshot.params['name'];
         if (name) {
@@ -74,6 +97,17 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
         this.imageUrl = team.imageUrl;
         this.players = team.players || [];
         this.pageTitleService.setTitle(team.name);
+
+        this.teamForm.setValue({
+            name: team.name,
+            description: team.description,
+            id: team.id
+        });
+
+        this.teamForm.removeControl('name');
+        this.teamForm.addControl('name', new FormControl(team.name,
+            [Validators.required, Validators.minLength(3), Validators.maxLength(30)],
+            TeamValidator.nameInUseValidator(this.graphQLService, team.id)));
     }
     
     private setupCreate() {
@@ -89,7 +123,6 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
         let playerTeamMateIds = data.player.teams.map((team) => {
             return team.players.map((p) => p.id).filter((id) => id != playerId)[0];
         });
-        console.log('playerTeamMateIds: ', playerTeamMateIds);
 
         let possibleTeamMateIds = new Set();
         data.player.leaguePlayers.forEach((leaguePlayer => {
@@ -122,14 +155,12 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
     }
     
     onSaveClicked() {
-        if (!this.validate()) {
+        if (!this.teamForm.valid || !this.validate()) {
             return;
         }
 
         this.checkTeamNameInUse(this.name).then(teamNameInUse => {
-            if (teamNameInUse) {
-                this.nameClasses['invalid'] = true;
-            } else {
+            if (!teamNameInUse) {
                 this.saveTeam();
             }
         });
@@ -222,8 +253,7 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
     }
 
     private validate(): boolean {
-        this.nameClasses['invalid'] = !this.name;
-        return !!this.name && (!this.createMode || this.players.length === 2);
+        return (!this.createMode || this.players.length === 2);
     }
 
     private onFileInputChange(input: HTMLInputElement) {
