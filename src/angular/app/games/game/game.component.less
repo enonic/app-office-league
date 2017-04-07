@@ -3,19 +3,45 @@
 .game {
   &__summary {
     display: flex;
+    flex-direction: row;
   }
 
   &__side {
-    width: 33%;
-    flex: 1 100%;
-    text-align: center;
+    width: 50%;
+    display: flex;
 
-    &-logo {
-      width: 60%;
+    &--2 {
+      flex-direction: row-reverse;
+    }
+
+    &-avatar {
+      width: 100%;
+      display: block;
+
+      &-wrapper {
+        width: 50%;
+      }
+    }
+
+    &-score {
+      width: 50%;
+      color: #fff;
+      font-size: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &--1 {
+        background-color: @blue-team-color;
+      }
+
+      &--2 {
+        background-color: @red-team-color;
+      }
     }
   }
 
-  .game__date {
+  /*.game__date {
     padding-top: 5px;
   }
 
@@ -62,7 +88,7 @@
     width: 24px;
     height: 24px;
     vertical-align: middle;
-  }
+  }*/
 }
 
 /*

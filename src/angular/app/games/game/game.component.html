@@ -7,8 +7,48 @@
     </template>
     <div class="game">
 
+
+
+
         <div class="game__summary">
             <div class="game__side game__side--1">
+                <div class="game__side-avatar-wrapper">
+                    <template [ngIf]="blueTeam">
+                        <img src="{{blueTeam?.team.imageUrl}}?size=200" alt="{{blueTeam?.team.name}}" class="game__side-avatar"/>
+                    </template>
+                    <template [ngIf]="!blueTeam">
+                        <img src="{{bluePlayers[0]?.player.imageUrl}}?size=200" alt="{{bluePlayers[0]?.player.name}}" class="game__side-avatar"/>
+                    </template>
+                </div>
+                <div class="game__side-score game__side-score--1">
+                    <div>{{blueScore}}</div>
+                </div>
+            </div>
+            <!--<div class="game__result" [class.game__double]="bluePlayers.length > 1">
+                <div class="game__result__score">
+                    <span class="">{{blueScore}}</span>
+                    <span>-</span>
+                    <span class="">{{redScore}}</span>
+                </div>
+                <small class="center grey-text game__date">{{game.time | amCalendar:{lastDay: '[Yesterday at] HH:mm', sameDay: '[Today at] HH:mm', nextDay : '[Tomorrow at] HH:mm', lastWeek : '[last] dddd [at] HH:mm', nextWeek : 'dddd [at] HH:mm', sameElse : 'YYYY-MM-DD HH:mm'} }}</small>
+            </div>-->
+            <div class="game__side game__side--2">
+                <div class="game__side-avatar-wrapper">
+                    <template [ngIf]="redTeam">
+                        <img src="{{redTeam?.team.imageUrl}}?size=200" alt="{{redTeam?.team.name}}" class="game__side-avatar"/>
+                    </template>
+                    <template [ngIf]="!redTeam">
+                        <img src="{{redPlayers[0]?.player.imageUrl}}?size=200" alt="{{redPlayers[0]?.player.name}}" class="game__side-avatar"/>
+                    </template>
+                </div>
+                <div class="game__side-score game__side-score--2">
+                    <div>{{redScore}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="game__summary">
+            <div class="game__side game__side&#45;&#45;1">
                 <template [ngIf]="blueTeam">
                     <img src="{{blueTeam?.team.imageUrl}}?size=200" alt="{{blueTeam?.team.name}}" class="game__side-logo logo circle">
                     <div class="game__team-name">{{blueTeam.team.name}}
@@ -39,7 +79,7 @@
                 </div>
                 <small class="center grey-text game__date">{{game.time | amCalendar:{lastDay: '[Yesterday at] HH:mm', sameDay: '[Today at] HH:mm', nextDay : '[Tomorrow at] HH:mm', lastWeek : '[last] dddd [at] HH:mm', nextWeek : 'dddd [at] HH:mm', sameElse : 'YYYY-MM-DD HH:mm'} }}</small>
             </div>
-            <div class="game__side game__side--2">
+            <div class="game__side game__side&#45;&#45;2">
                 <template [ngIf]="redTeam">
                     <img src="{{redTeam?.team.imageUrl}}?size=200" alt="{{redTeam?.team.name}}" class="game__side-logo logo circle">
                     <div class="game__team-name">{{redTeam.team.name}}
@@ -62,7 +102,7 @@
                     </div>
                 </template>
             </div>
-        </div>
+        </div>-->
     </div>
 
 </template>
