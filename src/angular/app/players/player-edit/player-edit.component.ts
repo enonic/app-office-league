@@ -13,6 +13,7 @@ import {PageTitleService} from '../../services/page-title.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PlayerValidator} from '../player-validator';
 import {ImageService} from '../../services/image.service';
+import {CustomValidators} from '../../common/validators';
 
 @Component({
     selector: 'player-edit',
@@ -45,9 +46,9 @@ export class PlayerEditComponent
 
         this.playerForm = this.fb.group({
             name: new FormControl(null,
-                [Validators.required, Validators.minLength(3), Validators.maxLength(30)],
+                [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(30), CustomValidators.validName()],
                 PlayerValidator.nameInUseValidator(this.graphQLService)),
-            fullname: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
+            fullname: [null, Validators.compose([Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(30)])],
             nationality: null,
             handedness: Handedness[Handedness.RIGHT].toLowerCase(),
             description: null,
@@ -107,7 +108,7 @@ export class PlayerEditComponent
 
         this.playerForm.removeControl('name');
         this.playerForm.addControl('name', new FormControl(player.name,
-            [Validators.required, Validators.minLength(3), Validators.maxLength(30)],
+            [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(30), CustomValidators.validName()],
             PlayerValidator.nameInUseValidator(this.graphQLService, player.id)));
     }
 
