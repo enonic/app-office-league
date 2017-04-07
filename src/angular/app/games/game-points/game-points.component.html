@@ -2,7 +2,33 @@
     <div class="empty-text blue-grey-text">Loading...</div>
 </template>
 <template [ngIf]="game != null">
-    <div class="row list">
+
+
+    <div class="game-points">
+
+        <div *ngFor="let entry of timeline" class="game-points__item">
+            <div class="game-points__score">
+                <template [ngIf]="!entry.isComment">
+                    <span>{{entry.score}}</span>
+                </template>
+                <template [ngIf]="entry.isComment">
+                    <i class="material-icons blue-text text-lighten-3">comment</i>
+                </template>
+            </div>
+            <img *ngIf="entry.imageUrl" src="{{entry.imageUrl}}?size=200" class="game-points__avatar"/>
+            <div class="game-points__event">
+                <template [ngIf]="!entry.isComment">
+                    <div class="game-points__name">{{entry.name}} scores</div>
+                </template>
+                <template [ngIf]="entry.isComment">
+                    <div class="game-points__comment">{{entry.text}}</div>
+                </template>
+            </div>
+            <div class="game-points__time">{{entry.time}}</div>
+        </div>
+    </div>
+
+    <!--<div class="row list">
         <div class="col s12 m12 l10 offset-l1">
             <div class="header">Timeline</div>
             <section class="timeline">
@@ -28,6 +54,6 @@
             </section>
 
         </div>
-    </div>
+    </div>-->
 
 </template>

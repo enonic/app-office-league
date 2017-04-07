@@ -1,4 +1,42 @@
 @import "../../colors";
+@import "../../mixins";
+
+.game-points {
+
+  &__item {
+    .summary-list-mixin;
+    width: 100%;
+  }
+
+  &__score {
+    flex-grow: 0;
+    width: 40px;
+    text-align: left;
+  }
+
+  &__avatar {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
+
+  &__event {
+    flex-grow: 1;
+    text-overflow: ellipsis;
+  }
+
+  &__time {
+    flex-grow: 0;
+    width: 50px;
+    text-align: right;
+  }
+}
+
+
+
+/*
 
 @white-color: #fff;
 @border-color: #e0e0e0; // .grey.lighten-2
@@ -200,4 +238,5 @@
     }
   }
 }
+*/
 
