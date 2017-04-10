@@ -339,7 +339,7 @@ var checkUpdateLeaguePermissions = function (leagueId, adminPlayerIds) {
         return;
     }
 
-    if (!currentPlayerId || (league.adminPlayerIds.indexOf(currentPlayerId) === -1)) {
+    if (!currentPlayerId || ([].concat(league.adminPlayerIds).indexOf(currentPlayerId) === -1)) {
         throw "The league '" + league.name + "' cannot be updated. The current user is not an admin for the league.";
     }
 
@@ -358,7 +358,7 @@ var checkDeleteLeaguePermissions = function (leagueName) {
     if (!league) {
         return null;
     }
-    if (!currentPlayerId || (league.adminPlayerIds.indexOf(currentPlayerId) === -1)) {
+    if (!currentPlayerId || ([].concat(league.adminPlayerIds).indexOf(currentPlayerId) === -1)) {
         throw "The league '" + league.name + "' cannot be deleted. The current user is not an admin for the league.";
     }
 };

@@ -1,5 +1,6 @@
 var portalLib = require('/lib/xp/portal');
 var storeLib = require('/lib/office-league-store');
+var authLib = require('/lib/xp/auth');
 
 exports.post = function (req) {
     var entityType = portalLib.getMultipartText('type');
@@ -13,12 +14,21 @@ exports.post = function (req) {
 
     switch (entityType) {
     case 'league':
+        if (!hasLeaguePermissions(id)) {
+            return handleError(403, 'Not enough permissions');
+        }
         setImageLeague(id);
         break;
     case 'player':
+        if (!hasPlayerPermissions(id)) {
+            return handleError(403, 'Not enough permissions');
+        }
         setImagePlayer(id);
         break;
     case 'team':
+        if (!hasTeamPermissions(id)) {
+            return handleError(403, 'Not enough permissions');
+        }
         setImageTeam(id);
         break;
     }
@@ -83,4 +93,64 @@ var setImageTeam = function (id) {
         imageType: contentType
     });
     storeLib.refresh();
+};
+
+var hasLeaguePermissions = function (leagueId) {
+    if (isAdmin()) {
+        return true;
+    }
+
+    var league = storeLib.getLeagueById(leagueId);
+    if (!league) {
+        return false;
+    }
+    var currentPlayerId = getCurrentPlayerId();
+    var playerIsLeagueAdmin = false;
+    [].concat(league.adminPlayerIds).forEach(function (playerId) {
+        if (playerId === currentPlayerId) {
+            playerIsLeagueAdmin = true;
+        }
+    });
+    return playerIsLeagueAdmin;
+};
+
+var hasTeamPermissions = function (teamId) {
+    if (isAdmin()) {
+        return true;
+    }
+
+    var team = storeLib.getTeamById(teamId);
+    if (!team) {
+        return false;
+    }
+    var currentPlayerId = getCurrentPlayerId();
+    var playerInTeam = false;
+    team.playerIds.forEach(function (playerId) {
+        if (playerId === currentPlayerId) {
+            playerInTeam = true;
+        }
+    });
+    return playerInTeam;
+};
+
+var hasPlayerPermissions = function (playerId) {
+    if (isAdmin()) {
+        return true;
+    }
+
+    var currentPlayerId = getCurrentPlayerId();
+    return currentPlayerId === playerId;
+};
+
+var getCurrentPlayerId = function () {
+    var user = authLib.getUser();
+    if (!user) {
+        return null;
+    }
+    var player = storeLib.getPlayerByUserKey(user.key);
+    return player && player._id;
+};
+
+var isAdmin = function () {
+    return authLib.hasRole('system.admin');
 };
