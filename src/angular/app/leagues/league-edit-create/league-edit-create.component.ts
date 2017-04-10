@@ -92,7 +92,7 @@ export class LeagueEditCreateComponent
             return data && data.updateLeague;
         }).then(updatedLeague => {
             this.uploadImage(updatedLeague.id).then(uploadResp => {
-                this.router.navigate(['leagues', updatedLeague.name]);
+                this.router.navigate(['leagues', updatedLeague.name], {replaceUrl: true});
             });
         });
     }
@@ -112,7 +112,7 @@ export class LeagueEditCreateComponent
             return data && data.createLeague;
         }).then(createdLeague => {
             this.uploadImage(createdLeague.id).then(uploadResp => {
-                this.router.navigate(['leagues', createdLeague.name]);
+                this.router.navigate(['leagues', createdLeague.name], {replaceUrl: true});
             });
         });
     }
@@ -122,7 +122,7 @@ export class LeagueEditCreateComponent
 
         return this.graphQLService.post(LeagueEditCreateComponent.getLeagueQuery, {name: name, playerId: playerId}).then(data => {
             if (!data.league || !data.league.isAdmin) {
-                this.router.navigate(['leagues']);
+                this.router.navigate(['leagues'], {replaceUrl: true});
                 return null;
             }
 

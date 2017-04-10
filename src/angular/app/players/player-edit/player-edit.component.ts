@@ -138,7 +138,7 @@ export class PlayerEditComponent
             return data && data.updatePlayer;
         }).then(updatedPlayer => {
             this.uploadImage(updatedPlayer.id).then(uploadResp => {
-                this.router.navigate(['players', updatedPlayer.name]);
+                this.router.navigate(['players', updatedPlayer.name], {replaceUrl: true});
             });
         });
     }

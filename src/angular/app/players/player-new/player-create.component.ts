@@ -44,7 +44,7 @@ export class PlayerCreateComponent
 
         const user = this.auth.getUser();
         if (!this.auth.isNewUser()) {
-            this.router.navigate(['players', user.playerName]);
+            this.router.navigate(['players', user.playerName], {replaceUrl: true});
             return;
         }
 
@@ -104,7 +104,7 @@ export class PlayerCreateComponent
                 user.playerName = createdPlayer.name;
                 user.playerId = createdPlayer.id;
                 this.uploadImage(createdPlayer.id).then(uploadResp => {
-                    this.router.navigate(['players', createdPlayer.name]);
+                    this.router.navigate(['players', createdPlayer.name], {replaceUrl: true});
                 });
             }
         });

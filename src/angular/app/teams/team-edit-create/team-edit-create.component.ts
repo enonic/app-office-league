@@ -180,7 +180,7 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
             return data && data.updateTeam;
         }).then(updatedTeam => {
             this.uploadImage(updatedTeam.id).then(uploadResp => {
-                this.router.navigate(['teams', updatedTeam.name]);
+                this.router.navigate(['teams', updatedTeam.name], {replaceUrl: true});
             });
         });
     }
@@ -195,7 +195,7 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
             return data && data.createTeam;
         }).then(createdTeam => {
             this.uploadImage(createdTeam.id).then(uploadResp => {
-                this.router.navigate(['teams', createdTeam.name]);
+                this.router.navigate(['teams', createdTeam.name], {replaceUrl: true});
             });
         });
     }
