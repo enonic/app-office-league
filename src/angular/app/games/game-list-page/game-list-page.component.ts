@@ -10,10 +10,8 @@ import {PageTitleService} from '../../services/page-title.service';
     templateUrl: 'game-list-page.component.html'
 })
 export class GameListPageComponent extends BaseComponent {
-    private static readonly
-    paging = 10;
-    private static readonly
-    getGamesQuery = `query($after:Int,$first:Int, $leagueName:String) {
+    private static readonly paging = 10;
+    private static readonly getGamesQuery = `query($after:Int,$first:Int, $leagueName:String) {
         gamesConnection(after:$after, first:$first, leagueName:$leagueName) {
             totalCount
             edges {
