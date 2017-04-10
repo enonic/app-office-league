@@ -1093,6 +1093,51 @@ exports.getRankingForTeamLeague = function (teamId, leagueId) {
     return -1;
 };
 
+/**
+ * Get the number of games in a league.
+ * @param  {string} leagueId League id.
+ * @return {number} Total number of games.
+ */
+exports.getGameCountByLeagueId = function (leagueId) {
+    var repoConn = newConnection();
+    var queryResult = repoConn.query({
+        start: 0,
+        count: 0,
+        query: "type = '" + TYPE.GAME + "' AND leagueId='" + leagueId + "' AND finished = 'true'"
+    });
+    return queryResult.total;
+};
+
+/**
+ * Get the number of players in a league.
+ * @param  {string} leagueId League id.
+ * @return {number} Total number of players.
+ */
+exports.getPlayerCountByLeagueId = function (leagueId) {
+    var repoConn = newConnection();
+    var queryResult = repoConn.query({
+        start: 0,
+        count: 0,
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND (inactive != 'true')"
+    });
+    return queryResult.total;
+};
+
+/**
+ * Get the number of teams in a league.
+ * @param  {string} leagueId League id.
+ * @return {number} Total number of teams.
+ */
+exports.getTeamCountByLeagueId = function (leagueId) {
+    var repoConn = newConnection();
+    var queryResult = repoConn.query({
+        start: 0,
+        count: 0,
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND leagueId='" + leagueId + "' AND (inactive != 'true')"
+    });
+    return queryResult.total;
+};
+
 function query(params) {
     var repoConn = newConnection();
     var queryResult = repoConn.query({

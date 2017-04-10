@@ -20,6 +20,11 @@
                 <span class="league-profile__name">{{league.name}}</span>
              </div>
             <div class="league-profile__description">{{league.description}}</div>
+            <div class="league-profile__stats" *ngIf="league.stats">
+                <div class="league-profile__player-count" *ngIf="league.stats.playerCount > 0">{{format(league.stats.playerCount, '', 'player', 'players')}}</div>
+                <div class="league-profile__team-count" *ngIf="league.stats.teamCount > 0">{{format(league.stats.teamCount, '', 'team', 'teams')}}</div>
+                <div class="league-profile__game-count" *ngIf="league.stats.gameCount > 0">{{format(league.stats.gameCount, '', 'game', 'games')}}</div>
+            </div>
 
         </div>
       <!--

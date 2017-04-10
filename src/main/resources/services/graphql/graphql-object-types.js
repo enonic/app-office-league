@@ -525,6 +525,34 @@ exports.leagueTeamType = graphQlLib.createObjectType({
 });
 exports.leagueTeamConnectionType = graphQlConnectionLib.createConnectionType('LeagueTeam', exports.leagueTeamType);
 
+exports.leagueStatsType = graphQlLib.createObjectType({
+    name: 'LeagueStats',
+    description: 'Domain representation of a league stats. It contains relevant numerical properties of the league.',
+    fields: {
+        gameCount: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
+            data: function (env) {
+                var leagueId = env.source._id;
+                return storeLib.getGameCountByLeagueId(leagueId);
+            }
+        },
+        playerCount: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
+            data: function (env) {
+                var leagueId = env.source._id;
+                return storeLib.getPlayerCountByLeagueId(leagueId);
+            }
+        },
+        teamCount: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
+            data: function (env) {
+                var leagueId = env.source._id;
+                return storeLib.getTeamCountByLeagueId(leagueId);
+            }
+        }
+    }
+});
+
 exports.leagueType = graphQlLib.createObjectType({
     name: 'League',
     description: 'Domain representation of a league. A league contains games. Players can join 0..* leagues and indirectly their teams.',
@@ -675,6 +703,12 @@ exports.leagueType = graphQlLib.createObjectType({
                 var offset = env.args.offset;
                 var first = env.args.first;
                 return storeLib.getActiveGamesByLeagueId(leagueId, offset, first).hits;
+            }
+        },
+        stats: {
+            type: exports.leagueStatsType,
+            data: function (env) {
+                return env.source;
             }
         }
     }

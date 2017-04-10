@@ -7,6 +7,7 @@ import {Player} from './Player';
 import {LeagueTeam} from './LeagueTeam';
 import {XPCONFIG} from '../../app/app.config';
 import {UrlHelper} from './UrlHelper';
+import {LeagueStats} from './LeagueStats';
 
 export class League
     extends NamedEntity {
@@ -18,6 +19,7 @@ export class League
     nonMemberPlayers: Player[];
     games: Game[];
     imageUrl: string;
+    stats: LeagueStats;
 
     constructor(id: string, name: string) {
         super(id, name);
@@ -34,6 +36,7 @@ export class League
         league.nonMemberPlayers = json.nonMemberPlayers && json.nonMemberPlayers.map(nonMemberPlayer => Player.fromJson(nonMemberPlayer));
         league.games = json.games && json.games.map(game => Game.fromJson(game));
         league.imageUrl = json.imageUrl ? (UrlHelper.trimSlash(XPCONFIG.baseHref) + json.imageUrl) : ImageService.leagueDefault();
+        league.stats = json.stats ? LeagueStats.fromJson(json.stats) : null;
         return league;
     }
 }
