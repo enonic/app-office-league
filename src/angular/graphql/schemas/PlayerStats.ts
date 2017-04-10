@@ -15,8 +15,8 @@ export class PlayerStats {
         playerStats.winningGameCount = json.winningGameCount || 0;
         playerStats.goalCount = json.goalCount || 0;
 
-        playerStats.winningPercent = playerStats.winningGameCount / playerStats.gameCount;
-        playerStats.goalsPerGame = playerStats.goalCount / playerStats.gameCount;
+        playerStats.winningPercent = playerStats.gameCount === 0 ? 0 : playerStats.winningGameCount / playerStats.gameCount;
+        playerStats.goalsPerGame = playerStats.gameCount === 0 ? 0 : playerStats.goalCount / playerStats.gameCount;
         return playerStats;
     }
 }
