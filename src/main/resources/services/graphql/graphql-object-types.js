@@ -50,18 +50,24 @@ exports.playerType = graphQlLib.createObjectType({
         fullname: {
             type: graphQlLib.GraphQLString,
             data: function (env) {
-                if (getCurrentPlayerId() === env.source._id) {
+                var user = authLib.getUser();
+                if (user && user.key  === env.source.userKey) {
                     return env.source.fullname;
                 } else {
-                    return '';
+                    return null;
                 }
             }
         },
         email: {
             type: graphQlLib.GraphQLString,
             data: function (env) {
-                var user = getCurrentUser(env.source._id);
-                return user ? user.email || '' : '';
+                var user = authLib.getUser();
+                log.info('user:' + JSON.stringify(user, null, 2));
+                if (user && user.key  === env.source.userKey) {
+                    return user.email;
+                } else {
+                    return null;
+                }
             }
         },
         nationality: {
@@ -713,24 +719,3 @@ exports.leagueType = graphQlLib.createObjectType({
         }
     }
 });
-
-var getCurrentPlayerId = function () {
-    var user = authLib.getUser();
-    if (!user) {
-        return null;
-    }
-    var player = storeLib.getPlayerByUserKey(user.key);
-    return player && player._id;
-};
-
-var getCurrentUser = function (playerId) {
-    var user = authLib.getUser();
-    if (!user) {
-        return null;
-    }
-    var player = storeLib.getPlayerByUserKey(user.key);
-    if (!player) {
-        return null;
-    }
-    return player._id === playerId ? user : null;
-};

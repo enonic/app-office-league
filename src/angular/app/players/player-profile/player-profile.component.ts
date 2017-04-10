@@ -119,6 +119,7 @@ export class PlayerProfileComponent
             handedness
             description
             fullname
+            email
 
             gamePlayers(first: 5) {
               game {

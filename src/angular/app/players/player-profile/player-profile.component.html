@@ -33,12 +33,11 @@
             <div class="player-profile__name-wrapper">
                 <span class="player-profile__name">{{player.name}}</span>
                 <div *ngIf="player.nationality != null" class="player-profile__flag flag-icon flag-icon-{{player.nationality}}"></div>
-
             </div>
+            <div *ngIf="player.fullname != null" class="player-profile__fullname">{{player.fullname}}</div>
+            <div *ngIf="player.email != null" class="player-profile__email">{{player.email}}</div>
             <div class="player-profile__description">{{player.description}}</div>
-
         </div>
-
     </div>
 
     <div class="row">
