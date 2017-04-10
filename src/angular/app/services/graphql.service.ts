@@ -36,11 +36,11 @@ export class GraphQLService {
         if (typeof CacheStorage !== "undefined" && !!successCallback) {
             return this.getCachePromise(url, networkPromise, successCallback, failureCallback);
         }
-        
+
         if (!!successCallback) {
             return networkPromise.then(successCallback);
         }
-        
+
         return networkPromise;
     }
 
@@ -59,12 +59,13 @@ export class GraphQLService {
                     else {
                         // Temporary solution: redirect to the offline page 
                         // when we are offline and there's no cached API response
-                        
-                        document.location.href = XPCONFIG.baseHref.replace('/app/', '/offline');
+                        if (!navigator.onLine) {
+                            document.location.href = XPCONFIG.baseHref.replace('/app/', '/offline');
+                        }
                     }
                 }
             });
-        
+
         return caches.match(url)
             .then(res => this.extractCachedData(res))
             .then(json => {
