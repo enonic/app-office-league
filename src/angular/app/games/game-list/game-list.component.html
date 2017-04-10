@@ -7,4 +7,12 @@
         No games
     </h5>
     <a href="#!" *ngIf="games?.length > 0 && detailsPath" class="game-list__more" (click)="onDetailsClicked($event)">See all games</a>
+    <ul class="pagination center" *ngIf="pages?.length > 1">
+        <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i
+                class="material-icons">chevron_left</i></a></li>
+        <li *ngFor="let page of pages;" [class.active]="page == currentPage" class="waves-effect"><a
+                (click)="setCurrentPage(page)">{{page}}</a></li>
+        <li [class.disabled]="currentPage === pageCount" class="waves-effect"><a (click)="setCurrentPage(currentPage + 1)"><i
+                class="material-icons">chevron_right</i></a></li>
+    </ul>
 </div>

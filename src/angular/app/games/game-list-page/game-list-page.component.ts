@@ -11,22 +11,14 @@ import {PageTitleService} from '../../services/page-title.service';
 })
 export class GameListPageComponent extends BaseComponent {
     private static readonly paging = 10;
-    private static readonly getGamesQuery = `query($after:Int,$first:Int, $leagueName:String) {
-        gamesConnection(after:$after, first:$first, leagueName:$leagueName) {
+    private static readonly getGamesQuery = `query($after:Int,$first:Int, $leagueName:String!) {
+        gamesConnection(after:$after, first:$first, leagueName:$leagueName, finished: true) {
             totalCount
             edges {
                 node {
-                  id
+                    id
                     time
                     finished
-                    points {
-                        player {
-                            name
-                            imageUrl
-                        }
-                        time
-                        against
-                    }
                     gamePlayers {
                         score
                         scoreAgainst
@@ -49,10 +41,6 @@ export class GameListPageComponent extends BaseComponent {
                             name
                             imageUrl
                         }
-                    }
-                    league {
-                        name
-                        imageUrl
                     }
                 }
             }

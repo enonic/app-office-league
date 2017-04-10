@@ -144,16 +144,18 @@ exports.rootQueryType = graphQlLib.createObjectType({
             args: {
                 after: graphQlLib.GraphQLInt, //TODO Change for base64
                 first: graphQlLib.GraphQLInt,
-                leagueName: graphQlLib.GraphQLString
+                leagueName: graphQlLib.nonNull(graphQlLib.GraphQLString),
+                finished: graphQlLib.GraphQLBoolean,
             },
             data: function (env) {
                 var after = env.args.after;
                 var first = env.args.first;
                 var leagueName = env.args.leagueName;
+                var finished = !!env.args.finished;
 
                 var league = storeLib.getLeagueByName(leagueName);
                 if (league) {
-                    return storeLib.getGamesByLeagueId(league._id, after, first, true);
+                    return storeLib.getGamesByLeagueId(league._id, after, first, finished);
                 } else {
                     return {
                         total: 0,
