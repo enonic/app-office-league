@@ -5,6 +5,7 @@ import {Team} from './Team';
 import {LeaguePlayer} from './LeaguePlayer';
 import {XPCONFIG} from '../../app/app.config';
 import {UrlHelper} from './UrlHelper';
+import {PlayerStats} from './PlayerStats';
 
 export class Player
     extends NamedEntity {
@@ -16,6 +17,7 @@ export class Player
     leaguePlayers: LeaguePlayer[] = [];
     imageUrl: string;
     email: string;
+    stats: PlayerStats;
 
     constructor(id: string, name: string) {
         super(id, name);
@@ -24,14 +26,15 @@ export class Player
 
     static fromJson(json: any): Player {
         let player = new Player(json.id, json.name);
-        player.fullname = json.fullname || '';
+        player.fullname = json.fullname || '';
         player.nationality = json.nationality;
         player.handedness = HandednessUtil.parse(json.handedness);
         player.description = json.description;
         player.teams = json.teams ? json.teams.map((team) => Team.fromJson(team)) : [];
         player.leaguePlayers = json.leaguePlayers ? json.leaguePlayers.map((leaguePlayer) => LeaguePlayer.fromJson(leaguePlayer)) : [];
         player.imageUrl = json.imageUrl ? (UrlHelper.trimSlash(XPCONFIG.baseHref) + json.imageUrl) : ImageService.playerDefault();
-        player.email = json.email || '';
+        player.email = json.email || '';
+        player.stats = json.stats ? PlayerStats.fromJson(json.stats) : null;
         return player;
     }
 }

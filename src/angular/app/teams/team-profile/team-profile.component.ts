@@ -56,6 +56,20 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
         this.pageTitleService.setTitle(this.team.name);
     }
 
+    format(value: number, none: string, one: string, multiple: string): string {
+        if (value === 0) {
+            return none;
+        } else if (value === 1) {
+            return value + " " + one;
+        } else {
+            return value + " " + multiple;
+        }
+    }
+
+    formatPercent(value: number, decimals: number = 0): string {
+        return parseFloat('' + (Math.round(value * 100) / 100)).toFixed(decimals);
+    }
+
     onEditClicked() {
         this.router.navigate(['teams', this.team.name.toLowerCase(), 'edit']);
     }
@@ -135,6 +149,12 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
                 name
                 imageUrl
                 description
+            }
+            
+            stats {
+                gameCount
+                winningGameCount
+                goalCount
             }
         }
     }`;

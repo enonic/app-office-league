@@ -24,6 +24,35 @@ var entityType = graphQlLib.createInterfaceType({
 /* -----------------------------------------------------------------------
  * Object types
  ----------------------------------------------------------------------- */
+
+exports.playerStatsType = graphQlLib.createObjectType({
+    name: 'PlayerStats',
+    description: 'Domain representation of a player stats.',
+    fields: {
+        gameCount: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
+            data: function (env) {
+                var playerId = env.source._id;
+                return graphQlUtilLib.toInt(storeLib.getGameCountByPlayerId(playerId));
+            }
+        },
+        winningGameCount: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
+            data: function (env) {
+                var playerId = env.source._id;
+                return graphQlUtilLib.toInt(storeLib.getWinningGameCountByPlayerId(playerId));
+            }
+        },
+        goalCount: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
+            data: function (env) {
+                var playerId = env.source._id;
+                return graphQlUtilLib.toInt(storeLib.getGoalCountByPlayerId(playerId));
+            }
+        }
+    }
+});
+
 exports.playerType = graphQlLib.createObjectType({
     name: 'Player',
     description: 'Domain representation of a player. A player has a link to a user',
@@ -133,10 +162,44 @@ exports.playerType = graphQlLib.createObjectType({
             data: function (env) {
                 return storeLib.getGamePlayersByPlayerId(env.source._id, env.args.offset, env.args.first).hits;
             }
+        },
+        stats: {
+            type: exports.playerStatsType,
+            data: function (env) {
+                return env.source;
+            }
         }
     }
 });
 exports.playerConnectionType = graphQlConnectionLib.createConnectionType('Player', exports.playerType);
+
+exports.teamStatsType = graphQlLib.createObjectType({
+    name: 'TeamStats',
+    description: 'Domain representation of a team stats.',
+    fields: {
+        gameCount: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
+            data: function (env) {
+                var teamId = env.source._id;
+                return graphQlUtilLib.toInt(storeLib.getGameCountByTeamId(teamId));
+            }
+        },
+        winningGameCount: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
+            data: function (env) {
+                var teamId = env.source._id;
+                return graphQlUtilLib.toInt(storeLib.getWinningGameCountByTeamId(teamId));
+            }
+        },
+        goalCount: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
+            data: function (env) {
+                var teamId = env.source._id;
+                return graphQlUtilLib.toInt(storeLib.getGoalCountByTeamId(teamId));
+            }
+        }
+    }
+});
 
 exports.teamType = graphQlLib.createObjectType({
     name: 'Team',
@@ -193,6 +256,12 @@ exports.teamType = graphQlLib.createObjectType({
             },
             data: function (env) {
                 return storeLib.getGameTeamsByTeamId(env.source._id, env.args.offset, env.args.first).hits;
+            }
+        },
+        stats: {
+            type: exports.teamStatsType,
+            data: function (env) {
+                return env.source;
             }
         }
     }
@@ -533,27 +602,27 @@ exports.leagueTeamConnectionType = graphQlConnectionLib.createConnectionType('Le
 
 exports.leagueStatsType = graphQlLib.createObjectType({
     name: 'LeagueStats',
-    description: 'Domain representation of a league stats. It contains relevant numerical properties of the league.',
+    description: 'Domain representation of a league stats.',
     fields: {
         gameCount: {
             type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
             data: function (env) {
                 var leagueId = env.source._id;
-                return storeLib.getGameCountByLeagueId(leagueId);
+                return graphQlUtilLib.toInt(storeLib.getGameCountByLeagueId(leagueId));
             }
         },
         playerCount: {
             type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
             data: function (env) {
                 var leagueId = env.source._id;
-                return storeLib.getPlayerCountByLeagueId(leagueId);
+                return graphQlUtilLib.toInt(storeLib.getPlayerCountByLeagueId(leagueId));
             }
         },
         teamCount: {
             type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
             data: function (env) {
                 var leagueId = env.source._id;
-                return storeLib.getTeamCountByLeagueId(leagueId);
+                return graphQlUtilLib.toInt(storeLib.getTeamCountByLeagueId(leagueId));
             }
         }
     }

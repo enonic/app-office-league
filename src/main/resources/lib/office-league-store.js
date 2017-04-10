@@ -1159,6 +1159,110 @@ exports.getTeamCountByLeagueId = function (leagueId) {
     return queryResult.total;
 };
 
+/**
+ * Get the number of games of a player.
+ * @param  {string} playerId Player id.
+ * @return {number} Total number of games.
+ */
+exports.getGameCountByPlayerId = function (playerId) {
+    var repoConn = newConnection();
+    var queryResult = repoConn.query({
+        start: 0,
+        count: 0,
+        query: "type = '" + TYPE.GAME_PLAYER + "' AND playerId='" + playerId + "'"
+    });
+    return queryResult.total;
+};
+
+/**
+ * Get the number of won games of a player.
+ * @param  {string} playerId Player id.
+ * @return {number} Total number of won games.
+ */
+exports.getWinningGameCountByPlayerId = function (playerId) {
+    var repoConn = newConnection();
+    var queryResult = repoConn.query({
+        start: 0,
+        count: 0,
+        query: "type = '" + TYPE.GAME_PLAYER + "' AND playerId='" + playerId + "' AND winner = 'true'"
+    });
+    return queryResult.total;
+};
+
+/**
+ * Get the number of goals scored by a player.
+ * @param  {string} playerId Player id.
+ * @return {number} Total number of goals.
+ */
+exports.getGoalCountByPlayerId = function (playerId) {
+    var repoConn = newConnection();
+    var queryResult = repoConn.query({
+        start: 0,
+        count: 0,
+        query: "type = '" + TYPE.GAME_PLAYER + "' AND playerId='" + playerId + "'",
+        aggregations: {
+            goalStats: {
+                stats: {
+                    "field": "score"
+                }
+            }
+        }
+    });
+    return queryResult.aggregations && queryResult.aggregations.goalStats ? queryResult.aggregations.goalStats.sum : 0;
+};
+
+/**
+ * Get the number of games of a team.
+ * @param  {string} teamId Team id.
+ * @return {number} Total number of games.
+ */
+exports.getGameCountByTeamId = function (teamId) {
+    var repoConn = newConnection();
+    var queryResult = repoConn.query({
+        start: 0,
+        count: 0,
+        query: "type = '" + TYPE.GAME_TEAM + "' AND teamId='" + teamId + "'"
+    });
+    return queryResult.total;
+};
+
+/**
+ * Get the number of won games of a team.
+ * @param  {string} teamId Team id.
+ * @return {number} Total number of won games.
+ */
+exports.getWinningGameCountByTeamId = function (teamId) {
+    var repoConn = newConnection();
+    var queryResult = repoConn.query({
+        start: 0,
+        count: 0,
+        query: "type = '" + TYPE.GAME_TEAM + "' AND teamId='" + teamId + "' AND winner = 'true'"
+    });
+    return queryResult.total;
+};
+
+/**
+ * Get the number of goals scored by a team.
+ * @param  {string} teamId Team id.
+ * @return {number} Total number of goals.
+ */
+exports.getGoalCountByTeamId = function (teamId) {
+    var repoConn = newConnection();
+    var queryResult = repoConn.query({
+        start: 0,
+        count: 0,
+        query: "type = '" + TYPE.GAME_TEAM + "' AND teamId='" + teamId + "'",
+        aggregations: {
+            goalStats: {
+                stats: {
+                    "field": "score"
+                }
+            }
+        }
+    });
+    return queryResult.aggregations && queryResult.aggregations.goalStats ? queryResult.aggregations.goalStats.sum : 0;
+};
+
 function query(params) {
     var repoConn = newConnection();
     var queryResult = repoConn.query({

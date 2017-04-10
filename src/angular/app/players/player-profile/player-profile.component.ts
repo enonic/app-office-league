@@ -102,6 +102,20 @@ export class PlayerProfileComponent
         }
     }
 
+    format(value: number, none: string, one: string, multiple: string): string {
+        if (value === 0) {
+            return none;
+        } else if (value === 1) {
+            return value + " " + one;
+        } else {
+            return value + " " + multiple;
+        }
+    }
+
+    formatPercent(value: number, decimals: number = 0): string {
+        return parseFloat('' + (Math.round(value * 100) / 100)).toFixed(decimals);
+    }
+
     onEditClicked() {
         this.router.navigate(['players', this.player.name.toLowerCase(), 'edit']);
     }
@@ -200,6 +214,12 @@ export class PlayerProfileComponent
                 pageInfo {
                     hasNext
                 }
+            }
+            
+            stats {
+                gameCount
+                winningGameCount
+                goalCount
             }
         }
     }`;

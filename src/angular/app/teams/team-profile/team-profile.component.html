@@ -17,6 +17,13 @@
                 <span class="team-profile__name">{{team.name}}</span>
             </div>
             <div class="team-profile__description">{{team.description}}</div>
+
+            <div class="team-profile__stats" *ngIf="team.stats">
+                <div class="team-profile__game-count" *ngIf="team.stats.gameCount > 0">{{format(team.stats.gameCount, '', 'game', 'games')}} played</div>
+                <div class="team-profile__game-count" *ngIf="team.stats.goalCount > 0">{{format(team.stats.goalCount, '', 'goal', 'goals')}} scored</div>
+                <div class="team-profile__game-count" *ngIf="team.stats.gameCount > 0">{{formatPercent(team.stats.winningPercent*100)}}% games won</div>
+                <div class="team-profile__game-count" *ngIf="team.stats.gameCount > 0">{{formatPercent(team.stats.goalsPerGame, 2)}} goals per game</div>
+            </div>
         </div>
     </div>
 

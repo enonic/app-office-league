@@ -83,7 +83,7 @@ export class LeagueProfileComponent
 
     format(value: number, none: string, one: string, multiple: string): string {
         if (value === 0) {
-            return "";
+            return none;
         } else if (value === 1) {
             return value + " " + one;
         } else {

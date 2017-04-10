@@ -37,6 +37,13 @@
             <div *ngIf="player.fullname != null" class="player-profile__fullname">{{player.fullname}}</div>
             <div *ngIf="player.email != null" class="player-profile__email">{{player.email}}</div>
             <div class="player-profile__description">{{player.description}}</div>
+
+            <div class="player-profile__stats" *ngIf="player.stats">
+                <div class="player-profile__game-count" *ngIf="player.stats.gameCount > 0">{{format(player.stats.gameCount, '', 'game', 'games')}} played</div>
+                <div class="player-profile__game-count" *ngIf="player.stats.goalCount > 0">{{format(player.stats.goalCount, '', 'goal', 'goals')}} scored</div>
+                <div class="player-profile__game-count" *ngIf="player.stats.gameCount > 0">{{formatPercent(player.stats.winningPercent*100)}}% games won</div>
+                <div class="player-profile__game-count" *ngIf="player.stats.gameCount > 0">{{formatPercent(player.stats.goalsPerGame, 2)}} goals per game</div>
+            </div>
         </div>
     </div>
 
