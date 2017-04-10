@@ -160,17 +160,17 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 if (leagueName) {
                     var league = storeLib.getLeagueByName(leagueName);
                     if (league) {
-                        return storeLib.getGamesByLeagueId(league._id, after, first, finished);
+                        return storeLib.getGamesByLeagueId(league._id, after ? (after + 1) : 0, first, finished);
                     }
                 } else if (playerName) {
                     var player = storeLib.getPlayerByName(playerName);
                     if (player) {
-                        return storeLib.getGamesByPlayerId(player._id, after, first); //TODO Finished or not?
+                        return storeLib.getGamesByPlayerId(player._id, after ? (after + 1) : 0, first); //TODO Finished or not?
                     }
                 } else if (teamName) {
                     var team = storeLib.getTeamByName(teamName);
                     if (team) {
-                        return storeLib.getGamesByTeamId(team._id, after, first); //TODO Finished or not?
+                        return storeLib.getGamesByTeamId(team._id, after ? (after + 1) : 0, first); //TODO Finished or not?
                     }
                 }
 
