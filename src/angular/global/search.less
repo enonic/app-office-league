@@ -1,12 +1,16 @@
+@import "../app/colors";
+
 .global__search {
   position: relative;
   width: ~"calc(100% - 40px)";
   margin: 0 auto;
+  color: @main-theme-color;
 
   &-input {
-    border: 1px solid #000 !important;
+    border: none !important;
     padding: 0 10px !important;
     box-sizing: border-box !important;
+    background-color: #fff !important;
     // remove important when overriding materialize stuff is removed
 
     &:focus {
