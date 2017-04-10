@@ -3,9 +3,9 @@
     <a href="#!" class="game-list__item" *ngFor="let game of games" (click)="onGameClicked(game, $event)">
         <game-summary [game]="game"></game-summary>
     </a>
-    <h5 *ngIf="games?.length == 0" class="collection-item empty" i18n="No games|Games list empty message">
+    <p *ngIf="games?.length == 0" i18n="No games|Games list empty message">
         No games
-    </h5>
+    </p>
     <a href="#!" *ngIf="games?.length > 0 && detailsPath" class="game-list__more" (click)="onDetailsClicked($event)">See all games</a>
     <ul class="pagination center" *ngIf="pages?.length > 1">
         <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i

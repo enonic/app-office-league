@@ -9,9 +9,9 @@
         <player-summary *ngIf="displayPlayers" [player]="leaguePlayer.player" [rating]="leaguePlayer.rating"
                         [ranking]="leaguePlayer.ranking"></player-summary>
     </a>
-    <h5 *ngIf="leaguePlayers?.length == 0" class="collection-item empty">
+    <p *ngIf="leaguePlayers?.length == 0">
         {{displayLeagues ? 'No leagues' : displayPlayers ? 'No players' : ''}}
-    </h5>
+    </p>
     <a *ngIf="leaguePlayers?.length > 0 && this.detailsPath" href="#!" class="league-player-list__more"
        (click)="onDetailsClicked($event)">{{seeMoreText}}</a>
 

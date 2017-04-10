@@ -6,9 +6,9 @@
         <team-summary *ngIf="displayTeams" [team]="leagueTeam.team" [rating]="leagueTeam.rating"
                       [ranking]="leagueTeam.ranking"></team-summary>
     </a>
-    <h5 *ngIf="leagueTeams?.length == 0" class="collection-item empty">
+    <p *ngIf="leagueTeams?.length == 0">
         {{displayLeagues ? 'No leagues' : displayTeams ? 'No teams' : ''}}
-    </h5>
+    </p>
     <a href="#!" *ngIf="leagueTeams?.length > 0 && detailsPath" class="league-team-list__more" (click)="onDetailsClicked($event)">{{seeMoreText}}</a>
     <ul class="pagination center" *ngIf="pages?.length > 1">
         <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i
