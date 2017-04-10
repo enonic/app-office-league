@@ -13,6 +13,27 @@ var TEAMS_PATH = '/teams';
 var DEFAULT_SITE_NAME = 'office-league';
 var DEFAULT_SITE_PATH = '/' + DEFAULT_SITE_NAME;
 
+var ROOT_PERMISSIONS = [
+    {
+        "principal": "role:system.authenticated",
+        "allow": [
+            "READ",
+            "CREATE",
+            "MODIFY",
+            "DELETE",
+            "PUBLISH",
+            "READ_PERMISSIONS",
+            "WRITE_PERMISSIONS"
+        ],
+        "deny": []
+    },
+    {
+        "principal": "role:system.everyone",
+        "allow": ["READ"],
+        "deny": []
+    }
+];
+
 exports.initialize = function () {
     log.info('Initializing Office League repository...');
 
@@ -76,8 +97,7 @@ var createSite = function () {
         log.info('Adding Site page components...');
         var repoConn = nodeLib.connect({
             repoId: 'cms-repo',
-            branch: 'draft',
-            principals: ["role:system.admin"]
+            branch: 'draft'
         });
         repoConn.modify({
             key: siteContent._id,
@@ -140,8 +160,7 @@ var createSite = function () {
         log.info('Assigning application to site...');
         var repoConn = nodeLib.connect({
             repoId: 'cms-repo',
-            branch: 'draft',
-            principals: ["role:system.admin"]
+            branch: 'draft'
         });
         repoConn.modify({
             key: siteContent._id,
@@ -232,21 +251,7 @@ var createRepo = function () {
     log.info('Creating repository...');
     var newRepo = repoLib.create({
         id: REPO_NAME,
-        rootPermissions: [
-            {
-                "principal": "role:system.admin",
-                "allow": [
-                    "READ",
-                    "CREATE",
-                    "MODIFY",
-                    "DELETE",
-                    "PUBLISH",
-                    "READ_PERMISSIONS",
-                    "WRITE_PERMISSIONS"
-                ],
-                "deny": []
-            }
-        ]
+        rootPermissions: ROOT_PERMISSIONS
     });
     log.info('Repository created.');
 };
@@ -254,8 +259,7 @@ var createRepo = function () {
 var createRootNodes = function () {
     var repoConn = nodeLib.connect({
         repoId: REPO_NAME,
-        branch: 'master',
-        principals: ["role:system.admin"]
+        branch: 'master'
     });
 
     var leaguesExist = nodeWithPathExists(repoConn, LEAGUES_PATH);
@@ -263,7 +267,8 @@ var createRootNodes = function () {
         log.info('Creating node [' + LEAGUES_PATH + '] ...');
         var leaguesNode = repoConn.create({
             _name: LEAGUES_PATH.slice(1),
-            _parentPath: '/'
+            _parentPath: '/',
+            _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
         });
     }
     var teamsExist = nodeWithPathExists(repoConn, TEAMS_PATH);
@@ -271,7 +276,8 @@ var createRootNodes = function () {
         log.info('Creating node [' + TEAMS_PATH + '] ...');
         var teamsNode = repoConn.create({
             _name: TEAMS_PATH.slice(1),
-            _parentPath: '/'
+            _parentPath: '/',
+            _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
         });
     }
     var playersExist = nodeWithPathExists(repoConn, PLAYERS_PATH);
@@ -279,7 +285,8 @@ var createRootNodes = function () {
         log.info('Creating node [' + PLAYERS_PATH + '] ...');
         var playersNode = repoConn.create({
             _name: PLAYERS_PATH.slice(1),
-            _parentPath: '/'
+            _parentPath: '/',
+            _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
         });
     }
 };

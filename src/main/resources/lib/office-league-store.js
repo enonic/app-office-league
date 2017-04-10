@@ -58,6 +58,27 @@ var TYPE = {
     COMMENT: 'comment'
 };
 
+var ROOT_PERMISSIONS = [ //TODO Remove after XP issue 4801 resolution
+    {
+        "principal": "role:system.authenticated",
+        "allow": [
+            "READ",
+            "CREATE",
+            "MODIFY",
+            "DELETE",
+            "PUBLISH",
+            "READ_PERMISSIONS",
+            "WRITE_PERMISSIONS"
+        ],
+        "deny": []
+    },
+    {
+        "principal": "role:system.everyone",
+        "allow": ["READ"],
+        "deny": []
+    }
+];
+
 /**
  * @typedef {Object} Attachment
  * @property {string} name Attachment name.
@@ -1227,6 +1248,7 @@ exports.createLeague = function (params) {
     var leagueNode = repoConn.create({
         _name: prettifyName(params.name),
         _parentPath: LEAGUES_PATH,
+        _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
         type: TYPE.LEAGUE,
         name: params.name,
         sport: params.sport,
@@ -1239,15 +1261,18 @@ exports.createLeague = function (params) {
 
     var playersNode = repoConn.create({
         _name: 'players',
-        _parentPath: leagueNode._path
+        _parentPath: leagueNode._path,
+        _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
     });
     var teamsNode = repoConn.create({
         _name: 'teams',
-        _parentPath: leagueNode._path
+        _parentPath: leagueNode._path,
+        _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
     });
     var gamesNode = repoConn.create({
         _name: 'games',
-        _parentPath: leagueNode._path
+        _parentPath: leagueNode._path,
+        _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
     });
 
     return setImageUrl(leagueNode);
@@ -1283,6 +1308,7 @@ exports.createPlayer = function (params) {
     var playerNode = repoConn.create({
         _name: prettifyName(params.name),
         _parentPath: PLAYERS_PATH,
+        _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
         type: TYPE.PLAYER,
         userKey: params.userKey,
         name: params.name,
@@ -1343,6 +1369,7 @@ exports.createTeam = function (params) {
     var teamNode = repoConn.create({
         _name: prettifyName(name),
         _parentPath: TEAMS_PATH,
+        _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
         type: TYPE.TEAM,
         name: name,
         image: imageAttachment && imageAttachment.name,
@@ -1526,6 +1553,7 @@ exports.createGame = function (params) {
 
     var gameNode = repoConn.create({
         _parentPath: leagueNode._path + LEAGUE_GAMES_REL_PATH,
+        _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
         type: TYPE.GAME,
         leagueId: params.leagueId,
         time: valueLib.instant(params.time),
@@ -1539,6 +1567,7 @@ exports.createGame = function (params) {
         gamePlayer = params.gamePlayers[i];
         var gamePlayerNode = repoConn.create({
             _parentPath: gameNode._path,
+            _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
             leagueId: params.leagueId,
             type: TYPE.GAME_PLAYER,
             time: valueLib.instant(params.time),
@@ -1559,6 +1588,7 @@ exports.createGame = function (params) {
         gameTeam = params.gameTeams[i];
         var gameTeamNode = repoConn.create({
             _parentPath: gameNode._path,
+            _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
             leagueId: params.leagueId,
             type: TYPE.GAME_TEAM,
             time: valueLib.instant(params.time),
@@ -1616,6 +1646,7 @@ exports.createComment = function (params) {
 
     var commentNode = repoConn.create({
         _parentPath: gameNode._path,
+        _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
         type: TYPE.COMMENT,
         gameId: params.gameId,
         author: params.author,
@@ -1668,6 +1699,7 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
 
     var leaguePlayer = repoConn.create({
         _parentPath: leagueNode._path + LEAGUE_PLAYERS_REL_PATH,
+        _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
         type: TYPE.LEAGUE_PLAYER,
         playerId: playerId,
         leagueId: leagueId,
@@ -1745,6 +1777,7 @@ exports.joinTeamLeague = function (leagueId, teamId, rating) {
 
     var leagueTeam = repoConn.create({
         _parentPath: leagueNode._path + LEAGUE_TEAMS_REL_PATH,
+        _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
         type: TYPE.LEAGUE_TEAM,
         teamId: teamId,
         leagueId: leagueId,
@@ -2371,8 +2404,7 @@ exports.getRepoConnection = function () {
 var newConnection = function () {
     return nodeLib.connect({
         repoId: REPO_NAME,
-        branch: 'master',
-        principals: ["role:system.admin"] //TODO Remove once import data is fixed
+        branch: 'master'
     });
 };
 
