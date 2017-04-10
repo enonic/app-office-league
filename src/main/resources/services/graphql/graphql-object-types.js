@@ -443,6 +443,7 @@ exports.gameType = graphQlLib.createObjectType({
         }
     }
 });
+exports.gameConnectionType = graphQlConnectionLib.createConnectionType('Game', exports.gameType);
 
 exports.leaguePlayerType = graphQlLib.createObjectType({
     name: 'LeaguePlayer',

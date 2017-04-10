@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {GameComponent} from './game/game.component';
 import {GameListComponent} from './game-list/game-list.component';
+import {GameListPageComponent} from './game-list-page/game-list-page.component';
 import {CommonModule} from '../common/common.module';
 import {GameProfileComponent} from './game-profile/game-profile.component';
 import {NewGameComponent} from './new-game/new-game.component';
@@ -18,31 +19,17 @@ import {RatingPointsComponent} from './rating-points/rating-points.component';
 import {MomentModule} from 'angular2-moment';
 
 const gameRoutes: Routes = [
-    {
-        path: 'games',
-        component: GameListComponent,
-        canActivate: [PlayerRouteGuard]
-    },
-    {
-        path: 'games/:id',
-        component: GameProfileComponent,
-        canActivate: [PlayerRouteGuard]
-    },
-    {
-        path: 'games/:leagueId/new-game',
-        component: NewGameComponent,
-        canActivate: [PlayerRouteGuard]
-    },
-    {
-        path: 'games/:leagueId/game-play',
-        component: GamePlayComponent,
-        canActivate: [PlayerRouteGuard]
-    }
+    {path: 'games', component: GameListComponent, canActivate: [PlayerRouteGuard]},
+    {path: 'games/:id', component: GameProfileComponent, canActivate: [PlayerRouteGuard]},
+    {path: 'games/:leagueId/new-game', component: NewGameComponent, canActivate: [PlayerRouteGuard]},
+    {path: 'games/:leagueId/game-play', component: GamePlayComponent, canActivate: [PlayerRouteGuard]},
+    {path: 'leagues/:name/games', component: GameListPageComponent, canActivate: [PlayerRouteGuard,]}
 ];
 
 @NgModule({
     declarations: [
         GameListComponent,
+        GameListPageComponent,
         GameProfileComponent,
         GameComponent,
         NewGameComponent,
