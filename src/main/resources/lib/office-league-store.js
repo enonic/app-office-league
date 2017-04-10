@@ -958,6 +958,46 @@ exports.getGamesByTeamId = function (teamId, start, count) {
 };
 
 /**
+ * Retrieve a list of games for a player.
+ * @param  {string} playerId Player id.
+ * @param  {number} [start=0] First index of the league games.
+ * @param  {number} [count=10] Number of games to fetch.
+ * @return {GamesResponse} Team games.
+ */
+exports.getGamesByPlayerId = function (playerId, start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.GAME_PLAYER + "' AND playerId = '" + playerId + "'",
+        sort: "time DESC"
+    });
+
+    var gameTeams = [];
+    if (result.count > 0) {
+        gameTeams = result.hits.map(function (hit) {
+            return hit.id;
+        });
+        gameTeams = [].concat(repoConn.get(gameTeams));
+    }
+    var gameIds = gameTeams.map(function (gameTeam) {
+        return gameTeam.gameId;
+    });
+    var games = gameIds.map(function (gameId) {
+        return exports.getGameById(gameId);
+    });
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "hits": games
+    };
+};
+
+/**
  * Retrieve a list of games for a team.
  * @param  {string} teamId Team id.
  * @param  {number} [start=0] First index of the league games.

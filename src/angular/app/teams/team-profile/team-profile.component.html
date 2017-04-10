@@ -62,7 +62,7 @@
     </div>
 
     <div class="row">
-        <game-list [games]="games" [title]="'Latest games'"></game-list>
+        <game-list [games]="games" [title]="'Latest games'" [detailsPath]="['teams', team.name.toLowerCase(), 'games']"></game-list>
     </div>
 
 

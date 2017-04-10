@@ -23,7 +23,9 @@ const gameRoutes: Routes = [
     {path: 'games/:id', component: GameProfileComponent, canActivate: [PlayerRouteGuard]},
     {path: 'games/:leagueId/new-game', component: NewGameComponent, canActivate: [PlayerRouteGuard]},
     {path: 'games/:leagueId/game-play', component: GamePlayComponent, canActivate: [PlayerRouteGuard]},
-    {path: 'leagues/:name/games', component: GameListPageComponent, canActivate: [PlayerRouteGuard,]}
+    {path: 'leagues/:leagueName/games', component: GameListPageComponent, canActivate: [PlayerRouteGuard,]},
+    {path: 'players/:playerName/games', component: GameListPageComponent, canActivate: [PlayerRouteGuard,]},
+    {path: 'teams/:teamName/games', component: GameListPageComponent, canActivate: [PlayerRouteGuard,]}
 ];
 
 @NgModule({

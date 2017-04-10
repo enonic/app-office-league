@@ -11,8 +11,8 @@ import {PageTitleService} from '../../services/page-title.service';
 })
 export class GameListPageComponent extends BaseComponent {
     private static readonly paging = 10;
-    private static readonly getGamesQuery = `query($after:Int,$first:Int, $leagueName:String!) {
-        gamesConnection(after:$after, first:$first, leagueName:$leagueName, finished: true) {
+    private static readonly getGamesQuery = `query($after:Int,$first:Int, $leagueName:String, $playerName:String, $teamName:String) {
+        gamesConnection(after:$after, first:$first, leagueName:$leagueName, playerName:$playerName, teamName:$teamName, finished: true) {
             totalCount
             edges {
                 node {
@@ -50,6 +50,8 @@ export class GameListPageComponent extends BaseComponent {
     public games: Game[];
     public pageCount: number = 1;
     private leagueName: string;
+    private playerName: string;
+    private teamName: string;
 
     constructor(private router: Router, private service: GraphQLService, private pageTitleService: PageTitleService,
                 route: ActivatedRoute) {
@@ -58,7 +60,9 @@ export class GameListPageComponent extends BaseComponent {
 
     ngOnInit(): void {
         super.ngOnInit();
-        this.leagueName = this.route.snapshot.params['name'];
+        this.leagueName = this.route.snapshot.params['leagueName'];
+        this.playerName = this.route.snapshot.params['playerName'];
+        this.teamName = this.route.snapshot.params['teamName'];
         this.refresh();
     }
 
@@ -66,7 +70,7 @@ export class GameListPageComponent extends BaseComponent {
         let after = currentPage > 1 ? ((currentPage - 1) * GameListPageComponent.paging - 1) : undefined;
         this.service.post(
             GameListPageComponent.getGamesQuery,
-            {after: after, first: GameListPageComponent.paging, leagueName: this.leagueName},
+            {after: after, first: GameListPageComponent.paging, leagueName: this.leagueName, playerName: this.playerName, teamName: this.teamName},
                 data => {
                 this.games = data.gamesConnection.edges.map(edge => Game.fromJson(edge.node));
                 let totalCount = data.gamesConnection.totalCount;

@@ -144,25 +144,41 @@ exports.rootQueryType = graphQlLib.createObjectType({
             args: {
                 after: graphQlLib.GraphQLInt, //TODO Change for base64
                 first: graphQlLib.GraphQLInt,
-                leagueName: graphQlLib.nonNull(graphQlLib.GraphQLString),
+                leagueName: graphQlLib.GraphQLString,
+                playerName: graphQlLib.GraphQLString,
+                teamName: graphQlLib.GraphQLString,
                 finished: graphQlLib.GraphQLBoolean,
             },
             data: function (env) {
                 var after = env.args.after;
                 var first = env.args.first;
                 var leagueName = env.args.leagueName;
+                var playerName = env.args.playerName;
+                var teamName = env.args.teamName;
                 var finished = !!env.args.finished;
 
-                var league = storeLib.getLeagueByName(leagueName);
-                if (league) {
-                    return storeLib.getGamesByLeagueId(league._id, after, first, finished);
-                } else {
-                    return {
-                        total: 0,
-                        count: 0,
-                        hits: []
+                if (leagueName) {
+                    var league = storeLib.getLeagueByName(leagueName);
+                    if (league) {
+                        return storeLib.getGamesByLeagueId(league._id, after, first, finished);
+                    }
+                } else if (playerName) {
+                    var player = storeLib.getPlayerByName(playerName);
+                    if (player) {
+                        return storeLib.getGamesByPlayerId(player._id, after, first); //TODO Finished or not?
+                    }
+                } else if (teamName) {
+                    var team = storeLib.getTeamByName(teamName);
+                    if (team) {
+                        return storeLib.getGamesByTeamId(team._id, after, first); //TODO Finished or not?
                     }
                 }
+
+                return {
+                    total: 0,
+                    count: 0,
+                    hits: []
+                };
             }
         },
         activeGames: {
