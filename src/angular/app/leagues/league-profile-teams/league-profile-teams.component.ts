@@ -6,6 +6,7 @@ import {League} from '../../../graphql/schemas/League';
 import {LeagueTeam} from '../../../graphql/schemas/LeagueTeam';
 import {BaseComponent} from '../../common/base.component';
 import {Team} from '../../../graphql/schemas/Team';
+import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
     selector: 'league-profile-teams',
@@ -47,7 +48,7 @@ export class LeagueProfileTeamsComponent extends BaseComponent {
     private members: Team[];
     private pageCount: number = 1;
 
-    constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private authService: AuthService, private router: Router) {
+    constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private authService: AuthService, private router: Router, private pageTitleService: PageTitleService) {
         super(route);
     }
 
@@ -69,7 +70,7 @@ export class LeagueProfileTeamsComponent extends BaseComponent {
     private handleLeagueQueryResponse(data) {
         this.league = League.fromJson(data.league);
         this.leagueTeams = data.league.leagueTeamsConnection.edges.map((edge) => LeagueTeam.fromJson(edge.node));
-
+        this.pageTitleService.setTitle(this.league.name + ' - Team ranking');
         let totalCount = data.league.leagueTeamsConnection.totalCount;
         this.pageCount = Math.floor((totalCount == 0 ? 0: totalCount - 1) / LeagueProfileTeamsComponent.paging) + 1;
     }

@@ -64,6 +64,10 @@ export class GameListPageComponent extends BaseComponent {
         this.playerName = this.route.snapshot.params['playerName'];
         this.teamName = this.route.snapshot.params['teamName'];
         this.refresh();
+
+        let name = this.leagueName || this.playerName || this.teamName;
+        name = name.charAt(0).toUpperCase() + name.substr(1);
+        this.pageTitleService.setTitle(name + ' - Games');
     }
 
     private refresh(currentPage: number = 1) {
@@ -77,9 +81,5 @@ export class GameListPageComponent extends BaseComponent {
                 this.pageCount = Math.floor((totalCount == 0 ? 0 : totalCount - 1) / GameListPageComponent.paging) + 1;
             }
         );
-
-        let name = this.leagueName || this.playerName || this.teamName;
-        name = name.charAt(0).toUpperCase() + name.substr(1);
-        this.pageTitleService.setTitle(name + ' games');
     }
 }
