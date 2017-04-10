@@ -78,6 +78,8 @@ export class GameListPageComponent extends BaseComponent {
             }
         );
 
-        this.pageTitleService.setTitle('Players');
+        let name = this.leagueName || this.playerName || this.teamName;
+        name = name.charAt(0).toUpperCase() + name.substr(1);
+        this.pageTitleService.setTitle(name + ' games');
     }
 }
