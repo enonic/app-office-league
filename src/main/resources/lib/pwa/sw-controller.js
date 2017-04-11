@@ -1,6 +1,7 @@
 var portalLib = require('/lib/xp/portal');
 var mustache = require('/lib/xp/mustache');
 var authLib = require('/lib/xp/auth');
+var version = (Date.now() / 1000).toFixed();
 
 exports.get = function(req) {
     var sitePath = portalLib.getSite()._path;
@@ -13,7 +14,7 @@ exports.get = function(req) {
         siteUrl: siteUrl + '/',
         appUrl: siteUrl + '/app',
         assetUrl : siteUrl + '/app/assets',
-        appVersion: app.version,
+        version: version,
         userKey: user ? user.key : ''
     };
 

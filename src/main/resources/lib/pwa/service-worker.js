@@ -1,9 +1,10 @@
-const cacheName = 'office-league-cache';
-const dataCacheName = 'office-league-data-cache';
-const imageCacheName = 'office-league-image-cache';
-const swVersion = '{{appVersion}}/{{userKey}}';
+const cacheName = 'office-league-cache-{{version}}';
+const dataCacheName = 'office-league-data-cache-{{version}}';
+const imageCacheName = 'office-league-image-cache-{{version}}';
+const cacheNames = [cacheName, dataCacheName, imageCacheName];
+
 const offlineUrl = '{{siteUrl}}offline';
-const debugging = false;
+const debugging = true;
 const appUrl = '{{appUrl}}';
 const APIUrl = '{{appUrl}}/api/graphql?etag';
 const homePageUrl = '{{appUrl}}?source=web_app_manifest';
@@ -57,7 +58,7 @@ function isRequestToImage(url) {
 
 function getImageFallbackPage(url) {
     let imgUrl = '{{appUrl}}' + imageUrls.find(u => url.indexOf(u) > -1) + defaultImagePostfix;
-    
+
     return caches
         .match(imgUrl, {
             ignoreVary: true
@@ -68,7 +69,7 @@ function getImageFallbackPage(url) {
             }
 
         })
-        .catch(function(err) {
+        .catch(function (err) {
             if (debugging) {
                 console.log(err);
             }
@@ -79,14 +80,11 @@ function getFallbackPage() {
     return caches.match(offlineUrl);
 }
 
-self.addEventListener('install', function(e) {
-
+self.addEventListener('install', function (e) {
     consoleLog('Install');
-    
-    e.waitUntil(self.skipWaiting());
-
+    //e.waitUntil(self.skipWaiting());
     e.waitUntil(
-        caches.open(cacheName).then(function(cache) {
+        caches.open(cacheName).then(function (cache) {
             consoleLog('Caching App Shell');
             let cacheAssets = staticAssets.concat(imageUrls.map(u => '{{appUrl}}' + u + defaultImagePostfix));
             if (debugging) {
@@ -95,47 +93,41 @@ self.addEventListener('install', function(e) {
                 console.groupEnd();
             }
             return cache.addAll(cacheAssets);
-        }).catch(function(err) {
+        }).catch(function (err) {
             console.log(err);
         })
     );
 });
 
-self.addEventListener('activate', function(e) {
+self.addEventListener('activate', function (e) {
     consoleLog('Activate');
-
-    e.waitUntil(self.clients.claim());
-
+    //e.waitUntil(self.clients.claim());
     e.waitUntil(
-        caches.keys().then(function(keyList) {
-            return Promise.all(keyList.map(function(key) {
-                if (key !== cacheName && key !== dataCacheName) {
-                    consoleLog('Removing old cache ' + key);
-                    return caches.delete(key);
+        caches.keys().then(function (cacheKeyList) {
+            return Promise.all(cacheKeyList.map(function (cacheKey) {
+                if (cacheNames.indexOf(cacheKey) === -1) {
+                    consoleLog('Removing old cache ' + cacheKey);
+                    return caches.delete(cacheKey);
                 }
             }));
         })
     );
 });
 
-self.addEventListener('fetch', function(e) {
-    
+self.addEventListener('fetch', function (e) {
+
     let apiRequest = isRequestToAPI(e.request.url);
     let rootRequest = isRequestToAppRoot(e.request.url);
-
     if (apiRequest || rootRequest) {
 
         // Requests to API and app root will go Network first.
         // We will not try to get API responses from the cache here - it will be done in the API
         // service class, otherwise it won't be able to tell cached data from the fresh one.
         // For requests to the root we will try to fall back to Cache/static page if network is down.
-
         consoleLog('API or root request: ' + e.request.url);
-
         e.respondWith(
             caches.open(apiRequest ? dataCacheName : cacheName)
-                .then(function(cache) {
-
+                .then(function (cache) {
                     return fetch(e.request)
                         .then(function (response) {
                             consoleLog('Fetched and cached ' + e.request.url);
@@ -153,7 +145,6 @@ self.addEventListener('fetch', function(e) {
                                         consoleLog((response ?
                                                     'Serving from cache: ' + e.request.url :
                                                     'No cached response found. Serving offline page.'));
-
                                         return response || getFallbackPage(e.request.url);
                                     });
                             }
@@ -163,16 +154,13 @@ self.addEventListener('fetch', function(e) {
                         });
                 })
         );
-
         return;
     }
 
     if (isRequestToImage(e.request.url)) {
 
         // Requests to images will go Cache first, then Network, with fallback to default image.
-
         consoleLog('Image request: ' + e.request.url);
-
         e.respondWith(
             caches
                 .match(e.request, {
@@ -182,14 +170,13 @@ self.addEventListener('fetch', function(e) {
                     if (response) {
                         consoleLog('Serving from cache: ' + e.request.url);
                     }
-
                     return response ||
                            fetch(e.request)
                                .then(function (response) {
                                    consoleLog('Fetched and cached new image: ' + e.request.url);
                                    return caches
                                        .open(imageCacheName)
-                                       .then(function(cache) {
+                                       .then(function (cache) {
                                            cache.put(e.request.url, response.clone());
 
                                            return response;
@@ -201,17 +188,15 @@ self.addEventListener('fetch', function(e) {
                                    return getImageFallbackPage(e.request.url);
                                });
                 })
-
         );
 
         return;
     }
-    
+
     if (isRequestToAppPage(e.request.url)) {
 
         // Requests to application pages will go Network first, then Cache.
         // If network is down we will serve the Offline page.
-
         consoleLog('Request to application page: ' + e.request.url);
         e.respondWith(
             fetch(e.request)
@@ -219,7 +204,7 @@ self.addEventListener('fetch', function(e) {
 
                     return caches
                         .open(cacheName)
-                        .then(function(cache) {
+                        .then(function (cache) {
                             consoleLog('Fetched and cached ' + e.request.url);
                             cache.put(e.request.url, response.clone());
 
@@ -243,14 +228,12 @@ self.addEventListener('fetch', function(e) {
                     }
                 })
         );
-
         return;
     }
 
 
     // Requests to App Shell will go Cache first, with fallback to Network only.
-    // Dynamic assets (with hash in URL) will be cached on the fly.
-    
+    // Dynamic assets (with hash in URL) will be cached on the fly.    
     e.respondWith(
         caches
             .match(e.request, {
@@ -258,36 +241,34 @@ self.addEventListener('fetch', function(e) {
             })
             .then(function (response) {
                 consoleLog((response ? 'Serving from cache' : 'Fetching from the server') + ': ' + e.request.url);
-
                 return response ||
                        fetch(e.request)
-                        .then(function (response) {
-                            if (isRequestToDynamicAsset(e.request.url)) {
-                                let clonedResponse = response.clone();
-                                consoleLog('Caching dynamic asset: ' + e.request.url);
-                                caches.open(cacheName).then(function(cache) {
-                                    cache.put(e.request.url, clonedResponse);
-                                });
-                            }
-                            return response;
-                        }).catch(function(err) {
-                           console.log(err);
-                       });
+                           .then(function (response) {
+                               if (isRequestToDynamicAsset(e.request.url)) {
+                                   let clonedResponse = response.clone();
+                                   consoleLog('Caching dynamic asset: ' + e.request.url);
+                                   caches.open(cacheName).then(function (cache) {
+                                       cache.put(e.request.url, clonedResponse);
+                                   });
+                               }
+                               return response;
+                           }).catch(function (err) {
+                               console.log(err);
+                           });
             })
     );
 });
 
-self.addEventListener("message", function(e) {
+self.addEventListener("message", function (e) {
     if (e.data.assets) {
         e.waitUntil(
-            caches.open(cacheName).then(function(cache) {
+            caches.open(cacheName).then(function (cache) {
                 let firstAsset = true;
-
                 return Promise.all(e.data.assets.map(
-                    function(asset, index, arr) {
-                        cache
-                            .match(asset)
-                            .then(function (response) {
+                        function (asset, index, arr) {
+                            cache
+                                .match(asset)
+                                .then(function (response) {
                                     if (!response) {
                                         if (firstAsset) {
                                             consoleLog('Caching App Shell');
@@ -300,13 +281,13 @@ self.addEventListener("message", function(e) {
                                         if (debugging && index == arr.length - 1) {
                                             console.groupEnd();
                                         }
-    
+
                                         return cache.add(asset);
                                     }
-                            });
-                    })
+                                });
+                        })
                 );
-            }).catch(function(err) {
+            }).catch(function (err) {
                 console.log(err);
             })
         );
