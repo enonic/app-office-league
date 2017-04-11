@@ -107,7 +107,7 @@ export class GamePointsComponent
                     commentAuthorSides[comment.author.name] = side;
                 }
             }
-            const timelineEntry = new TimelineEntry(comment.author.name, comment.text, timeOffset, '', '', side);
+            const timelineEntry = new TimelineEntry(comment.author.name, '', timeOffset, comment.text,  '', side);
             timelineEntry.isComment = true;
             timelineEntry.time = '';
             timelineEntry.imageUrl = comment.author.imageUrl;
