@@ -4,7 +4,7 @@ const imageCacheName = 'office-league-image-cache-{{version}}';
 const cacheNames = [cacheName, dataCacheName, imageCacheName];
 
 const offlineUrl = '{{siteUrl}}offline';
-const debugging = true;
+const debugging = false;
 const appUrl = '{{appUrl}}';
 const APIUrl = '{{appUrl}}/api/graphql?etag';
 const homePageUrl = '{{appUrl}}?source=web_app_manifest';
