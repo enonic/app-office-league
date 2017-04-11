@@ -19,21 +19,35 @@
     <% item = htmlWebpackPlugin.files.css[key]; %>
     <link rel="stylesheet" href="<%= '{{baseHref}}' + item %>" media="none" onload="if(media!='all')media='all'"/>
     <% }; %>
+
+    <style type="text/css">
+        /* Define styles here to show them instantly while css is being loaded */
+        body {
+            background-color: #1C2641;
+        }
+        .office-league-loader {
+            display: block;
+            height: 200px;
+            top: 50%;
+            position: absolute;
+            left: 50%;
+            margin: -100px 0 0 -80px;
+        }
+    </style>
 </head>
 
 <body>
 
 <office-league>
-    <div class="loading">
-        <div class="loading--1"></div>
-        <div class="loading--2"></div>
-        <div class="loading--3"></div>
-    </div>
+    <img class="office-league-loader" src="{{baseHref}}assets/img/office-league-loader.svg"></img>
+<!--    <div class="loading">
+        <div class="loading&#45;&#45;1"></div>
+        <div class="loading&#45;&#45;2"></div>
+        <div class="loading&#45;&#45;3"></div>
+    </div>-->
 </office-league>
 
 </body>
-
-
 
 <script type="text/javascript">
     var XPCONFIG = {
