@@ -1,5 +1,43 @@
 @import "../../colors";
 
+.new-game {
+  &__sides {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 0 20px;
+  }
+
+  &__vs {
+    width: 33%;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    display: flex;
+  }
+
+  &__side {
+    display: flex;
+    flex-direction: column;
+    width: 33%;
+    text-align: center;
+
+    &--blue {
+      background-color: @blue-team-color;
+    }
+
+    &--red {
+      background-color: @red-team-color;
+    }
+  }
+
+  &__expected-score {
+    font-size: 2rem;
+  }
+}
+
+
+/*
 .participants {
   display: flex;
   flex-direction: column;
@@ -36,7 +74,7 @@ new-game-player {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-}
+}*/
 
 h4.vs {
   margin-bottom: 0;
