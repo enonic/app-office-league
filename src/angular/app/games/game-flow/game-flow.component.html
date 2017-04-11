@@ -1,12 +1,10 @@
 <template [ngIf]="game != null">
-    <div class="row list">
-        <div class="col s12 m8 offset-m2">
-            <canvas baseChart width="600" height="400"
-                    [datasets]="chartDatasets"
-                    [options]="lineChartOptions"
-                    [colors]="lineChartColors"
-                    [legend]="lineChartLegend"
-                    [chartType]="lineChartType"></canvas>
-        </div>
+    <div class="game-flow row">
+        <canvas baseChart width="600" height="400"
+                [datasets]="chartDatasets"
+                [options]="lineChartOptions"
+                [colors]="lineChartColors"
+                [legend]="lineChartLegend"
+                [chartType]="lineChartType"></canvas>
     </div>
 </template>

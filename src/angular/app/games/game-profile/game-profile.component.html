@@ -6,7 +6,7 @@
     <game [game]="game"></game>
     <game-flow [game]="game"></game-flow>
     <template [ngIf]="playerId">
-        <a class="btn-floating blue right" (click)="onCommentClicked()"><i class="material-icons">comment</i></a>
+        <a class="btn-floating right global__btn--comment" (click)="onCommentClicked()"><i class="material-icons">comment</i></a>
     </template>
     <game-points [game]="game"></game-points>
 

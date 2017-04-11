@@ -7,7 +7,8 @@ import {GameTeam} from '../../../graphql/schemas/GameTeam';
 
 @Component({
     selector: 'game-flow',
-    templateUrl: 'game-flow.component.html'
+    templateUrl: 'game-flow.component.html',
+    styleUrls: ['game-flow.component.less']
 })
 export class GameFlowComponent
     implements OnInit, OnChanges {
@@ -35,9 +36,13 @@ export class GameFlowComponent
                 scaleID: 'x-axis-0',
                 type: 'linear',
                 position: 'bottom',
+                gridLines: {
+                    color: 'rgba(255,255,255,0.1)'
+                },
                 ticks: {
                     min: 0,
                     suggestedMax: 60,
+                    fontColor: 'rgba(255,255,255,0.8)',
                     callback: function (label, index, labels) {
                         return label == -1 ? '' : GameFlowComponent.formatSeconds(parseInt(label, 10));
                     }
@@ -45,10 +50,14 @@ export class GameFlowComponent
             }],
             yAxes: [{
                 id: 'y-axis-0',
+                gridLines: {
+                    color: 'rgba(255,255,255,0.1)'
+                },
                 ticks: {
                     min: 0,
                     suggestedMax: 10,
-                    stepSize: 1
+                    stepSize: 1,
+                    fontColor: 'rgba(255,255,255,0.8)'
                 }
             }]
         },
@@ -65,7 +74,7 @@ export class GameFlowComponent
                 mode: 'vertical',
                 scaleID: 'x-axis-0',
                 value: 0,
-                borderColor: 'rgba(84, 110, 122, 0.8)',
+                borderColor: 'rgba(84, 110, 122, 0)',
                 borderDash: [4, 2],
                 borderWidth: 2
             }],
@@ -98,7 +107,7 @@ export class GameFlowComponent
             pointRadius: 2,
         }
     ];
-    lineChartLegend: boolean = true;
+    lineChartLegend: boolean = false;
     lineChartType: string = 'line';
 
     ngOnInit(): void {
