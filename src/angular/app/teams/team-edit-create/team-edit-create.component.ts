@@ -51,7 +51,7 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
 
         this.teamForm = this.fb.group({
             name: new FormControl(null,
-                [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(30), CustomValidators.validName()],
+                [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(40), CustomValidators.validName()],
                 TeamValidator.nameInUseValidator(this.graphQLService)),
             description: null,
             id: null
@@ -100,7 +100,7 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
 
         this.teamForm.removeControl('name');
         this.teamForm.addControl('name', new FormControl(team.name,
-            [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(30), CustomValidators.validName()],
+            [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(40), CustomValidators.validName()],
             TeamValidator.nameInUseValidator(this.graphQLService, team.id)));
 
         this.teamForm.setValue({

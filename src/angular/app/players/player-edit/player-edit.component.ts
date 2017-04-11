@@ -46,9 +46,9 @@ export class PlayerEditComponent
 
         this.playerForm = this.fb.group({
             name: new FormControl(null,
-                [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(30), CustomValidators.validName()],
+                [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(40), CustomValidators.validName()],
                 PlayerValidator.nameInUseValidator(this.graphQLService)),
-            fullname: [null, Validators.compose([Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(30)])],
+            fullname: [null, Validators.compose([Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(40)])],
             nationality: null,
             handedness: Handedness[Handedness.RIGHT].toLowerCase(),
             description: null,
@@ -108,7 +108,7 @@ export class PlayerEditComponent
 
         this.playerForm.removeControl('name');
         this.playerForm.addControl('name', new FormControl(player.name,
-            [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(30), CustomValidators.validName()],
+            [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(40), CustomValidators.validName()],
             PlayerValidator.nameInUseValidator(this.graphQLService, player.id)));
     }
 

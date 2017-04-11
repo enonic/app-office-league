@@ -47,7 +47,7 @@ export class LeagueEditCreateComponent
 
         this.leagueForm = this.fb.group({
             name: new FormControl(null,
-                [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(30), CustomValidators.validName()],
+                [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(40), CustomValidators.validName()],
                 LeagueValidator.nameInUseValidator(this.graphQLService)),
             description: null,
             id: null
@@ -144,7 +144,7 @@ export class LeagueEditCreateComponent
 
             this.leagueForm.removeControl('name');
             this.leagueForm.addControl('name', new FormControl(league.name,
-                [Validators.required, Validators.minLength(3), Validators.maxLength(30), CustomValidators.validName()],
+                [Validators.required, Validators.minLength(3), Validators.maxLength(40), CustomValidators.validName()],
                 LeagueValidator.nameInUseValidator(this.graphQLService, league.id)));
 
             return league;

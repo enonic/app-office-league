@@ -42,15 +42,12 @@
         </div>-->
     </div>
 
-
-
-
-
-
-
     <div class="row league-profile__play">
         <div *ngIf="playerInLeague" class="center" (click)="onPlayClicked()">
             <a class="waves-effect waves-light btn global__btn global__btn--play"><i class="material-icons left">play_arrow</i>Play Game</a>
+        </div>
+        <div *ngIf="!playerInLeague" class="center" (click)="onJoinClicked()">
+            <a class="waves-effect waves-light btn global__btn global__btn--play"><i class="material-icons left">stars</i>Join this league</a>
         </div>
     </div>
 

@@ -50,9 +50,9 @@ export class PlayerCreateComponent
 
         this.playerForm = this.fb.group({
             name: new FormControl(user.playerName || null,
-                [Validators.required, Validators.minLength(3), Validators.maxLength(30)],
+                [Validators.required, Validators.minLength(3), Validators.maxLength(40)],
                 PlayerValidator.nameInUseValidator(this.graphQLService)),
-            fullname: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
+            fullname: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(40)])],
             nationality: null,
             handedness: Handedness[Handedness.RIGHT].toLowerCase(),
             description: null

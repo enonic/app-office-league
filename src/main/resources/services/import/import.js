@@ -360,8 +360,10 @@ var createTeam = function (foosTeam, playerContentToNodeId) {
     players.push(playerContentToNodeId[foosTeam.data.playerIds[0]]);
     players.push(playerContentToNodeId[foosTeam.data.playerIds[1]]);
 
+    var displayName = foosTeam.displayName.replace(/&|\?/g, "-");
+    displayName = displayName.slice(-1) === '-' ? displayName.slice(0, -1) : displayName;
     var playerNode = storeLib.createTeam({
-        name: foosTeam.displayName,
+        name: displayName,
         description: foosTeam.data.description,
         imageStream: stream,
         imageType: mimeType,

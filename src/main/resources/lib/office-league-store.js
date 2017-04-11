@@ -14,7 +14,7 @@ var LEAGUE_PLAYERS_REL_PATH = '/players';
 var LEAGUE_TEAMS_REL_PATH = '/teams';
 var OFFICE_LEAGUE_GAME_EVENT_ID = 'office-league-game';
 
-var NAME_MAX_LENGTH = 30;
+var NAME_MAX_LENGTH = 40;
 var NAME_MIN_LENGTH = 3;
 var INVALID_NAME_CHARS = {
     '$': true,

@@ -7,7 +7,7 @@ export class TeamValidator {
         'name': {
             'required': 'Name is required.',
             'minlength': 'Name must be at least 3 characters long.',
-            'maxlength': '30 characters is enough for a name.',
+            'maxlength': '40 characters is enough for a name.',
             'nameinuse': 'This name is already taken, sorry.',
             'invalidname': 'The name contains invalid characters.'
         }

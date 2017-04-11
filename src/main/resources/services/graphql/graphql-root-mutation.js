@@ -451,9 +451,10 @@ var checkJoinPlayerLeaguePermissions = function (leagueId) {
             userIsLeagueAdmin = true;
         }
     });
-    if (userIsLeagueAdmin) {
-        throw "User not authorized to update league.";
-    }
+    // TODO assuming league membership is open for now
+    // if (!userIsLeagueAdmin) {
+    //     throw "User not authorized to update league.";
+    // }
 };
 
 var checkUpdatePlayerLeagueRatingPermissions = function () {

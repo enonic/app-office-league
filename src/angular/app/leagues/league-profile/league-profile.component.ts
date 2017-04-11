@@ -103,6 +103,16 @@ export class LeagueProfileComponent
         this.showModal();
     }
 
+    onJoinClicked() {
+        if (this.authService.isAuthenticated() && !this.playerInLeague) {
+            let playerId = this.authService.getUser().playerId;
+            this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery, {playerId: playerId, leagueId: this.league.id}).then(
+                data => {
+                    this.refreshData(this.league.name);
+                });
+        }
+    }
+
     onSelected(player: Player) {
         if (player) {
             this.hideModal();
