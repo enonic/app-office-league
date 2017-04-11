@@ -91,7 +91,6 @@ exports.playerType = graphQlLib.createObjectType({
             type: graphQlLib.GraphQLString,
             data: function (env) {
                 var user = authLib.getUser();
-                log.info('user:' + JSON.stringify(user, null, 2));
                 if (user && user.key  === env.source.userKey) {
                     return user.email;
                 } else {
