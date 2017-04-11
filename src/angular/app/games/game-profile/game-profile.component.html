@@ -14,6 +14,10 @@
 
     <game-points [game]="game"></game-points>
 
+    <div *ngIf="deletable" class="fixed-action-btn" (click)="onDeleteClicked()">
+        <a class="btn-floating btn waves-effect waves-light red"><i class="material-icons">delete</i></a>
+    </div>
+
 </div>
 <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
      [materializeActions]="materializeActions">
@@ -26,5 +30,17 @@
     </div>
     <div class="modal-footer">
         <a (click)="onCommentDoneClicked()" class="modal-action modal-close waves-effect waves-blue btn-flat blue white-text">Done</a>
+    </div>
+</div>
+
+<div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
+     [materializeActions]="materializeActionsDelete">
+    <div class="modal-content">
+        <h5 class="center">Delete game</h5>
+        <p>You are about to permanently delete this game. <strong>This operation cannot be undone.</strong></p>
+    </div>
+    <div class="modal-footer">
+        <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
+        <a (click)="onConfirmDeleteClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Delete</a>
     </div>
 </div>

@@ -18,6 +18,7 @@ import {PageTitleService} from '../../services/page-title.service';
 export class GameProfileComponent
     extends GameComponent {
     materializeActions = new EventEmitter<string | MaterializeAction>();
+    materializeActionsDelete = new EventEmitter<string | MaterializeAction>();
     @ViewChild('commenttextarea') commentsTextAreaElementRef;
 
     private static readonly KeepAliveTimeMs = 30 * 1000;
@@ -25,6 +26,7 @@ export class GameProfileComponent
 
     comment: string;
     playerId: string;
+    deletable: boolean;
     private gameId: string;
     private webSocket: WebSocket;
     private wsConnected: boolean;
@@ -42,10 +44,11 @@ export class GameProfileComponent
         this.gameId = this.route.snapshot.params['id'];
         const user = this.authService.getUser();
         this.playerId = user && user.playerId;
-
+        this.deletable = false;
     }
 
     protected afterGameLoaded(game: Game) {
+        this.deletable = this.isGameDeletable(game);
         if (game && game.finished) {
             if (this.wsConnected) {
                 this.wsDisconnect();
@@ -73,7 +76,7 @@ export class GameProfileComponent
 
     onCommentClicked() {
         this.comment = '';
-        this.showModal();
+        this.showModalMessage();
         setTimeout(_ =>
             this._renderer.invokeElementMethod(
                 this.commentsTextAreaElementRef.nativeElement, 'focus', []), 0);
@@ -84,18 +87,42 @@ export class GameProfileComponent
         this.comment = this.comment.replace(/^\s+|\s+$/g, '');// trim line breaks
         if (this.comment) {
             this.createComment(this.comment).then((comment) => {
-                this.hideModal();
+                this.hideModalMessage();
                 super.loadGame(this.gameId);
             });
         }
     }
 
-    public showModal(): void {
+    onDeleteClicked() {
+        this.showModalDelete();
+    }
+
+    onConfirmDeleteClicked() {
+        this.deleteGame().then((deleted) => {
+            if (deleted) {
+                if (this.game.league) {
+                    this.router.navigate(['leagues', this.game.league.name], {replaceUrl: true});
+                } else {
+                    this.router.navigate(['leagues'], {replaceUrl: true});
+                }
+            }
+        });
+    }
+
+    public showModalMessage(): void {
         this.materializeActions.emit({action: "modal", params: ['open']});
     }
 
-    public hideModal(): void {
+    public hideModalMessage(): void {
         this.materializeActions.emit({action: "modal", params: ['close']});
+    }
+
+    public showModalDelete(): void {
+        this.materializeActionsDelete.emit({action: "modal", params: ['open']});
+    }
+
+    public hideModalDelete(): void {
+        this.materializeActionsDelete.emit({action: "modal", params: ['close']});
     }
 
     wsConnect(gameId) {
@@ -173,6 +200,33 @@ export class GameProfileComponent
         });
     }
 
+    private deleteGame(): Promise<boolean> {
+        if (!this.gameId) {
+            return;
+        }
+
+        return this.graphQLService.post(GameProfileComponent.deleteCommentMutation, {gameId: this.gameId}).then(data => {
+            return data && (data.deleteGame === this.gameId);
+        });
+    }
+
+    private isGameDeletable(game: Game): boolean {
+        if (!game || game.finished) {
+            return false;
+        }
+        const userInGame = (game.gamePlayers || []).find((gp) => gp.player.id === this.playerId);
+        if (userInGame) {
+            return true;
+        }
+
+        const league = game.league;
+        if (!league || league.adminPlayers.length === 0) {
+            return false;
+        }
+        const userIsLeagueAdmin = !!league.adminPlayers.find((p) => p.id === this.playerId);
+        return userIsLeagueAdmin;
+    }
+
     private static readonly createCommentMutation = `mutation ($gameId: ID!, $author: ID!, $text: String) {
         createComment(gameId: $gameId, author: $author, text: $text) {
             id
@@ -185,6 +239,9 @@ export class GameProfileComponent
         }
     }`;
 
+    private static readonly deleteCommentMutation = `mutation ($gameId: ID!) {
+        deleteGame(id: $gameId)
+    }`;
 
     private static readonly getGameWithCommentsQuery = `query ($gameId: ID!) {
       game(id: $gameId) {
@@ -213,6 +270,7 @@ export class GameProfileComponent
             side
             ratingDelta
             player {
+                id
                 name
                 imageUrl
                 description
@@ -237,6 +295,9 @@ export class GameProfileComponent
         league {
             name
             imageUrl
+            adminPlayers(first: -1) {
+                id
+            }
         }
         comments {
             id

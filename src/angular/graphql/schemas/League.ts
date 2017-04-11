@@ -18,6 +18,7 @@ export class League
     leagueTeams: LeagueTeam[];
     nonMemberPlayers: Player[];
     games: Game[];
+    adminPlayers: Player[];
     imageUrl: string;
     stats: LeagueStats;
 
@@ -37,6 +38,7 @@ export class League
         league.games = json.games && json.games.map(game => Game.fromJson(game));
         league.imageUrl = json.imageUrl ? (UrlHelper.trimSlash(XPCONFIG.baseHref) + json.imageUrl) : ImageService.leagueDefault();
         league.stats = json.stats ? LeagueStats.fromJson(json.stats) : null;
+        league.adminPlayers = json.adminPlayers ? json.adminPlayers.map(p => Player.fromJson(p)) : [];
         return league;
     }
 }
