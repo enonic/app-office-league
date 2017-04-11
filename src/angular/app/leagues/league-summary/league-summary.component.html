@@ -21,7 +21,7 @@
         <img src="{{league.imageUrl}}?size=42" alt="{{league.name}}" class="league-summary__avatar">
         <div class="league-summary__name">{{league.name}}</div>
         <div class="league-summary__ranking" *ngIf="ranking > 0">{{ranking}}<span>{{rankingText()}}</span></div>
-        <div class="league-summary__rating" *ngIf="ratingPoints > 0">{{ratingPoints()}}</div>
+        <div class="league-summary__rating" *ngIf="rating > 0">{{ratingPoints()}}</div>
         <!-- <div class="primary">
              <span class="title">{{player.name}}</span>&lt;!&ndash;
              <p *ngIf="player.description" class="grey-text darken-3">{{player.description}}</p>&ndash;&gt;
