@@ -1,5 +1,6 @@
 var taskLib = require('/lib/xp/task');
 var storeLib = require('office-league-store');
+var contextLib = require('/lib/xp/context');
 
 var GameGCTaskPeriod = 60; // 1 minute
 var UnfinishedGameMaxTimeSeconds = 60 * 60; // 1 hour
@@ -76,11 +77,25 @@ var doRunGameGCTask = function () {
         log.info(gameIds.length + ' games can be removed');
         for (g = 0; g < gameIds.length; g++) {
             log.info('Deleting game ' + gameIds[g]);
-            storeLib.deleteGameById(gameIds[g]);
+            deleteGame(gameIds[g]);
         }
     }
 
     taskLib.progress({info: 'Done!'});
+};
+
+var deleteGame = function (gameId) {
+    contextLib.run({
+        repository: storeLib.REPO_NAME,
+        branch: 'master',
+        user: {
+            login: 'su',
+            userStore: 'system'
+        },
+        principals: ["role:system.authenticated"]
+    }, function () {
+        storeLib.deleteGameById(gameId);
+    });
 };
 
 var secondsBetween = function (t1, t2) {

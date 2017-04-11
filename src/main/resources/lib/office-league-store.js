@@ -79,6 +79,8 @@ var ROOT_PERMISSIONS = [ //TODO Remove after XP issue 4801 resolution
     }
 ];
 
+exports.REPO_NAME = REPO_NAME;
+
 /**
  * @typedef {Object} Attachment
  * @property {string} name Attachment name.
