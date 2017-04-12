@@ -1,5 +1,4 @@
 var webpack = require("webpack");
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var webpackMerge = require('webpack-merge');
 var commonConfig = require('./webpack.common.js');
@@ -36,10 +35,6 @@ module.exports = webpackMerge(commonConfig, {
     },
 
     plugins: [
-        new ExtractTextPlugin({
-            filename: 'css/styles.css',
-            allChunks: true
-        }),
         new HtmlWebpackPlugin({
             template: 'src/main/resources/site/pages/pwa/pwa.ejs',
             filename: '../site/pages/pwa/pwa.html',

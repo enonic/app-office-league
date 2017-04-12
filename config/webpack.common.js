@@ -17,20 +17,22 @@ module.exports = {
         colors: true,
         reasons: true,
         timings: true,
-        children: false,
-        modules: false,
+        children: true,
+        modules: true,
         assets: false,
-        chunkModules: false,
-        chunks: false,
-        source: false,
-        entrypoints: false,
-        depth: false
+        chunkModules: true,
+        chunks: true,
+        source: true,
+        entrypoints: true,
+        depth: 2
     },
 
     entry: {
         'polyfills': './src/angular/polyfills.ts',
         'vendor': './src/angular/vendor.ts',
-        'app': './src/angular/main.ts'
+        'app': './src/angular/main.ts',
+        'styles': './src/angular/styles.less',
+        'critical': './src/main/resources/assets/css/critical.less'
     },
 
     resolve: {
@@ -70,7 +72,7 @@ module.exports = {
             {
                 // load app wide styles
                 test: /\.(less|css)$/,
-                include: helpers.root('src', 'angular'),
+                include: [helpers.root('src', 'angular'), helpers.root('src', 'main', 'resources', 'assets')],
                 exclude: helpers.root('src', 'angular', 'app'),
                 loader: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
@@ -94,6 +96,10 @@ module.exports = {
             helpers.root('./src'), // location of your src
             {} // a map of your routes
         ),
+        new ExtractTextPlugin({
+            filename: 'css/[name].css',
+            allChunks: true
+        }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'common'
         }),
