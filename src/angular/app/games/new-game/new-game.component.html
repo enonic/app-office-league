@@ -23,7 +23,7 @@
             <new-game-player [player]="bluePlayer2" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
                              [sideClass]="'side-blue'"
                              (animationFinished)="onPlayerAnimationFinished($event)"
-                             (playerSelected)="onPlayerSelected('blue2', $event)" class="new-game__player"></new-game-player>
+                             (playerSelected)="onPlayerSelected('blue2', $event)" class="new-game__player" [hidden]="!teamMode"></new-game-player>
 
         </div>
         <div class="new-game__vs">
@@ -40,7 +40,7 @@
             <new-game-player [player]="redPlayer2" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
                              [sideClass]="'side-red'"
                              (animationFinished)="onPlayerAnimationFinished($event)"
-                             (playerSelected)="onPlayerSelected('red2', $event)" class="new-game__player"></new-game-player>
+                             (playerSelected)="onPlayerSelected('red2', $event)" class="new-game__player" [hidden]="!teamMode"></new-game-player>
 
         </div>
     </div>
@@ -75,19 +75,27 @@
 
         </div>
     </div>-->
-    <h6 [class.invisible]="!expectedScoreBlue || !expectedScoreRed" class="center blue-grey-text text-darken-3 expected-score">Score prediction</h6>
-    <div [class.invisible]="!expectedScoreBlue || !expectedScoreRed" class="center">
-        <span class="expected-score__value team-blue">{{expectedScoreBlue}}</span> &mdash; <span class="expected-score__value team-red">{{expectedScoreRed}}</span>
-    </div>
+
 
 </div>
 
-<div class="row">
+<div class="row center">
+    <a class="waves-effect waves-light center btn global__btn--toggle" (click)="onToggleClicked()">Toggle mode</a>
+</div>
+
+<div class="row center">
         <a class="waves-effect waves-light center btn global__btn--play" (click)="onPlayClicked()"
            [class.disabled]="!this.playerSelectionReady||(this.shuffleCount>0)">Play</a>
 </div>
 
-<div class="row">
+<div class="row center">
     <a class="waves-effect waves-light center btn global__btn--shuffle" (click)="onShuffleClicked()"
        [class.disabled]="shuffleDisabled">Shuffle</a>
+</div>
+
+<div class="row center">
+    <h6 [class.invisible]="!expectedScoreBlue || !expectedScoreRed" class="center white-text expected-score">Score prediction</h6>
+    <div [class.invisible]="!expectedScoreBlue || !expectedScoreRed" class="center">
+        <span class="expected-score__value team-blue">{{expectedScoreBlue}}</span> &mdash; <span class="expected-score__value team-red">{{expectedScoreRed}}</span>
+    </div>
 </div>

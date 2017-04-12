@@ -36,6 +36,7 @@ export class NewGameComponent
     expectedScoreBlue: string;
     playerSelectionReady: boolean;
     shuffleDisabled: boolean;
+    teamMode: boolean = false;
     shuffleCount: number = 0;
     private playerRatings: { [playerId: string]: number } = {};
 
@@ -96,6 +97,13 @@ export class NewGameComponent
             this.gameSelection.gameId = null;
             this.router.navigate(['games', this.leagueId, 'game-play'], {replaceUrl: true});
         });
+    }
+
+    onToggleClicked() {
+        this.bluePlayer2 = null;
+        this.redPlayer2 = null;
+        this.updatePlayerSelectionState();
+        this.teamMode = !this.teamMode;
     }
 
     private shuffleActions: { [id: string]: { from: NewGamePlayerComponent, to: NewGamePlayerComponent, player: Player, side: string, done: boolean } };
