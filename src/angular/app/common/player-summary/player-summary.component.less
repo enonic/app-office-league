@@ -27,9 +27,24 @@
     width: 50px;
     text-align: right;
   }
+
+  &__remove {
+    &&.hide-remove {
+      visibility: hidden;
+    }
+    padding-left: 5px;
+    i {
+      vertical-align: middle;
+      color: #FFFFFF;
+    }
+  }
+
+  &__remove:hover {
+    i {
+      color: #CF0000;
+    }
+  }
 }
-
-
 
 /*
 .player {

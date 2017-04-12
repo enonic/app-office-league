@@ -6,9 +6,24 @@
         <div class="col s12 l8">
             <ul class="row list">
                 <li class="col s12 m6 l12">
-                    <league-player-list displayPlayers="true" [leaguePlayers]="leaguePlayers" [observer]="this" [pageCount]="pageCount"  hideSearchField="true"></league-player-list>
+                    <league-player-list displayPlayers="true" [leaguePlayers]="leaguePlayers" [observer]="this" [pageCount]="pageCount"
+                                        hideSearchField="true" [allowRemove]="adminInLeague"
+                                        (removePlayer)="onRemovePlayer($event)"></league-player-list>
                 </li>
             </ul>
+        </div>
+    </div>
+
+    <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
+         [materializeActions]="materializeActionsRemove">
+        <div class="modal-content">
+            <h5 class="center">Remove player</h5>
+            <p>You are about to remove player '<strong>{{removePlayer?.name}}</strong>' from this league (<strong>{{league.name}}</strong>).
+            </p>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
+            <a (click)="onConfirmRemoveClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Remove</a>
         </div>
     </div>
 </template>

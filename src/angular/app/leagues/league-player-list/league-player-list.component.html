@@ -7,7 +7,8 @@
         <league-summary *ngIf="displayLeagues" [league]="leaguePlayer.league" displayPlayBtn="displayPlayBtn" [rating]="leaguePlayer.rating"
                         [ranking]="leaguePlayer.ranking"></league-summary>
         <player-summary *ngIf="displayPlayers" [player]="leaguePlayer.player" [rating]="leaguePlayer.rating"
-                        [ranking]="leaguePlayer.ranking"></player-summary>
+                        [ranking]="leaguePlayer.ranking"
+                        [allowRemove]="allowRemove" (removePlayer)="onRemovePlayer($event)"></player-summary>
     </a>
     <p *ngIf="leaguePlayers?.length == 0">
         {{displayLeagues ? 'No leagues' : displayPlayers ? 'No players' : ''}}

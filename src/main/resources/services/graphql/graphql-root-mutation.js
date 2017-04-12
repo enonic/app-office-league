@@ -175,6 +175,20 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 return createdLeaguePlayer;
             }
         },
+        leavePlayerLeague: {
+            type: graphQlLib.GraphQLID,
+            args: {
+                leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
+                playerId: graphQlLib.nonNull(graphQlLib.GraphQLID)
+            },
+            data: function (env) {
+                checkLeavePlayerLeaguePermissions(env.args.leagueId, env.args.playerId);
+
+                var createdLeaguePlayer = storeLib.leavePlayerLeague(env.args.leagueId, env.args.playerId);
+                storeLib.refresh();
+                return env.args.playerId;
+            }
+        },
         updatePlayerLeagueRating: {
             type: graphQlObjectTypesLib.leaguePlayerType,
             args: {
@@ -436,18 +450,20 @@ var checkJoinPlayerLeaguePermissions = function (leagueId) {
         return;
     }
 
-    var userKey = getCurrentUserKey();
-    if (!userKey) {
+    var currentPlayerId = getCurrentPlayerId();
+    if (!currentPlayerId) {
         throw "League cannot be updated, no logged in user.";
     }
+
     var league = storeLib.getLeagueById(leagueId);
     if (!league) {
-        return null;
+        return;
     }
-    var adminPlayers = storeLib.getPlayersById(league.adminPlayerIds) || [];
+
+    var adminPlayerIds = league.adminPlayerIds ? [].concat(league.adminPlayerIds) : [];
     var userIsLeagueAdmin = false;
-    adminPlayers.forEach(function (p) {
-        if (p.userKey === userKey) {
+    adminPlayerIds.forEach(function (adminId) {
+        if (adminId === currentPlayerId) {
             userIsLeagueAdmin = true;
         }
     });
@@ -455,6 +471,36 @@ var checkJoinPlayerLeaguePermissions = function (leagueId) {
     // if (!userIsLeagueAdmin) {
     //     throw "User not authorized to update league.";
     // }
+};
+
+var checkLeavePlayerLeaguePermissions = function (leagueId, playerId) {
+    var currentPlayerId = getCurrentPlayerId();
+    if (!currentPlayerId) {
+        throw "League cannot be updated, no logged in user.";
+    }
+
+    var league = storeLib.getLeagueById(leagueId);
+    if (!league) {
+        return;
+    }
+    var adminPlayerIds = league.adminPlayerIds ? [].concat(league.adminPlayerIds) : [];
+    var userIsLeagueAdmin = false;
+    adminPlayerIds.forEach(function (adminId) {
+        if (adminId === currentPlayerId) {
+            userIsLeagueAdmin = true;
+        }
+    });
+    log.info('userIsLeagueAdmin=' + userIsLeagueAdmin + ', playerId=' + playerId + ',currentPlayerId=' + currentPlayerId);
+    if (userIsLeagueAdmin && playerId === currentPlayerId) {
+        throw "A league admin cannot remove itself from the league.";
+    }
+
+    if (isAdmin()) {
+        return;
+    }
+    if (!userIsLeagueAdmin && (playerId !== currentPlayerId)) {
+        throw "Non admin user cannot remove another player from the league.";
+    }
 };
 
 var checkUpdatePlayerLeagueRatingPermissions = function () {
