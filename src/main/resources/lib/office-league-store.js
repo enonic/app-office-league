@@ -1834,6 +1834,9 @@ var getLeagueTeamsByLeagueIdAndPlayerId = function (leagueId, playerId) {
     var teamIds = teamsResp.hits.map(function (team) {
         return "'" + team._id + "'";
     });
+    if (teamIds.length === 0) {
+        return [];
+    }
     var teamIdsStr = teamIds.join(',');
 
     var leagueTeamResp = query({
@@ -1854,7 +1857,7 @@ var getLeagueTeamsByLeagueIdAndPlayerId = function (leagueId, playerId) {
 var setLeagueTeamsFromPlayerInactive = function (leagueId, playerId, inactive) {
     var leagueTeams = getLeagueTeamsByLeagueIdAndPlayerId(leagueId, playerId);
     var repoConn = newConnection();
-    leagueTeams.forEach(function (leagueTeam){
+    leagueTeams.forEach(function (leagueTeam) {
         repoConn.modify({
             key: leagueTeam._id,
             editor: function (node) {
