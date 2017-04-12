@@ -26,10 +26,8 @@
     </div>
 
     <div class="row player-profile__details">
-        <div class="col s4">
-            <img src="{{player.imageUrl}}?size=200" class="player-profile__avatar" alt="{{player.name}}">
-        </div>
-        <div class="col s8">
+        <img src="{{player.imageUrl}}?size=200" class="player-profile__avatar" alt="{{player.name}}">
+        <div class="player-profile__info">
             <div class="player-profile__name-wrapper">
                 <span class="player-profile__name">{{player.name}}</span>
                 <div *ngIf="player.nationality != null" class="player-profile__flag flag-icon flag-icon-{{player.nationality}}"></div>
