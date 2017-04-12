@@ -184,7 +184,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
             data: function (env) {
                 checkLeavePlayerLeaguePermissions(env.args.leagueId, env.args.playerId);
 
-                var createdLeaguePlayer = storeLib.leavePlayerLeague(env.args.leagueId, env.args.playerId);
+                storeLib.leavePlayerLeague(env.args.leagueId, env.args.playerId);
                 storeLib.refresh();
                 return env.args.playerId;
             }

@@ -1790,7 +1790,9 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
         throw "Player not found: " + leagueId;
     }
 
-    var existingLeaguePlayer = exports.getLeaguePlayerByLeagueIdAndPlayerId(leagueId, playerId);
+    var existingLeaguePlayer = querySingleHit({
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND playerId='" + playerId + "'"
+    });
     if (existingLeaguePlayer) {
         var updatedLeaguePlayer = repoConn.modify({
             key: existingLeaguePlayer._id,

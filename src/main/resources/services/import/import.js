@@ -95,6 +95,16 @@ var importLeague = function (playerContentToNodeId) {
             storeLib.setTeamLeagueRating(leagueNode._id, team._id, contentTeam.data.rating);
         }
     });
+
+    // set league admins
+    var adminP1 = findPlayerContentByName('aro');
+    var adminP2 = findPlayerContentByName('gri');
+    var adminIds = [playerContentToNodeId[adminP1._id], playerContentToNodeId[adminP2._id]];
+    var updatedLeague = storeLib.updateLeague({
+        leagueId: leagueNode._id,
+        adminPlayerIds: adminIds
+    });
+
     return leagueNode;
 };
 
