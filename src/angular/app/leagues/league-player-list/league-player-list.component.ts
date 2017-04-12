@@ -1,7 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {List2Component} from '../../common/list2.component';
 import {LeaguePlayer} from '../../../graphql/schemas/LeaguePlayer';
+import {Player} from '../../../graphql/schemas/Player';
 
 @Component({
     selector: 'league-player-list',
@@ -15,6 +16,8 @@ export class LeaguePlayerListComponent
     @Input() displayLeagues: boolean;
     @Input() displayPlayBtn: boolean;
     @Input() seeMoreText: string = 'See more';
+    @Input() allowRemove: boolean;
+    @Output() removePlayer: EventEmitter<Player> = new EventEmitter<Player>();
 
     constructor(route: ActivatedRoute, router: Router) {
         super(route, router);
@@ -29,5 +32,9 @@ export class LeaguePlayerListComponent
         } else if (this.displayPlayers) {
             this.router.navigate(['players', leaguePlayer.player.name.toLowerCase()]);
         }
+    }
+
+    onRemovePlayer(player: Player) {
+        this.removePlayer.emit(player);
     }
 }

@@ -1,16 +1,4 @@
-import {
-    AfterViewInit,
-    Component,
-    ElementRef,
-    EventEmitter,
-    HostListener,
-    Input,
-    OnChanges,
-    OnInit,
-    Output,
-    SimpleChange,
-    SimpleChanges
-} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, OnInit} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../services/graphql.service';

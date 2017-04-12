@@ -23,7 +23,9 @@ export class LeagueProfileComponent
     adminInLeague: boolean;
     activeGames: Game[] = [];
     nonMembersPlayerIds: string[] = [];
+    removePlayer: Player;
     materializeActions = new EventEmitter<string | MaterializeAction>();
+    materializeActionsRemove = new EventEmitter<string | MaterializeAction>();
 
     constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private router: Router) {
@@ -115,12 +117,26 @@ export class LeagueProfileComponent
 
     onSelected(player: Player) {
         if (player) {
-            this.hideModal();
             this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery, {playerId: player.id, leagueId: this.league.id}).then(
                 data => {
+                    this.hideModal();
                     this.refreshData(this.league.name);
                 });
         }
+    }
+
+    onRemovePlayer(player: Player) {
+        this.removePlayer = player;
+        this.showModalRemove();
+    }
+
+    onConfirmRemoveClicked() {
+        this.graphQLService.post(LeagueProfileComponent.leavePlayerLeagueQuery,
+            {playerId: this.removePlayer.id, leagueId: this.league.id}).then(
+            data => {
+                this.hideModalRemove();
+                this.refreshData(this.league.name);
+            });
     }
 
     showModal(): void {
@@ -129,6 +145,14 @@ export class LeagueProfileComponent
 
     hideModal(): void {
         this.materializeActions.emit({action: "modal", params: ['close']});
+    }
+
+    public showModalRemove(): void {
+        this.materializeActionsRemove.emit({action: "modal", params: ['open']});
+    }
+
+    public hideModalRemove(): void {
+        this.materializeActionsRemove.emit({action: "modal", params: ['close']});
     }
 
     private static readonly getLeagueQuery = `query ($name: String, $first:Int, $sort: String, $playerId: ID!, $activeGameCount:Int, $gameCount:Int) {
@@ -145,6 +169,7 @@ export class LeagueProfileComponent
                 rating
                 ranking
                 player {
+                    id
                     name
                     imageUrl
                     description
@@ -281,6 +306,10 @@ export class LeagueProfileComponent
         joinPlayerLeague(playerId: $playerId, leagueId: $leagueId) {
             id
         }
+    }`;
+
+    private static readonly leavePlayerLeagueQuery = `mutation ($playerId: ID!, $leagueId:ID!) {
+        leavePlayerLeague(playerId: $playerId, leagueId: $leagueId)
     }`;
 
 }
