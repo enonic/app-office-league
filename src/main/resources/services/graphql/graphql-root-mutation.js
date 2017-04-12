@@ -490,7 +490,7 @@ var checkLeavePlayerLeaguePermissions = function (leagueId, playerId) {
             userIsLeagueAdmin = true;
         }
     });
-    log.info('userIsLeagueAdmin=' + userIsLeagueAdmin + ', playerId=' + playerId + ',currentPlayerId=' + currentPlayerId);
+
     if (userIsLeagueAdmin && playerId === currentPlayerId) {
         throw "A league admin cannot remove itself from the league.";
     }

@@ -1801,6 +1801,8 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
                 return node;
             }
         });
+        // set player teams in league as active
+        setLeagueTeamsFromPlayerInactive(leagueId, playerId, false);
         repoConn.refresh('SEARCH');
         return updatedLeaguePlayer;
     }
@@ -1814,9 +1816,53 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
         rating: rating
     });
 
+    // set player teams in league as active
+    setLeagueTeamsFromPlayerInactive(leagueId, playerId, false);
     repoConn.refresh('SEARCH');
 
     return leaguePlayer;
+};
+
+/**
+ * Retrieve the list of league teams where the playerId specified is a member of the team.
+ * @param  {string} leagueId League id.
+ * @param  {string} playerId Player id.
+ * @return {LeagueTeam[]} League teams.
+ */
+var getLeagueTeamsByLeagueIdAndPlayerId = function (leagueId, playerId) {
+    var teamsResp = exports.getTeamsByPlayerId(playerId, 0, -1);
+    var teamIds = teamsResp.hits.map(function (team) {
+        return "'" + team._id + "'";
+    });
+    var teamIdsStr = teamIds.join(',');
+
+    var leagueTeamResp = query({
+        start: 0,
+        count: -1,
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND leagueId = '" + leagueId + "' AND teamId IN (" + teamIdsStr + ")"
+    });
+    return leagueTeamResp.hits || [];
+};
+
+/**
+ * Set inactive flag for the teams of a player in a given league.
+ *
+ * @param {string} leagueId Id of the league.
+ * @param {string} playerId Id of the player.
+ * @param {boolean} inactive Inactive or active.
+ */
+var setLeagueTeamsFromPlayerInactive = function (leagueId, playerId, inactive) {
+    var leagueTeams = getLeagueTeamsByLeagueIdAndPlayerId(leagueId, playerId);
+    var repoConn = newConnection();
+    leagueTeams.forEach(function (leagueTeam){
+        repoConn.modify({
+            key: leagueTeam._id,
+            editor: function (node) {
+                node.inactive = inactive;
+                return node;
+            }
+        });
+    });
 };
 
 /**
@@ -1845,6 +1891,8 @@ exports.leavePlayerLeague = function (leagueId, playerId) {
         }
     });
 
+    // set player teams in league as inactive
+    setLeagueTeamsFromPlayerInactive(leagueId, playerId, true);
     repoConn.refresh('SEARCH');
 };
 
