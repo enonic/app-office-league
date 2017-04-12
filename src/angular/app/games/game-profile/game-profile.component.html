@@ -5,7 +5,7 @@
 
     <game [game]="game"></game>
     <game-flow [game]="game"></game-flow>
-    <template [ngIf]="playerId">
+    <template [ngIf]="playerId && !deletable">
         <div class="fixed-action-btn">
             <a class="btn-floating global__btn--comment" (click)="onCommentClicked()"><i class="material-icons">comment</i></a>
         </div>
@@ -14,8 +14,14 @@
 
     <game-points [game]="game"></game-points>
 
-    <div *ngIf="deletable" class="fixed-action-btn" (click)="onDeleteClicked()">
-        <a class="btn-floating btn waves-effect waves-light red"><i class="material-icons">delete</i></a>
+    <div *ngIf="deletable" class="fixed-action-btn">
+        <a class="btn-floating btn light-blue lighten-2">
+            <i class="material-icons">menu</i>
+        </a>
+        <ul class="game-profile__btn-menu">
+            <li><a class="btn-floating global__btn--comment" (click)="onCommentClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(20px) translateX(0px); opacity: 0;"><i class="material-icons">comment</i></a></li>
+            <li (click)="onDeleteClicked()"><a class="btn-floating red" style="transform: scaleY(0.4) scaleX(0.4) translateY(20px) translateX(0px); opacity: 0;"><i class="material-icons">delete</i></a></li>
+        </ul>
     </div>
 
 </div>

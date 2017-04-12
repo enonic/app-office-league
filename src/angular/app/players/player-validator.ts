@@ -13,7 +13,7 @@ export class PlayerValidator {
         },
         'fullname': {
             'required': 'Full name is required.',
-            'minlength': 'Nickame must be at least 3 characters long.',
+            'minlength': 'Full name must be at least 3 characters long.',
             'maxlength': '40 characters is enough for a full name.'
         }
     };
