@@ -52,6 +52,11 @@ h2 {
   border: none;
   clear: both;
 
+  form & {
+    li:not(.collection-header) {
+      margin-left: 3rem;
+    }
+  }
 
   &.with-header {
 
@@ -108,8 +113,6 @@ h2 {
   color: #000;
 }
 
-
-
 .loading {
   margin: 100px auto 0;
   width: 70px;
@@ -140,21 +143,24 @@ h2 {
 }
 
 @-webkit-keyframes sk-bouncedelay {
-  0%, 80%, 100% { -webkit-transform: scale(0) }
-  40% { -webkit-transform: scale(1.0) }
+  0%, 80%, 100% {
+    -webkit-transform: scale(0)
+  }
+  40% {
+    -webkit-transform: scale(1.0)
+  }
 }
 
 @keyframes sk-bouncedelay {
   0%, 80%, 100% {
     -webkit-transform: scale(0);
     transform: scale(0);
-  } 40% {
-      -webkit-transform: scale(1.0);
-      transform: scale(1.0);
-    }
+  }
+  40% {
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+  }
 }
-
-
 
 @import "global/button.less";
 @import "global/search.less";

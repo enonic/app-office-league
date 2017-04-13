@@ -9,7 +9,7 @@
                 <div class="row">
                     <div class="input-field col s12">
                         <i class="material-icons prefix">fingerprint</i>
-                        <input id="name" type="text" formControlName="name" name="name" [class.invalid]="!!formErrors.name" 
+                        <input id="name" type="text" formControlName="name" name="name" [class.invalid]="!!formErrors.name"
                                autocomplete="off" [(ngModel)]="name"
                                (ngModelChange)="updatePageTitle($event)" required=""
                                aria-required="true">
@@ -30,7 +30,7 @@
                             <i class="material-icons prefix team__players-titleicon">people</i>
                             <h6 class="team__players-title">Team Players</h6>
                         </li>
-                        <li *ngFor="let player of players" class="collection-item avatar">
+                        <li *ngFor="let player of players">
                             <player-summary [player]="player"></player-summary>
                         </li>
                     </ul>
@@ -46,13 +46,13 @@
                     <div class="input-field col s12">
                         <i class="material-icons prefix team__players-titleicon">image</i>
                         <h6 class="team__players-title">Team Logo</h6>
-                        <div class="right">
-                            <input type="file" accept="image/*" #fileInput style="display:none;">
-                            <div class="team-icon-frame">
-                                <img src="{{imageUrl}}?size=200" alt="Team Image" class="team-icon circle preview"
-                                     (click)="fileInput.click()">
-                            </div>
+
+                        <input type="file" accept="image/*" #fileInput style="display:none;">
+                        <div class="team-icon-frame">
+                            <img src="{{imageUrl}}?size=200" alt="Team Image" class="team-icon circle preview"
+                                 (click)="fileInput.click()">
                         </div>
+
                     </div>
                 </div>
             </form>
