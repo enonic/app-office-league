@@ -10,7 +10,8 @@ declare var $: any;
 
 @Component({
     selector: 'league-browser',
-    templateUrl: 'league-browser.component.html'
+    templateUrl: 'league-browser.component.html',
+    styleUrls: ['league-browser.component.less']
 })
 export class LeagueBrowserComponent extends BaseComponent implements AfterViewInit {
 

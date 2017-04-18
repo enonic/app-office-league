@@ -1,10 +1,10 @@
 <div class="col s12">
-    <ul class="tabs" *ngIf="authService.isAuthenticated()">
-        <li class="tab col s6">
-            <a href="#myLeagues" i18n="My leagues|My leagues tab caption">My leagues</a>
+    <ul class="league-browser__tabs tabs" *ngIf="authService.isAuthenticated()">
+        <li class="league-browser__tab tab col s6">
+            <a class="league-browser__tab-link" href="#myLeagues" i18n="My leagues|My leagues tab caption">My leagues</a>
         </li>
-        <li class="tab col s6">
-            <a href="#discoverLeagues" i18n="Discover|All leagues tab caption">Discover</a>
+        <li class="league-browser__tab tab col s6">
+            <a class="league-browser__tab-link" href="#discoverLeagues" i18n="Discover|All leagues tab caption">Discover</a>
         </li>
     </ul>
     <league-list id="myLeagues" [leagues]="myLeagues" class="no-margin" *ngIf="authService.isAuthenticated()"></league-list>
