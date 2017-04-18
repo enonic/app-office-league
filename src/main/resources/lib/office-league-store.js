@@ -13,6 +13,7 @@ var LEAGUE_GAMES_REL_PATH = '/games';
 var LEAGUE_PLAYERS_REL_PATH = '/players';
 var LEAGUE_TEAMS_REL_PATH = '/teams';
 var OFFICE_LEAGUE_GAME_EVENT_ID = 'office-league-game';
+var OFFICE_LEAGUE_COMMENT_EVENT_ID = 'office-league-comment';
 
 var NAME_MAX_LENGTH = 40;
 var NAME_MIN_LENGTH = 3;
@@ -80,6 +81,8 @@ var ROOT_PERMISSIONS = [ //TODO Remove after XP issue 4801 resolution
 ];
 
 exports.REPO_NAME = REPO_NAME;
+exports.OFFICE_LEAGUE_GAME_EVENT_ID = OFFICE_LEAGUE_GAME_EVENT_ID;
+exports.OFFICE_LEAGUE_COMMENT_EVENT_ID = OFFICE_LEAGUE_COMMENT_EVENT_ID;
 
 /**
  * @typedef {Object} Attachment
@@ -1053,6 +1056,17 @@ exports.getCommentsByGameId = function (gameId, start, count) {
 };
 
 /**
+ * Retrieve a comments by its id.
+ * @param  {string} commentId Comment id.
+ * @return {Comment} Game comments.
+ */
+exports.getCommentById = function (commentId) {
+    return querySingleHit({
+        query: "type = '" + TYPE.COMMENT + "' AND _id='" + commentId + "'"
+    });
+};
+
+/**
  * Get the ranking position for a player in a league.
  * @param  {string} playerId Player id.
  * @param  {string} leagueId League id.
@@ -1762,7 +1776,7 @@ exports.createComment = function (params) {
         attachment: mediaAttachment
     });
 
-    notifyGameUpdate(params.gameId);
+    notifyGameComment(params.gameId, commentNode._id);
 
     return commentNode;
 };
@@ -2435,6 +2449,17 @@ var notifyGameUpdate = function (gameId) {
     });
 };
 
+var notifyGameComment = function (gameId, commentId) {
+    eventLib.send({
+        type: OFFICE_LEAGUE_COMMENT_EVENT_ID,
+        distributed: true,
+        data: {
+            gameId: gameId,
+            commentId: commentId
+        }
+    });
+};
+
 /**
  * Apply ranking updates as a result of a game.
  *
@@ -2689,7 +2714,7 @@ var getImageUrl = function (node) {
         return '/' + type + '/image/-/default';
     }
     var version = node._versionKey;
-    return '/' + type + '/image/' + version + '/' + node.name;
+    return '/' + type + '/image/' + version + '/' + encodeURIComponent(node.name);
 };
 
 var setImageUrl = function (node) {

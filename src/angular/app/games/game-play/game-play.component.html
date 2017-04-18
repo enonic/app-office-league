@@ -1,6 +1,6 @@
 <div class="row game-play" [ngClass]="nameClassesGamePlay">
     <div class="game-top-bar">
-        <div class="game-top-bar-items">
+        <div class="game-top-bar-items" [ngClass]="nameClassesGameTopBarItems">
 
             <div class="game-score">
                 <div class="game-play__team-score game-play__red-score" [ngClass]="nameClassesGamePlayScoreRed">{{redScore}}</div>
@@ -18,6 +18,11 @@
                 <i class="medium material-icons indigo-text text-darken-2" [ngClass]="{hide: showPlay}" (click)="onPauseClicked()">pause</i>
                 <i class="medium material-icons" [ngClass]="{hide: !showUndo}" (click)="onUndoClicked()">replay</i>
             </div>-->
+        </div>
+        <div class="game-top-bar-message" [ngClass]="nameClassesGameTopBarMsg">
+            <img src="{{messagePlayer?.imageUrl}}?size=200" alt="{{messagePlayer?.name}}">
+            <span class="game-top-bar-message__name">{{messagePlayer?.name}}:</span>
+            <span class="game-top-bar-message__text">{{message}}</span>
         </div>
     </div>
 
