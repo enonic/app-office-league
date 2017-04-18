@@ -49,7 +49,9 @@ export class WebSocketManager {
 
     disconnect() {
         this.intentionalDisconnect = true;
-        this.webSocket.close();
+        if (this.webSocket) {
+            this.webSocket.close();
+        }
     }
 
     isConnected(): boolean {

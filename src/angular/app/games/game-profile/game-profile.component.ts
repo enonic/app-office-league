@@ -51,8 +51,9 @@ export class GameProfileComponent
     protected afterGameLoaded(game: Game) {
         this.deletable = this.isGameDeletable(game);
         if (game && game.finished) {
-            if (this.wsMan.isConnected()) {
-                this.wsMan.disconnect();
+            if (!this.wsMan.isConnected()) {
+                this.wsMan.setUrl(this.getWsUrl(this.game.id));
+                this.wsMan.connect();
             }
 
             if (game.league) {
