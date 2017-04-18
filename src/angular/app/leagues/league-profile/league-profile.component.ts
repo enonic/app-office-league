@@ -8,6 +8,7 @@ import {Game} from '../../../graphql/schemas/Game';
 import {PageTitleService} from '../../services/page-title.service';
 import {Player} from '../../../graphql/schemas/Player';
 import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
+import {Http} from '@angular/http';
 
 @Component({
     selector: 'league-profile',
@@ -27,7 +28,7 @@ export class LeagueProfileComponent
     materializeActions = new EventEmitter<string | MaterializeAction>();
     materializeActionsRemove = new EventEmitter<string | MaterializeAction>();
 
-    constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
+    constructor(private http: Http, route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private router: Router) {
         super(route);
     }

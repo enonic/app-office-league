@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {NgModule, ErrorHandler} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import {AppComponent} from './app.component';
@@ -17,6 +17,7 @@ import {MaterializeModule} from 'angular2-materialize';
 import {PageTitleService} from './services/page-title.service';
 import {OfflinePersistenceService} from './services/offline-persistence.service';
 import {RankingService} from './services/ranking.service';
+import {GlobalErrorHandler} from './common/global.errorhandler';
 
 const appRoutes: Routes = [
     {path: '**', redirectTo: '', pathMatch: 'full'}
@@ -38,7 +39,12 @@ const appRoutes: Routes = [
         LeaguesModule
     ],
     providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard,
-        OfflinePersistenceService, RankingService],
+        OfflinePersistenceService, RankingService,
+        {
+            provide: ErrorHandler,
+            useClass: GlobalErrorHandler
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {
