@@ -6,7 +6,7 @@
         <team-summary *ngIf="displayTeams" [team]="leagueTeam.team" [rating]="leagueTeam.rating"
                       [ranking]="leagueTeam.ranking"></team-summary>
     </a>
-    <p *ngIf="leagueTeams?.length == 0">
+    <p *ngIf="leagueTeams?.length == 0" class="league-team-list__item league-team-list__item--empty">
         {{displayLeagues ? 'No leagues' : displayTeams ? 'No teams' : ''}}
     </p>
     <a href="#!" *ngIf="leagueTeams?.length > 0 && detailsPath" class="league-team-list__more" (click)="onDetailsClicked($event)">{{seeMoreText}}</a>

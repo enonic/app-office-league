@@ -3,7 +3,7 @@
     <a href="#!" class="game-list__item" *ngFor="let game of games" (click)="onGameClicked(game, $event)">
         <game-summary [game]="game"></game-summary>
     </a>
-    <p *ngIf="games?.length == 0" i18n="No games|Games list empty message">
+    <p *ngIf="games?.length == 0" class="game-list__item game-list__item--empty" i18n="No games|Games list empty message">
         No games
     </p>
     <a href="#!" *ngIf="games?.length > 0 && detailsPath" class="game-list__more" (click)="onDetailsClicked($event)">See all games</a>

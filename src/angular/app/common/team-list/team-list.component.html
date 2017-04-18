@@ -17,7 +17,7 @@
     <a href="#!" class="team-list__item" *ngFor="let team of teams;" (click)="onTeamClicked(team, $event)">
         <team-summary [team]="team"></team-summary>
     </a>
-    <p *ngIf="teams?.length == 0" class="empty">
+    <p *ngIf="teams?.length == 0" class="team-list__item team-list__item--empty">
         No teams
     </p>
     <a href="#!" *ngIf="teams?.length > 0 && this.detailsPath" class="collection-item empty" (click)="onDetailsClicked($event)">

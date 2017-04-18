@@ -3,7 +3,7 @@
     <a href="#!" class="league-list__item" *ngFor="let league of leagues" (click)="onLeagueClicked(league, $event)">
         <league-summary [league]="league"></league-summary>
     </a>
-    <p *ngIf="leagues?.length == 0" class="">
+    <p *ngIf="leagues?.length == 0" class="league-list__item league-list__item--empty">
         No leagues
     </p>
 </div>
