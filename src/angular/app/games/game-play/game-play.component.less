@@ -272,6 +272,14 @@
   100% { color: #000; }
 }
 
+@keyframes message-blink {
+  0% { color: #fff; }
+  100% { color: #CBD9F9; }
+}
+@-webkit-keyframes message-blink {
+  0% { color: #fff; }
+  100% { color: #CBD9F9; }
+}
 
 .playing-field {
   width: 100%;
@@ -405,7 +413,41 @@
     align-items: center;
     font-size: 24px;
 
+    &__hide {
+      display: none;
+    }
+  }
 
+  .game-top-bar-message {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    img {
+      height: 40px;
+      padding-right:5px;
+    }
+
+    &__name {
+      color: #ccc;
+      font-size: 18px;
+      padding-right:5px;
+    }
+
+    &__text {
+      font-size: 18px;
+      text-overflow: ellipsis;
+      // TODO fix animation
+      -webkit-animation: message-blink 2s linear infinite;
+      -moz-animation: message-blink 2s linear infinite;
+      animation: message-blink 2s linear infinite;
+    }
+
+    &__hide {
+      display: none;
+    }
   }
 
 }

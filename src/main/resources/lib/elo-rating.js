@@ -43,6 +43,20 @@ exports.calculateExpectedScore = function (rating, opponentRating) {
 };
 
 /**
+ * Returns the final points scored for each team based on the game score (between 0 and 1).
+ * @param {number} score Expected score (value between 0 and 1).
+ * @returns {[number, number]} Array with the 2 resulting points, one value for each opponent.
+ */
+exports.scoreToPoints = function (score) {
+    var diff = (score * 20) - 10;
+    if (diff > 0) {
+        return [10, roundScore(10 - diff)];
+    } else {
+        return [roundScore(10 + diff), 10];
+    }
+};
+
+/**
  * Calculates the rating delta for the player based on the old rating, the game score, the expected game score
  * and the k-factor.
  * @param {number} rating Player's old rating.
@@ -58,4 +72,8 @@ var calculateRatingDelta = function (rating, score, expectedScore, kFactor) {
 var roundWithSign = function (value) {
     var rounded = Math.ceil(Math.abs(value));
     return value >= 0 ? rounded : -rounded;
+};
+
+var roundScore = function (value) {
+    return Math.round(value * 10) / 10;
 };

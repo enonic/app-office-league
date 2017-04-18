@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Renderer, ViewChild} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, Renderer, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GameComponent} from '../game/game.component';
@@ -9,6 +9,8 @@ import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist
 import {AuthService} from '../../services/auth.service';
 import {OfflinePersistenceService} from '../../services/offline-persistence.service';
 import {PageTitleService} from '../../services/page-title.service';
+import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
+import {WebSocketManager} from '../../services/websocket.manager';
 
 @Component({
     selector: 'game-profile',
@@ -16,21 +18,17 @@ import {PageTitleService} from '../../services/page-title.service';
     styleUrls: ['game-profile.component.less']
 })
 export class GameProfileComponent
-    extends GameComponent {
+    extends GameComponent
+    implements OnDestroy {
     materializeActions = new EventEmitter<string | MaterializeAction>();
     materializeActionsDelete = new EventEmitter<string | MaterializeAction>();
     @ViewChild('commenttextarea') commentsTextAreaElementRef;
-
-    private static readonly KeepAliveTimeMs = 30 * 1000;
-    private static readonly ReconnectTimeMs = 5 * 1000;
 
     comment: string;
     playerId: string;
     deletable: boolean;
     private gameId: string;
-    private webSocket: WebSocket;
-    private wsConnected: boolean;
-    private keepAliveIntervalId: any;
+    private wsMan: WebSocketManager;
 
     constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, protected router: Router,
                 private authService: AuthService, private _renderer: Renderer, private pageTitleService: PageTitleService,
@@ -45,13 +43,16 @@ export class GameProfileComponent
         const user = this.authService.getUser();
         this.playerId = user && user.playerId;
         this.deletable = false;
+
+        this.wsMan = new WebSocketManager(this.getWsUrl(this.gameId), true);
+        this.wsMan.onMessage(this.onWsMessage.bind(this));
     }
 
     protected afterGameLoaded(game: Game) {
         this.deletable = this.isGameDeletable(game);
         if (game && game.finished) {
-            if (this.wsConnected) {
-                this.wsDisconnect();
+            if (this.wsMan.isConnected()) {
+                this.wsMan.disconnect();
             }
 
             if (game.league) {
@@ -60,7 +61,8 @@ export class GameProfileComponent
                 this.pageTitleService.setTitle('Game');
             }
         } else {
-            this.wsConnect(this.gameId);
+            this.wsMan.setUrl(this.getWsUrl(this.gameId));
+            this.wsMan.connect();
 
             if (game.league) {
                 this.pageTitleService.setTitle(game.league.name + ' - Live game');
@@ -125,61 +127,10 @@ export class GameProfileComponent
         this.materializeActionsDelete.emit({action: "modal", params: ['close']});
     }
 
-    wsConnect(gameId) {
-        if (this.wsConnected) {
-            return;
-        }
-        if (this.webSocket) {
-            this.webSocket.onmessage = null;
-            this.webSocket.onclose = null;
-            this.webSocket.onopen = null;
-            this.webSocket.close();
-        }
-        this.webSocket = new WebSocket(XPCONFIG.liveGameUrl + '?gameId=' + gameId, ['office-league']);
-        this.webSocket.onmessage = (event) => {
-            this.onWsMessage(event);
-            return;
-        };
-        this.webSocket.onclose = (event) => {
-            this.onWsClose(event);
-            return;
-        };
-        this.webSocket.onopen = (event) => {
-            this.onWsOpen(event);
-            return;
-        };
-    }
-
-    wsDisconnect() {
-        this.webSocket.close();
-    }
-
-    onWsOpen(event) {
-        console.log('WebSocket connected');
-        clearInterval(this.keepAliveIntervalId);
-        this.keepAliveIntervalId = setInterval(function () {
-            if (this.wsConnected) {
-                this.webSocket.send('{"action":"KeepAlive"}');
-            }
-        }, GameProfileComponent.KeepAliveTimeMs);
-        this.wsConnected = true;
-    }
-
-    onWsClose(event) {
-        console.log('WebSocket disconnected');
-        clearInterval(this.keepAliveIntervalId);
-        this.wsConnected = false;
-
-        if (!(this.game && this.game.finished)) {
-            setTimeout(() => this.wsConnect, GameProfileComponent.ReconnectTimeMs); // attempt to reconnect
-        }
-    }
-
-    onWsMessage(event) {
-        let msg = JSON.parse(event.data);
-        if (msg.gameId === this.gameId) {
+    onWsMessage(event: RemoteEvent) {
+        if ((event.type === EventType.GAME_UPDATE || event.type === EventType.GAME_COMMENT) && event.gameId === this.gameId) {
             console.log('Game updated -> refresh data');
-            super.loadGame(msg.gameId);
+            super.loadGame(event.gameId);
         }
     }
 
@@ -225,6 +176,14 @@ export class GameProfileComponent
         }
         const userIsLeagueAdmin = !!league.adminPlayers.find((p) => p.id === this.playerId);
         return userIsLeagueAdmin;
+    }
+
+    ngOnDestroy() {
+        this.wsMan.disconnect();
+    }
+
+    private getWsUrl(gameId: string): string {
+        return XPCONFIG.liveGameUrl + '?gameId=' + gameId + '&scope=live-game';
     }
 
     private static readonly createCommentMutation = `mutation ($gameId: ID!, $author: ID!, $text: String) {

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../services/graphql.service';
@@ -11,6 +11,9 @@ import {GamePlayer} from '../../../graphql/schemas/GamePlayer';
 import {GameTeam} from '../../../graphql/schemas/GameTeam';
 import {Team} from '../../../graphql/schemas/Team';
 import {GameSelection} from '../GameSelection';
+import {XPCONFIG} from '../../app.config';
+import {WebSocketManager} from '../../services/websocket.manager';
+import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 
 enum GameState {
     NotStarted, Playing, Paused, Finished
@@ -26,7 +29,7 @@ enum PlayerPosition {
     styleUrls: ['game-play.component.less']
 })
 export class GamePlayComponent
-    implements OnInit, AfterViewInit {
+    implements OnInit, AfterViewInit, OnDestroy {
 
     bluePlayer1: Player;
     bluePlayer2: Player;
@@ -50,6 +53,9 @@ export class GamePlayComponent
     showUndo: boolean;
 
     playerSelected: PlayerPosition;
+    messagePlayer: Player;
+    message: string;
+    messageTimerId: any;
 
     nameClassesBlue1: {} = {
         'game-play__player--selected': false,
@@ -72,6 +78,14 @@ export class GamePlayComponent
     nameClassesGamePlayScoreBlue: {} = {};
     nameClassesGamePlayScoreRed: {} = {};
     nameClassesGamePlayCommentator: {} = {};
+    nameClassesGameTopBarItems: {} = {
+        'game-top-bar-items__hide': false
+    };
+    nameClassesGameTopBarMsg: {} = {
+        'game-top-bar-message__hide': true
+    };
+
+    private wsMan: WebSocketManager;
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router, private elRef: ElementRef,
                 private offlineService: OfflinePersistenceService, private gameSelection: GameSelection) {
@@ -88,6 +102,10 @@ export class GamePlayComponent
                     this.gameSelection.league = new League(leagueId, 'League');
                 }
             }
+
+            this.wsMan = new WebSocketManager(this.getWsUrl(this.gameId), true);
+            this.wsMan.onMessage(this.onWsMessage.bind(this));
+
             this.loadGameData()
                 .catch((error) => {
                     console.log('Could not start game', error);
@@ -119,6 +137,8 @@ export class GamePlayComponent
             return;
         }
 
+        clearTimeout(this.messageTimerId);
+        this.hideMessage();
         this.pauseGame();
 
         this.playerSelected = this.getPlayerPosition(p);
@@ -272,11 +292,17 @@ export class GamePlayComponent
                     console.log('Initial game created: ' + gameId);
                     this.gameId = gameId;
                     this.onlineMode = true;
+
+                    this.wsMan.setUrl(this.getWsUrl(this.gameId));
+                    this.wsMan.connect();
                 }).catch((ex) => {
                     console.log('Could not create game. Offline mode On.');
                     this.onlineMode = false;
                     this.saveGameOffline();
                 });
+            } else {
+                this.wsMan.setUrl(this.getWsUrl(this.gameId));
+                this.wsMan.connect();
             }
         }
     }
@@ -696,6 +722,40 @@ export class GamePlayComponent
                 img.style.width = playerImgPlaceholder.clientWidth + 'px';
             }
         });
+    }
+
+    private showMessage(player: Player, message: string) {
+        this.messagePlayer = player;
+        this.message = message.replace(/[\r\n]+/g, " ");
+        this.nameClassesGameTopBarItems['game-top-bar-items__hide'] = true;
+        this.nameClassesGameTopBarMsg['game-top-bar-message__hide'] = false;
+        clearTimeout(this.messageTimerId);
+        this.messageTimerId = setTimeout(() => this.hideMessage(), 20000);
+    }
+
+    private hideMessage() {
+        this.messagePlayer = null;
+        this.message = '';
+        this.nameClassesGameTopBarItems['game-top-bar-items__hide'] = false;
+        this.nameClassesGameTopBarMsg['game-top-bar-message__hide'] = true;
+    }
+
+    ngOnDestroy() {
+        this.wsMan.disconnect();
+    }
+
+    onWsMessage(event: RemoteEvent) {
+        if ((event.type === EventType.GAME_COMMENT) && event.gameId === this.gameId) {
+            console.log('Game comment received', event);
+
+            let player: Player = Player.fromJson(event.data.player);
+            let message: string = event.data.message;
+            this.showMessage(player, message);
+        }
+    }
+
+    private getWsUrl(gameId: string): string {
+        return XPCONFIG.liveGameUrl + '?gameId=' + gameId + '&scope=game-play';
     }
 
     private static readonly getPlayersLeagueQuery = `query ($leagueId: ID!, $playerIds: [ID]!) {
