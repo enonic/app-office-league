@@ -4,6 +4,7 @@ const imageCacheName = 'office-league-image-cache-{{version}}';
 const cacheNames = [cacheName, dataCacheName, imageCacheName];
 
 const debugging = false;
+const offlineUrl = '{{siteUrl}}offline';
 const appUrl = '{{appUrl}}';
 const APIUrl = '{{appUrl}}/api/graphql?etag';
 const homePageUrl = '{{appUrl}}?source=web_app_manifest';
@@ -18,7 +19,8 @@ const staticAssets = [
     '{{assetUrl}}/icons/apple-touch-icon.png',
     '{{assetUrl}}/icons/favicon-16x16.png',
     '{{assetUrl}}/icons/favicon-32x32.png',
-    'https://fonts.googleapis.com/css?family=Roboto'
+    'https://fonts.googleapis.com/css?family=Roboto',
+    offlineUrl
 ];
 const dynamicAssets = [
     '{{assetUrl}}/fonts/',
@@ -54,6 +56,11 @@ function isRequestToImage(url) {
     return !url.endsWith(defaultImagePostfix) &&
            imageUrls.some(u => url.indexOf(u) > -1);
 }
+
+function getFallbackPage() {
+    return caches.match(offlineUrl);
+}
+
 
 function getFallbackImage(url) {
     let imgUrl = '{{appUrl}}' + imageUrls.find(u => url.indexOf(u) > -1) + defaultImagePostfix;
@@ -208,8 +215,8 @@ self.addEventListener('fetch', function (e) {
                             .then(function (response) {
                                 consoleLog((response ?
                                             'Serving from cache: ' + e.request.url :
-                                            'No cached response found.'));
-                                return response;
+                                            'No cached response found. Serving offline page...'));
+                                return response || getFallbackPage();
                             });
                     }
                     else {
