@@ -3,7 +3,6 @@ const dataCacheName = 'office-league-data-cache-{{version}}';
 const imageCacheName = 'office-league-image-cache-{{version}}';
 const cacheNames = [cacheName, dataCacheName, imageCacheName];
 
-const offlineUrl = '{{siteUrl}}offline';
 const debugging = true;
 const appUrl = '{{appUrl}}';
 const APIUrl = '{{appUrl}}/api/graphql?etag';
@@ -19,8 +18,7 @@ const staticAssets = [
     '{{assetUrl}}/icons/apple-touch-icon.png',
     '{{assetUrl}}/icons/favicon-16x16.png',
     '{{assetUrl}}/icons/favicon-32x32.png',
-    'https://fonts.googleapis.com/css?family=Roboto',
-    offlineUrl
+    'https://fonts.googleapis.com/css?family=Roboto'
 ];
 const dynamicAssets = [
     '{{assetUrl}}/fonts/',
@@ -57,7 +55,7 @@ function isRequestToImage(url) {
            imageUrls.some(u => url.indexOf(u) > -1);
 }
 
-function getImageFallbackPage(url) {
+function getFallbackImage(url) {
     let imgUrl = '{{appUrl}}' + imageUrls.find(u => url.indexOf(u) > -1) + defaultImagePostfix;
 
     return caches
@@ -75,10 +73,6 @@ function getImageFallbackPage(url) {
                 console.log(err);
             }
         });
-}
-
-function getFallbackPage() {
-    return caches.match(offlineUrl);
 }
 
 self.addEventListener('install', function (e) {
@@ -116,7 +110,6 @@ self.addEventListener('activate', function (e) {
 });
 
 self.addEventListener('fetch', function (e) {
-    consoleLog('fetch: ' + e.request.url);
 
     let apiRequest = isRequestToAPI(e.request.url);
     let rootRequest = isRequestToAppRoot(e.request.url);
@@ -146,8 +139,8 @@ self.addEventListener('fetch', function (e) {
                                     .then(function (response) {
                                         consoleLog((response ?
                                                     'Serving from cache: ' + e.request.url :
-                                                    'No cached response found. Serving offline page.'));
-                                        return response || getFallbackPage(e.request.url);
+                                                    'No cached response found.'));
+                                        return response;
                                     });
                             }
                             else {
@@ -187,7 +180,7 @@ self.addEventListener('fetch', function (e) {
                                .catch(function () {
                                    consoleLog('Failed to fetch ' + e.request.url + '. Serving default image.');
 
-                                   return getImageFallbackPage(e.request.url);
+                                   return getFallbackImage(e.request.url);
                                });
                 })
         );
@@ -215,13 +208,15 @@ self.addEventListener('fetch', function (e) {
                 })
                 .catch(function () {
                     if (e.request.method == 'GET') {
-                        consoleLog('Network is down. Serving offline page...');
                         return caches
                             .match(e.request, {
                                 ignoreVary: true
                             })
                             .then(function (response) {
-                                return response || getFallbackPage();
+                                consoleLog((response ?
+                                            'Serving from cache: ' + e.request.url :
+                                            'No cached response found.'));
+                                return response;
                             });
                     }
                     else {
@@ -235,7 +230,8 @@ self.addEventListener('fetch', function (e) {
 
 
     // Requests to App Shell will go Cache first, with fallback to Network only.
-    // Dynamic assets (with hash in URL) will be cached on the fly.    
+    // Dynamic assets (with hash in URL) will be cached on the fly.   
+    consoleLog('Other request: ' + e.request.url);
     e.respondWith(
         caches
             .match(e.request, {

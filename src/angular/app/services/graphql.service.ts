@@ -56,13 +56,6 @@ export class GraphQLService {
                     if (!!failureCallback) {
                         failureCallback(error);
                     }
-                    else {
-                        // Temporary solution: redirect to the offline page 
-                        // when we are offline and there's no cached API response
-                        if (!navigator.onLine) {
-                            document.location.href = XPCONFIG.baseHref.replace('/app/', '/offline');
-                        }
-                    }
                 }
             });
 
