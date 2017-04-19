@@ -1,9 +1,9 @@
-import {Component, Input, ElementRef, ViewChild, AfterViewInit, EventEmitter} from '@angular/core';
+import {Component, ElementRef, ViewChild, AfterViewInit, EventEmitter} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
-import {MaterializeDirective, MaterializeAction} from 'angular2-materialize/dist/index';
-import {Http, Headers, RequestOptions, Response} from '@angular/http';
+import {MaterializeAction} from 'angular2-materialize/dist/index';
+import {Http, Headers, RequestOptions} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
 import {Team} from '../../../graphql/schemas/Team';
 import {PageTitleService} from '../../services/page-title.service';
@@ -13,6 +13,7 @@ import {AuthService} from '../../services/auth.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {TeamValidator} from '../team-validator';
 import {CustomValidators} from '../../common/validators';
+import {SafeUrl, DomSanitizer} from '@angular/platform-browser';
 
 @Component({
     selector: 'team-edit-create',
@@ -25,11 +26,11 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
     name: string;
     id: string;
     description: string;
-    imageUrl: string;
+    imageUrl: SafeUrl;
     players: Player[] = [];
     createMode: boolean;
     excludePlayerIds: {[id: string]: boolean} = {};
-    possibleTeamMateIds: string[]= [];
+    possibleTeamMateIds: string[] = [];
     leagueIds: string[] = [];
     teamForm: FormGroup;
     formErrors = {
@@ -42,7 +43,7 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
 
     constructor(private http: Http, route: ActivatedRoute, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private router: Router,
-                private authService: AuthService, private fb: FormBuilder) {
+                private authService: AuthService, private fb: FormBuilder, private sanitizer: DomSanitizer) {
         super(route);
     }
 
@@ -109,11 +110,11 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
             id: team.id
         });
     }
-    
+
     private setupCreate() {
         let playerId = this.authService.getUser().playerId;
         this.graphQLService.post(
-            TeamEditCreateComponent.getPlayerByIdQuery, 
+            TeamEditCreateComponent.getPlayerByIdQuery,
             {playerId: playerId},
             data => this.handlePlayerByIdQueryResponse(data, playerId)
         );
@@ -153,7 +154,7 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
             this.leagueIds = data.player.leaguePlayers.map((lp) => lp.league.id);
         }
     }
-    
+
     onSaveClicked() {
         if (!this.teamForm.valid || !this.validate()) {
             return;
@@ -257,12 +258,9 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
     }
 
     private onFileInputChange(input: HTMLInputElement) {
-        let preview = document.getElementsByClassName('preview')[0];
         if (input.files && input.files[0]) {
             let reader = new FileReader();
-            reader.onload = function (e) {
-                preview.setAttribute('src', (<any>e.target).result);
-            };
+            reader.onload = (e) => this.imageUrl = this.sanitizer.bypassSecurityTrustUrl((<any>e.target).result);
             reader.readAsDataURL(input.files[0]);
         }
     }

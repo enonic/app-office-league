@@ -35,7 +35,7 @@
                         <label class="avatar">Avatar</label>
                         <input type="file" accept="image/*" #fileInput style="display:none;">
                         <div class="player-icon-frame">
-                            <img src="{{imageUrl}}?size=200" alt="Player Image" class="player-icon circle preview"
+                            <img [src]="imageUrl" alt="Player Image" class="player-icon circle preview"
                                  (click)="fileInput.click()">
                         </div>
                     </div>

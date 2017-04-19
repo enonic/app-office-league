@@ -14,6 +14,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PlayerValidator} from '../player-validator';
 import {ImageService} from '../../services/image.service';
 import {CustomValidators} from '../../common/validators';
+import {SafeUrl, DomSanitizer} from '@angular/platform-browser';
 
 @Component({
     selector: 'player-edit',
@@ -25,7 +26,7 @@ export class PlayerEditComponent
     implements OnInit, AfterViewInit {
 
     playerForm: FormGroup;
-    imageUrl: string;
+    imageUrl: SafeUrl;
     formErrors = {
         'name': '',
         'fullname': ''
@@ -37,7 +38,7 @@ export class PlayerEditComponent
 
     constructor(private http: Http, route: ActivatedRoute, private pageTitleService: PageTitleService,
                 private graphQLService: GraphQLService,
-                private router: Router, private location: Location, private fb: FormBuilder) {
+                private router: Router, private location: Location, private fb: FormBuilder, private sanitizer: DomSanitizer) {
         super(route);
     }
 
@@ -167,10 +168,9 @@ export class PlayerEditComponent
     }
 
     private onFileInputChange(input: HTMLInputElement) {
-        let preview = document.getElementsByClassName('preview')[0];
         if (input.files && input.files[0]) {
             let reader = new FileReader();
-            reader.onload = (e) => this.imageUrl = (<any>e.target).result;
+            reader.onload = (e) => this.imageUrl = this.sanitizer.bypassSecurityTrustUrl((<any>e.target).result);
             reader.readAsDataURL(input.files[0]);
         }
     }

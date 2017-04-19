@@ -12,21 +12,20 @@ import {ImageService} from '../../services/image.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LeagueValidator} from '../league-validator';
 import {CustomValidators} from '../../common/validators';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 
 @Component({
     selector: 'league-edit-create',
     templateUrl: 'league-edit-create.component.html',
     styleUrls: ['league-edit-create.component.less']
 })
-export class LeagueEditCreateComponent
-    extends BaseComponent
-    implements AfterViewInit {
+export class LeagueEditCreateComponent extends BaseComponent implements AfterViewInit {
 
     @ViewChild('fileInput') inputEl: ElementRef;
     name: string;
     leagueId: string;
     description: string;
-    leagueImageUrl: string;
+    leagueImageUrl: SafeUrl;
     sport: string = Sport[Sport.FOOS].toLowerCase();
     editMode: boolean;
     leagueForm: FormGroup;
@@ -38,7 +37,7 @@ export class LeagueEditCreateComponent
 
     constructor(private http: Http, private authService: AuthService, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, route: ActivatedRoute,
-                private router: Router, private fb: FormBuilder) {
+                private router: Router, private fb: FormBuilder, private sanitizer: DomSanitizer) {
         super(route);
     }
 
@@ -175,12 +174,9 @@ export class LeagueEditCreateComponent
     }
 
     private onFileInputChange(input: HTMLInputElement) {
-        let preview = document.getElementsByClassName('preview')[0];
         if (input.files && input.files[0]) {
             let reader = new FileReader();
-            reader.onload = function (e) {
-                preview.setAttribute('src', (<any>e.target).result);
-            };
+            reader.onload = (e) => this.leagueImageUrl = this.sanitizer.bypassSecurityTrustUrl((<any>e.target).result);
             reader.readAsDataURL(input.files[0]);
         }
     }
