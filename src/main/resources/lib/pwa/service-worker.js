@@ -82,7 +82,7 @@ function getFallbackPage() {
 
 self.addEventListener('install', function (e) {
     consoleLog('Install');
-    //e.waitUntil(self.skipWaiting());
+    e.waitUntil(self.skipWaiting());
     e.waitUntil(
         caches.open(cacheName).then(function (cache) {
             consoleLog('Caching App Shell');
@@ -101,7 +101,7 @@ self.addEventListener('install', function (e) {
 
 self.addEventListener('activate', function (e) {
     consoleLog('Activate');
-    //e.waitUntil(self.clients.claim());
+    e.waitUntil(self.clients.claim());
     e.waitUntil(
         caches.keys().then(function (cacheKeyList) {
             return Promise.all(cacheKeyList.map(function (cacheKey) {
