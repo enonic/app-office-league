@@ -4,7 +4,7 @@ const imageCacheName = 'office-league-image-cache-{{version}}';
 const cacheNames = [cacheName, dataCacheName, imageCacheName];
 
 const offlineUrl = '{{siteUrl}}offline';
-const debugging = false;
+const debugging = true;
 const appUrl = '{{appUrl}}';
 const APIUrl = '{{appUrl}}/api/graphql?etag';
 const homePageUrl = '{{appUrl}}?source=web_app_manifest';
@@ -14,6 +14,7 @@ const staticAssets = [
     '{{siteUrl}}manifest.json',
     '{{assetUrl}}/css/critical.css',
     '{{assetUrl}}/img/office-league-logo.svg',
+    '{{assetUrl}}/img/office-league-loader.svg',
     '{{assetUrl}}/img/logo.svg',
     '{{assetUrl}}/icons/apple-touch-icon.png',
     '{{assetUrl}}/icons/favicon-16x16.png',
@@ -115,6 +116,7 @@ self.addEventListener('activate', function (e) {
 });
 
 self.addEventListener('fetch', function (e) {
+    consoleLog('fetch: ' + e.request.url);
 
     let apiRequest = isRequestToAPI(e.request.url);
     let rootRequest = isRequestToAppRoot(e.request.url);
