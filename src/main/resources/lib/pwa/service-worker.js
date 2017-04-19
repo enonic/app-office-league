@@ -3,7 +3,7 @@ const dataCacheName = 'office-league-data-cache-{{version}}';
 const imageCacheName = 'office-league-image-cache-{{version}}';
 const cacheNames = [cacheName, dataCacheName, imageCacheName];
 
-const debugging = true;
+const debugging = false;
 const appUrl = '{{appUrl}}';
 const APIUrl = '{{appUrl}}/api/graphql?etag';
 const homePageUrl = '{{appUrl}}?source=web_app_manifest';
@@ -130,22 +130,16 @@ self.addEventListener('fetch', function (e) {
                             return response;
                         })
                         .catch(function () {
-                            if (rootRequest) {
-                                consoleLog('Network is down. Trying to serve from cache...');
-                                return cache
-                                    .match(e.request, {
-                                        ignoreVary: true
-                                    })
-                                    .then(function (response) {
-                                        consoleLog((response ?
-                                                    'Serving from cache: ' + e.request.url :
-                                                    'No cached response found.'));
-                                        return response;
-                                    });
-                            }
-                            else {
-                                consoleLog('Network is down. Failed to get response from API.');
-                            }
+                            return cache
+                                .match(e.request.url, {
+                                    ignoreVary: true
+                                })
+                                .then(function (response) {
+                                    consoleLog((response ?
+                                                'Serving from cache: ' + e.request.url :
+                                                'No cached response found.'));
+                                    return response;
+                                });
                         });
                 })
         );
@@ -158,7 +152,7 @@ self.addEventListener('fetch', function (e) {
         consoleLog('Image request: ' + e.request.url);
         e.respondWith(
             caches
-                .match(e.request, {
+                .match(e.request.url, {
                     ignoreVary: true
                 })
                 .then(function (response) {
@@ -179,7 +173,6 @@ self.addEventListener('fetch', function (e) {
                                })
                                .catch(function () {
                                    consoleLog('Failed to fetch ' + e.request.url + '. Serving default image.');
-
                                    return getFallbackImage(e.request.url);
                                });
                 })
@@ -209,7 +202,7 @@ self.addEventListener('fetch', function (e) {
                 .catch(function () {
                     if (e.request.method == 'GET') {
                         return caches
-                            .match(e.request, {
+                            .match(e.request.url, {
                                 ignoreVary: true
                             })
                             .then(function (response) {
@@ -234,7 +227,7 @@ self.addEventListener('fetch', function (e) {
     consoleLog('Other request: ' + e.request.url);
     e.respondWith(
         caches
-            .match(e.request, {
+            .match(e.request.url, {
                 ignoreVary: true
             })
             .then(function (response) {
