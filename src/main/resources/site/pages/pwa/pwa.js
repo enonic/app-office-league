@@ -41,7 +41,7 @@ exports.get = function (req) {
         isLive: (req.mode === 'live'),
         siteUrl: (baseHref === '/') ? '' : baseHref,
         baseHref: appBaseUrl + '/',   // trailing slash for relative urls to be correct
-        assetsUrl: portalLib.assetUrl({path: ""}),
+        assetsUrl: appBaseUrl + '/assets',
         loginUrl: portalLib.loginUrl({redirect: appBaseAbsoluteUrl}),
         logoutUrl: portalLib.logoutUrl({redirect: appBaseAbsoluteUrl}),
         idProvider: portalLib.idProviderUrl(),
