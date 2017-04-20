@@ -1,6 +1,7 @@
 var initLib = require('/lib/office-league-init');
 var testDataLib = require('/lib/test-data');
 var maintenanceTaskLib = require('/lib/maintenance-tasks');
+var webhooks = require('/lib/webhooks');
 
 log.info('Office League app started');
 
@@ -16,3 +17,5 @@ if (!app.config['skip-test-data']) {
 }
 
 maintenanceTaskLib.launchGameGCTask();
+
+webhooks.setupWebHooks();
