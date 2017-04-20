@@ -16,7 +16,7 @@ exports.setupWebHooks = function () {
                 return;
             }
 
-            var game = event.data.game;
+            var game = JSON.parse(event.data.game);
             processGameWebhook(game, baseUrl);
         }
     });
