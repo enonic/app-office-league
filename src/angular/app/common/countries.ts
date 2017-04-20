@@ -59,6 +59,7 @@ export class Countries {
         {code: "kh", name: "Cambodia"},
         {code: "cm", name: "Cameroon"},
         {code: "ca", name: "Canada"},
+        {code: "cat", name: "Catalonia"},
         {code: "cv", name: "Cape Verde"},
         {code: "ky", name: "Cayman Islands"},
         {code: "cf", name: "Central African Republic"},
