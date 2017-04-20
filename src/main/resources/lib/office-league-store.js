@@ -1724,6 +1724,8 @@ exports.createGame = function (params) {
         gameNode.gameTeams.push(gameTeamNode);
     }
 
+    notifyGameUpdate(gameNode._id);
+
     return gameNode;
 };
 
