@@ -17,7 +17,7 @@ exports.setupWebHooks = function () {
             }
 
             var game = JSON.parse(event.data.game);
-            processGameWebhook(game, baseUrl);
+            processGameWebhooks(game);
         }
     });
 };
@@ -32,7 +32,7 @@ var processGameWebhooks = function (game) {
 
     for (var u = 0; u < urls.length; u++) {
         try {
-            postWebhook(game, urls[u]);
+            processGameWebhook(game, urls[u]);
         } catch (e) {
             log.warning('Error posting to webhook: ' + urls[u]);
             if (e.printStackTrace) {
