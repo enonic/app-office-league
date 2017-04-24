@@ -150,9 +150,15 @@ export class LeagueProfileComponent
     }
 
     onConfirmPlayerJoin(allow: boolean) {
-        console.log(this.approvePlayer, allow);
         if (allow) {
             this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery,
+                {playerId: this.approvePlayer.id, leagueId: this.league.id}).then(
+                data => {
+                    this.hideModalApprove();
+                    this.refreshData(this.league.name);
+                });
+        } else {
+            this.graphQLService.post(LeagueProfileComponent.denyJoinLeagueRequestQuery,
                 {playerId: this.approvePlayer.id, leagueId: this.league.id}).then(
                 data => {
                     this.hideModalApprove();
@@ -356,6 +362,12 @@ export class LeagueProfileComponent
 
     private static readonly leavePlayerLeagueQuery = `mutation ($playerId: ID!, $leagueId:ID!) {
         leavePlayerLeague(playerId: $playerId, leagueId: $leagueId)
+    }`;
+
+    private static readonly denyJoinLeagueRequestQuery = `mutation ($playerId: ID!, $leagueId:ID!) {
+        denyJoinLeagueRequest(playerId: $playerId, leagueId: $leagueId) {
+            id
+        }
     }`;
 
 }

@@ -24,11 +24,74 @@ exports.sendJoinRequestNotification = function (playerId, leagueId) {
     });
 };
 
+exports.sendDenyJoinRequestNotification = function (playerId, leagueId) {
+    log.info('Deny join request notification email will be sent in the background.');
+
+    taskLib.submit({
+        description: 'Office League Email Sending Task',
+        task: function () {
+            try {
+                log.info('Sending email...');
+                doSendDenyJoinRequestNotification(playerId, leagueId);
+                log.info('Email sent successfully.')
+            } catch (e) {
+                log.warning('Email sending failed: ' + e);
+                if (e.printStackTrace) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    });
+};
+
+var doSendDenyJoinRequestNotification = function (playerId, leagueId) {
+    var from = app.config['mail.from'];
+    if (!from) {
+        log.warning(
+            'Could not send notification. From email not configured. Please add the email with property "mail.from" in com.enonic.xp.mail.cfg');
+        return;
+    }
+
+    var player = storeLib.getPlayerById(playerId);
+    if (!player) {
+        log.warning('Could not send deny join request notification. Player not found: ' + playerId);
+        return;
+    }
+    var league = storeLib.getLeagueById(leagueId);
+    if (!league) {
+        log.warning('Could not send deny join request notification. League not found: ' + leagueId);
+        return;
+    }
+
+    var baseUrl = app.config['officeleague.baseUrl'] || 'http://localhost:8080/portal/draft/office-league/app';
+    var recipient = authLib.getPrincipal(player.userKey);
+    var email = recipient.email;
+    if (!email) {
+        log.warning('Could not send deny join request notification. Cannot find email for admin: ' + admin.name);
+        return;
+    }
+
+    var params = {
+        leagueName: league.name,
+        requesterName: player.name,
+        requesterFullName: player.fullname
+    };
+    var body = mustache.render(resolve('mail/deny.join.request.html'), params);
+
+    email = 'aro@enonic.com';
+    sendEmail({
+        from: 'Office League <' + from + '>',
+        to: player.fullname ? player.fullname + ' <' + email + '>' : email,
+        body: body,
+        subject: 'Office League - Request to join league \'' + league.name + '\' denied'
+    });
+};
+
 var doSendJoinRequestNotification = function (playerId, leagueId) {
     var from = app.config['mail.from'];
     if (!from) {
         log.warning(
-            'Could not send join request notification. From email not configured. Please add the email with property "mail.from" in com.enonic.xp.mail.cfg');
+            'Could not send notification. From email not configured. Please add the email with property "mail.from" in com.enonic.xp.mail.cfg');
         return;
     }
 
@@ -74,7 +137,7 @@ var doSendJoinRequestNotification = function (playerId, leagueId) {
 
         sendEmail({
             from: 'Office League <' + from + '>',
-            to: email,
+            to: admin.fullname ? admin.fullname + ' <' + email + '>' : email,
             body: body,
             subject: 'Office League - Join League Request from \'' + player.name + '\''
         });

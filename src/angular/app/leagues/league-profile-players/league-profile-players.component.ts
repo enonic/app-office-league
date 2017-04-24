@@ -86,9 +86,15 @@ export class LeagueProfilePlayersComponent
     }
 
     onConfirmPlayerJoin(allow: boolean) {
-        console.log(this.approvePlayer, allow);
         if (allow) {
             this.graphQLService.post(LeagueProfilePlayersComponent.joinPlayerLeagueQuery,
+                {playerId: this.approvePlayer.id, leagueId: this.league.id}).then(
+                data => {
+                    this.hideModalApprove();
+                    this.refresh();
+                });
+        } else {
+            this.graphQLService.post(LeagueProfilePlayersComponent.denyJoinLeagueRequestQuery,
                 {playerId: this.approvePlayer.id, leagueId: this.league.id}).then(
                 data => {
                     this.hideModalApprove();
@@ -155,4 +161,9 @@ export class LeagueProfilePlayersComponent
         leavePlayerLeague(playerId: $playerId, leagueId: $leagueId)
     }`;
 
+    private static readonly denyJoinLeagueRequestQuery = `mutation ($playerId: ID!, $leagueId:ID!) {
+        denyJoinLeagueRequest(playerId: $playerId, leagueId: $leagueId) {
+            id
+        }
+    }`;
 }

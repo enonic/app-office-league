@@ -213,6 +213,30 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 return updatedLeaguePlayer;
             }
         },
+        denyJoinLeagueRequest: {
+            type: graphQlObjectTypesLib.leaguePlayerType,
+            args: {
+                leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
+                playerId: graphQlLib.nonNull(graphQlLib.GraphQLID)
+            },
+            data: function (env) {
+                var leagueId = env.args.leagueId;
+                checkDenyJoinLeaguePermissions(leagueId);
+
+                var playerId = env.args.playerId;
+                var leaguePlayer = storeLib.getLeaguePlayerByLeagueIdAndPlayerId(leagueId, playerId);
+                if (leaguePlayer && !leaguePlayer.pending) {
+                    return leaguePlayer;
+                }
+
+                var updatedLeaguePlayer = storeLib.markPlayerLeaguePending(leagueId, playerId, false, true);
+                storeLib.refresh();
+
+                mailLib.sendDenyJoinRequestNotification(playerId, leagueId);
+
+                return updatedLeaguePlayer;
+            }
+        },
         updatePlayerLeagueRating: {
             type: graphQlObjectTypesLib.leaguePlayerType,
             args: {
@@ -505,6 +529,33 @@ var checkRequestJoinLeaguePermissions = function (leagueId) {
     var league = storeLib.getLeagueById(leagueId);
     if (!league) {
         throw "League not found: " + leagueId;
+    }
+};
+
+var checkDenyJoinLeaguePermissions = function (leagueId) {
+    if (isAdmin()) {
+        return;
+    }
+
+    var currentPlayerId = getCurrentPlayerId();
+    if (!currentPlayerId) {
+        throw "League cannot be updated, no logged in user.";
+    }
+
+    var league = storeLib.getLeagueById(leagueId);
+    if (!league) {
+        return;
+    }
+
+    var adminPlayerIds = league.adminPlayerIds ? [].concat(league.adminPlayerIds) : [];
+    var userIsLeagueAdmin = false;
+    adminPlayerIds.forEach(function (adminId) {
+        if (adminId === currentPlayerId) {
+            userIsLeagueAdmin = true;
+        }
+    });
+    if (!userIsLeagueAdmin) {
+        throw "User not authorized to update league.";
     }
 };
 

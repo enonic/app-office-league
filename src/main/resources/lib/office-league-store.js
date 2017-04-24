@@ -2288,9 +2288,10 @@ exports.setPlayerLeagueRating = function (leagueId, playerId, rating) {
  * @param {string} leagueId Id of the league.
  * @param {string} playerId Id of the player.
  * @param {boolean} pending True if the player has requested to join this league.
+ * @param {boolean} inactive True if the player is inactive in this league.
  * @return {LeaguePlayer} Updated leaguePlayer.
  */
-exports.markPlayerLeaguePending = function (leagueId, playerId, pending) {
+exports.markPlayerLeaguePending = function (leagueId, playerId, pending, inactive) {
     var repoConn = newConnection();
 
     var result = repoConn.query({
@@ -2312,7 +2313,8 @@ exports.markPlayerLeaguePending = function (leagueId, playerId, pending) {
             type: TYPE.LEAGUE_PLAYER,
             playerId: playerId,
             leagueId: leagueId,
-            pending: true,
+            pending: !!pending,
+            inactive: !!inactive,
             rating: ratingLib.INITIAL_RATING
         });
         return newLeaguePlayer;
@@ -2323,6 +2325,7 @@ exports.markPlayerLeaguePending = function (leagueId, playerId, pending) {
         editor: function (node) {
             node.inactive = false;
             node.pending = !!pending;
+            node.inactive = !!inactive;
             node._timestamp = valueLib.instant(new Date().toISOString());
             return node;
         }
