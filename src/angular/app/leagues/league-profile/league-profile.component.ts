@@ -8,7 +8,6 @@ import {Game} from '../../../graphql/schemas/Game';
 import {PageTitleService} from '../../services/page-title.service';
 import {Player} from '../../../graphql/schemas/Player';
 import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
-import {Http} from '@angular/http';
 
 @Component({
     selector: 'league-profile',
@@ -22,13 +21,15 @@ export class LeagueProfileComponent
     @Input() league: League;
     playerInLeague: boolean;
     adminInLeague: boolean;
+    joinLeagueRequested: boolean;
     activeGames: Game[] = [];
     nonMembersPlayerIds: string[] = [];
     removePlayer: Player;
     materializeActions = new EventEmitter<string | MaterializeAction>();
     materializeActionsRemove = new EventEmitter<string | MaterializeAction>();
+    materializeActionsPending = new EventEmitter<string | MaterializeAction>();
 
-    constructor(private http: Http, route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
+    constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private router: Router) {
         super(route);
     }
@@ -56,7 +57,7 @@ export class LeagueProfileComponent
         let playerId = this.authService.isAuthenticated() ? this.authService.getUser().playerId : '-1';
 
         const getLeagueParams = {
-            name: leagueName, first: 3, sort: 'rating DESC, name ASC', playerId: playerId,
+            name: leagueName, first: 3, sort: 'pending ASC, rating DESC, name ASC', playerId: playerId,
             activeGameCount: 3, gameCount: 3
         };
         this.graphQLService.post(
@@ -72,7 +73,8 @@ export class LeagueProfileComponent
             return null;
         }
         this.league = League.fromJson(data.league);
-        this.playerInLeague = !!data.league.myLeaguePlayer;
+        this.joinLeagueRequested = !!(data.league.myLeaguePlayer && data.league.myLeaguePlayer.pending);
+        this.playerInLeague = !!data.league.myLeaguePlayer && !this.joinLeagueRequested;
         this.adminInLeague = data.league.isAdmin;
         this.activeGames = data.league.activeGames.map((gameJson) => {
             let game = Game.fromJson(gameJson);
@@ -109,7 +111,7 @@ export class LeagueProfileComponent
     onJoinClicked() {
         if (this.authService.isAuthenticated() && !this.playerInLeague) {
             let playerId = this.authService.getUser().playerId;
-            this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery, {playerId: playerId, leagueId: this.league.id}).then(
+            this.graphQLService.post(LeagueProfileComponent.requestJoinLeagueQuery, {leagueId: this.league.id}).then(
                 data => {
                     this.refreshData(this.league.name);
                 });
@@ -156,6 +158,14 @@ export class LeagueProfileComponent
         this.materializeActionsRemove.emit({action: "modal", params: ['close']});
     }
 
+    public showModalPending(): void {
+        this.materializeActionsPending.emit({action: "modal", params: ['open']});
+    }
+
+    public hideModalPending(): void {
+        this.materializeActionsPending.emit({action: "modal", params: ['close']});
+    }
+
     private static readonly getLeagueQuery = `query ($name: String, $first:Int, $sort: String, $playerId: ID!, $activeGameCount:Int, $gameCount:Int) {
         league(name: $name) {
             id
@@ -165,10 +175,12 @@ export class LeagueProfileComponent
             isAdmin(playerId:$playerId)
             myLeaguePlayer: leaguePlayer(playerId:$playerId) {
                 id
+                pending
             }
             leaguePlayers(first:$first, sort:$sort) {
                 rating
                 ranking
+                pending
                 player {
                     id
                     name
@@ -300,6 +312,12 @@ export class LeagueProfileComponent
                 playerCount
                 teamCount
             }
+        }
+    }`;
+
+    private static readonly requestJoinLeagueQuery = `mutation ($leagueId:ID!) {
+        requestJoinLeague(leagueId: $leagueId) {
+            id
         }
     }`;
 

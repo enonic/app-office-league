@@ -44,7 +44,7 @@ export class LeagueProfilePlayersComponent
         this.graphQLService.post(
             LeagueProfilePlayersComponent.getLeagueQuery,
             {
-                name: this.leagueName, after: after, first: LeagueProfilePlayersComponent.paging, sort: 'rating DESC, name ASC',
+                name: this.leagueName, after: after, first: LeagueProfilePlayersComponent.paging, sort: 'pending ASC, rating DESC, name ASC',
                 playerId: playerId
             },
             data => this.handleLeagueQueryResponse(data)
@@ -93,6 +93,7 @@ export class LeagueProfilePlayersComponent
                     node {
                         rating
                         ranking
+                        pending
                         player {
                             id
                             name

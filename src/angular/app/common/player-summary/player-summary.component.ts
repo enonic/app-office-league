@@ -19,6 +19,7 @@ export class PlayerSummaryComponent
     @Input() rating: number = 0;
     @Input() ranking: number = 0;
     @Input() allowRemove: boolean;
+    @Input() pendingApproval: boolean;
     @Output() removePlayer: EventEmitter<Player> = new EventEmitter<Player>();
     isCurrentPlayer: boolean;
 
@@ -71,11 +72,11 @@ export class PlayerSummaryComponent
     }
 
     rankingText(): string {
-        return RankingHelper.ordinal(this.ranking);
+        return this.pendingApproval ? '-' : RankingHelper.ordinal(this.ranking);
     }
 
     ratingPoints(): string {
-        return String(this.rating);
+        return this.pendingApproval ? '-' : String(this.rating);
     }
 
     onRemoveClicked(event: MouseEvent) {

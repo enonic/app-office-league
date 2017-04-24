@@ -44,8 +44,11 @@
         <div *ngIf="playerInLeague" class="center" (click)="onPlayClicked()">
             <a class="waves-effect waves-light btn global__btn global__btn--play"><i class="material-icons left">play_arrow</i>Play Game</a>
         </div>
-        <div *ngIf="!playerInLeague" class="center" (click)="onJoinClicked()">
+        <div *ngIf="!playerInLeague && !joinLeagueRequested" class="center" (click)="onJoinClicked()">
             <a class="waves-effect waves-light btn global__btn global__btn--play"><i class="material-icons left">stars</i>Join this league</a>
+        </div>
+        <div *ngIf="!playerInLeague && joinLeagueRequested" class="center" (click)="showModalPending()">
+            <a class="waves-effect waves-light btn global__btn global__btn--pending"><i class="material-icons left">more_horiz</i>Waiting for approval</a>
         </div>
     </div>
 
@@ -138,5 +141,18 @@
             <a (click)="onConfirmRemoveClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Remove</a>
         </div>
     </div>
+
+    <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
+         [materializeActions]="materializeActionsPending">
+        <div class="modal-content">
+            <h5 class="center">Join League Requested</h5>
+            <p>A request for joining this league has been sent to the league administrators.
+                You will be notified by email as soon as the petition is resolved.</p>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-action modal-close waves-effect waves-green btn-flat green white-text">Ok</a>
+        </div>
+    </div>
+
 </template>
 

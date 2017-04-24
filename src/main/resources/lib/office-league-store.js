@@ -159,6 +159,7 @@ exports.OFFICE_LEAGUE_COMMENT_EVENT_ID = OFFICE_LEAGUE_COMMENT_EVENT_ID;
  * @property {string} leagueId League id.
  * @property {number} rating Ranking rating for the player in this league.
  * @property {boolean} inactive True if the player is inactive in this league.
+ * @property {boolean} pending True if the player has requested to join this league.
  */
 
 /**
@@ -324,13 +325,22 @@ exports.getLeagueByName = function (name) {
  * @param  {string} leagueId League id.
  * @param  {number} [start=0] First index of the players.
  * @param  {number} [count=10] Number of players to fetch.
+ * @param  {string} [sort] Sort expression.
+ * @param  {boolean} [includePending=false] Include LeaguePlayer with pending=true.
  * @return {LeaguePlayerResponse} League players.
  */
-exports.getLeaguePlayersByLeagueId = function (leagueId, start, count, sort) {
+exports.getLeaguePlayersByLeagueId = function (leagueId, start, count, sort, includePending) {
+    var queryStr;
+    if (includePending) {
+        queryStr = "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND (inactive != 'true')";
+    } else {
+        queryStr = "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND (inactive != 'true') AND (pending != 'true')";
+    }
+
     return query({
         start: start,
         count: count,
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND (inactive != 'true')",
+        query: queryStr,
         sort: sort || "rating DESC, name ASC"
     });
 };
@@ -346,7 +356,7 @@ exports.getLeaguePlayersByPlayerId = function (playerId, start, count, sort) {
     return query({
         start: start,
         count: count,
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "' AND (inactive != 'true')",
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "' AND (inactive != 'true') AND (pending != 'true')",
         sort: sort || "rating DESC, name ASC"
     });
 };
@@ -355,13 +365,19 @@ exports.getLeaguePlayersByPlayerId = function (playerId, start, count, sort) {
  * Retrieve a LeaguePlayer
  * @param  {string} leagueId League id.
  * @param  {string} playerId Player id.
+ * @param  {boolean} [includePending=false] Include LeaguePlayer with pending=true.
  * @return {LeaguePlayer} League player.
  */
-exports.getLeaguePlayerByLeagueIdAndPlayerId = function (leagueId, playerId) {
-    return querySingleHit({
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND playerId='" + playerId +
-               "' AND (inactive != 'true')"
-    });
+exports.getLeaguePlayerByLeagueIdAndPlayerId = function (leagueId, playerId, includePending) {
+    var query;
+    if (includePending) {
+        query = "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND playerId='" + playerId +
+                "' AND ((inactive != 'true') OR (pending = 'true'))";
+    } else {
+        query = "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND playerId='" + playerId +
+                "' AND (inactive != 'true')";
+    }
+    return querySingleHit({query: query});
 };
 
 /**
@@ -848,7 +864,7 @@ exports.getLeaguesByPlayerId = function (playerId, start, count) {
     var result = repoConn.query({
         start: start,
         count: count,
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId = '" + playerId + "' AND (inactive != 'true')"
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId = '" + playerId + "' AND (inactive != 'true') AND (pending != 'true')"
     });
 
     var leaguePlayers = [];
@@ -1076,7 +1092,7 @@ exports.getRankingForPlayerLeague = function (playerId, leagueId) {
     var result = query({
         start: 0,
         count: -1,
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND (inactive != 'true')",
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND (inactive != 'true') AND (pending != 'true')",
         sort: "rating DESC"
     });
 
@@ -1155,7 +1171,7 @@ exports.getPlayerCountByLeagueId = function (leagueId) {
     var queryResult = repoConn.query({
         start: 0,
         count: 0,
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND (inactive != 'true')"
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND (inactive != 'true') AND (pending != 'true')"
     });
     return queryResult.total;
 };
@@ -1814,6 +1830,7 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
             key: existingLeaguePlayer._id,
             editor: function (node) {
                 node.inactive = false;
+                node.pending = false;
                 return node;
             }
         });
@@ -1906,6 +1923,7 @@ exports.leavePlayerLeague = function (leagueId, playerId) {
         key: result.hits[0].id,
         editor: function (node) {
             node.inactive = true;
+            node.pending = false;
             return node;
         }
     });
@@ -2257,6 +2275,53 @@ exports.setPlayerLeagueRating = function (leagueId, playerId, rating) {
         key: result.hits[0].id,
         editor: function (node) {
             node.rating = toInt(rating);
+            node._timestamp = valueLib.instant(new Date().toISOString());
+            return node;
+        }
+    });
+    return leaguePlayerNode;
+};
+
+/**
+ * Set player rating in an existing league.
+ *
+ * @param {string} leagueId Id of the league.
+ * @param {string} playerId Id of the player.
+ * @param {boolean} pending True if the player has requested to join this league.
+ * @return {LeaguePlayer} Updated leaguePlayer.
+ */
+exports.markPlayerLeaguePending = function (leagueId, playerId, pending) {
+    var repoConn = newConnection();
+
+    var result = repoConn.query({
+        start: 0,
+        count: 1,
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND playerId='" + playerId + "' AND leagueId='" + leagueId + "'"
+    });
+
+    if (result.count === 0) {
+        log.info('League player not found for playerId=[' + playerId + '] and leagueId=[' + leagueId + ']');
+
+        var leagueNode = repoConn.get(leagueId);
+        if (!leagueNode || leagueNode.type !== TYPE.LEAGUE) {
+            throw "League not found: " + leagueId;
+        }
+        var newLeaguePlayer = repoConn.create({
+            _parentPath: leagueNode._path + LEAGUE_PLAYERS_REL_PATH,
+            _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
+            type: TYPE.LEAGUE_PLAYER,
+            playerId: playerId,
+            leagueId: leagueId,
+            pending: true,
+            rating: ratingLib.INITIAL_RATING
+        });
+        return newLeaguePlayer;
+    }
+
+    var leaguePlayerNode = repoConn.modify({
+        key: result.hits[0].id,
+        editor: function (node) {
+            node.pending = !!pending;
             node._timestamp = valueLib.instant(new Date().toISOString());
             return node;
         }

@@ -3,11 +3,13 @@ import {Player} from './Player';
 import {League} from './League';
 
 
-export class LeaguePlayer extends Entity {
+export class LeaguePlayer
+    extends Entity {
     rating: number;
     ranking: number;
     player: Player;
     league: League;
+    pending: boolean;
 
     constructor(id: string) {
         super(id);
@@ -17,6 +19,7 @@ export class LeaguePlayer extends Entity {
         let leaguePlayer = new LeaguePlayer(json.id);
         leaguePlayer.rating = json.rating;
         leaguePlayer.ranking = json.ranking;
+        leaguePlayer.pending = json.pending || false;
         leaguePlayer.player = json.player && Player.fromJson(json.player);
         leaguePlayer.league = json.league && League.fromJson(json.league);
         return leaguePlayer;

@@ -80,7 +80,7 @@ exports.playerType = graphQlLib.createObjectType({
             type: graphQlLib.GraphQLString,
             data: function (env) {
                 var user = authLib.getUser();
-                if (user && user.key  === env.source.userKey) {
+                if (user && user.key === env.source.userKey) {
                     return env.source.fullname;
                 } else {
                     return null;
@@ -91,7 +91,7 @@ exports.playerType = graphQlLib.createObjectType({
             type: graphQlLib.GraphQLString,
             data: function (env) {
                 var user = authLib.getUser();
-                if (user && user.key  === env.source.userKey) {
+                if (user && user.key === env.source.userKey) {
                     return user.email;
                 } else {
                     return null;
@@ -543,6 +543,12 @@ exports.leaguePlayerType = graphQlLib.createObjectType({
                 return graphQlUtilLib.toInt(storeLib.getRankingForPlayerLeague(env.source.playerId, env.source.leagueId));
             }
         },
+        pending: {
+            type: graphQlLib.GraphQLBoolean,
+            data: function (env) {
+                return !!env.source.pending;
+            }
+        },
         player: {
             type: exports.playerType,
             data: function (env) {
@@ -706,7 +712,10 @@ exports.leagueType = graphQlLib.createObjectType({
                 sort: graphQlLib.GraphQLString
             },
             data: function (env) {
-                return storeLib.getLeaguePlayersByLeagueId(env.source._id, env.args.offset, env.args.first, env.args.sort).hits;
+                var currentPlayerId = getCurrentPlayerId();
+                var playerIsLeagueAdmin = graphQlUtilLib.toArray(env.source.adminPlayerIds).indexOf(currentPlayerId) > -1;
+                return storeLib.getLeaguePlayersByLeagueId(env.source._id, env.args.offset, env.args.first, env.args.sort,
+                    playerIsLeagueAdmin).hits;
             }
         },
         leaguePlayersConnection: {
@@ -717,8 +726,10 @@ exports.leagueType = graphQlLib.createObjectType({
                 sort: graphQlLib.GraphQLString
             },
             data: function (env) {
+                var currentPlayerId = getCurrentPlayerId();
+                var playerIsLeagueAdmin = graphQlUtilLib.toArray(env.source.adminPlayerIds).indexOf(currentPlayerId) > -1;
                 return storeLib.getLeaguePlayersByLeagueId(env.source._id, env.args.after ? (env.args.after + 1) : 0, env.args.first,
-                    env.args.sort);
+                    env.args.sort, playerIsLeagueAdmin);
             }
         },
         leagueTeams: {
@@ -787,3 +798,12 @@ exports.leagueType = graphQlLib.createObjectType({
         }
     }
 });
+
+var getCurrentPlayerId = function () {
+    var user = authLib.getUser();
+    if (!user) {
+        return null;
+    }
+    var player = storeLib.getPlayerByUserKey(user.key);
+    return player && player._id;
+};

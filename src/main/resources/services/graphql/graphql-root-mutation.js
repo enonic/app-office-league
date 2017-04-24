@@ -189,6 +189,29 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 return env.args.playerId;
             }
         },
+        requestJoinLeague: {
+            type: graphQlObjectTypesLib.leaguePlayerType,
+            args: {
+                leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID)
+            },
+            data: function (env) {
+                var leagueId = env.args.leagueId;
+                checkRequestJoinLeaguePermissions(leagueId);
+
+                var currentPlayerId = getCurrentPlayerId();
+                var leaguePlayer = storeLib.getLeaguePlayerByLeagueIdAndPlayerId(leagueId, currentPlayerId);
+                if (leaguePlayer && leaguePlayer.pending) {
+                    return leaguePlayer;
+                }
+
+                var updatedLeaguePlayer = storeLib.markPlayerLeaguePending(leagueId, currentPlayerId, true);
+                storeLib.refresh();
+
+                mailLib.sendJoinRequestNotification();
+
+                return updatedLeaguePlayer;
+            }
+        },
         updatePlayerLeagueRating: {
             type: graphQlObjectTypesLib.leaguePlayerType,
             args: {
@@ -467,10 +490,21 @@ var checkJoinPlayerLeaguePermissions = function (leagueId) {
             userIsLeagueAdmin = true;
         }
     });
-    // TODO assuming league membership is open for now
-    // if (!userIsLeagueAdmin) {
-    //     throw "User not authorized to update league.";
-    // }
+    if (!userIsLeagueAdmin) {
+        throw "User not authorized to update league.";
+    }
+};
+
+var checkRequestJoinLeaguePermissions = function (leagueId) {
+    var currentPlayerId = getCurrentPlayerId();
+    if (!currentPlayerId) {
+        throw "Cannot request joining league, no logged in user.";
+    }
+
+    var league = storeLib.getLeagueById(leagueId);
+    if (!league) {
+        throw "League not found: " + leagueId;
+    }
 };
 
 var checkLeavePlayerLeaguePermissions = function (leagueId, playerId) {
