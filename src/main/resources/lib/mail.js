@@ -44,6 +44,71 @@ exports.sendDenyJoinRequestNotification = function (playerId, leagueId) {
     });
 };
 
+
+exports.sendAllowJoinRequestNotification = function (playerId, leagueId) {
+    log.info('Allow join request notification email will be sent in the background.');
+
+    taskLib.submit({
+        description: 'Office League Email Sending Task',
+        task: function () {
+            try {
+                log.info('Sending email...');
+                doSendAllowJoinRequestNotification(playerId, leagueId);
+                log.info('Email sent successfully.')
+            } catch (e) {
+                log.warning('Email sending failed: ' + e);
+                if (e.printStackTrace) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    });
+};
+
+var doSendAllowJoinRequestNotification = function (playerId, leagueId) {
+    var from = app.config['mail.from'];
+    if (!from) {
+        log.warning(
+            'Could not send notification. From email not configured. Please add the email with property "mail.from" in com.enonic.xp.mail.cfg');
+        return;
+    }
+
+    var player = storeLib.getPlayerById(playerId);
+    if (!player && !player.userKey) {
+        log.warning('Could not send allow join request notification. Player not found: ' + playerId);
+        return;
+    }
+    var league = storeLib.getLeagueById(leagueId);
+    if (!league) {
+        log.warning('Could not send allow join request notification. League not found: ' + leagueId);
+        return;
+    }
+
+    var baseUrl = app.config['officeleague.baseUrl'] || 'http://localhost:8080/portal/draft/office-league/app';
+    var recipient = authLib.getPrincipal(player.userKey);
+    var email = recipient.email;
+    if (!email) {
+        log.warning('Could not send allow join request notification. Cannot find email for admin: ' + admin.name);
+        return;
+    }
+
+    var params = {
+        leagueName: league.name,
+        requesterName: player.name,
+        requesterFullName: player.fullname,
+        leagueUrl: leagueUrl(baseUrl, league)
+    };
+    var body = mustache.render(resolve('mail/allow.join.request.html'), params);
+
+    email = 'aro@enonic.com';
+    sendEmail({
+        from: 'Office League <' + from + '>',
+        to: player.fullname ? player.fullname + ' <' + email + '>' : email,
+        body: body,
+        subject: 'Office League - Request to join league \'' + league.name + '\' denied'
+    });
+};
+
 var doSendDenyJoinRequestNotification = function (playerId, leagueId) {
     var from = app.config['mail.from'];
     if (!from) {
@@ -53,7 +118,7 @@ var doSendDenyJoinRequestNotification = function (playerId, leagueId) {
     }
 
     var player = storeLib.getPlayerById(playerId);
-    if (!player) {
+    if (!player && !player.userKey) {
         log.warning('Could not send deny join request notification. Player not found: ' + playerId);
         return;
     }
@@ -129,9 +194,8 @@ var doSendJoinRequestNotification = function (playerId, leagueId) {
             recipientFullName: admin.fullname,
             requesterName: player.name,
             requesterFullName: player.fullname,
-            requesterProfileUrl: baseUrl + '/players/' + player.name,
-            allowRequestUrl: baseUrl + '/action/allow-join-request?id=' + player._id,
-            denyRequestUrl: baseUrl + '/action/deny-join-request?id=' + player._id
+            requesterProfileUrl: playerUrl(baseUrl, player),
+            leaguePlayersUrl: leaguePlayersUrl(baseUrl, league)
         };
         var body = mustache.render(resolve('mail/join.request.html'), params);
 
@@ -150,6 +214,7 @@ var sendEmail = function (params) {
     var from = params.from;
     var to = params.to;
     var body = params.body;
+    log.info('Send email: \r\n' + body);
 
     var sendResult = mail.send({
         subject: subject,
@@ -157,4 +222,16 @@ var sendEmail = function (params) {
         to: to,
         body: body
     });
+};
+
+var leagueUrl = function (baseUrl, league) {
+    return baseUrl + '/leagues/' + encodeURIComponent(league.name)
+};
+
+var leaguePlayersUrl = function (baseUrl, league) {
+    return baseUrl + '/leagues/' + encodeURIComponent(league.name) + '/players'
+};
+
+var playerUrl = function (baseUrl, player) {
+    return baseUrl + '/players/' + encodeURIComponent(player.name)
 };

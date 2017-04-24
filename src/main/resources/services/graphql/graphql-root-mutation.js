@@ -173,6 +173,9 @@ exports.rootMutationType = graphQlLib.createObjectType({
 
                 var createdLeaguePlayer = storeLib.joinPlayerLeague(env.args.leagueId, env.args.playerId, env.args.rating);
                 storeLib.refresh();
+
+                mailLib.sendAllowJoinRequestNotification(env.args.playerId, env.args.leagueId);
+
                 return createdLeaguePlayer;
             }
         },
