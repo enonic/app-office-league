@@ -9,9 +9,6 @@ const appUrl = '{{appUrl}}';
 const APIUrl = '{{appUrl}}/api/graphql?etag';
 const homePageUrl = '{{appUrl}}?source=web_app_manifest';
 const staticAssets = [
-    '{{appUrl}}/',
-    '{{appUrl}}',
-    homePageUrl,
     '{{appUrl}}/manifest.json',
     '{{assetUrl}}/css/critical.css',
     '{{assetUrl}}/css/styles.css',
@@ -29,6 +26,10 @@ const staticAssets = [
     '{{assetUrl}}/js/vendor.js',
     'https://fonts.googleapis.com/css?family=Roboto',
     offlineUrl
+];
+const userDependantAssets = [
+    '{{appUrl}}/',
+    homePageUrl
 ];
 const dynamicAssets = [
     '{{assetUrl}}/fonts/',
@@ -96,13 +97,26 @@ self.addEventListener('install', function (e) {
     e.waitUntil(
         caches.open(cacheName).then(function (cache) {
             consoleLog('Caching App Shell');
+
+            let userDependantAssetsPromise = Promise.all(userDependantAssets.map(
+                    function (userDependantAsset) {
+                        consoleLog(userDependantAsset)
+                        return fetch(userDependantAsset, {credentials: 'include'})
+                            .then(function (response) {
+                                cache.put(userDependantAsset, response.clone());
+                                return response;
+                            });
+                    })
+            );
+
             let cacheAssets = staticAssets.concat(imageUrls.map(u => '{{appUrl}}' + u + defaultImagePostfix));
             if (debugging) {
                 console.group();
                 cacheAssets.forEach(f => consoleLog(f));
                 console.groupEnd();
             }
-            return cache.addAll(cacheAssets);
+            return Promise.all([userDependantAssetsPromise, cache.addAll(cacheAssets)]);
+
         }).catch(function (err) {
             console.log(err);
         })
@@ -126,32 +140,38 @@ self.addEventListener('activate', function (e) {
 
 self.addEventListener('fetch', function (e) {
 
-    let apiRequest = isRequestToAPI(e.request.url);
-    let rootRequest = isRequestToAppRoot(e.request.url);
+    let requestUrl = e.request.url;
+    let apiRequest = isRequestToAPI(requestUrl);
+    let rootRequest = isRequestToAppRoot(requestUrl);
     if (apiRequest || rootRequest) {
+
+        // /app and /app/ should be cached under a same and unique URL
+        if (requestUrl.endsWith(appUrl)) {
+            requestUrl = appUrl + '/';
+        }
 
         // Requests to API and app root will go Network first.
         // We will not try to get API responses from the cache here - it will be done in the API
         // service class, otherwise it won't be able to tell cached data from the fresh one.
         // For requests to the root we will try to fall back to Cache/static page if network is down.
-        consoleLog('API or root request: ' + e.request.url);
+        consoleLog('API or root request: ' + requestUrl);
         e.respondWith(
             caches.open(apiRequest ? dataCacheName : cacheName)
                 .then(function (cache) {
                     return fetch(e.request)
                         .then(function (response) {
-                            consoleLog('Fetched and cached ' + e.request.url);
-                            cache.put(e.request.url, response.clone());
+                            consoleLog('Fetched and cached ' + requestUrl);
+                            cache.put(requestUrl, response.clone());
                             return response;
                         })
                         .catch(function () {
                             return cache
-                                .match(e.request.url, {
+                                .match(requestUrl, {
                                     ignoreVary: true
                                 })
                                 .then(function (response) {
                                     consoleLog((response ?
-                                                'Serving from cache: ' + e.request.url :
+                                                'Serving from cache: ' + requestUrl :
                                                 'No cached response found.'));
                                     return response;
                                 });
@@ -161,34 +181,34 @@ self.addEventListener('fetch', function (e) {
         return;
     }
 
-    if (isRequestToImage(e.request.url)) {
+    if (isRequestToImage(requestUrl)) {
 
         // Requests to images will go Cache first, then Network, with fallback to default image.
-        consoleLog('Image request: ' + e.request.url);
+        consoleLog('Image request: ' + requestUrl);
         e.respondWith(
             caches
-                .match(e.request.url, {
+                .match(requestUrl, {
                     ignoreVary: true
                 })
                 .then(function (response) {
                     if (response) {
-                        consoleLog('Serving from cache: ' + e.request.url);
+                        consoleLog('Serving from cache: ' + requestUrl);
                     }
                     return response ||
                            fetch(e.request)
                                .then(function (response) {
-                                   consoleLog('Fetched and cached new image: ' + e.request.url);
+                                   consoleLog('Fetched and cached new image: ' + requestUrl);
                                    return caches
                                        .open(imageCacheName)
                                        .then(function (cache) {
-                                           cache.put(e.request.url, response.clone());
+                                           cache.put(requestUrl, response.clone());
 
                                            return response;
                                        });
                                })
                                .catch(function () {
-                                   consoleLog('Failed to fetch ' + e.request.url + '. Serving default image.');
-                                   return getFallbackImage(e.request.url);
+                                   consoleLog('Failed to fetch ' + requestUrl + '. Serving default image.');
+                                   return getFallbackImage(requestUrl);
                                });
                 })
         );
@@ -196,11 +216,11 @@ self.addEventListener('fetch', function (e) {
         return;
     }
 
-    if (isRequestToAppPage(e.request.url)) {
+    if (isRequestToAppPage(requestUrl)) {
 
         // Requests to application pages will go Network first, then Cache.
         // If network is down we will serve the Offline page.
-        consoleLog('Request to application page: ' + e.request.url);
+        consoleLog('Request to application page: ' + requestUrl);
         e.respondWith(
             fetch(e.request)
                 .then(function (response) {
@@ -208,8 +228,8 @@ self.addEventListener('fetch', function (e) {
                     return caches
                         .open(cacheName)
                         .then(function (cache) {
-                            consoleLog('Fetched and cached ' + e.request.url);
-                            cache.put(e.request.url, response.clone());
+                            consoleLog('Fetched and cached ' + requestUrl);
+                            cache.put(requestUrl, response.clone());
 
                             return response;
                         });
@@ -217,12 +237,12 @@ self.addEventListener('fetch', function (e) {
                 .catch(function () {
                     if (e.request.method == 'GET') {
                         return caches
-                            .match(e.request.url, {
+                            .match(requestUrl, {
                                 ignoreVary: true
                             })
                             .then(function (response) {
                                 consoleLog((response ?
-                                            'Serving from cache: ' + e.request.url :
+                                            'Serving from cache: ' + requestUrl :
                                             'No cached response found. Serving offline page...'));
                                 return response || getFallbackPage();
                             });
@@ -239,22 +259,22 @@ self.addEventListener('fetch', function (e) {
 
     // Requests to App Shell will go Cache first, with fallback to Network only.
     // Dynamic assets (with hash in URL) will be cached on the fly.   
-    consoleLog('Other request: ' + e.request.url);
+    consoleLog('Other request: ' + requestUrl);
     e.respondWith(
         caches
-            .match(e.request.url, {
+            .match(requestUrl, {
                 ignoreVary: true
             })
             .then(function (response) {
-                consoleLog((response ? 'Serving from cache' : 'Fetching from the server') + ': ' + e.request.url);
+                consoleLog((response ? 'Serving from cache' : 'Fetching from the server') + ': ' + requestUrl);
                 return response ||
                        fetch(e.request)
                            .then(function (response) {
-                               if (isRequestToDynamicAsset(e.request.url)) {
+                               if (isRequestToDynamicAsset(requestUrl)) {
                                    let clonedResponse = response.clone();
-                                   consoleLog('Caching dynamic asset: ' + e.request.url);
+                                   consoleLog('Caching dynamic asset: ' + requestUrl);
                                    caches.open(cacheName).then(function (cache) {
-                                       cache.put(e.request.url, clonedResponse);
+                                       cache.put(requestUrl, clonedResponse);
                                    });
                                }
                                return response;

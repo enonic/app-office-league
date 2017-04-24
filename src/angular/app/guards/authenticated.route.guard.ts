@@ -9,10 +9,11 @@ export class AuthenticatedRouteGuard implements CanActivate {
     }
 
     canActivate() {
-        if (!this.authService.isAuthenticated()) {
+        if (navigator.onLine && !this.authService.isAuthenticated()) {
             this.authService.login();
             return false;
         }
+        //TODO Redirect to leagues if offline and unauth
         return true;
     }
 
