@@ -4,6 +4,7 @@ var graphQlObjectTypesLib = require('./graphql-object-types');
 var graphQlInputTypesLib = require('./graphql-input-types');
 var storeLib = require('office-league-store');
 var authLib = require('/lib/xp/auth');
+var mailLib = require('/lib/mail');
 
 exports.rootMutationType = graphQlLib.createObjectType({
     name: 'Mutation',

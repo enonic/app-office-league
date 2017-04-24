@@ -25,8 +25,10 @@ export class LeagueProfileComponent
     activeGames: Game[] = [];
     nonMembersPlayerIds: string[] = [];
     removePlayer: Player;
+    approvePlayer: Player;
     materializeActions = new EventEmitter<string | MaterializeAction>();
     materializeActionsRemove = new EventEmitter<string | MaterializeAction>();
+    materializeActionsApprove = new EventEmitter<string | MaterializeAction>();
     materializeActionsPending = new EventEmitter<string | MaterializeAction>();
 
     constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
@@ -133,6 +135,11 @@ export class LeagueProfileComponent
         this.showModalRemove();
     }
 
+    onApprovePlayerJoin(player: Player) {
+        this.approvePlayer = player;
+        this.showModalApprove();
+    }
+
     onConfirmRemoveClicked() {
         this.graphQLService.post(LeagueProfileComponent.leavePlayerLeagueQuery,
             {playerId: this.removePlayer.id, leagueId: this.league.id}).then(
@@ -140,6 +147,18 @@ export class LeagueProfileComponent
                 this.hideModalRemove();
                 this.refreshData(this.league.name);
             });
+    }
+
+    onConfirmPlayerJoin(allow: boolean) {
+        console.log(this.approvePlayer, allow);
+        if (allow) {
+            this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery,
+                {playerId: this.approvePlayer.id, leagueId: this.league.id}).then(
+                data => {
+                    this.hideModalApprove();
+                    this.refreshData(this.league.name);
+                });
+        }
     }
 
     showModal(): void {
@@ -156,6 +175,14 @@ export class LeagueProfileComponent
 
     public hideModalRemove(): void {
         this.materializeActionsRemove.emit({action: "modal", params: ['close']});
+    }
+
+    public showModalApprove(): void {
+        this.materializeActionsApprove.emit({action: "modal", params: ['open']});
+    }
+
+    public hideModalApprove(): void {
+        this.materializeActionsApprove.emit({action: "modal", params: ['close']});
     }
 
     public showModalPending(): void {

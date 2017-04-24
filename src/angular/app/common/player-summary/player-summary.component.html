@@ -6,10 +6,11 @@
         <div class="player-summary__ranking" *ngIf="ranking > 0">{{ranking}}</div>
         <div class="player-summary__ranking" *ngIf="pendingApproval">&mdash;</div>
         <img src="{{player.imageUrl}}?size=42" alt="{{player.name}}" class="player-summary__avatar">
-        <div class="player-summary__name">{{player.name}}</div>
+        <div class="player-summary__name">{{player.name}}<sup>{{pendingApproval?' (Pending approval)':''}}</sup></div>
         <div class="player-summary__rating" *ngIf="ratingPoints() > 0">{{ratingPoints()}}</div>
         <div class="player-summary__rating" *ngIf="pendingApproval"></div>
-        <a *ngIf="allowRemove" class="player-summary__remove" [class.hide-remove]="isCurrentPlayer" (click)="onRemoveClicked($event)"><i class="material-icons">highlight_off</i></a>
+        <a *ngIf="allowRemove && !pendingApproval" class="player-summary__remove" [class.hide-remove]="isCurrentPlayer" (click)="onRemoveClicked($event)"><i class="material-icons">highlight_off</i></a>
+        <a *ngIf="pendingApproval" class="player-summary__remove" (click)="onApproveClicked($event)"><i class="material-icons">live_help</i></a>
         <!-- <div class="primary">
              <span class="title">{{player.name}}</span>&lt;!&ndash;
              <p *ngIf="player.description" class="grey-text darken-3">{{player.description}}</p>&ndash;&gt;

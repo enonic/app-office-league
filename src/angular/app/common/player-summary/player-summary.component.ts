@@ -21,6 +21,7 @@ export class PlayerSummaryComponent
     @Input() allowRemove: boolean;
     @Input() pendingApproval: boolean;
     @Output() removePlayer: EventEmitter<Player> = new EventEmitter<Player>();
+    @Output() approvePlayer: EventEmitter<Player> = new EventEmitter<Player>();
     isCurrentPlayer: boolean;
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private authService: AuthService) {
@@ -83,5 +84,11 @@ export class PlayerSummaryComponent
         event.preventDefault();
         event.stopPropagation();
         this.removePlayer.emit(this.player);
+    }
+
+    onApproveClicked(event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.approvePlayer.emit(this.player);
     }
 }

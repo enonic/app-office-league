@@ -18,6 +18,7 @@ export class LeaguePlayerListComponent
     @Input() seeMoreText: string = 'See more';
     @Input() allowRemove: boolean;
     @Output() removePlayer: EventEmitter<Player> = new EventEmitter<Player>();
+    @Output() approvePlayer: EventEmitter<Player> = new EventEmitter<Player>();
 
     constructor(route: ActivatedRoute, router: Router) {
         super(route, router);
@@ -36,5 +37,9 @@ export class LeaguePlayerListComponent
 
     onRemovePlayer(player: Player) {
         this.removePlayer.emit(player);
+    }
+
+    onApprovePlayer(player: Player) {
+        this.approvePlayer.emit(player);
     }
 }

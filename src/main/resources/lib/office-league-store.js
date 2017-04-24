@@ -2321,6 +2321,7 @@ exports.markPlayerLeaguePending = function (leagueId, playerId, pending) {
     var leaguePlayerNode = repoConn.modify({
         key: result.hits[0].id,
         editor: function (node) {
+            node.inactive = false;
             node.pending = !!pending;
             node._timestamp = valueLib.instant(new Date().toISOString());
             return node;

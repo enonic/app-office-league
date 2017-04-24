@@ -79,7 +79,8 @@
                             [leaguePlayers]="league.leaguePlayers"
                             [detailsPath]="['leagues', league.name.toLowerCase(), 'players']"
                             [seeMoreText]="'See full player ranking'"
-                            [allowRemove]="adminInLeague" (removePlayer)="onRemovePlayer($event)"></league-player-list>
+                            [allowRemove]="adminInLeague" (removePlayer)="onRemovePlayer($event)"
+                            (approvePlayer)="onApprovePlayerJoin($event)"></league-player-list>
     </div>
 
     <div class="row">
@@ -139,6 +140,18 @@
         <div class="modal-footer">
             <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
             <a (click)="onConfirmRemoveClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Remove</a>
+        </div>
+    </div>
+    <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
+         [materializeActions]="materializeActionsApprove">
+        <div class="modal-content">
+            <h5 class="center">Join League Request</h5>
+            <p>Player '<strong>{{approvePlayer?.name}}</strong>' has requested to join this league (<strong>{{league.name}}</strong>).</p>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
+            <a (click)="onConfirmPlayerJoin(true)" class="modal-action waves-effect btn-flat green white-text league-profile__allow">Allow</a>
+            <a (click)="onConfirmPlayerJoin(false)" class="modal-action waves-effect btn-flat red white-text">Deny</a>
         </div>
     </div>
 
