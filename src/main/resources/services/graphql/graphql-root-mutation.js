@@ -208,7 +208,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 var updatedLeaguePlayer = storeLib.markPlayerLeaguePending(leagueId, currentPlayerId, true);
                 storeLib.refresh();
 
-                mailLib.sendJoinRequestNotification();
+                mailLib.sendJoinRequestNotification(currentPlayerId, leagueId);
 
                 return updatedLeaguePlayer;
             }
