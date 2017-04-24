@@ -3,17 +3,16 @@ var mustache = require('/lib/xp/mustache');
 var authLib = require('/lib/xp/auth');
 var version = (Date.now() / 1000).toFixed();
 
-exports.get = function(req) {
+exports.get = function (req) {
     var sitePath = portalLib.getSite()._path;
     var siteUrl = portalLib.pageUrl({path: sitePath});
     var user = authLib.getUser();
 
     siteUrl = (siteUrl == '/') ? '' : siteUrl;
-    
+
     var params = {
-        siteUrl: siteUrl + '/',
         appUrl: siteUrl + '/app',
-        assetUrl : siteUrl + '/app/assets',
+        assetUrl: siteUrl + '/app/assets',
         version: version,
         userKey: user ? user.key : ''
     };
@@ -22,9 +21,6 @@ exports.get = function(req) {
 
     return {
         body: res,
-        contentType: 'application/javascript',
-        headers: {
-            'Service-Worker-Allowed': (siteUrl == '/' ? '' : siteUrl)
-        }
+        contentType: 'application/javascript'
     };
 };

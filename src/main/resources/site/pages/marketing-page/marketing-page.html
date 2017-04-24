@@ -31,27 +31,14 @@
     </main>
 
 
-
 </div>
 <footer class="marketing__footer">
     <div class="container">
-        Office League is 100% open source, built with <a href="https://angular.io/">Angular2</a> and <a href="http://graphql.org/">GraphQL</a> and powered by
+        Office League is 100% open source, built with <a href="https://angular.io/">Angular2</a> and <a
+            href="http://graphql.org/">GraphQL</a> and powered by
         <a href="https://enonic.com/developer-tour">Enonic XP</a>
     </div>
 </footer>
 
 </body>
-<script th:inline="javascript">
-    var live = /*[[${isLive}]]*/false;
-    var siteUrl = /*[[${siteUrl}]]*/"";
-    if (live && 'serviceWorker' in navigator) {
-        navigator.serviceWorker
-                .register('./service-worker.js', {scope: siteUrl})
-                .then(function (registration) {
-                    console.log('Service Worker registered with scope ' + registration.scope);
-                }, function () {
-                    console.log('Service Worker registration failure.');
-                });
-    }
-</script>
 </html>

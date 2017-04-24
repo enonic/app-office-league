@@ -27,7 +27,7 @@
     </mapping>
 
     <mapping controller="/site/pages/offline/offline.js">
-      <pattern>/offline</pattern>
+      <pattern>/app/offline</pattern>
     </mapping>
 
     <!-- mappings for routes handled in Angular -->
