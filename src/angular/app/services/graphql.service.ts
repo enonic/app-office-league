@@ -82,6 +82,10 @@ export class GraphQLService {
     }
 
     private handleError(error: Response | any) {
+        if (!navigator.onLine) {
+            return Observable.empty<Response>();
+        }
+        
         let errMsg: string;
         if (error instanceof Response) {
             const body = error.json() || '';

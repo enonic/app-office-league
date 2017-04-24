@@ -11,14 +11,22 @@ const homePageUrl = '{{appUrl}}?source=web_app_manifest';
 const staticAssets = [
     '{{appUrl}}/',
     '{{appUrl}}',
-    '{{siteUrl}}manifest.json',
+    homePageUrl,
+    '{{appUrl}}/manifest.json',
     '{{assetUrl}}/css/critical.css',
+    '{{assetUrl}}/css/styles.css',
     '{{assetUrl}}/img/office-league-logo.svg',
     '{{assetUrl}}/img/office-league-loader.svg',
     '{{assetUrl}}/img/logo.svg',
     '{{assetUrl}}/icons/apple-touch-icon.png',
     '{{assetUrl}}/icons/favicon-16x16.png',
     '{{assetUrl}}/icons/favicon-32x32.png',
+    '{{assetUrl}}/js/app.js',
+    '{{assetUrl}}/js/common.js',
+    '{{assetUrl}}/js/critical.js',
+    '{{assetUrl}}/js/polyfills.js',
+    '{{assetUrl}}/js/styles.js',
+    '{{assetUrl}}/js/vendor.js',
     'https://fonts.googleapis.com/css?family=Roboto',
     offlineUrl
 ];

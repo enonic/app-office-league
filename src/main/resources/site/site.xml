@@ -56,7 +56,7 @@
       <pattern>/app/team-create</pattern>
     </mapping>
     <mapping controller="/lib/pwa/manifest-controller.js">
-      <pattern>/manifest.json</pattern>
+      <pattern>/app/manifest.json</pattern>
     </mapping>
     <mapping controller="/lib/pwa/favicon-controller.js">
       <pattern>/favicon.ico</pattern>
