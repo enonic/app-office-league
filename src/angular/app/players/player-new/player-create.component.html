@@ -6,6 +6,13 @@
         <div class="card-content blue-grey-text">
             <form [formGroup]="playerForm">
                 <div class="row">
+                    <div class="col s12">
+                        <i class="material-icons prefix">email</i>
+                        <label class="player-email__label">Email</label>
+                        <div class="player-email">{{email}}</div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="input-field col s12">
                         <i class="material-icons prefix">fingerprint</i>
                         <input id="name" type="text" formControlName="name"
