@@ -12,7 +12,7 @@ const staticAssets = [
     '{{appUrl}}/',
     '{{appUrl}}',
     homePageUrl,
-    '{{siteUrl}}manifest.json',
+    '{{appUrl}}/manifest.json',
     '{{assetUrl}}/css/critical.css',
     '{{assetUrl}}/css/styles.css',
     '{{assetUrl}}/img/office-league-logo.svg',
