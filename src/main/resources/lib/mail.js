@@ -100,7 +100,6 @@ var doSendAllowJoinRequestNotification = function (playerId, leagueId) {
     };
     var body = mustache.render(resolve('mail/allow.join.request.html'), params);
 
-    email = 'aro@enonic.com';
     sendEmail({
         from: 'Office League <' + from + '>',
         to: player.fullname ? player.fullname + ' <' + email + '>' : email,
@@ -143,7 +142,6 @@ var doSendDenyJoinRequestNotification = function (playerId, leagueId) {
     };
     var body = mustache.render(resolve('mail/deny.join.request.html'), params);
 
-    email = 'aro@enonic.com';
     sendEmail({
         from: 'Office League <' + from + '>',
         to: player.fullname ? player.fullname + ' <' + email + '>' : email,
