@@ -1846,7 +1846,8 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
         type: TYPE.LEAGUE_PLAYER,
         playerId: playerId,
         leagueId: leagueId,
-        rating: rating
+        rating: rating,
+        pending: false
     });
 
     // set player teams in league as active
