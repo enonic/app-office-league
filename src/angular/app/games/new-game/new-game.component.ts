@@ -15,8 +15,7 @@ import {RankingService} from '../../services/ranking.service';
     templateUrl: 'new-game.component.html',
     styleUrls: ['new-game.component.less']
 })
-export class NewGameComponent
-    implements OnInit {
+export class NewGameComponent implements OnInit {
 
     leagueId: string;
 
@@ -28,7 +27,7 @@ export class NewGameComponent
     selectedPlayerIds: string[] = [];
 
     @ViewChildren(NewGamePlayerComponent)
-    playerCmps: QueryList<NewGamePlayerComponent>;
+        playerCmps: QueryList<NewGamePlayerComponent>;
 
     league: League;
     title: string;
@@ -57,7 +56,7 @@ export class NewGameComponent
             this.graphQLService.post(
                 NewGameComponent.getPlayerLeagueQuery,
                 {playerId: playerId, leagueId: this.leagueId},
-                data => this.handlePlayerLeagueQueryResponse(data)
+                    data => this.handlePlayerLeagueQueryResponse(data)
             );
         }
     }
@@ -112,44 +111,25 @@ export class NewGameComponent
         if (this.shuffleDisabled) {
             return;
         }
-        this.shuffleCount = 5;
-        this.shuffleStep();
+        this.shuffle(10);
     }
-
-    private shuffleStep() {
-        this.shuffleActions = {};
-
-        while (Object.keys(this.shuffleActions).length === 0) {
-            let playerCmps: NewGamePlayerComponent[] = this.playerCmps.toArray();
-
-            // first calculate positions without updating them to not interfere the calculations
-            this.playerCmps.forEach((cmpFrom, i) => {
-                let cmpTo = this.randomPlayerCmp(playerCmps);
-                if (cmpTo != cmpFrom) {
-                    this.shuffleActions[cmpFrom.player.id] = {
-                        from: cmpFrom,
-                        to: cmpTo,
-                        player: cmpFrom.player,
-                        side: cmpTo.sideClass,
-                        done: false,
-                    };
-                }
-            });
-        }
-
-        // then apply calculated positions
-        Object.keys(this.shuffleActions).forEach(playerId => {
-            let action = this.shuffleActions[playerId];
-            action.from.setPosition(action.to.getPosition());
-            action.from.sideClass = action.side;
-        });
-
-        this.shuffleDisabled = (Object.keys(this.shuffleActions).length > 0) || (this.shuffleCount > 0);
+    
+    private shuffle(count: number = 1) {
+        let players: Player[] = [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2];
+        this.bluePlayer1 = this.randomPlayer(players);
+        this.bluePlayer2 = this.randomPlayer(players);
+        this.redPlayer1 = this.randomPlayer(players);
+        this.redPlayer2 = this.randomPlayer(players);
         this.updatePlayerSelectionState();
+        
+        if (count > 1) {
+            setTimeout(() => this.shuffle(count - 1), 500);
+            
+        }        
     }
 
-    private randomPlayerCmp(playerCmps: NewGamePlayerComponent[]): NewGamePlayerComponent {
-        return playerCmps.splice(Math.floor(Math.random() * playerCmps.length), 1)[0];
+    private randomPlayer(players: Player[]) {
+        return players.splice(Math.floor(Math.random() * players.length), 1)[0];
     }
 
     onPlayerSelected(position: 'blue1' | 'blue2' | 'red1' | 'red2', p: Player) {
@@ -172,36 +152,6 @@ export class NewGameComponent
         }
     }
 
-    onPlayerAnimationFinished(fromCmp: NewGamePlayerComponent) {
-        let action = this.shuffleActions[fromCmp.player.id];
-        action.done = true;
-
-        if (this.areAllActionFinished()) {
-            Object.keys(this.shuffleActions).forEach(playerId => {
-                action = this.shuffleActions[playerId];
-
-                action.to.setPlayer(action.player);
-                action.to.sideClass = action.side;
-
-                action.from.resetPosition(false);
-            });
-
-            delete this.shuffleActions;
-
-            this.shuffleCount = this.shuffleCount <= 0 ? 0 : this.shuffleCount - 1;
-            if (this.shuffleCount > 0) {
-                setTimeout(() => this.shuffleStep(), 0);
-            } else {
-                this.shuffleDisabled = false;
-                this.updatePlayerSelectionState();
-            }
-        }
-    }
-
-    private areAllActionFinished(): boolean {
-        return Object.keys(this.shuffleActions).every(playerId => this.shuffleActions[playerId].done);
-    }
-
     private createGame(): Promise<string> {
         let players = [this.bluePlayer1, this.redPlayer1, this.bluePlayer2, this.redPlayer2].filter((p) => !!p).map((p) => {
             return {"playerId": p.id, "side": ( p === this.bluePlayer1 || p === this.bluePlayer2 ? 'blue' : 'red')};
@@ -216,7 +166,7 @@ export class NewGameComponent
             GamePlayComponent.createGameMutation,
             createGameParams
         ).then(
-            data => {
+                data => {
                 console.log('Game created', data);
                 return data.createGame.id;
             });

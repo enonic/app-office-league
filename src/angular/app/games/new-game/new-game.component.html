@@ -15,14 +15,12 @@
 
             <new-game-player [player]="bluePlayer1" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
                              [sideClass]="'side-blue'"
-                             (animationFinished)="onPlayerAnimationFinished($event)"
                              (playerSelected)="onPlayerSelected('blue1', $event)" class="new-game__player"></new-game-player>
 
             <span [class.invisible]="!expectedScoreBlue || !expectedScoreRed" class="new-game__expected-score">{{expectedScoreBlue}}</span>
 
             <new-game-player [player]="bluePlayer2" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
                              [sideClass]="'side-blue'"
-                             (animationFinished)="onPlayerAnimationFinished($event)"
                              (playerSelected)="onPlayerSelected('blue2', $event)" class="new-game__player" [hidden]="!teamMode"></new-game-player>
 
         </div>
@@ -33,48 +31,15 @@
 
             <new-game-player [player]="redPlayer1" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
                              [sideClass]="'side-red'"
-                             (animationFinished)="onPlayerAnimationFinished($event)"
                              (playerSelected)="onPlayerSelected('red1', $event)" class="new-game__player"></new-game-player>
             <span [class.invisible]="!expectedScoreBlue || !expectedScoreRed" class="new-game__expected-score">{{expectedScoreRed}}</span>
 
             <new-game-player [player]="redPlayer2" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
                              [sideClass]="'side-red'"
-                             (animationFinished)="onPlayerAnimationFinished($event)"
                              (playerSelected)="onPlayerSelected('red2', $event)" class="new-game__player" [hidden]="!teamMode"></new-game-player>
 
         </div>
     </div>
-
-
-    <!--<div class="col s12 participants">
-        <div class="side side-blue">
-
-            <new-game-player [player]="bluePlayer1" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
-                             [sideClass]="'side-blue'"
-                             (animationFinished)="onPlayerAnimationFinished($event)"
-                             (playerSelected)="onPlayerSelected('blue1', $event)"></new-game-player>
-
-            <new-game-player [player]="bluePlayer2" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
-                             [sideClass]="'side-blue'"
-                             (animationFinished)="onPlayerAnimationFinished($event)"
-                             (playerSelected)="onPlayerSelected('blue2', $event)"></new-game-player>
-
-        </div>
-        <h4 class="center grey-text text-darken-3 vs">VS</h4>
-        <div class="side side-red">
-
-            <new-game-player [player]="redPlayer1" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
-                             [sideClass]="'side-red'"
-                             (animationFinished)="onPlayerAnimationFinished($event)"
-                             (playerSelected)="onPlayerSelected('red1', $event)"></new-game-player>
-
-            <new-game-player [player]="redPlayer2" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
-                             [sideClass]="'side-red'"
-                             (animationFinished)="onPlayerAnimationFinished($event)"
-                             (playerSelected)="onPlayerSelected('red2', $event)"></new-game-player>
-
-        </div>
-    </div>-->
 
 
 </div>
@@ -89,7 +54,7 @@
 </div>
 
 <div class="row center">
-    <a class="waves-effect waves-light center btn global__btn--shuffle" (click)="onShuffleClicked()"
+    <a *ngIf="teamMode" class="waves-effect waves-light center btn global__btn--shuffle" (click)="onShuffleClicked()"
        [class.disabled]="shuffleDisabled">Shuffle</a>
 </div>
 

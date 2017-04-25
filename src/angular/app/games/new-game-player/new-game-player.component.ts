@@ -16,78 +16,16 @@ export class NewGamePlayerComponent {
     @Input() selectedPlayerIds: string[];
     @Input() sideClass: string;
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
-    @Output() animationFinished: EventEmitter<NewGamePlayerComponent>;
 
     playerSelectEnabled: boolean;
     public modalTitle: string = 'Select a player';
 
-    @HostBinding('style.left.px')
-    public x: number = 0;
-
-    @HostBinding('style.top.px')
-    public y: number = 0;
-
-    @HostBinding('class.animate')
-    public animate: boolean = true;
-    private animatedProperties: string[] = [];
-
-
-    @HostListener('transitionend', ['$event'])
-    public onTransitionFinished(event: TransitionEvent) {
-        if (this.animatedProperties.length == 0) {
-            return;
-        }
-        this.animatedProperties = this.animatedProperties.filter(prop => {
-            return prop !== event.propertyName;
-        });
-        // all properties finished animation
-        if (this.animatedProperties.length == 0) {
-            this.animationFinished.emit(this);
-        }
-    }
-
     constructor(private el: ElementRef) {
-        this.animationFinished = new EventEmitter<NewGamePlayerComponent>();
     }
 
     public setPlayer(player: Player) {
         this.player = player;
         this.playerSelected.emit(player);
-    }
-
-    public getPosition(): {x: number, y: number} {
-        return {
-            x: this.el.nativeElement.offsetLeft,
-            y: this.el.nativeElement.offsetTop
-        }
-    }
-
-    public setPosition(pos: {x: number, y: number}, animate: boolean = true) {
-        this.animate = animate;
-        let myPos = this.getPosition();
-        let newX = this.x + pos.x - myPos.x;
-        let newY = this.y + pos.y - myPos.y;
-        this.setPositionAndMarkAnimatedProperties(animate, newX, newY);
-    }
-
-    public resetPosition(animate: boolean = true) {
-        this.animate = animate;
-        this.setPositionAndMarkAnimatedProperties(animate, 0, 0);
-    }
-
-    private setPositionAndMarkAnimatedProperties(animate: boolean, newX: number, newY: number) {
-        if (newX != this.x) {
-            if (animate) {
-                this.animatedProperties.push('left');
-            }
-            this.x = newX;
-        }
-        if (newY != this.y) {
-            if (animate) {
-                this.animatedProperties.push('top');
-            }
-            this.y = newY;
-        }
     }
 
     onClicked() {
