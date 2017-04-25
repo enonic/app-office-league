@@ -11,8 +11,7 @@ import {Player} from '../../../graphql/schemas/Player';
 
 @Component({
     selector: 'league-profile-players',
-    templateUrl: 'league-profile-players.component.html',
-    styleUrls: ['league-profile-players.component.less']
+    templateUrl: 'league-profile-players.component.html'
 })
 export class LeagueProfilePlayersComponent
     extends BaseComponent {

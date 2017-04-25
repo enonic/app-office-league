@@ -153,8 +153,7 @@
             <p>Player '<strong>{{approvePlayer?.name}}</strong>' has requested to join this league (<strong>{{league.name}}</strong>).</p>
         </div>
         <div class="modal-footer">
-            <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
-            <a (click)="onConfirmPlayerJoin(true)" class="modal-action waves-effect btn-flat green white-text league-profile__allow">Allow</a>
+            <a (click)="onConfirmPlayerJoin(true)" class="modal-action waves-effect btn-flat green white-text left">Allow</a>
             <a (click)="onConfirmPlayerJoin(false)" class="modal-action waves-effect btn-flat red white-text">Deny</a>
         </div>
     </div>
