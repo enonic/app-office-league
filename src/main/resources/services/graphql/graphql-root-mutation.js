@@ -171,10 +171,14 @@ exports.rootMutationType = graphQlLib.createObjectType({
             data: function (env) {
                 checkJoinPlayerLeaguePermissions(env.args.leagueId);
 
+                var prevLeaguePlayer = storeLib.getLeaguePlayerByLeagueIdAndPlayerId(env.args.leagueId, env.args.playerId, true);
+                var requestedByPlayer = prevLeaguePlayer && prevLeaguePlayer.pending;
                 var createdLeaguePlayer = storeLib.joinPlayerLeague(env.args.leagueId, env.args.playerId, env.args.rating);
                 storeLib.refresh();
 
-                mailLib.sendAllowJoinRequestNotification(env.args.playerId, env.args.leagueId);
+                if (requestedByPlayer) {
+                    mailLib.sendAllowJoinRequestNotification(env.args.playerId, env.args.leagueId);
+                }
 
                 return createdLeaguePlayer;
             }
@@ -208,7 +212,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                     return leaguePlayer;
                 }
 
-                var updatedLeaguePlayer = storeLib.markPlayerLeaguePending(leagueId, currentPlayerId, true);
+                var updatedLeaguePlayer = storeLib.markPlayerLeaguePending(leagueId, currentPlayerId, true, false);
                 storeLib.refresh();
 
                 mailLib.sendJoinRequestNotification(currentPlayerId, leagueId);
