@@ -13,6 +13,7 @@ const staticAssets = [
     '{{assetUrl}}/css/critical.css',
     '{{assetUrl}}/css/styles.css',
     '{{assetUrl}}/img/office-league-logo.svg',
+    '{{assetUrl}}/img/questionmark.svg',
     '{{assetUrl}}/img/office-league-loader.svg',
     '{{assetUrl}}/img/logo.svg',
     '{{assetUrl}}/icons/apple-touch-icon.png',
