@@ -90,16 +90,8 @@
     </div>
 
     <div class="row">
-        <!--  <div class="col s6">
-              <button class="btn waves-effect waves-light grey darken-1 left" type="submit" name="create" (click)="onCancelClicked()">
-                  Cancel
-              </button>
-          </div>-->
-        <div class="col s6">
-            <button class="btn waves-effect waves-light light-blue darken-3 right" type="submit" name="create" (click)="onSaveClicked()"
-                    [disabled]="!playerForm.valid">
-                Save
-            </button>
+        <div class="fixed-action-btn">
+            <a [attr.disabled]="!playerForm.valid ? true : null" (click)="onSaveClicked()" class="btn-floating btn-large waves-effect waves-light light-blue"><i class="material-icons">save</i></a>
         </div>
     </div>
 </template>
