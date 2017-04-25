@@ -212,9 +212,8 @@ var sendEmail = function (params) {
     var from = params.from;
     var to = params.to;
     var body = params.body;
-    log.info('Send email: \r\n' + body);
 
-    var sendResult = mail.send({
+    mail.send({
         subject: subject,
         from: from,
         to: to,
