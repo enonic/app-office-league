@@ -207,7 +207,6 @@ export class GamePlayComponent
             }).catch((ex) => {
                 console.log('Could not update game. Offline mode On.');
                 this.onlineMode = false;
-                this.saveGameOffline();
             });
         }
 
@@ -237,6 +236,8 @@ export class GamePlayComponent
 
     onEndGameClicked() {
         this.deleteGame().then(id => {
+            this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
+        }).catch((error) => {
             this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
         });
     }
@@ -298,7 +299,6 @@ export class GamePlayComponent
                 }).catch((ex) => {
                     console.log('Could not create game. Offline mode On.');
                     this.onlineMode = false;
-                    this.saveGameOffline();
                 });
             } else {
                 this.wsMan.setUrl(this.getWsUrl(this.gameId));
@@ -409,7 +409,6 @@ export class GamePlayComponent
             }).catch((ex) => {
                 console.log('Could not update game. Offline mode On.');
                 this.onlineMode = false;
-                this.saveGameOffline();
             });
         }
     }
@@ -594,15 +593,22 @@ export class GamePlayComponent
     }
 
     private deleteGame(): Promise<string> {
-        return this.offlineService.deleteOfflineGame(this.gameId).then(() =>
-            this.graphQLService.post(
-                GamePlayComponent.deleteGameMutation,
-                {gameId: this.gameId}
-            ).then(data => {
-                console.log('Game deleted', data);
-                return data.deleteGame;
-            })
-        );
+        return this.offlineService.deleteOfflineGame(this.gameId).then(() => {
+                this.deleteServerGame(this.gameId);
+            }
+        ).catch((error) => {
+            this.deleteServerGame(this.gameId)
+        });
+    }
+
+    private deleteServerGame(gameId: string): Promise<string> {
+        return this.graphQLService.post(
+            GamePlayComponent.deleteGameMutation,
+            {gameId: gameId}
+        ).then(data => {
+            console.log('Game deleted', data);
+            return data && data.deleteGame;
+        });
     }
 
     private replayPoints() {
