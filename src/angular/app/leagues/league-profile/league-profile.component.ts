@@ -31,6 +31,7 @@ export class LeagueProfileComponent
     materializeActionsApprove = new EventEmitter<string | MaterializeAction>();
     materializeActionsPending = new EventEmitter<string | MaterializeAction>();
     materializeActionsDelete = new EventEmitter<string | MaterializeAction>();
+    materializeActionsLeave = new EventEmitter<string | MaterializeAction>();
 
     constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private router: Router) {
@@ -115,6 +116,10 @@ export class LeagueProfileComponent
         this.showModalDelete();
     }
 
+    onLeaveClicked() {
+        this.showModalLeave();
+    }
+
     onJoinClicked() {
         if (this.authService.isAuthenticated() && !this.playerInLeague) {
             let playerId = this.authService.getUser().playerId;
@@ -181,6 +186,15 @@ export class LeagueProfileComponent
             });
     }
 
+    onConfirmLeaveClicked() {
+        this.graphQLService.post(LeagueProfileComponent.leavePlayerLeagueQuery,
+            {playerId: this.authService.getUser().playerId, leagueId: this.league.id}).then(
+                data => {
+                this.hideModalLeave();
+                this.refreshData(this.league.name);
+            });
+    }
+
     showModal(): void {
         this.materializeActions.emit({action: "modal", params: ['open']});
     }
@@ -219,6 +233,14 @@ export class LeagueProfileComponent
 
     public hideModalDelete(): void {
         this.materializeActionsDelete.emit({action: "modal", params: ['close']});
+    }
+
+    public showModalLeave(): void {
+        this.materializeActionsLeave.emit({action: "modal", params: ['open']});
+    }
+
+    public hideModalLeave(): void {
+        this.materializeActionsLeave.emit({action: "modal", params: ['close']});
     }
 
     private static readonly getLeagueQuery = `query ($name: String, $first:Int, $sort: String, $playerId: ID!, $activeGameCount:Int, $gameCount:Int) {
