@@ -35,6 +35,7 @@ export class NewGameComponent implements OnInit {
     expectedScoreBlue: string;
     playerSelectionReady: boolean;
     shuffleDisabled: boolean;
+    shuffleInProgress: boolean;
     teamMode: boolean = false;
     shuffleCount: number = 0;
     private playerRatings: { [playerId: string]: number } = {};
@@ -111,21 +112,30 @@ export class NewGameComponent implements OnInit {
         if (this.shuffleDisabled) {
             return;
         }
-        this.shuffle(10);
+        this.shuffleInProgress = true;
+        this.shuffle();
     }
-    
-    private shuffle(count: number = 1) {
-        let players: Player[] = [this.bluePlayer1, this.bluePlayer2, this.redPlayer1, this.redPlayer2];
-        this.bluePlayer1 = this.randomPlayer(players);
+
+    private shuffle(shuffledPlayerCount: number = 4, rollCount: number = 20) {
+        let players: Player[] = [];
+        if (shuffledPlayerCount > 3) {players.push(this.bluePlayer1);}
+        if (shuffledPlayerCount > 2) {players.push(this.redPlayer1);}
+        players.push(this.bluePlayer2);
+        players.push(this.redPlayer2);
+
+        if (shuffledPlayerCount > 3) {this.bluePlayer1 = this.randomPlayer(players);}
+        if (shuffledPlayerCount > 2) {this.redPlayer1 = this.randomPlayer(players);}
         this.bluePlayer2 = this.randomPlayer(players);
-        this.redPlayer1 = this.randomPlayer(players);
         this.redPlayer2 = this.randomPlayer(players);
         this.updatePlayerSelectionState();
-        
-        if (count > 1) {
-            setTimeout(() => this.shuffle(count - 1), 500);
-            
-        }        
+
+        if (rollCount > 1) {
+            setTimeout(() => this.shuffle(shuffledPlayerCount, rollCount - 1), 100)
+        } else if (shuffledPlayerCount > 2) {
+            setTimeout(() => this.shuffle(shuffledPlayerCount - 1, 20), 100);
+        } else {
+            this.shuffleInProgress = false;
+        }
     }
 
     private randomPlayer(players: Player[]) {

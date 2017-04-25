@@ -50,12 +50,12 @@
 
 <div class="row center">
         <a class="waves-effect waves-light center btn global__btn--play" (click)="onPlayClicked()"
-           [class.disabled]="!this.playerSelectionReady||(this.shuffleCount>0)">Play</a>
+           [class.disabled]="!this.playerSelectionReady || (this.shuffleCount>0) || shuffleInProgress">Play</a>
 </div>
 
 <div class="row center">
     <a *ngIf="teamMode" class="waves-effect waves-light center btn global__btn--shuffle" (click)="onShuffleClicked()"
-       [class.disabled]="shuffleDisabled">Shuffle</a>
+       [class.disabled]="shuffleDisabled || shuffleInProgress">Shuffle</a>
 </div>
 
 <div class="row center">
