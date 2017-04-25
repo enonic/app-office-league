@@ -59,6 +59,7 @@
         <ul>
             <li (click)="onAddPlayerClicked()"><a class="btn-floating green" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="material-icons">person_add</i></a></li>
             <li (click)="onEditClicked()"><a class="btn-floating blue" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="material-icons">mode_edit</i></a></li>
+            <li *ngIf="playerInLeague || joinLeagueRequested" (click)="onLeaveClicked()"><a class="btn-floating red" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="material-icons">directions_run</i></a></li>
             <li (click)="onDeleteClicked()"><a class="btn-floating red" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="material-icons">delete</i></a></li>
         </ul>
     </div>
