@@ -116,7 +116,7 @@ export class NewGameComponent implements OnInit {
         this.shuffle();
     }
 
-    private shuffle(shuffledPlayerCount: number = 4, rollCount: number = 20) {
+    private shuffle(shuffledPlayerCount: number = 4, rollCount: number = 10) {
         let players: Player[] = [];
         if (shuffledPlayerCount > 3) {players.push(this.bluePlayer1);}
         if (shuffledPlayerCount > 2) {players.push(this.redPlayer1);}
@@ -130,9 +130,9 @@ export class NewGameComponent implements OnInit {
         this.updatePlayerSelectionState();
 
         if (rollCount > 1) {
-            setTimeout(() => this.shuffle(shuffledPlayerCount, rollCount - 1), 100)
+            setTimeout(() => this.shuffle(shuffledPlayerCount, rollCount - 1), 150)
         } else if (shuffledPlayerCount > 2) {
-            setTimeout(() => this.shuffle(shuffledPlayerCount - 1, 20), 100);
+            setTimeout(() => this.shuffle(shuffledPlayerCount - 1, 10), 150);
         } else {
             this.shuffleInProgress = false;
         }
