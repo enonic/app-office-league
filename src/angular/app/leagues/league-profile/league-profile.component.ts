@@ -30,6 +30,7 @@ export class LeagueProfileComponent
     materializeActionsRemove = new EventEmitter<string | MaterializeAction>();
     materializeActionsApprove = new EventEmitter<string | MaterializeAction>();
     materializeActionsPending = new EventEmitter<string | MaterializeAction>();
+    materializeActionsDelete = new EventEmitter<string | MaterializeAction>();
 
     constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private router: Router) {
@@ -110,6 +111,10 @@ export class LeagueProfileComponent
         this.showModal();
     }
 
+    onDeleteClicked() {
+        this.showModalDelete();
+    }
+
     onJoinClicked() {
         if (this.authService.isAuthenticated() && !this.playerInLeague) {
             let playerId = this.authService.getUser().playerId;
@@ -167,6 +172,15 @@ export class LeagueProfileComponent
         }
     }
 
+    onConfirmDeleteClicked() {
+        this.graphQLService.post(LeagueProfileComponent.deleteLeagueQuery,
+            {name: this.league.name}).then(
+                data => {
+                this.hideModalDelete();
+                this.router.navigate(['leagues']);
+            });
+    }
+
     showModal(): void {
         this.materializeActions.emit({action: "modal", params: ['open']});
     }
@@ -197,6 +211,14 @@ export class LeagueProfileComponent
 
     public hideModalPending(): void {
         this.materializeActionsPending.emit({action: "modal", params: ['close']});
+    }
+
+    public showModalDelete(): void {
+        this.materializeActionsDelete.emit({action: "modal", params: ['open']});
+    }
+
+    public hideModalDelete(): void {
+        this.materializeActionsDelete.emit({action: "modal", params: ['close']});
     }
 
     private static readonly getLeagueQuery = `query ($name: String, $first:Int, $sort: String, $playerId: ID!, $activeGameCount:Int, $gameCount:Int) {
@@ -368,6 +390,10 @@ export class LeagueProfileComponent
         denyJoinLeagueRequest(playerId: $playerId, leagueId: $leagueId) {
             id
         }
+    }`;
+
+    private static readonly deleteLeagueQuery = `mutation ($name:String!) {
+        deleteLeague(name: $name)
     }`;
 
 }
