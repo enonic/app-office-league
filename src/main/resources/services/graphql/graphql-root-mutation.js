@@ -423,7 +423,7 @@ var checkDeleteLeaguePermissions = function (leagueName) {
     }
 
     var currentPlayerId = getCurrentPlayerId();
-    var league = storeLib.getLeagueByName(env.args.name);
+    var league = storeLib.getLeagueByName(leagueName);
     if (!league) {
         return null;
     }
