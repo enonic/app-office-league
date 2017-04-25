@@ -60,11 +60,8 @@
     </div>
 
     <div class="row">
-        <div class="col s12">
-            <button class="btn waves-effect waves-light light-blue darken-3 right" type="submit" name="create"
-                    [disabled]="!teamForm.valid" (click)="onSaveClicked()">
-                Save
-            </button>
+        <div class="fixed-action-btn">
+            <a [attr.disabled]="!teamForm.valid ? true : null" (click)="onSaveClicked()" class="btn-floating btn-large waves-effect waves-light light-blue"><i class="material-icons">save</i></a>
         </div>
     </div>
 </template>
