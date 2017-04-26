@@ -104,7 +104,7 @@ var doSendAllowJoinRequestNotification = function (playerId, leagueId) {
         from: 'Office League <' + from + '>',
         to: player.fullname ? player.fullname + ' <' + email + '>' : email,
         body: body,
-        subject: 'Office League - Request to join league \'' + league.name + '\' denied'
+        subject: 'Office League - Request to join league \'' + league.name + '\' approved'
     });
 };
 
