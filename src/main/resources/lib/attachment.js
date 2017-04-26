@@ -42,9 +42,9 @@ exports.serveAttachment = function (httpRequest, repoConn, node, attachmentName,
     return {
         contentType: attachment.mimeType,
         body: binaryStream,
-        headers: {
+        headers: exports.setCacheForever({
             ETag: node._versionKey
-        }
+        })
     }
 };
 
@@ -71,4 +71,9 @@ var notModified = function (mimeType) {
         status: 304,
         contentType: mimeType
     }
+};
+
+exports.setCacheForever = function (headers) {
+    headers['Cache-Control'] = 'private, max-age=31536000';
+    return headers;
 };

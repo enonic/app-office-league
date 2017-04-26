@@ -22,6 +22,7 @@ exports.get = function (req) {
 var defaultImageHandler = function () {
     return {
         body: defaultImage,
-        contentType: defaultImageType
+        contentType: defaultImageType,
+        headers: attachmentLib.setCacheForever({})
     }
 };
