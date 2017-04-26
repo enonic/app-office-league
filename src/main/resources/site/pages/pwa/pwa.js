@@ -17,6 +17,13 @@ exports.get = function (req) {
         type: 'absolute'
     });
 
+
+    if (mustLogIn(req)) {
+        return {
+            redirect: portalLib.loginUrl({type: 'absolute'})
+        }
+    }
+
     if (loggedInUserWithoutPlayer()) {
         var createPlayerPath = appBaseUrl + '/player-create';
         if (!endsWith(req.path, createPlayerPath)) {
@@ -54,6 +61,10 @@ exports.get = function (req) {
         contentType: 'text/html',
         body: body
     };
+};
+
+var mustLogIn = function (req) {
+    return req.path.search(/\/app$/) !== -1 && !authLib.getUser();
 };
 
 var loggedInUserWithoutPlayer = function () {
