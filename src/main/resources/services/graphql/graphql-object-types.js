@@ -303,6 +303,12 @@ exports.gamePlayerType = graphQlLib.createObjectType({
                 return env.source.side;
             }
         },
+        position: {
+            type: graphQlLib.GraphQLInt,
+            data: function (env) {
+                return graphQlUtilLib.toInt(env.source.position, 0);
+            }
+        },
         winner: {
             type: graphQlLib.GraphQLBoolean,
             data: function (env) {

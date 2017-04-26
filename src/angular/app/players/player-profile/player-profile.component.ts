@@ -155,6 +155,7 @@ export class PlayerProfileComponent
                   score
                   scoreAgainst
                   side
+                  position
                   winner
                   ratingDelta
                   player {

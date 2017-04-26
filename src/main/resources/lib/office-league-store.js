@@ -212,6 +212,7 @@ exports.OFFICE_LEAGUE_COMMENT_EVENT_ID = OFFICE_LEAGUE_COMMENT_EVENT_ID;
  * @property {string} playerId Player id.
  * @property {string} time Time offset in seconds since the beginning of the game.
  * @property {string} side Player side: 'blue' or 'red'.
+ * @property {number} position Index of the position of the player in the team: 0 or 1.
  * @property {boolean} winner True if this player is the winner of the game.
  * @property {number} score Total score for this player in the game.
  * @property {number} scoreAgainst Total score against itself, for this player in the game.
@@ -1699,6 +1700,7 @@ exports.createGame = function (params) {
 
     var i, gamePlayer, gameTeam;
     gameNode.gamePlayers = [];
+    setGamePlayerPositions(params.gamePlayers);
     for (i = 0; i < params.gamePlayers.length; i++) {
         gamePlayer = params.gamePlayers[i];
         var gamePlayerNode = repoConn.create({
@@ -1713,6 +1715,7 @@ exports.createGame = function (params) {
             score: gamePlayer.score,
             scoreAgainst: gamePlayer.scoreAgainst,
             side: gamePlayer.side,
+            position: gamePlayer.position || 0,
             winner: gamePlayer.winner,
             ratingDelta: gamePlayer.ratingDelta
         });
@@ -1743,6 +1746,26 @@ exports.createGame = function (params) {
     notifyGameUpdate(gameNode._id);
 
     return gameNode;
+};
+
+/**
+ * @param {GamePlayer[]} gamePlayers Array with the players and its properties for a game.
+ */
+var setGamePlayerPositions = function (gamePlayers) {
+    if (!gamePlayers || (gamePlayers.length === 0)) {
+        return;
+    }
+    var i, redIdx = 0, blueIdx = 0, gp;
+    for (i = 0; i < gamePlayers.length; i++) {
+        gp = gamePlayers[i];
+        if (gp.side === 'red') {
+            gp.position = redIdx;
+            redIdx++;
+        } else {
+            gp.position = blueIdx;
+            blueIdx++;
+        }
+    }
 };
 
 /**

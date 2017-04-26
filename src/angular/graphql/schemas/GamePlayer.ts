@@ -9,6 +9,7 @@ export class GamePlayer
     score: number = 0;
     scoreAgainst: number = 0;
     side: Side;
+    position: number;
     winner: boolean;
     ratingDelta: number = 0;
     player: Player;
@@ -23,6 +24,7 @@ export class GamePlayer
         gamePlayer.score = json.score || 0;
         gamePlayer.scoreAgainst = json.scoreAgainst || 0;
         gamePlayer.side = SideUtil.parse(json.side);
+        gamePlayer.position = json.position || 0;
         gamePlayer.winner = json.winner;
         gamePlayer.ratingDelta = json.ratingDelta;
         gamePlayer.player = json.player && Player.fromJson(json.player);

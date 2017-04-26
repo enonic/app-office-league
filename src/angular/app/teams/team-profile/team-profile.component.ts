@@ -101,6 +101,7 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
                   score
                   scoreAgainst
                   side
+                  position
                   winner
                   ratingDelta
                   player {

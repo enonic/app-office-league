@@ -28,7 +28,7 @@ export class Game
         game.finished = json.finished;
         game.points = json.points && json.points.map(point => Point.fromJson(point));
         game.comments = json.comments ? json.comments.map(comment => comment.author && Comment.fromJson(comment)).filter((c) => !!c) : [];
-        game.gamePlayers = json.gamePlayers && json.gamePlayers.map(gamePlayer => GamePlayer.fromJson(gamePlayer));
+        game.gamePlayers = json.gamePlayers ? json.gamePlayers.map(gp => GamePlayer.fromJson(gp)).sort(Game.compareGamePlayer) : [];
         game.gameTeams = json.gameTeams && json.gameTeams.map(gameTeam => GameTeam.fromJson(gameTeam));
         game.league = json.league && League.fromJson(json.league);
         return game;
@@ -40,5 +40,9 @@ export class Game
 
     static isClientId(id: string): boolean {
         return id.indexOf('game-id-') === 0;
+    }
+
+    private static compareGamePlayer(gp1: GamePlayer, gp2: GamePlayer) {
+        return (gp1.position || 0) - (gp2.position || 0);
     }
 }

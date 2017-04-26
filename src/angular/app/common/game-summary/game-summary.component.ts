@@ -120,6 +120,7 @@ export class GameSummaryComponent
             scoreAgainst
             winner
             side
+            position
             ratingDelta
             player {
                 name

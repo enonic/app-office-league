@@ -24,6 +24,7 @@ export class GameListPageComponent extends BaseComponent {
                         scoreAgainst
                         winner
                         side
+                        position
                         ratingDelta
                         player {
                             name

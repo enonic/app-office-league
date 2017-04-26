@@ -418,12 +418,16 @@ export class GamePlayComponent
                ((this.blueScore >= 10 || this.redScore >= 10) && Math.abs(this.blueScore - this.redScore) >= 2);
     }
 
+    private compareGamePlayer(gp1: GamePlayer, gp2: GamePlayer) {
+        return (gp1.position || 0) - (gp2.position || 0);
+    }
+
     private handleGamePlayersLeagueQueryResponse(data) {
         this.gameId = this.gameSelection.gameId;
         this.league = League.fromJson(data.game.league);
         let playerMap: { [id: string]: Player } = {};
 
-        data.game.gamePlayers.forEach((gp) => {
+        data.game.gamePlayers.sort(this.compareGamePlayer).forEach((gp) => {
             const p = Player.fromJson(gp.player);
             playerMap[p.id] = p;
             const side = SideUtil.parse(gp.side);
@@ -796,6 +800,7 @@ export class GamePlayComponent
         }
         gamePlayers {
           side
+          position
           player {
             id
             name

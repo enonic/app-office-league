@@ -310,6 +310,7 @@ export class LeagueProfileComponent
                     scoreAgainst
                     winner
                     side
+                    position
                     ratingDelta
                     player {
                         name
@@ -357,6 +358,7 @@ export class LeagueProfileComponent
                     scoreAgainst
                     winner
                     side
+                    position
                     ratingDelta
                     player {
                         name

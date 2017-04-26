@@ -228,6 +228,7 @@ export class GameProfileComponent
             scoreAgainst
             winner
             side
+            position
             ratingDelta
             player {
                 id
