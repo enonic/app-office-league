@@ -132,7 +132,7 @@
     <div class="modal center player-select-modal" materialize="modal"
          [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
         <div class="modal-content">
-            <h4 class="center">Select a player</h4>
+            <h6 class="center">Select a player to add</h6>
             <player-select [playerIds]="nonMembersPlayerIds" (playerSelected)="onSelected($event)"></player-select>
         </div>
     </div>
@@ -174,7 +174,7 @@
          [materializeActions]="materializeActionsDelete">
         <div class="modal-content">
             <h5 class="center">Delete league</h5>
-            <p>You are about to delete this league (<strong>{{league.name}}</strong>).</p>
+            <p>You are about to delete this league (<strong>{{league.name}}</strong>). <strong>This operation cannot be undone.</strong></p>
         </div>
         <div class="modal-footer">
             <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
