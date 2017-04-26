@@ -1,0 +1,25 @@
+<div *ngIf="!hideSearchField" class="admin-list__search global__search">
+    <i class="material-icons admin-list__search-icon global__search-icon">search</i>
+    <input [(ngModel)]="searchValue" (input)="onSearchFieldModified()" id="searchField" type="text" placeholder="Search"
+           class="admin-list__search-input global__search-input">
+</div>
+
+
+<div class="admin-list" [class.with-header]="!!title">
+    <h4 *ngIf="title" class="admin-list__heading">{{title}}</h4>
+    <a href="#!" class="admin-list__item" *ngFor="let admin of admins;">
+        <admin-summary [admin]="admin" (removeAdmin)="onRemoveClicked($event)"></admin-summary>
+    </a>
+    <p *ngIf="admins?.length == 0" class="empty" class="admin-list__item admin-list__item--empty">
+        No administrators selected
+    </p>
+    <ul class="pagination center" *ngIf="pages?.length > 1">
+        <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i
+                class="material-icons">chevron_left</i></a></li>
+        <li *ngFor="let page of pages;" [class.active]="page == currentPage" class="waves-effect"><a
+                (click)="setCurrentPage(page)">{{page}}</a>
+        </li>
+        <li [class.disabled]="currentPage === pageCount" class="waves-effect"><a (click)="setCurrentPage(currentPage + 1)"><i
+                class="material-icons">chevron_right</i></a></li>
+    </ul>
+</div>

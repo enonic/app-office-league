@@ -14,6 +14,8 @@ import {LeagueEditCreateComponent} from './league-edit-create/league-edit-create
 import {FormsModule} from '@angular/forms';
 import {MaterializeModule} from 'angular2-materialize/dist/index';
 import {PlayerRouteGuard, } from '../guards/player.route.guard';
+import {AdminListComponent} from './admin-list/admin-list.component';
+import {AdminSummaryComponent} from './admin-summary/admin-summary.component';
 
 const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, canActivate: [PlayerRouteGuard,]},
@@ -34,7 +36,9 @@ const leagueRoutes: Routes = [
         LeagueProfileComponent,
         LeagueProfilePlayersComponent,
         LeagueProfileTeamsComponent,
-        LeagueEditCreateComponent
+        LeagueEditCreateComponent,
+        AdminListComponent,
+        AdminSummaryComponent
     ],
     imports: [
         MaterializeModule,

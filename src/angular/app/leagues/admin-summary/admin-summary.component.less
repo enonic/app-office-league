@@ -1,0 +1,32 @@
+@import "../../mixins";
+
+.admin-summary {
+  .summary-list-mixin;
+
+  &__avatar {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
+
+  &__name {
+    flex-grow: 1;
+    text-overflow: ellipsis;
+  }
+
+  &__action {
+    padding-left: 20px;
+    i {
+      vertical-align: middle;
+      color: #FFFFFF;
+    }
+  }
+
+  &__action:hover {
+    i {
+      color: #CF0000;
+    }
+  }
+}

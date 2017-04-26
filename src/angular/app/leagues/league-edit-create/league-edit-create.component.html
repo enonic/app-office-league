@@ -47,8 +47,24 @@
                     <div class="col s12 l8 offset-l2">
                         <input type="file" accept="image/*" #fileInput style="display:none;">
                         <div class="league-icon-frame">
-                            <img [src]="leagueImageUrl" alt="League Icon" class="league-icon circle preview"
+                            <img [src]="leagueImageUrl" alt="League Icon" class="league-icon preview"
                                  (click)="fileInput.click()">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 l8 offset-l2">
+                        <div class="league__admins-title">
+                            <i class="material-icons prefix league__admins-titleicon">verified_user</i>
+                            <h6 class="league__admins-titletext"> Administrators</h6>
+                        </div>
+                        <admin-list [admins]="admins" [pageCount]="1" hideSearchField="true"
+                                    (removeAdmin)="onRemoveAdminClicked($event)"></admin-list>
+                        <div class="league__admins-add">
+                            <button class="btn global__btn-small waves-effect waves-light light-blue darken-3 right"
+                                    (click)="onAddAdminClicked()">Add
+                                <i class="material-icons right">verified_user</i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -59,19 +75,31 @@
     <div class="row">
         <div class="col s12 l8 offset-l2">
             <template [ngIf]="!editMode">
-                <button class="btn waves-effect waves-light light-blue darken-3 right" type="submit" name="create"
-                        [disabled]="!leagueForm.valid"
-                        (click)="onCreateClicked()">Create
-                    <i class="material-icons right">send</i>
-                </button>
+                <div class="row">
+                    <div class="fixed-action-btn">
+                        <a [attr.disabled]="!leagueForm.valid||admins.length===0?true:null" (click)="onCreateClicked()"
+                           class="btn-floating btn-large waves-effect waves-light light-blue"><i class="material-icons">save</i></a>
+                    </div>
+                </div>
             </template>
             <template [ngIf]="editMode">
-                <button class="btn waves-effect waves-light light-blue darken-3 right" type="submit" name="create"
-                        [disabled]="!leagueForm.valid"
-                        (click)="onUpdateClicked()">Update
-                    <i class="material-icons right">send</i>
-                </button>
+                <div class="row">
+                    <div class="fixed-action-btn">
+                        <a [attr.disabled]="!leagueForm.valid||admins.length===0?true:null" (click)="onUpdateClicked()"
+                           class="btn-floating btn-large waves-effect waves-light light-blue"><i class="material-icons">save</i></a>
+                    </div>
+                </div>
             </template>
+
         </div>
     </div>
+
+    <div class="modal center player-select-modal" materialize="modal"
+         [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
+        <div class="modal-content">
+            <h4 class="center">Select an admin to add</h4>
+            <player-select [playerIds]="allPlayerIds" [excludedPlayerIds]="adminPlayerIds" (playerSelected)="onAdminSelected($event)"></player-select>
+        </div>
+    </div>
+
 </template>

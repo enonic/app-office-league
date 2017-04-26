@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
@@ -13,13 +13,17 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LeagueValidator} from '../league-validator';
 import {CustomValidators} from '../../common/validators';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
+import {Player} from '../../../graphql/schemas/Player';
+import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
 
 @Component({
     selector: 'league-edit-create',
     templateUrl: 'league-edit-create.component.html',
     styleUrls: ['league-edit-create.component.less']
 })
-export class LeagueEditCreateComponent extends BaseComponent implements AfterViewInit {
+export class LeagueEditCreateComponent
+    extends BaseComponent
+    implements AfterViewInit {
 
     @ViewChild('fileInput') inputEl: ElementRef;
     name: string;
@@ -27,13 +31,16 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     description: string;
     leagueImageUrl: SafeUrl;
     sport: string = Sport[Sport.FOOS].toLowerCase();
+    admins: Player[] = [];
+    adminPlayerIds: string[] = [];
+    allPlayerIds: string[] = [];
     editMode: boolean;
     leagueForm: FormGroup;
     formErrors = {
         'name': '',
         'description': ''
     };
-
+    materializeActions = new EventEmitter<string | MaterializeAction>();
 
     constructor(private http: Http, private authService: AuthService, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, route: ActivatedRoute,
@@ -63,7 +70,9 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
         this.leagueImageUrl = ImageService.leagueDefault();
         this.editMode = !!name;
         if (this.editMode) {
-            this.loadLeague(name);
+            this.loadLeague(name).then(() => this.loadAdminPlayerIds());
+        } else {
+            this.loadAdminPlayer().then(() => this.loadAdminPlayerIds());
         }
     }
 
@@ -77,7 +86,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     }
 
     onUpdateClicked() {
-        if (!this.leagueForm.valid) {
+        if (!this.leagueForm.valid || this.admins.length === 0) {
             return;
         }
 
@@ -85,7 +94,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             leagueId: this.leagueId,
             name: this.name,
             description: this.description || '',
-            playerId: XPCONFIG.user.playerId
+            adminPlayerIds: this.adminPlayerIds
         };
         this.graphQLService.post(LeagueEditCreateComponent.updateLeagueMutation, updateLeagueParams).then(data => {
             return data && data.updateLeague;
@@ -97,7 +106,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     }
 
     onCreateClicked() {
-        if (!this.leagueForm.valid) {
+        if (!this.leagueForm.valid || this.admins.length === 0) {
             return;
         }
 
@@ -105,7 +114,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             name: this.name,
             description: this.description || '',
             sport: this.sport,
-            playerId: XPCONFIG.user.playerId
+            adminPlayerIds: this.adminPlayerIds
         };
         this.graphQLService.post(LeagueEditCreateComponent.createLeagueMutation, createLeagueParams).then(data => {
             return data && data.createLeague;
@@ -113,6 +122,16 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             this.uploadImage(createdLeague.id).then(uploadResp => {
                 this.router.navigate(['leagues', createdLeague.name], {replaceUrl: true});
             });
+        });
+    }
+
+    loadAdminPlayerIds(): Promise<void> {
+        return this.graphQLService.post(LeagueEditCreateComponent.getAllPlayerIdsQuery).then(data => {
+            if (!data || !data.players) {
+                return;
+            }
+            this.allPlayerIds = data.players.map(p => p.id);
+            return;
         });
     }
 
@@ -132,6 +151,8 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             this.leagueImageUrl = league.imageUrl;
             const sport = SportUtil.parse(league.sport) || Sport.FOOS;
             this.sport = Sport[sport].toLowerCase();
+            this.admins = league.adminPlayers;
+            this.adminPlayerIds = this.admins.map((p) => p.id);
 
             this.pageTitleService.setTitle(league.name);
 
@@ -147,6 +168,18 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
                 LeagueValidator.nameInUseValidator(this.graphQLService, league.id)));
 
             return league;
+        });
+    }
+
+    loadAdminPlayer(): Promise<void> {
+        let playerId = this.authService.isAuthenticated() ? this.authService.getUser().playerId : '-1';
+        return this.graphQLService.post(LeagueEditCreateComponent.getPlayerQuery, {playerId: playerId}).then(data => {
+            if (!data.player) {
+                return null;
+            }
+            let player = Player.fromJson(data.player);
+            this.admins = [player];
+            this.adminPlayerIds = [player.id];
         });
     }
 
@@ -181,16 +214,48 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
         }
     }
 
-    private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $playerId: ID) {
-        createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: [$playerId]) {
+    onRemoveAdminClicked(admin: Player) {
+        if (!admin) {
+            return;
+        }
+        this.admins = this.admins.filter((player) => player.id !== admin.id);
+        this.adminPlayerIds = this.admins.map((p) => p.id);
+    }
+
+    onAddAdminClicked() {
+        this.showSelectAdminModal();
+    }
+
+    onAdminSelected(newAdmin: Player) {
+        if (!newAdmin) {
+            return;
+        }
+        let existing = this.admins.find((player) => player.id === newAdmin.id);
+        if (!existing) {
+            this.admins.push(newAdmin);
+            this.adminPlayerIds = this.admins.map((p) => p.id);
+        }
+        this.hideSelectAdminModal();
+    }
+
+    showSelectAdminModal(): void {
+        this.materializeActions.emit({action: "modal", params: ['open']});
+    }
+
+    hideSelectAdminModal(): void {
+        this.materializeActions.emit({action: "modal", params: ['close']});
+    }
+
+    private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $adminPlayerIds: [ID]) {
+        createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: $adminPlayerIds) {
             id
             name
             imageUrl
         }
     }`;
 
-    private static readonly updateLeagueMutation = `mutation ($leagueId: ID!, $name: String, $description: String, $playerId: ID) {
-        updateLeague(id: $leagueId, name: $name, description: $description, adminPlayerIds: [$playerId]) {
+    private static readonly updateLeagueMutation = `mutation ($leagueId: ID!, $name: String, $description: String, $adminPlayerIds: [ID]) {
+        updateLeague(id: $leagueId, name: $name, description: $description, adminPlayerIds: $adminPlayerIds) {
             id
             name
             imageUrl
@@ -205,6 +270,25 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             sport
             imageUrl
             isAdmin(playerId:$playerId)
+            adminPlayers(first: -1) {
+                id
+                name
+                imageUrl
+            }
+        }
+    }`;
+
+    private static readonly getAllPlayerIdsQuery = `query{
+        players(first: -1) {
+            id
+        }
+    }`;
+
+    private static readonly getPlayerQuery = `query ($playerId: ID){
+        player(id: $playerId) {
+            id
+            name
+            imageUrl
         }
     }`;
 }

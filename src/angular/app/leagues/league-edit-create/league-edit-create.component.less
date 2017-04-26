@@ -10,3 +10,29 @@ img.league-icon {
   margin-left: 3rem;
   float: left;
 }
+
+.league {
+  &__admins {
+
+    &-title {
+      display: flex;
+      align-items: center;
+      padding-bottom: 10px;
+    }
+
+    &-titleicon {
+      font-size: 2rem;
+    }
+    &-titletext {
+      display: inline;
+    }
+
+    &-add {
+      padding-top: 10px;
+    }
+  }
+}
+
+admin-list /deep/ .admin-list__item--empty {
+    color: #F44336;
+}

@@ -1,0 +1,10 @@
+<template [ngIf]="admin == null">
+    <loading></loading>
+</template>
+<template [ngIf]="admin != null">
+    <div class="admin-summary">
+        <img src="{{admin.imageUrl}}?size=42" alt="{{admin.name}}" class="admin-summary__avatar">
+        <div class="admin-summary__name">{{admin.name}}</div>
+        <a class="admin-summary__action" (click)="onRemoveClicked($event)"><i class="material-icons">highlight_off</i></a>
+    </div>
+</template>

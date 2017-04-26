@@ -11,7 +11,7 @@
                         [allowRemove]="allowRemove" (removePlayer)="onRemovePlayer($event)"
                         (approvePlayer)="onApprovePlayer($event)"></player-summary>
     </a>
-    <p *ngIf="leaguePlayers?.length == 0">
+    <p *ngIf="leaguePlayers?.length == 0" class="league-player-list__item league-player-list__item--empty">
         {{displayLeagues ? 'No leagues' : displayPlayers ? 'No players' : ''}}
     </p>
     <a *ngIf="leaguePlayers?.length > 0 && this.detailsPath" href="#!" class="league-player-list__more"

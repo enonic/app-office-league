@@ -401,7 +401,9 @@ var checkUpdateLeaguePermissions = function (leagueId, adminPlayerIds) {
     if (isAdmin()) {
         return;
     }
-
+    if (adminPlayerIds && (adminPlayerIds.length === 0)) {
+        throw "The league must have at least one admin.";
+    }
     var currentPlayerId = getCurrentPlayerId();
     var league = storeLib.getLeagueById(leagueId);
     if (!league) {
