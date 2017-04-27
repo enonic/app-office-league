@@ -20,6 +20,7 @@ export class LeagueProfileComponent
 
     @Input() league: League;
     playerInLeague: boolean;
+    userAuthenticated: boolean;
     adminInLeague: boolean;
     joinLeagueRequested: boolean;
     activeGames: Game[] = [];
@@ -41,6 +42,7 @@ export class LeagueProfileComponent
     ngOnInit(): void {
         super.ngOnInit();
 
+        this.userAuthenticated = this.authService.isAuthenticated();
         let name = this.route.snapshot.params['name'];
 
         if (!this.league && name) {
