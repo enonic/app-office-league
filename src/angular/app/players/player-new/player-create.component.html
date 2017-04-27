@@ -30,10 +30,11 @@
                     </div>
                 </div>
                 <div class="row">
+                    <label class="avatar">Avatar</label>
                     <div class="input-field col s12">
                         <input type="file" accept="image/*" #fileInput style="display:none;">
                         <div class="player-icon-frame">
-                            <img src="{{imageUrl}}?size=200" alt="Player Image" class="player-icon preview"
+                            <img [src]="imageUrl" alt="Player Image" class="player-icon preview"
                                  (click)="fileInput.click()">
                         </div>
                     </div>

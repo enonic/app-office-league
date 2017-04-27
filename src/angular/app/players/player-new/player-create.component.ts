@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Handedness} from '../../../graphql/schemas/Handedness';
 import {BaseComponent} from '../../common/base.component';
@@ -12,6 +12,7 @@ import {AuthService} from '../../services/auth.service';
 import {PageTitleService} from '../../services/page-title.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PlayerValidator} from '../player-validator';
+import {SafeUrl, DomSanitizer} from '@angular/platform-browser';
 
 @Component({
     selector: 'player-create',
@@ -21,10 +22,10 @@ import {PlayerValidator} from '../player-validator';
 
 export class PlayerCreateComponent
     extends BaseComponent
-    implements AfterViewInit {
+    implements OnInit, AfterViewInit {
 
     playerForm: FormGroup;
-    imageUrl: string;
+    imageUrl: SafeUrl;
     formErrors = {
         'name': '',
         'fullname': ''
@@ -35,7 +36,7 @@ export class PlayerCreateComponent
 
     constructor(private http: Http, route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService,
-                private auth: AuthService, private fb: FormBuilder) {
+                private auth: AuthService, private fb: FormBuilder, private sanitizer: DomSanitizer) {
         super(route);
     }
 
@@ -134,10 +135,9 @@ export class PlayerCreateComponent
     }
 
     private onFileInputChange(input: HTMLInputElement) {
-        let preview = document.getElementsByClassName('preview')[0];
         if (input.files && input.files[0]) {
             let reader = new FileReader();
-            reader.onload = (e) => this.imageUrl = (<any>e.target).result;
+            reader.onload = (e) => this.imageUrl = this.sanitizer.bypassSecurityTrustUrl((<any>e.target).result);
             reader.readAsDataURL(input.files[0]);
         }
     }
