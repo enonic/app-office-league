@@ -42,7 +42,7 @@ var updateLeague = function (league) {
     log.info('Calculate games ratings. ' + total + ' games in the league.');
 
     do {
-        gamesResp = storeLib.getGamesByLeagueId(league._id, start, 10);
+        gamesResp = storeLib.getGamesByLeagueId(league._id, start, 10, null, 'time ASC');
         games = gamesResp.hits;
         for (i = 0; i < games.length; i++) {
             game = games[i];

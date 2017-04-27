@@ -744,9 +744,10 @@ var getGameDetails = function (repoConn, game) {
  * @param  {number} [start=0] First index of the league games.
  * @param  {number} [count=10] Number of games to fetch.
  * @param  {boolean} [finished] Filter for games finished.
+ * @param  {string} [sort=time DESC] Sort expression.
  * @return {GamesResponse} League games.
  */
-exports.getGamesByLeagueId = function (leagueId, start, count, finished) {
+exports.getGamesByLeagueId = function (leagueId, start, count, finished, sort) {
     var repoConn = newConnection();
 
     var finishedCondition = '';
@@ -757,7 +758,7 @@ exports.getGamesByLeagueId = function (leagueId, start, count, finished) {
         start: start,
         count: count,
         query: "type = '" + TYPE.GAME + "' AND leagueId = '" + leagueId + "'" + finishedCondition,
-        sort: "time DESC"
+        sort: sort || "time DESC"
     });
 
     var games = [];

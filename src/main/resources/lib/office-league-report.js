@@ -1,6 +1,6 @@
 var eventLib = require('/lib/xp/event');
 var eloRating = require('/lib/elo-rating');
-var contextLib = require('/lib/xp/context');
+var ratingLib = require('/lib/office-league-rating');
 var storeLib = require('office-league-store');
 
 var OFFICE_LEAGUE_GAME_EVENT_ID = 'office-league-game';
@@ -101,7 +101,7 @@ var createTeamJson = function (team, gameTeam, leagueTeam, baseUrl) {
         side: gameTeam.side,
         winner: gameTeam.winner,
         ratingDelta: gameTeam.ratingDelta,
-        rating: leagueTeam.rating
+        rating: leagueTeam ? leagueTeam.rating : ratingLib.INITIAL_RATING
     };
 };
 
@@ -118,7 +118,7 @@ var createPlayerJson = function (player, gamePlayer, leaguePlayer, baseUrl) {
         side: gamePlayer.side,
         winner: gamePlayer.winner,
         ratingDelta: gamePlayer.ratingDelta,
-        rating: leaguePlayer.rating
+        rating: leaguePlayer ? leaguePlayer.rating : ratingLib.INITIAL_RATING
     };
 };
 
