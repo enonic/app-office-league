@@ -70,6 +70,6 @@
      [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
     <div class="modal-content">
         <h4 class="center">Select a player</h4>
-        <player-select [playerIds]="possibleTeamMateIds" (playerSelected)="onPlayerSelected($event)"></player-select>
+        <player-select [playerIds]="possibleTeamMateIds" [materializeActions]="materializeActions" (playerSelected)="onPlayerSelected($event)"></player-select>
     </div>
 </div>
