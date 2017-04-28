@@ -1,4 +1,5 @@
-import {Component, OnInit, Input, Output, OnChanges, SimpleChanges, SimpleChange, EventEmitter, ElementRef} from '@angular/core';
+import {Component, Input, Output, OnChanges, SimpleChanges, SimpleChange, EventEmitter, ElementRef} from '@angular/core';
+import {List2Component} from '../list2.component';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../services/graphql.service';
 
@@ -11,12 +12,11 @@ import {GraphQLService} from '../../services/graphql.service';
         '(document:keydown)': 'handleKeyboardEvent($event)',
     },
 })
-export class PlayerSelectComponent implements OnInit, OnChanges {
+export class PlayerSelectComponent extends List2Component {
 
     @Input() playerIds: string[];
     @Input() excludedPlayerIds: string[] = [];
-    @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
-    allPlayers: Player[] = [];
+    @Output() playerSelectedEventEmitter: EventEmitter<Player> = new EventEmitter<Player>();
     players: Player[] = [];
     private selectedPlayer: Player;
     private ready: boolean;
@@ -24,36 +24,28 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
     constructor(private graphQLService: GraphQLService, private elementRef: ElementRef) {
     }
 
-    ngOnInit(): void {
-    }
-
     ngOnChanges(changes: SimpleChanges): void {
         let playerIdsChange = changes['playerIds'];
         let excludedPlayerIdsChange = changes['excludedPlayerIds'];
-        if (playerIdsChange) {
-            this.loadAllPlayers();
-        } else if (excludedPlayerIdsChange) {
-            this.filterPlayers();
+        if (playerIdsChange || excludedPlayerIdsChange) {
+            this.loadPlayers();
         }
 
     }
 
-    private loadAllPlayers() {
+    private loadPlayers() {
+        let playerIdsToLoad = this.playerIds.filter((playerId => this.excludedPlayerIds.indexOf(playerId) == -1));
+        
         this.graphQLService.post(
             PlayerSelectComponent.GetPlayersQuery,
-            {playerIds: this.playerIds, first: -1},
+            {playerIds: playerIdsToLoad, first: -1},
             data => this.handleResponse(data)
         );
     }
 
     private handleResponse(data) {
-        this.allPlayers = data.players.map((player) => Player.fromJson(player));
-        this.filterPlayers();
+        this.players = data.players.map((player) => Player.fromJson(player));
         this.ready = true;
-    }
-
-    private filterPlayers() {
-        this.players = this.allPlayers.filter((player => this.excludedPlayerIds.indexOf(player.id) == -1));
     }
 
     onPlayerClicked(player: Player) {
@@ -62,7 +54,7 @@ export class PlayerSelectComponent implements OnInit, OnChanges {
     }
 
     private notifySelected() {
-        this.playerSelected.emit(this.selectedPlayer);
+        this.playerSelectedEventEmitter.emit(this.selectedPlayer);
     }
 
     handlePageClick(event) {
