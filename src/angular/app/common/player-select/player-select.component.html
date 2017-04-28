@@ -2,6 +2,10 @@
     <loading></loading>
 </template>
 <template [ngIf]="players != null">
+    <div *ngIf="!hideSearchField" class="player-list__search global__search">
+        <i class="material-icons player-list__search-icon global__search-icon">search</i>
+        <input [(ngModel)]="searchValue" (input)="onSearchFieldModified()" id="searchField" type="text" placeholder="Search" class="player-list__search-input global__search-input">
+    </div>
     <ul class="player-list">
         <li class="player-item" *ngFor="let player of players;" (click)="onPlayerClicked(player)">
             <div class="player-item-details">
