@@ -14,20 +14,20 @@
             {{pageTitle}}
         </a>
 
-        <ul *ngIf="!auth.isNewUser()" class="app__navbar-menu right hide-on-med-and-down">
+        <ul *ngIf="!isNewUser" class="app__navbar-menu right hide-on-med-and-down">
             <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>
             <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
             <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
-            <li *ngIf="auth.isAuthenticated()">
+            <li *ngIf="isAuthenticated">
                 <ul id="user-dropdown" class="dropdown-content">
-                    <li><a href="#" routerLink="/">{{auth.getUser().playerName}}</a></li>
+                    <li><a href="#" routerLink="/">{{playerName}}</a></li>
                     <li><a href="#!" (click)="auth.logout()">Logout</a></li>
                 </ul>
 
-                <a class="dropdown-button" href="#!" data-activates="user-dropdown">{{auth.getUser().playerName}}
+                <a class="dropdown-button" href="#!" data-activates="user-dropdown">{{playerName}}
                     <i class="material-icons right">arrow_drop_down</i></a>
             </li>
-            <li *ngIf="!auth.isAuthenticated()">
+            <li *ngIf="!isAuthenticated">
                 <a href="#!" (click)="auth.login()">Login</a>
             </li>
         </ul>
@@ -40,12 +40,12 @@
     </div>
 </div>
 
-<ul *ngIf="!auth.isNewUser()" class="side-nav" id="mobile-side-nav">
-    <template [ngIf]="auth.isAuthenticated()">
+<ul *ngIf="!isNewUser" class="side-nav" id="mobile-side-nav">
+    <template [ngIf]="isAuthenticated">
         <li class="user-profile">
             <a href="#" routerLink="/">
-                <img src="{{playerImage}}?size=48" alt="{{auth.getUser().playerName}}" class="circle">
-                <span>{{auth.getUser().playerName}}</span>
+                <img [src]="playerImage" alt="{{playerName}}" class="circle">
+                <span>{{playerName}}</span>
             </a>
         </li>
         <li class="divider"></li>
@@ -54,10 +54,10 @@
     <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
     <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
     <li class="divider"></li>
-    <template [ngIf]="!auth.isAuthenticated()" class="nav navbar-nav pull-right">
+    <template [ngIf]="!isAuthenticated" class="nav navbar-nav pull-right">
         <li><a href="#!" (click)="auth.login()">Login</a></li>
     </template>
-    <template [ngIf]="auth.isAuthenticated()">
+    <template [ngIf]="isAuthenticated">
         <li><a href="#!" (click)="auth.logout()">Logout</a></li>
     </template>
 

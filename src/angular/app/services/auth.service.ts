@@ -1,14 +1,17 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {XPCONFIG, ConfigUser} from '../app.config';
+import {ConfigUser, XPCONFIG} from '../app.config';
+import {UserProfileService} from './user-profile.service';
+import {Player} from '../../graphql/schemas/Player';
 
 @Injectable()
 export class AuthService {
 
     private user: ConfigUser;
 
-    constructor(private activatedRoute: ActivatedRoute) {
+    constructor(private activatedRoute: ActivatedRoute, private userProfileService: UserProfileService) {
         this.user = XPCONFIG.user;
+        this.userProfileService.subscribePlayer(player => this.updatePlayerProfile(player));
     }
 
     public login() {
@@ -41,4 +44,13 @@ export class AuthService {
         return XPCONFIG.baseHref + '/' + this.activatedRoute.snapshot.url.join('/');
     }
 
+    private updatePlayerProfile(player: Player) {
+        if (!this.isAuthenticated() || !player) {
+            return;
+        }
+        if (player) {
+            this.user.playerName = player.name;
+            this.user.playerImageUrl = player.imageUrl;
+        }
+    }
 }

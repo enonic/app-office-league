@@ -14,7 +14,8 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PlayerValidator} from '../player-validator';
 import {ImageService} from '../../services/image.service';
 import {CustomValidators} from '../../common/validators';
-import {SafeUrl, DomSanitizer} from '@angular/platform-browser';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
+import {UserProfileService} from '../../services/user-profile.service';
 
 @Component({
     selector: 'player-edit',
@@ -38,7 +39,8 @@ export class PlayerEditComponent
 
     constructor(private http: Http, route: ActivatedRoute, private pageTitleService: PageTitleService,
                 private graphQLService: GraphQLService,
-                private router: Router, private location: Location, private fb: FormBuilder, private sanitizer: DomSanitizer) {
+                private router: Router, private location: Location, private fb: FormBuilder, private sanitizer: DomSanitizer,
+                private userProfileService: UserProfileService) {
         super(route);
     }
 
@@ -138,8 +140,12 @@ export class PlayerEditComponent
         this.graphQLService.post(PlayerEditComponent.updatePlayerMutation, updatePlayerParams).then(data => {
             return data && data.updatePlayer;
         }).then(updatedPlayer => {
-            this.uploadImage(updatedPlayer.id).then(uploadResp => {
-                this.router.navigate(['players', updatedPlayer.name], {replaceUrl: true});
+            const player = Player.fromJson(updatedPlayer);
+            this.uploadImage(player.id).then(uploadResp => {
+                this.router.navigate(['players', player.name], {replaceUrl: true});
+            }).then(() => this.graphQLService.post(PlayerEditComponent.getPlayerQuery, {name: player.name})).then((data) => {
+                const player = Player.fromJson(data.player);
+                this.userProfileService.setPlayer(player);
             });
         });
     }

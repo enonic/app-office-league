@@ -12,7 +12,9 @@ import {AuthService} from '../../services/auth.service';
 import {PageTitleService} from '../../services/page-title.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PlayerValidator} from '../player-validator';
-import {SafeUrl, DomSanitizer} from '@angular/platform-browser';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
+import {Player} from '../../../graphql/schemas/Player';
+import {UserProfileService} from '../../services/user-profile.service';
 
 @Component({
     selector: 'player-create',
@@ -36,7 +38,8 @@ export class PlayerCreateComponent
 
     constructor(private http: Http, route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService,
-                private auth: AuthService, private fb: FormBuilder, private sanitizer: DomSanitizer) {
+                private auth: AuthService, private fb: FormBuilder, private sanitizer: DomSanitizer,
+                private userProfileService: UserProfileService) {
         super(route);
     }
 
@@ -101,11 +104,15 @@ export class PlayerCreateComponent
             return data && data.createPlayer;
         }).then(createdPlayer => {
             if (createdPlayer) {
+                const player = Player.fromJson(createdPlayer);
                 const user = this.auth.getUser();
-                user.playerName = createdPlayer.name;
-                user.playerId = createdPlayer.id;
-                this.uploadImage(createdPlayer.id).then(uploadResp => {
+                user.playerName = player.name;
+                user.playerId = player.id;
+                this.uploadImage(player.id).then(uploadResp => {
                     this.router.navigate([''], {replaceUrl: true});
+                }).then(() => this.graphQLService.post(PlayerCreateComponent.getPlayerQuery, {name: player.name})).then((data) => {
+                    const player = Player.fromJson(data.player);
+                    this.userProfileService.setPlayer(player);
                 });
             }
         });
@@ -149,4 +156,18 @@ export class PlayerCreateComponent
             imageUrl
         }
     }`;
+
+    private static readonly getPlayerQuery = `query($name: String){
+        player(name: $name) {
+            id
+            name
+            imageUrl
+            fullname
+            nationality
+            handedness
+            description
+            email
+        }
+    }`;
+
 }

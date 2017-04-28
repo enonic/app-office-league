@@ -18,6 +18,7 @@ import {PageTitleService} from './services/page-title.service';
 import {OfflinePersistenceService} from './services/offline-persistence.service';
 import {RankingService} from './services/ranking.service';
 import {GlobalErrorHandler} from './common/global.errorhandler';
+import {UserProfileService} from './services/user-profile.service';
 
 const appRoutes: Routes = [
     {path: '**', redirectTo: '', pathMatch: 'full'}
@@ -39,7 +40,7 @@ const appRoutes: Routes = [
         LeaguesModule
     ],
     providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard,
-        OfflinePersistenceService, RankingService,
+        OfflinePersistenceService, RankingService, UserProfileService,
         {
             provide: ErrorHandler,
             useClass: GlobalErrorHandler
