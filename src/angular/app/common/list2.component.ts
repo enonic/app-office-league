@@ -14,7 +14,7 @@ export class List2Component extends BaseComponent { //TODO Rename
     @Input() observer: any;
     @Input() detailsPath: string[];
     @Input() pageCount: number = 1;
-    private searchValue: string;
+    protected searchValue: string;
     private currentPage = 1;
     public pages: string[];
     private static readonly pagesCountBeforeAfter: number = 3;

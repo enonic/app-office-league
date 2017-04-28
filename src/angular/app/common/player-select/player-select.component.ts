@@ -1,5 +1,6 @@
 import {Component, Input, Output, OnChanges, SimpleChanges, SimpleChange, EventEmitter, ElementRef} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
+import {MaterializeAction} from 'angular2-materialize';
 import {List2Component} from '../list2.component';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../services/graphql.service';
@@ -16,7 +17,8 @@ import {GraphQLService} from '../../services/graphql.service';
 export class PlayerSelectComponent extends List2Component {
     @Input() playerIds: string[];
     @Input() excludedPlayerIds: string[] = [];
-    @Output() playerSelectedEventEmitter: EventEmitter<Player> = new EventEmitter<Player>();
+    @Input() materializeActions: EventEmitter<string|MaterializeAction> = new EventEmitter<string|MaterializeAction>();
+    @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
     allPlayers: Player[] = [];
     players: Player[] = [];
     private selectedPlayer: Player;
@@ -28,6 +30,15 @@ export class PlayerSelectComponent extends List2Component {
 
     ngOnInit(): void {
         super.ngOnInit();
+        this.searchValue = '';
+        if (this.materializeActions) {
+            this.materializeActions.subscribe((materialAction) => {
+                if (materialAction.params && materialAction.params[0] === 'open') {
+                    this.searchValue = '';
+                    this.onSearchFieldModified();
+                }
+            });
+        }
         this.observer = this;
     }
 
@@ -52,7 +63,7 @@ export class PlayerSelectComponent extends List2Component {
 
     private handleResponse(data) {
         this.allPlayers = data.players.map((player) => Player.fromJson(player));
-        this.filterPlayers(undefined);
+        this.filterPlayers(this.searchValue);
         this.ready = true;
     }
 
@@ -67,7 +78,7 @@ export class PlayerSelectComponent extends List2Component {
     }
 
     private notifySelected() {
-        this.playerSelectedEventEmitter.emit(this.selectedPlayer);
+        this.playerSelected.emit(this.selectedPlayer);
     }
 
     handlePageClick(event) {
@@ -99,8 +110,8 @@ export class PlayerSelectComponent extends List2Component {
         this.notifySelected();
     }
 
-    private refresh(currentPage: number = 1, search: string = '') {
-        this.filterPlayers(search);
+    private refresh(currentPage: number = 1, searchValue: string = '') {
+        this.filterPlayers(searchValue);
     }
 
     static readonly GetPlayersQuery = `query ($playerIds: [ID], $first:Int) {
