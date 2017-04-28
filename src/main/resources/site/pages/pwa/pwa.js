@@ -10,8 +10,7 @@ exports.get = function (req) {
         path: site._path
     });
     var appBaseUrl = portalLib.pageUrl({
-        path: site._path + '/app',
-        type: 'absolute'
+        path: site._path + '/app'
     });
     var appBaseAbsoluteUrl = portalLib.pageUrl({
         path: site._path + '/app',
@@ -23,7 +22,10 @@ exports.get = function (req) {
         return {
             redirect: portalLib.loginUrl({
                 type: 'absolute',
-                redirect: appBaseUrl
+                redirect: portalLib.pageUrl({
+                    path: site._path + '/app',
+                    type: 'absolute'
+                })
             })
         }
     }
