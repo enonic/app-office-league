@@ -4,7 +4,7 @@
 
     <a href="#!" class="league-player-list__item" *ngFor="let leaguePlayer of leaguePlayers"
        (click)="onLeaguePlayerClicked(leaguePlayer, $event)">
-        <league-summary *ngIf="displayLeagues" [league]="leaguePlayer.league" displayPlayBtn="displayPlayBtn" [rating]="leaguePlayer.rating"
+        <league-summary *ngIf="displayLeagues" [league]="leaguePlayer.league" [displayPlayBtn]="profile" [rating]="leaguePlayer.rating"
                         [ranking]="leaguePlayer.ranking"></league-summary>
         <player-summary *ngIf="displayPlayers" [player]="leaguePlayer.player" [rating]="leaguePlayer.rating"
                         [ranking]="leaguePlayer.ranking" [pendingApproval]="!!leaguePlayer.pending"
@@ -12,7 +12,11 @@
                         (approvePlayer)="onApprovePlayer($event)"></player-summary>
     </a>
     <p *ngIf="leaguePlayers?.length == 0" class="league-player-list__item league-player-list__item--empty">
-        {{displayLeagues ? 'No leagues' : displayPlayers ? 'No players' : ''}}
+        <template [ngIf]="displayLeagues">
+            <template [ngIf]="profile">You are not a member of any league yet - Discover leagues or create your own</template>
+            <template [ngIf]="!profile">No leagues</template>    
+        </template>
+        <template [ngIf]="displayPlayers">No players</template>
     </p>
     <a *ngIf="leaguePlayers?.length > 0 && this.detailsPath" href="#!" class="league-player-list__more"
        (click)="onDetailsClicked($event)">{{seeMoreText}}</a>

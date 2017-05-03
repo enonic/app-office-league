@@ -14,7 +14,7 @@ export class LeaguePlayerListComponent
     @Input() leaguePlayers: LeaguePlayer[];
     @Input() displayPlayers: boolean;
     @Input() displayLeagues: boolean;
-    @Input() displayPlayBtn: boolean;
+    @Input() profile: boolean;
     @Input() seeMoreText: string = 'See more';
     @Input() allowRemove: boolean;
     @Output() removePlayer: EventEmitter<Player> = new EventEmitter<Player>();
