@@ -45,13 +45,22 @@ function createLeague(name, params) {
 }
 
 function doCreateTestData() {
-    var superman = createPlayer('Superman', {
-        userKey: 'user:system:su',
-        description: 'Born Kal-El on the planet Krypton, before being rocketed to Earth to rule the Foosball leagues',
+    var aquaman = createPlayer('Aquaman', {
+        userKey: 'user:system:aquaman',
+        description: '',
         handedness: 'right',
-        fullname: 'Clark Kent',
+        fullname: 'Arthur Curry',
+        nationality: 'gr',
+        imageStream: ioLib.getResource('/import/lego/aquaman.jpg').getStream(),
+        imageType: 'image/jpeg'
+    });
+    var batgirl = createPlayer('Batgirl', {
+        userKey: 'user:system:batgirl',
+        description: '',
+        handedness: 'right',
+        fullname: 'Barbara Gordon',
         nationality: 'us',
-        imageStream: ioLib.getResource('/import/lego/superman.jpg').getStream(),
+        imageStream: ioLib.getResource('/import/lego/batgirl.jpg').getStream(),
         imageType: 'image/jpeg'
     });
     var batman = createPlayer('Batman', {
@@ -63,13 +72,31 @@ function doCreateTestData() {
         imageStream: ioLib.getResource('/import/lego/batman.jpg').getStream(),
         imageType: 'image/jpeg'
     });
-    var joker = createPlayer('The Joker', {
-        userKey: 'user:system:joker',
-        description: 'Criminal and foosball mastermind',
+    var catwoman = createPlayer('Catwoman', {
+        userKey: 'user:system:catwoman',
+        description: '',
         handedness: 'right',
-        fullname: 'The Joker',
+        fullname: '',
         nationality: 'us',
-        imageStream: ioLib.getResource('/import/lego/joker.jpg').getStream(),
+        imageStream: ioLib.getResource('/import/lego/catwoman.jpg').getStream(),
+        imageType: 'image/jpeg'
+    });
+    var flash = createPlayer('Flash', {
+        userKey: 'user:system:flash',
+        description: 'The fastest foosball player alive',
+        handedness: 'right',
+        fullname: 'Barry Allen',
+        nationality: 'us',
+        imageStream: ioLib.getResource('/import/lego/flash.jpg').getStream(),
+        imageType: 'image/jpeg'
+    });
+    var greenLantern = createPlayer('Green Lantern', {
+        userKey: 'user:system:greenlantern',
+        description: 'Fight evil with the aid of rings that grant him a variety of extraordinary foosball tricks',
+        handedness: 'right',
+        fullname: 'Alan Scott',
+        nationality: 'us',
+        imageStream: ioLib.getResource('/import/lego/green-lantern.jpg').getStream(),
         imageType: 'image/jpeg'
     });
     var harley = createPlayer('Harley Quinn', {
@@ -81,30 +108,68 @@ function doCreateTestData() {
         imageStream: ioLib.getResource('/import/lego/harley.jpg').getStream(),
         imageType: 'image/jpeg'
     });
+    var joker = createPlayer('The Joker', {
+        userKey: 'user:system:joker',
+        description: 'Criminal and foosball mastermind',
+        handedness: 'right',
+        fullname: 'The Joker',
+        nationality: 'us',
+        imageStream: ioLib.getResource('/import/lego/joker.jpg').getStream(),
+        imageType: 'image/jpeg'
+    });
+    var supergirl = createPlayer('Supergirl', {
+        userKey: 'user:system:supergirl',
+        description: '',
+        handedness: 'right',
+        fullname: 'Kara Zor-El',
+        nationality: 'us',
+        imageStream: ioLib.getResource('/import/lego/supergirl.jpg').getStream(),
+        imageType: 'image/jpeg'
+    });
+    var superman = createPlayer('Superman', {
+        userKey: 'user:system:su',
+        description: 'Born Kal-El on the planet Krypton, before being rocketed to Earth to rule the Foosball leagues',
+        handedness: 'right',
+        fullname: 'Clark Kent',
+        nationality: 'us',
+        imageStream: ioLib.getResource('/import/lego/superman.jpg').getStream(),
+        imageType: 'image/jpeg'
+    });
+    var wonderwoman = createPlayer('Wonderwoman', {
+        userKey: 'user:system:wonderwoman',
+        description: '',
+        handedness: 'right',
+        fullname: 'Diana Prince',
+        nationality: 'gr',
+        imageStream: ioLib.getResource('/import/lego/wonderwoman.jpg').getStream(),
+        imageType: 'image/jpeg'
+    });
+    var players = [aquaman, batgirl, batman, catwoman, flash, greenLantern, harley, joker, supergirl, superman, wonderwoman];
 
     var batmanSupermanTeam = createTeam(batman._id, superman._id, {
         description: 'Batman & Superman',
         imageStream: ioLib.getResource('/import/lego/superman-batman.jpg').getStream(),
         imageType: 'image/jpeg'
     });
+    var supermanWonderWomanTeam = createTeam(superman._id, wonderwoman._id, {
+        description: 'Superman & Wonderwoman',
+        imageStream: ioLib.getResource('/import/lego/superman-wonderwoman.jpg').getStream(),
+        imageType: 'image/jpeg'
+    });
     var jokerHarleyTeam = createTeam(joker._id, harley._id, {
         description: 'The Joker & Harley'
     });
+    var teams = [batmanSupermanTeam, supermanWonderWomanTeam, jokerHarleyTeam];
 
     var league = createLeague('Justice League', {
-        description: 'Assemblage of superheroes who join together to defeat evil foosball players',
+        description: 'Assemblage of superheroes who join together to fight evil foosball players',
         sport: 'foos',
         adminPlayerIds: [superman._id],
         imageStream: ioLib.getResource('/import/lego/league.jpg').getStream(),
         imageType: 'image/jpeg'
-    });
-
-    storeLib.joinPlayerLeague(league._id, superman._id);
-    storeLib.joinPlayerLeague(league._id, batman._id);
-    storeLib.joinPlayerLeague(league._id, joker._id);
-    storeLib.joinPlayerLeague(league._id, harley._id);
-    storeLib.joinTeamLeague(league._id, batmanSupermanTeam._id);
-    storeLib.joinTeamLeague(league._id, jokerHarleyTeam._id);
+    });    
+    players.forEach(function(player) {storeLib.joinPlayerLeague(league._id, player._id);});
+    teams.forEach(function(team) {storeLib.joinTeamLeague(league._id, team._id);});
 
     var createRandomGame = function (player1Id, player2Id, player3Id, player4Id, teamAId, teamBId) {
         var points = [];
