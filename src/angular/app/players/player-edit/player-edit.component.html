@@ -3,10 +3,10 @@
 </template>
 <template [ngIf]="playerForm.controls.id.value != ''">
     <div class="card">
-        <div class="card-content blue-grey-text"><!--
-            <span class="card-title">Player Profile</span>-->
+        <div class="card-content blue-grey-text">
+            <span class="card-title">Edit player</span>
             <form [formGroup]="playerForm">
-                <div class="row">
+                <div *ngIf="!!email" class="row">
                     <div class="col s12">
                         <i class="material-icons prefix">email</i>
                         <label class="player-email__label">Email</label>
