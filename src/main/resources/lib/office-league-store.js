@@ -1440,7 +1440,7 @@ exports.createPlayer = function (params) {
     var imageAttachment = null;
     if (params.imageStream && required(params, 'imageType')) {
         var ext = extensionFromMimeType(params.imageType);
-        imageAttachment = newAttachment('player' + ext, params.imageStream, params.imageType)
+        imageAttachment = newAttachment('player' + ext, params.imageStream, params.imageType);
     }
 
     var playerNode = repoConn.create({

@@ -47,3 +47,11 @@ The following components are provided under the Apache License 2.0. See project 
 
     Less (https://github.com/less/less.js)
     Typescript (https://github.com/Microsoft/TypeScript)
+    
+
+========================================================================
+Creative Commons - Attribution-NonCommercial-NoDerivs 2.0 Generic
+========================================================================    
+    DC Comics LEGO variant covers 
+        Origin: https://www.flickr.com/photos/toomuchdew/albums/72157645848803730/with/14667325240
+        License: https://creativecommons.org/licenses/by-nc-nd/2.0/

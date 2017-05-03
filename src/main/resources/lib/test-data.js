@@ -1,4 +1,5 @@
 var contextLib = require('/lib/xp/context');
+var ioLib = require('/lib/xp/io');
 var storeLib = require('/lib/office-league-store');
 var ratingLib = require('/lib/office-league-rating');
 
@@ -13,91 +14,93 @@ exports.createTestData = function () {
     }, doCreateTestData);
 };
 
-function doCreateTestData() {
+function createPlayer(name, params) {
+    log.info('test/createPlayer:' + JSON.stringify(params));
+    log.info('test/createPlayer2:' + !!params.imageStream);
+    var player = storeLib.getPlayerByName(name);
+    if (!player) {
+        params.name = name;
+        player = storeLib.createPlayer(params);
+    }
+    return player;
+}
 
-    var player1 = storeLib.getPlayerByName('Player1');
-    if (!player1) {
-        player1 = storeLib.createPlayer({
-            name: 'Player1',
-            userKey: 'user:system:su',
-            description: 'Player One',
-            handedness: 'left',
-            fullname: 'The Player',
-            nationality: 'us'
-        });
-        log.info('Player 1 created');
+function createTeam(playerId1, playerId2, params) {
+    var team = storeLib.getTeamByPlayerIds(playerId1, playerId2);
+    if (!team) {
+        params.playerIds = [playerId1, playerId2];
+        team = storeLib.createTeam(params);
     }
-    var player2 = storeLib.getPlayerByName('Player2');
-    if (!player2) {
-        player2 = storeLib.createPlayer({
-            name: 'Player2',
-            userKey: 'user:system:myuser2',
-            description: 'Player Two',
-            handedness: 'right',
-            fullname: 'The Other Player',
-            nationality: 'no'
-        });
-        log.info('Player 2 created');
-    }
-    var player3 = storeLib.getPlayerByName('Player3');
-    if (!player3) {
-        player3 = storeLib.createPlayer({
-            name: 'Player3',
-            userKey: 'user:system:myuser3',
-            description: 'Player Three',
-            handedness: 'left',
-            fullname: 'Some Other Player',
-            nationality: 'ru'
-        });
-        log.info('Player 3 created');
-    }
-    var player4 = storeLib.getPlayerByName('Player4');
-    if (!player4) {
-        player4 = storeLib.createPlayer({
-            name: 'Player4',
-            userKey: 'user:system:myuser4',
-            description: 'Player Four',
-            handedness: 'right',
-            fullname: 'And Another Player',
-            nationality: 'fr'
-        });
-        log.info('Player 4 created');
-    }
+    return team;
+}
 
-    var teamA = storeLib.getTeamByPlayerIds(player1._id, player2._id);
-    if (!teamA) {
-        teamA = storeLib.createTeam({
-            description: 'The A Team',
-            playerIds: [player1._id, player2._id]
-        });
-        log.info('Team A created');
-    }
-    var teamB = storeLib.getTeamByPlayerIds(player3._id, player4._id);
-    if (!teamB) {
-        teamB = storeLib.createTeam({
-            description: 'The B Team',
-            playerIds: [player3._id, player4._id]
-        });
-        log.info('Team B created');
-    }
-
-    var league = storeLib.getLeagueByName('My League');
+function createLeague(name, params) {
+    var league = storeLib.getLeagueByName(name);
     if (!league) {
-        league = storeLib.createLeague({
-            name: 'My League',
-            description: 'Test league',
-            sport: 'foos',
-            adminPlayerIds: [player1._id]
-        });
-        log.info('League created');
+        params.name = name;
+        league = storeLib.createLeague(params);
     }
+    return league;
 
-    storeLib.joinPlayerLeague(league._id, player1._id);
-    storeLib.joinPlayerLeague(league._id, player2._id);
-    storeLib.joinPlayerLeague(league._id, player3._id);
-    storeLib.joinPlayerLeague(league._id, player4._id);
-    storeLib.joinTeamLeague(league._id, teamA._id);
-    storeLib.joinTeamLeague(league._id, teamB._id);
+}
+
+function doCreateTestData() {
+    var superman = createPlayer('Superman', {
+        userKey: 'user:system:su',
+        description: 'Born Kal-El on the planet Krypton, before being rocketed to Earth to rule the Foosball leagues',
+        handedness: 'right',
+        fullname: 'Clark Kent',
+        nationality: 'us',
+        imageStream: ioLib.getResource('/import/lego/superman.jpg').getStream(),
+        imageType: 'image/jpeg'
+    });
+    var batman = createPlayer('Batman', {
+        userKey: 'user:system:batman',
+        description: 'Wealthy American playboy, philanthropist, owner of Wayne Enterprises and foosballer',
+        handedness: 'right',
+        fullname: 'Bruce Wayne',
+        nationality: 'us',
+        imageStream: ioLib.getResource('/import/lego/batman.jpg').getStream(),
+        imageType: 'image/jpeg'
+    });
+    var joker = createPlayer('The Joker', {
+        userKey: 'user:system:joker',
+        description: 'Criminal and foosball mastermind',
+        handedness: 'right',
+        fullname: 'The Joker',
+        nationality: 'us',
+        imageStream: ioLib.getResource('/import/lego/joker.jpg').getStream(),
+        imageType: 'image/jpeg'
+    });
+    var harley = createPlayer('Harley Quinn', {
+        userKey: 'user:system:harley',
+        description: 'Frequent accomplice,lover and foosball teammate of the Joker',
+        handedness: 'right',
+        fullname: 'Harleen Frances Quinzel',
+        nationality: 'us',
+        imageStream: ioLib.getResource('/import/lego/harley.jpg').getStream(),
+        imageType: 'image/jpeg'
+    });
+
+    var batmanSupermanTeam = createTeam(batman._id, superman._id, {
+        description: 'Batman & Superman'
+    });
+    var jokerHarleyTeam = createTeam(joker._id, harley._id, {
+        description: 'The Joker & Harley'
+    });
+
+    var league = createLeague('Justice League', {
+        description: 'Assemblage of superheroes who join together to defeat evil foosball players',
+        sport: 'foos',
+        adminPlayerIds: [superman._id]
+    });
+
+    storeLib.joinPlayerLeague(league._id, superman._id);
+    storeLib.joinPlayerLeague(league._id, batman._id);
+    storeLib.joinPlayerLeague(league._id, joker._id);
+    storeLib.joinPlayerLeague(league._id, harley._id);
+    storeLib.joinTeamLeague(league._id, batmanSupermanTeam._id);
+    storeLib.joinTeamLeague(league._id, jokerHarleyTeam._id);
 
     var createRandomGame = function (player1Id, player2Id, player3Id, player4Id, teamAId, teamBId) {
         var points = [];
@@ -154,7 +157,7 @@ function doCreateTestData() {
         var gameTeams = [gameTeamA, gameTeamB], t = 0;
         while (true) {
             var randomP = Math.floor(Math.random() * 4);
-            var scorer = [player1._id, player2._id, player3._id, player4._id][randomP];
+            var scorer = [player1Id, player2Id, player3Id, player4Id][randomP];
             var against = Math.random() > .9;
             t = t + Math.floor(Math.random() * 50);
             points.push({
@@ -230,6 +233,6 @@ function doCreateTestData() {
     };
 
     for (var g = 0; g < 2; g++) {
-        createRandomGame(player1._id, player2._id, player3._id, player4._id, teamA._id, teamB._id);
+        createRandomGame(superman._id, batman._id, joker._id, harley._id, batmanSupermanTeam._id, jokerHarleyTeam._id);
     }
 };
