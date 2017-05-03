@@ -301,7 +301,7 @@ function doCreateTestData() {
         log.info('Game created');
     };
 
-    for (var g = 0; g < 2; g++) {
+    for (var g = 0; g < 10; g++) {
         createRandomGame(superman._id, batman._id, joker._id, harley._id, batmanSupermanTeam._id, jokerHarleyTeam._id);
     }
 };
