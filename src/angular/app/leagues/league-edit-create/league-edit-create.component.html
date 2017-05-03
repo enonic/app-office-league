@@ -12,7 +12,7 @@
             </template>
             <form [formGroup]="leagueForm">
                 <div class="row">
-                    <div class="input-field col s12 l8 offset-l2">
+                    <div class="input-field col s12">
                         <i class="material-icons prefix">label_outline</i>
                         <input id="name" type="text" formControlName="name" name="name" [class.invalid]="!!formErrors.name"
                                autocomplete="off"
@@ -22,7 +22,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s12 l8 offset-l2">
+                    <div class="input-field col s12">
                         <i class="material-icons prefix">info_outline</i>
                         <input id="description" type="text" class="validate" autocomplete="off" name="description" [(ngModel)]="description"
                                formControlName="description">
@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s12 l8 offset-l2">
+                    <div class="col s12">
                         <input type="file" accept="image/*" #fileInput style="display:none;">
 
                         <div class="league-icon-frame">
@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s12 l8 offset-l2">
+                    <div class="col s12">
                         <div class="league__admins-title">
                             <i class="material-icons prefix league__admins-titleicon">verified_user</i>
                             <h6 class="league__admins-titletext"> Administrators</h6>
