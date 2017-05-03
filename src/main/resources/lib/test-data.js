@@ -83,7 +83,9 @@ function doCreateTestData() {
     });
 
     var batmanSupermanTeam = createTeam(batman._id, superman._id, {
-        description: 'Batman & Superman'
+        description: 'Batman & Superman',
+        imageStream: ioLib.getResource('/import/lego/superman-batman.jpg').getStream(),
+        imageType: 'image/jpeg'
     });
     var jokerHarleyTeam = createTeam(joker._id, harley._id, {
         description: 'The Joker & Harley'
@@ -92,7 +94,9 @@ function doCreateTestData() {
     var league = createLeague('Justice League', {
         description: 'Assemblage of superheroes who join together to defeat evil foosball players',
         sport: 'foos',
-        adminPlayerIds: [superman._id]
+        adminPlayerIds: [superman._id],
+        imageStream: ioLib.getResource('/import/lego/league.jpg').getStream(),
+        imageType: 'image/jpeg'
     });
 
     storeLib.joinPlayerLeague(league._id, superman._id);
