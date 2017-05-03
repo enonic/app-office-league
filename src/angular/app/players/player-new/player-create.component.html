@@ -59,43 +59,11 @@
                         </select>
                     </div>
                 </div>
-                <!--<div class="row">
-                    <div class="col s6">
-                        <i class="material-icons prefix">thumbs_up_down</i>
-                        <label class="handedness">Handedness</label>
-                        <p>
-                            <input name="handLeft" type="radio" id="handLeft" value="left" [(ngModel)]="handedness" required=""
-                                   aria-required="true"/>
-                            <label for="handLeft">Left</label>
-                        </p>
-                        <p>
-                            <input name="handRight" type="radio" id="handRight" value="right" [(ngModel)]="handedness" required=""
-                                   aria-required="true"/>
-                            <label for="handRight">Right</label>
-                        </p>
-                        <p>
-                            <input name="handBoth" type="radio" id="handBoth" value="ambidexterity" [(ngModel)]="handedness" required=""
-                                   aria-required="true"/>
-                            <label for="handBoth">Ambidextrous</label>
-                        </p>
-                    </div>
-
-                </div>-->
+                <div class="row submit-row">
+                    <a class="waves-effect waves-teal btn light-blue" [attr.disabled]="!playerForm.valid ? true : null"
+                       (click)="onSaveClicked()"><i class="material-icons left">save</i>Create</a>
+                </div>
             </form>
-        </div>
-    </div>
-
-    <div class="row">
-        <!--<div class="col s6">
-            <button class="btn waves-effect waves-light grey darken-1 left" type="submit" name="create" (click)="onCancelClicked()">
-                Cancel
-            </button>
-        </div>-->
-        <div class="col s6">
-            <button class="btn waves-effect waves-light light-blue darken-3 right" type="submit" name="create" (click)="onSaveClicked()"
-                    [disabled]="!playerForm.valid">
-                Create Player
-            </button>
         </div>
     </div>
 </template>
