@@ -13,7 +13,7 @@
     </a>
     <p *ngIf="leaguePlayers?.length == 0" class="league-player-list__item league-player-list__item--empty">
         <template [ngIf]="displayLeagues">
-            <template [ngIf]="profile">You are not a member of any league yet - Discover leagues or create your own</template>
+            <template [ngIf]="profile">You are not a member of any league yet - <a class="text-link" routerLink="/leagues">Discover leagues</a> or <a class="text-link" routerLink="/league-create">create your own</a></template>
             <template [ngIf]="!profile">No leagues</template>    
         </template>
         <template [ngIf]="displayPlayers">No players</template>
