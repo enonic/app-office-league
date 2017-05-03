@@ -55,13 +55,11 @@
 
                     </div>
                 </div>
+                <div class="row submit-row">
+                    <a class="waves-effect waves-teal btn light-blue" [attr.disabled]="!teamForm.valid ? true : null" (click)="onSaveClicked()">
+                        <i class="material-icons left">save</i>Save</a>
+                </div>
             </form>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="fixed-action-btn">
-            <a [attr.disabled]="!teamForm.valid ? true : null" (click)="onSaveClicked()" class="btn-floating btn-large waves-effect waves-light light-blue"><i class="material-icons">save</i></a>
         </div>
     </div>
 </template>
