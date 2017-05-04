@@ -104,8 +104,8 @@
     <div class="modal center player-select-modal" materialize="modal"
          [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
         <div class="modal-content">
-            <h6 class="center">Select a player to add</h6>
-            <player-select [playerIds]="nonMembersPlayerIds" [materializeActions]="materializeActions" (playerSelected)="onSelected($event)"></player-select>
+            <h6 class="center">Select players to add</h6>
+            <players-select [playerNames]="nonMembersPlayerNames"></players-select>
         </div>
     </div>
     <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"

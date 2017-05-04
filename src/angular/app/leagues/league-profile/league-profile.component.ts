@@ -24,7 +24,7 @@ export class LeagueProfileComponent
     adminInLeague: boolean;
     joinLeagueRequested: boolean;
     activeGames: Game[] = [];
-    nonMembersPlayerIds: string[] = [];
+    nonMembersPlayerNames: string[] = [];
     removePlayer: Player;
     approvePlayer: Player;
     materializeActions = new EventEmitter<string | MaterializeAction>();
@@ -87,7 +87,7 @@ export class LeagueProfileComponent
             game.live = true;
             return game;
         });
-        this.nonMembersPlayerIds = data.league.nonMemberPlayers.map((player) => player.id);
+        this.nonMembersPlayerNames = data.league.nonMemberPlayers.map((player) => player.name);
 
         this.pageTitleService.setTitle(this.league.name);
     }
@@ -385,8 +385,7 @@ export class LeagueProfileComponent
                 }
             }
             nonMemberPlayers(first:-1, sort:"name ASC") {
-                id
-                imageUrl
+                name
             }
             stats {
                 gameCount
