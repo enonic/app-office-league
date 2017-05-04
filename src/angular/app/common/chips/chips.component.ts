@@ -7,13 +7,14 @@ import {GraphQLService} from '../../services/graphql.service';
 declare var $: any;
 
 @Component({
-    selector: 'players-select',
-    templateUrl: 'players-select.component.html',
-    styleUrls: ['players-select.component.less']
+    selector: 'chips',
+    templateUrl: 'chips.component.html',
+    styleUrls: ['chips.component.less']
 })
-export class PlayersSelectComponent extends BaseComponent {
+export class ChipsComponent extends BaseComponent {
 
-    @Input() playerNames: string[];
+    @Input() availableTags: string[];
+    @Input() selectedTags: string[];
     private autocompleteInit: any = {
         autocompleteOptions: {
             data: {
@@ -32,8 +33,7 @@ export class PlayersSelectComponent extends BaseComponent {
     
     ngOnInit() : void {
         let data = {};
-        this.playerNames.forEach((playerName) => data[playerName] = null);
-        console.log('data', data);
+        this.availableTags.forEach((tag) => data[tag] = null);
         this.autocompleteInit = {
             autocompleteOptions: {
                 data: data,
@@ -44,14 +44,16 @@ export class PlayersSelectComponent extends BaseComponent {
     }
 
     add(chip) {
-        console.log("Chip added: " + chip.tag);
+        this.selectedTags.push(chip.tag);
     }
 
     delete(chip) {
-        console.log("Chip deleted: " + chip.tag);
+        let deleteIndex = this.selectedTags.findIndex(chip.tag);
+        if (deleteIndex > -1) {
+            this.selectedTags.splice(deleteIndex, 1);
+        }
     }
 
     select(chip) {
-        console.log("Chip selected: " + chip.tag);
     }
 }

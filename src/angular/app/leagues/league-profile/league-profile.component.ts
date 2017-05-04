@@ -25,6 +25,7 @@ export class LeagueProfileComponent
     joinLeagueRequested: boolean;
     activeGames: Game[] = [];
     nonMembersPlayerNames: string[] = [];
+    playerNamesToSelect : string[] = [];
     removePlayer: Player;
     approvePlayer: Player;
     materializeActions = new EventEmitter<string | MaterializeAction>();
@@ -131,15 +132,9 @@ export class LeagueProfileComponent
                 });
         }
     }
-
-    onSelected(player: Player) {
-        if (player) {
-            this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery, {playerId: player.id, leagueId: this.league.id}).then(
-                data => {
-                    this.hideModal();
-                    this.refreshData(this.league.name);
-                });
-        }
+    
+    onPlayersAdded() {
+        this.hideModal();
     }
 
     onRemovePlayer(player: Player) {
