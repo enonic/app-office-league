@@ -6,7 +6,7 @@ exports.processImage = function (node, attachment, params) {
         return null;
     }
 
-    var size = params.size || 42;
+    var size = params.size || 128;
     return contextLib.run({
         repository: 'office-league',
         branch: 'master'
