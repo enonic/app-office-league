@@ -104,8 +104,11 @@
     <div class="modal center player-select-modal" materialize="modal"
          [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
         <div class="modal-content">
-            <h6 class="center">Select a player to add</h6>
-            <player-select [playerIds]="nonMembersPlayerIds" [materializeActions]="materializeActions" (playerSelected)="onSelected($event)"></player-select>
+            <h6 class="center">Select players to add</h6>
+            <chips [availableTags]="nonMembersPlayerNames" [selectedTags]="playerNamesToAdd"></chips>
+            <div class="row submit-row">
+                <a class="waves-effect waves-teal btn green" [attr.disabled]="playerNamesToAdd.length===0?true:null" (click)="onPlayersAdded()"><i class="material-icons left">add</i>Add</a>
+            </div>
         </div>
     </div>
     <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"

@@ -12,7 +12,9 @@ import {TeamListComponent} from './team-list/team-list.component';
 import {TeamPlayersComponent} from './team-players/team-players.component';
 import {LoadingComponent} from './loading/loading.component';
 import {PlayerSelectComponent} from './player-select/player-select.component';
+import {ChipsComponent} from './chips/chips.component';
 import {ReactiveFormsModule} from "@angular/forms";
+import {MaterializeModule} from 'angular2-materialize/dist/index';
 
 
 @NgModule({
@@ -27,12 +29,14 @@ import {ReactiveFormsModule} from "@angular/forms";
         ListComponent,
         List2Component,
         LoadingComponent,
-        PlayerSelectComponent
+        PlayerSelectComponent,
+        ChipsComponent
     ],
     imports: [
         BrowserModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MaterializeModule
     ],
     exports: [
         BrowserModule,
@@ -47,7 +51,8 @@ import {ReactiveFormsModule} from "@angular/forms";
         ListComponent,
         List2Component,
         LoadingComponent,
-        PlayerSelectComponent
+        PlayerSelectComponent,
+        ChipsComponent,
     ]
 })
 export class CommonModule {

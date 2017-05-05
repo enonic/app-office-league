@@ -24,7 +24,8 @@ export class LeagueProfileComponent
     adminInLeague: boolean;
     joinLeagueRequested: boolean;
     activeGames: Game[] = [];
-    nonMembersPlayerIds: string[] = [];
+    nonMembersPlayerNames: string[] = [];
+    playerNamesToAdd : string[] = [];
     removePlayer: Player;
     approvePlayer: Player;
     materializeActions = new EventEmitter<string | MaterializeAction>();
@@ -87,7 +88,7 @@ export class LeagueProfileComponent
             game.live = true;
             return game;
         });
-        this.nonMembersPlayerIds = data.league.nonMemberPlayers.map((player) => player.id);
+        this.nonMembersPlayerNames = data.league.nonMemberPlayers.map((player) => player.name);
 
         this.pageTitleService.setTitle(this.league.name);
     }
@@ -131,15 +132,14 @@ export class LeagueProfileComponent
                 });
         }
     }
-
-    onSelected(player: Player) {
-        if (player) {
-            this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery, {playerId: player.id, leagueId: this.league.id}).then(
+    
+    onPlayersAdded() {
+        this.graphQLService.post(LeagueProfileComponent.addPlayersLeagueQuery, {leagueId: this.league.id, playerNames : this.playerNamesToAdd}).then(
                 data => {
-                    this.hideModal();
-                    this.refreshData(this.league.name);
-                });
-        }
+                this.refreshData(this.league.name);
+            });
+        this.playerNamesToAdd = [];
+        this.hideModal();
     }
 
     onRemovePlayer(player: Player) {
@@ -385,8 +385,7 @@ export class LeagueProfileComponent
                 }
             }
             nonMemberPlayers(first:-1, sort:"name ASC") {
-                id
-                imageUrl
+                name
             }
             stats {
                 gameCount
@@ -404,6 +403,12 @@ export class LeagueProfileComponent
 
     private static readonly joinPlayerLeagueQuery = `mutation ($playerId: ID!, $leagueId:ID!) {
         joinPlayerLeague(playerId: $playerId, leagueId: $leagueId) {
+            id
+        }
+    }`;
+
+    private static readonly addPlayersLeagueQuery = `mutation ($leagueId:ID!, $playerNames: [String]!) {
+        addPlayersLeague(leagueId: $leagueId, playerNames: $playerNames) {
             id
         }
     }`;
