@@ -25,7 +25,7 @@ export class LeagueProfileComponent
     joinLeagueRequested: boolean;
     activeGames: Game[] = [];
     nonMembersPlayerNames: string[] = [];
-    playerNamesToSelect : string[] = [];
+    playerNamesToAdd : string[] = [];
     removePlayer: Player;
     approvePlayer: Player;
     materializeActions = new EventEmitter<string | MaterializeAction>();
@@ -134,6 +134,11 @@ export class LeagueProfileComponent
     }
     
     onPlayersAdded() {
+        this.graphQLService.post(LeagueProfileComponent.addPlayersLeagueQuery, {leagueId: this.league.id, playerNames : this.playerNamesToAdd}).then(
+                data => {
+                this.refreshData(this.league.name);
+            });
+        this.playerNamesToAdd = [];
         this.hideModal();
     }
 
@@ -398,6 +403,12 @@ export class LeagueProfileComponent
 
     private static readonly joinPlayerLeagueQuery = `mutation ($playerId: ID!, $leagueId:ID!) {
         joinPlayerLeague(playerId: $playerId, leagueId: $leagueId) {
+            id
+        }
+    }`;
+
+    private static readonly addPlayersLeagueQuery = `mutation ($leagueId:ID!, $playerNames: [String]!) {
+        addPlayersLeague(leagueId: $leagueId, playerNames: $playerNames) {
             id
         }
     }`;

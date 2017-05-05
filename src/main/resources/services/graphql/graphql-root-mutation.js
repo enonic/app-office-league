@@ -183,6 +183,23 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 return createdLeaguePlayer;
             }
         },
+        addPlayersLeague: {
+            type: graphQlLib.list(graphQlObjectTypesLib.leaguePlayerType),
+            args: {
+                leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
+                playerNames: graphQlLib.nonNull(graphQlLib.list(graphQlLib.GraphQLString))
+            },
+            data: function (env) {
+                checkJoinPlayerLeaguePermissions(env.args.leagueId);
+
+                var createdLeaguePlayers = env.args.playerNames.map(function(playerName) {
+                    var playerId = storeLib.getPlayerByName(playerName)._id;
+                    return playerId && storeLib.joinPlayerLeague(env.args.leagueId, playerId, env.args.rating);    
+                });                
+                storeLib.refresh();
+                return createdLeaguePlayers;
+            }
+        },
         leavePlayerLeague: {
             type: graphQlLib.GraphQLID,
             args: {

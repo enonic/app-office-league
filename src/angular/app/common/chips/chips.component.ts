@@ -18,9 +18,6 @@ export class ChipsComponent extends BaseComponent {
     private autocompleteInit: any = {
         autocompleteOptions: {
             data: {
-                'Apple': null,
-                'Microsoft': null,
-                'Google': null
             },
             limit: Infinity,
             minLength: 1
@@ -32,6 +29,20 @@ export class ChipsComponent extends BaseComponent {
     }
     
     ngOnInit() : void {
+        super.ngOnInit();
+        this.refreshAvailableTags();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
+
+        let availableTagsChange = changes['availableTags'];
+        if (availableTagsChange) {
+            this.refreshAvailableTags();
+        }
+    }
+    
+    refreshAvailableTags(): void {
         let data = {};
         this.availableTags.forEach((tag) => data[tag] = null);
         this.autocompleteInit = {
@@ -48,7 +59,7 @@ export class ChipsComponent extends BaseComponent {
     }
 
     delete(chip) {
-        let deleteIndex = this.selectedTags.findIndex(chip.tag);
+        let deleteIndex = this.selectedTags.indexOf(chip.tag);
         if (deleteIndex > -1) {
             this.selectedTags.splice(deleteIndex, 1);
         }
