@@ -25,7 +25,7 @@ export class LeagueProfileComponent
     joinLeagueRequested: boolean;
     activeGames: Game[] = [];
     nonMembersPlayerNames: string[] = [];
-    playerNamesToAdd : string[] = [];
+    playerNamesToAdd: string[] = [];
     removePlayer: Player;
     approvePlayer: Player;
     materializeActions = new EventEmitter<string | MaterializeAction>();
@@ -60,18 +60,25 @@ export class LeagueProfileComponent
         }
     }
 
-    refreshData(leagueName: String): void {
+    refreshData(leagueName: String): Promise<any> {
         let playerId = this.authService.isAuthenticated() ? this.authService.getUser().playerId : '-1';
 
         const getLeagueParams = {
-            name: leagueName, first: 3, sort: 'pending ASC, rating DESC, name ASC', playerId: playerId,
+            name: leagueName, first: 3, sort: 'pending DESC, rating DESC, name ASC', playerId: playerId,
             activeGameCount: 3, gameCount: 3
         };
-        this.graphQLService.post(
-            LeagueProfileComponent.getLeagueQuery,
-            getLeagueParams,
-            data => this.handleLeagueQueryResponse(data)
-        );
+
+        return new Promise((resolve, reject) => {
+            this.graphQLService.post(
+                LeagueProfileComponent.getLeagueQuery,
+                getLeagueParams,
+                data => {
+                    this.handleLeagueQueryResponse(data);
+                    resolve();
+                },
+                () => reject()
+            );
+        });
     }
 
     private handleLeagueQueryResponse(data) {
@@ -132,10 +139,11 @@ export class LeagueProfileComponent
                 });
         }
     }
-    
+
     onPlayersAdded() {
-        this.graphQLService.post(LeagueProfileComponent.addPlayersLeagueQuery, {leagueId: this.league.id, playerNames : this.playerNamesToAdd}).then(
-                data => {
+        this.graphQLService.post(LeagueProfileComponent.addPlayersLeagueQuery,
+            {leagueId: this.league.id, playerNames: this.playerNamesToAdd}).then(
+            data => {
                 this.refreshData(this.league.name);
             });
         this.playerNamesToAdd = [];
@@ -182,7 +190,7 @@ export class LeagueProfileComponent
     onConfirmDeleteClicked() {
         this.graphQLService.post(LeagueProfileComponent.deleteLeagueQuery,
             {name: this.league.name}).then(
-                data => {
+            data => {
                 this.hideModalDelete();
                 this.router.navigate(['leagues']);
             });
@@ -191,7 +199,7 @@ export class LeagueProfileComponent
     onConfirmLeaveClicked() {
         this.graphQLService.post(LeagueProfileComponent.leavePlayerLeagueQuery,
             {playerId: this.authService.getUser().playerId, leagueId: this.league.id}).then(
-                data => {
+            data => {
                 this.hideModalLeave();
                 this.refreshData(this.league.name);
             });
@@ -222,7 +230,12 @@ export class LeagueProfileComponent
     }
 
     public showModalPending(): void {
-        this.materializeActionsPending.emit({action: "modal", params: ['open']});
+        // check if pending, show info modal if still pending
+        this.refreshData(this.league.name).then(() => {
+            if (!this.playerInLeague && this.joinLeagueRequested) {
+                this.materializeActionsPending.emit({action: "modal", params: ['open']});
+            }
+        });
     }
 
     public hideModalPending(): void {

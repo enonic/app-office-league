@@ -49,7 +49,7 @@ export class LeagueProfilePlayersComponent
                 name: this.leagueName,
                 after: after,
                 first: LeagueProfilePlayersComponent.paging,
-                sort: 'pending ASC, rating DESC, name ASC',
+                sort: 'pending DESC, rating DESC, name ASC',
                 playerId: playerId
             },
             data => this.handleLeagueQueryResponse(data)
