@@ -1,4 +1,4 @@
-var graphQlLib = require('graphql');
+var graphQlLib = require('/lib/graphql');
 var graphQlObjectTypesLib = require('./graphql-object-types');
 var storeLib = require('office-league-store');
 
@@ -12,7 +12,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 name: graphQlLib.GraphQLString,
                 userKey: graphQlLib.GraphQLString
             },
-            data: function (env) {
+            resolve: function (env) {
                 var id = env.args.id;
                 var name = env.args.name;
                 var userKey = env.args.userKey;
@@ -34,7 +34,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 ids: graphQlLib.list(graphQlLib.GraphQLID),
                 search: graphQlLib.GraphQLString
             },
-            data: function (env) {
+            resolve: function (env) {
                 var offset = env.args.offset;
                 var first = env.args.first;
                 var ids = env.args.ids;
@@ -55,7 +55,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 first: graphQlLib.GraphQLInt,
                 search: graphQlLib.GraphQLString
             },
-            data: function (env) {
+            resolve: function (env) {
                 var after = env.args.after;
                 var first = env.args.first;
                 var search = env.args.search;
@@ -72,7 +72,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 id: graphQlLib.GraphQLID,
                 name: graphQlLib.GraphQLString
             },
-            data: function (env) {
+            resolve: function (env) {
                 var id = env.args.id;
                 var name = env.args.name;
                 if (id) {
@@ -91,7 +91,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 ids: graphQlLib.list(graphQlLib.GraphQLID),
                 search: graphQlLib.GraphQLString
             },
-            data: function (env) {
+            resolve: function (env) {
                 var offset = env.args.offset;
                 var first = env.args.first;
                 var ids = env.args.ids;
@@ -112,7 +112,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 first: graphQlLib.GraphQLInt,
                 search: graphQlLib.GraphQLString
             },
-            data: function (env) {
+            resolve: function (env) {
                 var after = env.args.after;
                 var first = env.args.first;
                 var search = env.args.search;
@@ -131,7 +131,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 first: graphQlLib.GraphQLInt,
                 finished: graphQlLib.GraphQLBoolean
             },
-            data: function (env) {
+            resolve: function (env) {
                 var leagueId = env.args.leagueId;
                 var offset = env.args.offset;
                 var first = env.args.first;
@@ -149,7 +149,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 teamName: graphQlLib.GraphQLString,
                 finished: graphQlLib.GraphQLBoolean,
             },
-            data: function (env) {
+            resolve: function (env) {
                 var after = env.args.after;
                 var first = env.args.first;
                 var leagueName = env.args.leagueName;
@@ -188,7 +188,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 offset: graphQlLib.GraphQLInt,
                 first: graphQlLib.GraphQLInt
             },
-            data: function (env) {
+            resolve: function (env) {
                 var leagueId = env.args.leagueId;
                 var offset = env.args.offset;
                 var first = env.args.first;
@@ -200,7 +200,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
             args: {
                 id: graphQlLib.nonNull(graphQlLib.GraphQLID)
             },
-            data: function (env) {
+            resolve: function (env) {
                 var gameId = env.args.id;
                 return storeLib.getGameById(gameId);
             }
@@ -213,7 +213,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 offset: graphQlLib.GraphQLInt,
                 first: graphQlLib.GraphQLInt
             },
-            data: function (env) {
+            resolve: function (env) {
                 var leagueId = env.args.leagueId;
                 var playerId = env.args.playerId;
                 var offset = env.args.offset;
@@ -234,7 +234,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 offset: graphQlLib.GraphQLInt,
                 first: graphQlLib.GraphQLInt
             },
-            data: function (env) {
+            resolve: function (env) {
                 var leagueId = env.args.leagueId;
                 var teamId = env.args.teamId;
                 var offset = env.args.offset;
@@ -253,7 +253,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 id: graphQlLib.GraphQLID,
                 name: graphQlLib.GraphQLString
             },
-            data: function (env) {
+            resolve: function (env) {
                 var id = env.args.id;
                 var name = env.args.name;
                 if (id) {
@@ -272,7 +272,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 first: graphQlLib.GraphQLInt,
                 ids: graphQlLib.list(graphQlLib.GraphQLID)
             },
-            data: function (env) {
+            resolve: function (env) {
                 var playerId = env.args.playerId;
                 var offset = env.args.offset;
                 var first = env.args.first;

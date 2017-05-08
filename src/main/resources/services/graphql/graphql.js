@@ -1,4 +1,4 @@
-var graphQlLib = require('graphql');
+var graphQlLib = require('/lib/graphql');
 var schemaLib = require('./graphql-schema');
 
 exports.post = function (req) {

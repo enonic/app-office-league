@@ -1,4 +1,4 @@
-var graphQlLib = require('graphql');
+var graphQlLib = require('/lib/graphql');
 var graphQlEnumsLib = require('./graphql-enums');
 var graphQlObjectTypesLib = require('./graphql-object-types');
 var graphQlInputTypesLib = require('./graphql-input-types');
@@ -18,7 +18,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 config: graphQlLib.GraphQLString,//TODO
                 adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID)
             },
-            data: function (env) {
+            resolve: function (env) {
                 var currentPlayerId = getCurrentPlayerId();
                 var adminPlayerIds = env.args.adminPlayerIds || [];
                 checkCreateLeaguePermissions(currentPlayerId, adminPlayerIds);
@@ -46,7 +46,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 config: graphQlLib.GraphQLString,//TODO
                 adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID)
             },
-            data: function (env) {
+            resolve: function (env) {
                 checkUpdateLeaguePermissions(env.args.id, env.args.adminPlayerIds);
 
                 var updatedLeague = storeLib.updateLeague({
@@ -65,7 +65,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
             args: {
                 name: graphQlLib.nonNull(graphQlLib.GraphQLString)
             },
-            data: function (env) {
+            resolve: function (env) {
                 checkDeleteLeaguePermissions(env.args.name);
 
                 var deletedId = storeLib.deleteLeagueByName(env.args.name);
@@ -82,7 +82,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 handedness: graphQlEnumsLib.handednessEnumType,
                 description: graphQlLib.GraphQLString
             },
-            data: function (env) {
+            resolve: function (env) {
                 var userKey = getCurrentUserKey();
                 checkCreatePlayerPermissions(userKey)
 
@@ -108,7 +108,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 handedness: graphQlEnumsLib.handednessEnumType,
                 description: graphQlLib.GraphQLString
             },
-            data: function (env) {
+            resolve: function (env) {
                 checkUpdatePlayerPermissions(env.args.id);
 
                 var updatedPlayer = storeLib.updatePlayer({
@@ -130,7 +130,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 description: graphQlLib.GraphQLString,
                 playerIds: graphQlLib.nonNull(graphQlLib.list(graphQlLib.GraphQLID))
             },
-            data: function (env) {
+            resolve: function (env) {
                 checkCreateTeamPermissions(env.args.playerIds);
 
                 var createdTeam = storeLib.createTeam({
@@ -149,7 +149,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 name: graphQlLib.GraphQLString,
                 description: graphQlLib.GraphQLString
             },
-            data: function (env) {
+            resolve: function (env) {
                 checkUpdateTeamPermissions(env.args.id);
 
                 var updatedTeam = storeLib.updateTeam({
@@ -168,7 +168,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 playerId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 rating: graphQlLib.GraphQLInt
             },
-            data: function (env) {
+            resolve: function (env) {
                 checkJoinPlayerLeaguePermissions(env.args.leagueId);
 
                 var prevLeaguePlayer = storeLib.getLeaguePlayerByLeagueIdAndPlayerId(env.args.leagueId, env.args.playerId, true);
@@ -189,7 +189,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 playerNames: graphQlLib.nonNull(graphQlLib.list(graphQlLib.GraphQLString))
             },
-            data: function (env) {
+            resolve: function (env) {
                 checkJoinPlayerLeaguePermissions(env.args.leagueId);
 
                 var createdLeaguePlayers = env.args.playerNames.map(function(playerName) {
@@ -206,7 +206,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 playerId: graphQlLib.nonNull(graphQlLib.GraphQLID)
             },
-            data: function (env) {
+            resolve: function (env) {
                 checkLeavePlayerLeaguePermissions(env.args.leagueId, env.args.playerId);
 
                 storeLib.leavePlayerLeague(env.args.leagueId, env.args.playerId);
@@ -219,7 +219,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
             args: {
                 leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID)
             },
-            data: function (env) {
+            resolve: function (env) {
                 var leagueId = env.args.leagueId;
                 checkRequestJoinLeaguePermissions(leagueId);
 
@@ -243,7 +243,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 playerId: graphQlLib.nonNull(graphQlLib.GraphQLID)
             },
-            data: function (env) {
+            resolve: function (env) {
                 var leagueId = env.args.leagueId;
                 checkDenyJoinLeaguePermissions(leagueId);
 
@@ -268,7 +268,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 playerId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 ratingDelta: graphQlLib.nonNull(graphQlLib.GraphQLInt)
             },
-            data: function (env) {
+            resolve: function (env) {
                 checkUpdatePlayerLeagueRatingPermissions();
 
                 var updatedLeaguePlayer = storeLib.updatePlayerLeagueRating(env.args.leagueId, env.args.playerId, env.args.ratingDelta);
@@ -283,7 +283,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 teamId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 rating: graphQlLib.GraphQLInt
             },
-            data: function (env) {
+            resolve: function (env) {
                 checkJoinTeamLeaguePermissions(env.args.leagueId);
 
                 var createdLeagueTeam = storeLib.joinTeamLeague(env.args.leagueId, env.args.teamId, env.args.rating);
@@ -298,7 +298,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 teamId: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 ratingDelta: graphQlLib.nonNull(graphQlLib.GraphQLInt)
             },
-            data: function (env) {
+            resolve: function (env) {
                 checkUpdateTeamLeagueRatingPermissions();
 
                 var updatedLeagueTeam = storeLib.updateTeamLeagueRating(env.args.leagueId, env.args.teamId, env.args.ratingDelta);
@@ -313,7 +313,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 points: graphQlLib.list(graphQlInputTypesLib.pointCreationType),
                 gamePlayers: graphQlLib.nonNull(graphQlLib.list(graphQlInputTypesLib.gamePlayerCreationType))
             },
-            data: function (env) {
+            resolve: function (env) {
                 checkCreateGamePermissions(env.args.leagueId, env.args.gamePlayers);
 
                 var createGameParams = storeLib.generateCreateGameParams({
@@ -341,7 +341,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 points: graphQlLib.list(graphQlInputTypesLib.pointCreationType),
                 gamePlayers: graphQlLib.nonNull(graphQlLib.list(graphQlInputTypesLib.gamePlayerCreationType))
             },
-            data: function (env) {
+            resolve: function (env) {
                 checkUpdateGamePermissions(env.args.gameId, env.args.gamePlayers);
 
                 var createGameParams = storeLib.generateCreateGameParams({
@@ -373,7 +373,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
             args: {
                 id: graphQlLib.nonNull(graphQlLib.GraphQLID)
             },
-            data: function (env) {
+            resolve: function (env) {
                 checkDeleteGamePermissions(env.args.id);
 
                 var deletedId = storeLib.deleteGameById(env.args.id);
@@ -388,7 +388,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 author: graphQlLib.nonNull(graphQlLib.GraphQLID),
                 text: graphQlLib.GraphQLString
             },
-            data: function (env) {
+            resolve: function (env) {
                 var playerId = getCurrentPlayerId();
                 if (playerId !== env.args.author) {
                     throw "Comment author is not the logged in user";

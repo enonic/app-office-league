@@ -51,8 +51,9 @@ dependencies {
     include "com.enonic.xp:lib-task:${xpVersion}"
     include "com.enonic.xp:lib-http-client:${xpVersion}"
     include "com.enonic.xp:lib-mail:${xpVersion}"
-    include 'com.graphql-java:graphql-java:2.3.0'
     include "com.enonic.lib:util:1.1.1"
+    include "com.enonic.lib:graphql:0.1.0"
+    include 'com.graphql-java:graphql-java:2.3.0' //TODO Find a better solution
 }
 
 repositories {

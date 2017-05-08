@@ -1,4 +1,4 @@
-var graphQlLib = require('graphql');
+var graphQlLib = require('/lib/graphql');
 var graphQlEnumsLib = require('./graphql-enums');
 
 exports.pointCreationType = graphQlLib.createInputObjectType({
