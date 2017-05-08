@@ -2,8 +2,6 @@ import {Component, Input, Output, OnChanges, SimpleChanges, SimpleChange, EventE
 import {Router, ActivatedRoute} from '@angular/router';
 import {MaterializeAction, MaterializeDirective} from 'angular2-materialize';
 import {BaseComponent} from '../base.component';
-import {Player} from '../../../graphql/schemas/Player';
-import {GraphQLService} from '../../services/graphql.service';
 declare var $: any;
 
 @Component({
@@ -15,7 +13,7 @@ export class ChipsComponent extends BaseComponent {
 
     @Input() availableTags: string[];
     @Input() selectedTags: string[];
-    private autocompleteInit: any = {
+    public autocompleteInit: any = {
         autocompleteOptions: {
             data: {
             },
