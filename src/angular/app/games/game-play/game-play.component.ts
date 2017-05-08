@@ -235,7 +235,7 @@ export class GamePlayComponent
     }
 
     onEndGameClicked() {
-        this.deleteGame().then(id => {
+        this.deleteGame().then(() => {
             this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
         }).catch((error) => {
             this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
@@ -596,7 +596,7 @@ export class GamePlayComponent
         );
     }
 
-    private deleteGame(): Promise<string> {
+    private deleteGame(): Promise<any> {
         return this.offlineService.deleteOfflineGame(this.gameId).then(() => {
                 this.deleteServerGame(this.gameId);
             }
