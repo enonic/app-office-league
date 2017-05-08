@@ -81,7 +81,8 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 fullname: graphQlLib.GraphQLString,
                 nationality: graphQlLib.GraphQLString, //TODO
                 handedness: graphQlEnumsLib.handednessEnumType,
-                description: graphQlLib.GraphQLString
+                description: graphQlLib.GraphQLString,
+                invitation: graphQlLib.GraphQLString
             },
             resolve: function (env) {
                 var userKey = getCurrentUserKey();

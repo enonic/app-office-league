@@ -22,9 +22,7 @@ import {UserProfileService} from '../../services/user-profile.service';
     styleUrls: ['player-create.component.less']
 })
 
-export class PlayerCreateComponent
-    extends BaseComponent
-    implements OnInit, AfterViewInit {
+export class PlayerCreateComponent extends BaseComponent implements OnInit, AfterViewInit {
 
     playerForm: FormGroup;
     imageUrl: SafeUrl;
@@ -32,8 +30,8 @@ export class PlayerCreateComponent
         'name': '',
         'fullname': ''
     };
-
     countries: Country[] = [];
+    invitation: string;
     @ViewChild('fileInput') inputEl: ElementRef;
 
     constructor(private http: Http, route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
@@ -59,7 +57,12 @@ export class PlayerCreateComponent
             fullname: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(40)])],
             nationality: null,
             handedness: Handedness[Handedness.RIGHT].toLowerCase(),
-            description: null
+            description: null,
+            invitation: new FormControl()
+        });
+
+        this.route.queryParams.subscribe(params => {
+            this.invitation = params['invitation'];
         });
 
         this.imageUrl = ImageService.playerDefault();
@@ -100,7 +103,15 @@ export class PlayerCreateComponent
     }
 
     savePlayer() {
-        this.graphQLService.post(PlayerCreateComponent.createPlayerMutation, this.playerForm.value).then(data => {
+        console.log('this.playerForm.value', this.playerForm.value);
+        this.graphQLService.post(PlayerCreateComponent.createPlayerMutation, {
+            name: this.playerForm.value.name,
+            fullname: this.playerForm.value.fullname,
+            description: this.playerForm.value.description,
+            nationality: this.playerForm.value.nationality,
+            handedness: this.playerForm.value.handedness,
+            invitation: this.invitation || null,
+        }).then(data => {
             return data && data.createPlayer;
         }).then(createdPlayer => {
             if (createdPlayer) {
@@ -149,8 +160,8 @@ export class PlayerCreateComponent
         }
     }
 
-    private static readonly createPlayerMutation = `mutation ($name: String!, $fullname: String, $description: String, $nationality: String, $handedness: Handedness) {
-        createPlayer(name: $name, fullname: $fullname, description: $description, nationality: $nationality, handedness: $handedness) {
+    private static readonly createPlayerMutation = `mutation ($name: String!, $fullname: String, $description: String, $nationality: String, $handedness: Handedness, $invitation: String) {
+        createPlayer(name: $name, fullname: $fullname, description: $description, nationality: $nationality, handedness: $handedness, invitation: $invitation) {
             id
             name
             imageUrl
