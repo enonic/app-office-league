@@ -55,7 +55,7 @@ var updateLeague = function (league) {
         start += gamesResp.count;
         log.info('Calculating game ratings [' + start + ' / ' + total + '] games in the league.');
 
-    } while (gamesResp.count === 10);
+    } while (gamesResp.count > 0);
 };
 
 var resetPlayerRatings = function (league) {
