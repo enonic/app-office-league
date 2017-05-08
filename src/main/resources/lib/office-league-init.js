@@ -170,7 +170,6 @@ var createSite = function () {
                     applicationKey: app.name,
                     config: {}
                 };
-                fixTimeProperites(node);
                 return node;
             }
         });
@@ -206,7 +205,6 @@ var createSite = function () {
                     config: {},
                     customized: false
                 };
-                fixTimeProperites(node);
                 return node;
             }
         });
@@ -234,17 +232,10 @@ var createSite = function () {
                     },
                     customized: false
                 };
-                fixTimeProperites(node);
                 return node;
             }
         });
     }
-};
-
-var fixTimeProperites = function (node) {
-    node._timestamp = node._timestamp ? valueLib.instant(node._timestamp) : undefined;
-    node.createdTime = node.createdTime ? valueLib.instant(node.createdTime) : undefined;
-    node.modifiedTime = node.modifiedTime ? valueLib.instant(node.modifiedTime) : undefined;
 };
 
 var createRepo = function () {

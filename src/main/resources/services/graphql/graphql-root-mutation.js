@@ -4,6 +4,7 @@ var graphQlObjectTypesLib = require('./graphql-object-types');
 var graphQlInputTypesLib = require('./graphql-input-types');
 var storeLib = require('office-league-store');
 var authLib = require('/lib/xp/auth');
+var invitationLib = require('/lib/invitation');
 var mailLib = require('/lib/mail');
 
 exports.rootMutationType = graphQlLib.createObjectType({
@@ -197,7 +198,8 @@ exports.rootMutationType = graphQlLib.createObjectType({
                     if (player) {
                         storeLib.joinPlayerLeague(env.args.leagueId, player._id, env.args.rating);
                     } else if (playerName.indexOf('@') !== -1) {
-                        mailLib.sendInvitation(playerName, env.args.leagueId, getCurrentPlayerId())
+                        var invitation = invitationLib.createInvitation(env.args.leagueId);
+                        mailLib.sendInvitation(playerName, env.args.leagueId, getCurrentPlayerId(), invitation.token)
                     } else {
                         log.warn('[' + playerName + '] is not an existing player name or an email address.');
                     }

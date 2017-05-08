@@ -66,7 +66,7 @@ exports.sendAllowJoinRequestNotification = function (playerId, leagueId) {
 };
 
 
-exports.sendInvitation = function (email, leagueId, adminId) {
+exports.sendInvitation = function (email, leagueId, adminId, token) {
     log.info('Invitation email will be sent in the background.');
 
     taskLib.submit({
@@ -74,7 +74,7 @@ exports.sendInvitation = function (email, leagueId, adminId) {
         task: function () {
             try {
                 log.info('Sending email...');
-                doSendInvitation(email, leagueId, adminId);
+                doSendInvitation(email, leagueId, adminId, token);
                 log.info('Email sent successfully.')
             } catch (e) {
                 log.warning('Email sending failed: ' + e);
@@ -225,7 +225,7 @@ var doSendJoinRequestNotification = function (playerId, leagueId) {
     }
 };
 
-var doSendInvitation = function (email, leagueId, adminId) {
+var doSendInvitation = function (email, leagueId, adminId, token) {
     var from = app.config['mail.from'];
     if (!from) {
         throw 'Could not send email. From email not configured. Please add the email with property "mail.from" in com.enonic.app.officeleague.cfg';
@@ -244,8 +244,8 @@ var doSendInvitation = function (email, leagueId, adminId) {
         return;
     }
 
-    var callbackUrl = app.config['officeleague.baseUrl'] ? app.config['officeleague.baseUrl'] + '/player-create?invitation=abc' :
-                      'http://localhost:8080/portal/draft/office-league/app/player-create?invitation=abc';
+    var callbackUrl = app.config['officeleague.baseUrl'] ? app.config['officeleague.baseUrl'] + '/player-create?invitation=' + token :
+                      'http://localhost:8080/portal/draft/office-league/app/player-create?invitation=' + token;
 
     var params = {
         leagueName: league.name,

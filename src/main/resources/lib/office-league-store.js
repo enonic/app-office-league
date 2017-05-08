@@ -56,7 +56,8 @@ var TYPE = {
     LEAGUE: 'league',
     LEAGUE_PLAYER: 'leaguePlayer',
     LEAGUE_TEAM: 'leagueTeam',
-    COMMENT: 'comment'
+    COMMENT: 'comment',
+    INVITATION: 'invitation'
 };
 
 var ROOT_PERMISSIONS = [ //TODO Remove after XP issue 4801 resolution
@@ -81,6 +82,8 @@ var ROOT_PERMISSIONS = [ //TODO Remove after XP issue 4801 resolution
 ];
 
 exports.REPO_NAME = REPO_NAME;
+exports.TYPE = TYPE;
+exports.ROOT_PERMISSIONS = ROOT_PERMISSIONS;
 exports.OFFICE_LEAGUE_GAME_EVENT_ID = OFFICE_LEAGUE_GAME_EVENT_ID;
 exports.OFFICE_LEAGUE_COMMENT_EVENT_ID = OFFICE_LEAGUE_COMMENT_EVENT_ID;
 
@@ -1412,6 +1415,11 @@ exports.createLeague = function (params) {
         _parentPath: leagueNode._path,
         _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
     });
+    var invitationsNode = repoConn.create({
+        _name: 'invitations',
+        _parentPath: leagueNode._path,
+        _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
+    });
 
     return setImageUrl(leagueNode);
 };
@@ -2685,6 +2693,21 @@ var newConnection = function () {
     return nodeLib.connect({
         repoId: REPO_NAME,
         branch: 'master'
+    });
+};
+
+/**
+ * @return {RepoConnection} Connection to the node repository for office-league data.
+ */
+exports.getAdminRepoConnection = function () {
+    return newAdminConnection();
+};
+
+var newAdminConnection = function () {
+    return nodeLib.connect({
+        repoId: REPO_NAME,
+        branch: 'master',
+        principals: ["role:system.admin"]
     });
 };
 
