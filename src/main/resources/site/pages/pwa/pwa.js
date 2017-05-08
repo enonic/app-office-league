@@ -22,10 +22,7 @@ exports.get = function (req) {
         return {
             redirect: portalLib.loginUrl({
                 type: 'absolute',
-                redirect: portalLib.pageUrl({
-                    path: site._path + '/app',
-                    type: 'absolute'
-                })
+                redirect: req.url
             })
         }
     }
@@ -70,7 +67,7 @@ exports.get = function (req) {
 };
 
 var mustLogIn = function (req) {
-    return req.path.search(/\/app$/) !== -1 && !authLib.getUser();
+    return !authLib.getUser() && (req.path.search(/\/app$/) !== -1 || req.path.search(/\/app\/player-create$/) !== -1);
 };
 
 var loggedInUserWithoutPlayer = function () {

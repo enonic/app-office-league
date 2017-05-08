@@ -192,10 +192,16 @@ exports.rootMutationType = graphQlLib.createObjectType({
             resolve: function (env) {
                 checkJoinPlayerLeaguePermissions(env.args.leagueId);
 
-                var createdLeaguePlayers = env.args.playerNames.map(function(playerName) {
-                    var playerId = storeLib.getPlayerByName(playerName)._id;
-                    return playerId && storeLib.joinPlayerLeague(env.args.leagueId, playerId, env.args.rating);    
-                });                
+                var createdLeaguePlayers = env.args.playerNames.map(function (playerName) {
+                    var player = storeLib.getPlayerByName(playerName);
+                    if (player) {
+                        storeLib.joinPlayerLeague(env.args.leagueId, player._id, env.args.rating);
+                    } else if (playerName.indexOf('@') !== -1) {
+                        mailLib.sendInvitation(playerName, env.args.leagueId, getCurrentPlayerId())
+                    } else {
+                        log.warn('[' + playerName + '] is not an existing player name or an email address.');
+                    }
+                });
                 storeLib.refresh();
                 return createdLeaguePlayers;
             }

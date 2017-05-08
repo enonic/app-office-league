@@ -65,22 +65,42 @@ exports.sendAllowJoinRequestNotification = function (playerId, leagueId) {
     });
 };
 
+
+exports.sendInvitation = function (email, leagueId, adminId) {
+    log.info('Invitation email will be sent in the background.');
+
+    taskLib.submit({
+        description: 'Office League Email Sending Task',
+        task: function () {
+            try {
+                log.info('Sending email...');
+                doSendInvitation(email, leagueId, adminId);
+                log.info('Email sent successfully.')
+            } catch (e) {
+                log.warning('Email sending failed: ' + e);
+                if (e.printStackTrace) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    });
+};
+
 var doSendAllowJoinRequestNotification = function (playerId, leagueId) {
     var from = app.config['mail.from'];
     if (!from) {
-        log.warning(
-            'Could not send notification. From email not configured. Please add the email with property "mail.from" in com.enonic.xp.mail.cfg');
+        throw 'Could not send notification. From email not configured. Please add the email with property "mail.from" in com.enonic.app.officeleague.cfg';
         return;
     }
 
     var player = storeLib.getPlayerById(playerId);
     if (!player && !player.userKey) {
-        log.warning('Could not send allow join request notification. Player not found: ' + playerId);
+        throw 'Could not send allow join request notification. Player not found: ' + playerId;
         return;
     }
     var league = storeLib.getLeagueById(leagueId);
     if (!league) {
-        log.warning('Could not send allow join request notification. League not found: ' + leagueId);
+        throw 'Could not send allow join request notification. League not found: ' + leagueId;
         return;
     }
 
@@ -88,7 +108,7 @@ var doSendAllowJoinRequestNotification = function (playerId, leagueId) {
     var recipient = authLib.getPrincipal(player.userKey);
     var email = recipient.email;
     if (!email) {
-        log.warning('Could not send allow join request notification. Cannot find email for admin: ' + admin.name);
+        throw 'Could not send allow join request notification. Cannot find email for admin: ' + admin.name;
         return;
     }
 
@@ -111,19 +131,18 @@ var doSendAllowJoinRequestNotification = function (playerId, leagueId) {
 var doSendDenyJoinRequestNotification = function (playerId, leagueId) {
     var from = app.config['mail.from'];
     if (!from) {
-        log.warning(
-            'Could not send notification. From email not configured. Please add the email with property "mail.from" in com.enonic.xp.mail.cfg');
+        throw 'Could not send notification. From email not configured. Please add the email with property "mail.from" in com.enonic.app.officeleague.cfg';
         return;
     }
 
     var player = storeLib.getPlayerById(playerId);
     if (!player && !player.userKey) {
-        log.warning('Could not send deny join request notification. Player not found: ' + playerId);
+        throw 'Could not send deny join request notification. Player not found: ' + playerId;
         return;
     }
     var league = storeLib.getLeagueById(leagueId);
     if (!league) {
-        log.warning('Could not send deny join request notification. League not found: ' + leagueId);
+        throw 'Could not send deny join request notification. League not found: ' + leagueId;
         return;
     }
 
@@ -131,7 +150,7 @@ var doSendDenyJoinRequestNotification = function (playerId, leagueId) {
     var recipient = authLib.getPrincipal(player.userKey);
     var email = recipient.email;
     if (!email) {
-        log.warning('Could not send deny join request notification. Cannot find email for admin: ' + admin.name);
+        throw 'Could not send deny join request notification. Cannot find email for admin: ' + admin.name;
         return;
     }
 
@@ -153,24 +172,23 @@ var doSendDenyJoinRequestNotification = function (playerId, leagueId) {
 var doSendJoinRequestNotification = function (playerId, leagueId) {
     var from = app.config['mail.from'];
     if (!from) {
-        log.warning(
-            'Could not send notification. From email not configured. Please add the email with property "mail.from" in com.enonic.xp.mail.cfg');
+        throw 'Could not send notification. From email not configured. Please add the email with property "mail.from" in com.enonic.app.officeleague.cfg';
         return;
     }
 
     var player = storeLib.getPlayerById(playerId);
     if (!player) {
-        log.warning('Could not send join request notification. Player not found: ' + playerId);
+        throw 'Could not send join request notification. Player not found: ' + playerId;
         return;
     }
     var league = storeLib.getLeagueById(leagueId);
     if (!league) {
-        log.warning('Could not send join request notification. League not found: ' + leagueId);
+        throw 'Could not send join request notification. League not found: ' + leagueId;
         return;
     }
     var adminIds = [].concat(league.adminPlayerIds || []);
     if (adminIds.length === 0) {
-        log.warning('Could not send join request notification. No admins found in league: ' + leagueId);
+        throw 'Could not send join request notification. No admins found in league: ' + leagueId;
         return;
     }
     var adminPlayers = storeLib.getPlayersById(adminIds);
@@ -182,7 +200,7 @@ var doSendJoinRequestNotification = function (playerId, leagueId) {
         var recipient = authLib.getPrincipal(admin.userKey);
         var email = recipient.email;
         if (!email) {
-            log.warning('Could not send join request notification. Cannot find email for admin: ' + admin.name);
+            throw 'Could not send join request notification. Cannot find email for admin: ' + admin.name;
             return;
         }
 
@@ -205,6 +223,43 @@ var doSendJoinRequestNotification = function (playerId, leagueId) {
         });
 
     }
+};
+
+var doSendInvitation = function (email, leagueId, adminId) {
+    var from = app.config['mail.from'];
+    if (!from) {
+        throw 'Could not send email. From email not configured. Please add the email with property "mail.from" in com.enonic.app.officeleague.cfg';
+        return;
+    }
+
+    var league = storeLib.getLeagueById(leagueId);
+    if (!league) {
+        throw 'Could not send invitiation. League not found: ' + leagueId;
+        return;
+    }
+
+    var admin = storeLib.getPlayerById(adminId);
+    if (!admin) {
+        throw 'Could not send invitiation. Admin not found: ' + adminId;
+        return;
+    }
+
+    var callbackUrl = app.config['officeleague.baseUrl'] ? app.config['officeleague.baseUrl'] + '/player-create?invitation=abc' :
+                      'http://localhost:8080/portal/draft/office-league/app/player-create?invitation=abc';
+
+    var params = {
+        leagueName: league.name,
+        requesterName: admin.name,
+        callbackUrl: callbackUrl
+    };
+    var body = mustache.render(resolve('mail/invitation.request.html'), params);
+
+    sendEmail({
+        from: 'Office League <' + from + '>',
+        to: email,
+        body: body,
+        subject: 'Office League - Invitation to join league \'' + league.name + '\''
+    });
 };
 
 var sendEmail = function (params) {
