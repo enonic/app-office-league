@@ -208,7 +208,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                         var invitation = invitationLib.createInvitation(env.args.leagueId);
                         mailLib.sendInvitation(playerName, env.args.leagueId, getCurrentPlayerId(), invitation.token)
                     } else {
-                        log.warn('[' + playerName + '] is not an existing player name or an email address.');
+                        log.warning('[' + playerName + '] is not an existing player name or an email address.');
                     }
                 });
                 storeLib.refresh();

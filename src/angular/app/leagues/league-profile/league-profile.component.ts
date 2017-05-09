@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges,ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {AuthService} from '../../services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -19,6 +19,7 @@ export class LeagueProfileComponent
     implements OnChanges {
 
     @Input() league: League;
+    @ViewChild ('addPlayerChips') addPlayerChipsViewChild;
     playerInLeague: boolean;
     userAuthenticated: boolean;
     adminInLeague: boolean;
@@ -207,6 +208,7 @@ export class LeagueProfileComponent
 
     showModal(): void {
         this.materializeActions.emit({action: "modal", params: ['open']});
+        this.addPlayerChipsViewChild.focus();
     }
 
     hideModal(): void {

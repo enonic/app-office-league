@@ -1,4 +1,4 @@
-import {Component, Input, Output, OnChanges, SimpleChanges, SimpleChange, EventEmitter, ElementRef} from '@angular/core';
+import {Component, Input, Output, OnChanges, SimpleChanges, SimpleChange, EventEmitter, ElementRef, ViewChild} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {MaterializeAction, MaterializeDirective} from 'angular2-materialize';
 import {BaseComponent} from '../base.component';
@@ -14,6 +14,7 @@ export class ChipsComponent extends BaseComponent {
     @Input() availableTags: string[];
     @Input() selectedTags: string[];
     @Input() placeholder: string;
+    @ViewChild ('div') div;
     public autocompleteInit: any = {
         autocompleteOptions: {
             data: {
@@ -40,6 +41,12 @@ export class ChipsComponent extends BaseComponent {
         let availableTagsChange = changes['availableTags'];
         if (availableTagsChange) {
             this.refreshAvailableTags();
+        }
+    }
+
+    focus() {
+        if (this.div) {
+            this.div.nativeElement.children[0].focus();
         }
     }
     
