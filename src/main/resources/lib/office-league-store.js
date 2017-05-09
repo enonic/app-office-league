@@ -46,6 +46,7 @@ var INVALID_NAME_CHARS = {
     '\'': true,
     '?': true
 };
+var COMMENT_MAX_LENGTH = 140;
 
 var TYPE = {
     PLAYER: 'player',
@@ -1814,6 +1815,7 @@ exports.createComment = function (params) {
 
     var time = new Date().toISOString();
 
+    params.text = params.text.length > COMMENT_MAX_LENGTH ? params.text.substring(0, COMMENT_MAX_LENGTH - 1) : params.text;
     var commentNode = repoConn.create({
         _parentPath: gameNode._path,
         _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
