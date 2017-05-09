@@ -78,13 +78,26 @@ exports.calculateGameRatings = function (game, leaguePlayers, leagueTeams) {
     // update league player ratings
     for (i = 0; i < leaguePlayers.length; i++) {
         leaguePlayer = leaguePlayers[i];
-        leaguePlayer.rating += playerDelta[playerSides[leaguePlayer.playerId]];
+        leaguePlayer.rating += toInt(playerDelta[playerSides[leaguePlayer.playerId]]);
     }
     // update league team ratings
     for (i = 0; i < leagueTeams.length; i++) {
         leagueTeam = leagueTeams[i];
-        leagueTeam.rating += teamDelta[teamSides[leagueTeam.teamId]];
+        leagueTeam.rating += toInt(teamDelta[teamSides[leagueTeam.teamId]]);
     }
+};
+
+/**
+ * Convert number to int value.
+ *
+ * @param {number} value Number value.
+ * @return {number} Int value.
+ */
+var toInt = function (value) {
+    if (!value.intValue) {
+        throw "Expected number value: [" + value + "]"
+    }
+    return value.intValue();
 };
 
 /**
