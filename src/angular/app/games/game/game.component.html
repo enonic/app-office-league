@@ -6,7 +6,9 @@
         <span class="game__live">Live</span>
     </template>
     <div class="game">
-
+        <div class="game__date">
+            <small class="center grey-text">{{game.time | amCalendar:{lastDay: '[Yesterday at] HH:mm', sameDay: '[Today at] HH:mm', nextDay : '[Tomorrow at] HH:mm', lastWeek : '[last] dddd [at] HH:mm', nextWeek : 'dddd [at] HH:mm', sameElse : 'll HH:mm'} }}</small>
+        </div>
 
         <div class="game__summary">
             <div class="game__side game__side--1">
@@ -26,14 +28,6 @@
                     </div>
                 </div>
             </div>
-            <!--<div class="game__result" [class.game__double]="bluePlayers.length > 1">
-                <div class="game__result__score">
-                    <span class="">{{blueScore}}</span>
-                    <span>-</span>
-                    <span class="">{{redScore}}</span>
-                </div>
-                <small class="center grey-text game__date">{{game.time | amCalendar:{lastDay: '[Yesterday at] HH:mm', sameDay: '[Today at] HH:mm', nextDay : '[Tomorrow at] HH:mm', lastWeek : '[last] dddd [at] HH:mm', nextWeek : 'dddd [at] HH:mm', sameElse : 'YYYY-MM-DD HH:mm'} }}</small>
-            </div>-->
             <div class="game__side game__side--2">
 
                 <div class="game__side-intro game__side-intro--2">
