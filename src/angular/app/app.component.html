@@ -9,10 +9,7 @@
             <i class="material-icons">arrow_back</i>
         </a>
 
-        <a class="app__navbar-title">
-            <!--<img src="{{logoUrl}}" height="40px">-->
-            {{pageTitle}}
-        </a>
+        <span class="app__navbar-title">{{pageTitle}}</span>
 
         <ul *ngIf="!isNewUser" class="app__navbar-menu right hide-on-med-and-down">
             <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>
