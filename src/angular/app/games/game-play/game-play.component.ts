@@ -367,6 +367,9 @@ export class GamePlayComponent
         let point = new Point();
         point.player = p;
         point.time = this.getElapsedSeconds(now);
+        if (this.points.length > 0 && this.points[this.points.length - 1].time >= point.time) {
+            point.time = this.points[this.points.length - 1].time + 1;
+        }
         point.against = against;
         this.points.push(point);
 
