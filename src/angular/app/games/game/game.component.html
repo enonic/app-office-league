@@ -25,31 +25,6 @@
                         <div>{{blueScore}}</div>
                     </div>
                 </div>
-
-
-                <div class="game__side-details">
-                    <div class="game__side-heading">
-                        <template [ngIf]="blueTeam">
-                            <div class="game__side-name">{{blueTeam.team.name}}</div>
-                            <rating-points [points]="blueTeam.ratingDelta" class="game__side-points"></rating-points>
-                        </template>
-                        <template [ngIf]="!blueTeam">
-                            <div class="game__side-name">{{bluePlayers[0]?.player.name}}</div>
-                            <rating-points [points]="bluePlayers[0]?.ratingDelta" class="game__side-points"></rating-points>
-                        </template>
-                    </div>
-                    <template [ngIf]="blueTeam">
-                        <ul class="game__players">
-                            <li *ngFor="let bluePlayer of bluePlayers" class="game__player">
-                                <img src="{{bluePlayer.player.imageUrl}}?size=200" alt="{{bluePlayer.player.name}}"
-                                     class="game__player-avatar">
-                                <div class="game__player-name">{{bluePlayer.player.name}}</div>
-                                <rating-points [points]="bluePlayer.ratingDelta" class="game__player-points"></rating-points>
-                            </li>
-                        </ul>
-                    </template>
-                </div>
-
             </div>
             <!--<div class="game__result" [class.game__double]="bluePlayers.length > 1">
                 <div class="game__result__score">
@@ -75,36 +50,73 @@
                         <div>{{redScore}}</div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="game__summary">
+            <div class="game__side game__side--1">
 
+                <div class="game__side-details">
+                    <div class="game__side-heading">
+                        <template [ngIf]="blueTeam">
+                            <div class="game__side-name">{{blueTeam.team.name}}</div>
+                            <rating-points [points]="blueTeam.ratingDelta" class="game__side-points"></rating-points>
+                        </template>
+                        <template [ngIf]="!blueTeam">
+                            <div class="game__side-name">{{bluePlayers[0]?.player.name}}</div>
+                            <rating-points [points]="bluePlayers[0]?.ratingDelta" class="game__side-points"></rating-points>
+                        </template>
+                    </div>
+                </div>
+            </div>
+            <div class="game__side game__side--2">
                 <div class="game__side-details game__side-details--2">
 
                     <div class="game__side-heading game__side-heading--2">
                         <template [ngIf]="redTeam">
                             <div class="game__side-name game__side-name--2">{{redTeam.team.name}}</div>
-                            <rating-points [points]="redTeam.ratingDelta" class="game__side-points game__side-points--2"></rating-points>
+                            <rating-points [points]="redTeam.ratingDelta"
+                                           class="game__side-points game__side-points--2"></rating-points>
                         </template>
                         <template [ngIf]="!redTeam">
                             <div class="game__side-name game__side-name--2">{{redPlayers[0]?.player.name}}</div>
-                            <rating-points [points]="redPlayers[0]?.ratingDelta" class="game__side-points game__side-points--2"></rating-points>
+                            <rating-points [points]="redPlayers[0]?.ratingDelta"
+                                           class="game__side-points game__side-points--2"></rating-points>
                         </template>
                     </div>
-
+                </div>
+            </div>
+        </div>
+        <div class="game__summary">
+            <div class="game__side game__side--1">
+                <div class="game__side-details">
+                    <template [ngIf]="blueTeam">
+                        <ul class="game__players">
+                            <li *ngFor="let bluePlayer of bluePlayers" class="game__player">
+                                <img src="{{bluePlayer.player.imageUrl}}?size=200" alt="{{bluePlayer.player.name}}"
+                                     class="game__player-avatar">
+                                <div class="game__player-name">{{bluePlayer.player.name}}</div>
+                                <rating-points [points]="bluePlayer.ratingDelta" class="game__player-points"></rating-points>
+                            </li>
+                        </ul>
+                    </template>
+                </div>
+            </div>
+            <div class="game__side game__side--2">
+                <div class="game__side-details game__side-details--2">
                     <template [ngIf]="redTeam">
                         <ul class="game__players">
                             <li *ngFor="let redPlayer of redPlayers" class="game__player game__player--2">
                                 <img src="{{redPlayer.player.imageUrl}}?size=100" alt="{{redPlayer.player.name}}"
                                      class="game__player-avatar game__player-avatar--2">
                                 <div class="game__player-name game__player-name--2">{{redPlayer.player.name}}</div>
-                                <rating-points [points]="redPlayer.ratingDelta" class="game__player-points game__player-points--2"></rating-points>
+                                <rating-points [points]="redPlayer.ratingDelta"
+                                               class="game__player-points game__player-points--2"></rating-points>
                             </li>
                         </ul>
                     </template>
                 </div>
-
-
             </div>
         </div>
-
         <!--<div class="game__summary">
             <div class="game__side game__side&#45;&#45;1">
                 <template [ngIf]="blueTeam">
