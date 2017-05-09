@@ -45,6 +45,11 @@ export class AppComponent {
                 this.pageTitleService.resetTitle();
             });
     }
+    
+    back(): boolean {
+        this.location.back();
+        return false;
+    }
 
     private isTopLevelPage(url: string): boolean {
         return url.match(/\//g).length <= 1;
