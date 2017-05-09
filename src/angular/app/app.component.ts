@@ -56,6 +56,8 @@ export class AppComponent {
             this.playerName = player.name;
             this.isNewUser = false;
             this.isAuthenticated = true;
+            this.displayMenu = false;
+            setTimeout(() => this.displayMenu = true, 100); // hack to force refresh materialize SideNav menu
         } else {
             this.playerImage = ImageService.playerDefault();
             this.playerName = '';
