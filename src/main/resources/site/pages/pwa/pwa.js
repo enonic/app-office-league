@@ -2,6 +2,7 @@ var portalLib = require('/lib/xp/portal');
 var authLib = require('/lib/xp/auth');
 var mustacheLib = require('/lib/xp/mustache');
 var storeLib = require('/lib/office-league-store');
+var invitationLib = require('/lib/invitation');
 var view = resolve('pwa.html');
 
 exports.get = function (req) {
@@ -27,14 +28,26 @@ exports.get = function (req) {
         }
     }
 
-    if (loggedInUserWithoutPlayer()) {
-        var createPlayerPath = appBaseUrl + '/player-create';
-        if (!endsWith(req.path, createPlayerPath)) {
+    if (isPlayerCreatePage(req, appBaseUrl)) {
+        if (req.params.invitation) {
+            var player = getPlayer();
+            if (player) {
+                var invitation = invitationLib.removeInvitationByToken(req.params.invitation);
+                if (invitation) {
+                    storeLib.joinPlayerLeague(invitation.leagueId, player._id);
+                    storeLib.refresh();
+                }
+            }
+            
+        } 
+    } else {
+        if (isLoggedInUserWithoutPlayer()) {
             return {
                 redirect: appBaseUrl + '/player-create'
             }
         }
     }
+
 
     var user = authLib.getUser();
     var userObj = user && {key: user.key};
@@ -66,18 +79,25 @@ exports.get = function (req) {
     };
 };
 
+var isPlayerCreatePage = function (req, appBaseUrl) {
+    return endsWith(req.path, appBaseUrl + '/player-create');
+};
+
 var mustLogIn = function (req) {
     return !authLib.getUser() && (req.path.search(/\/app$/) !== -1 || req.path.search(/\/app\/player-create$/) !== -1);
 };
 
-var loggedInUserWithoutPlayer = function () {
+var getPlayer = function () {
+    var user = authLib.getUser();
+    return user && storeLib.getPlayerByUserKey(user.key);
+};
+
+var isLoggedInUserWithoutPlayer = function () {
     var user = authLib.getUser();
     if (!user) {
         return false;
     }
-
-    var player = storeLib.getPlayerByUserKey(user.key);
-    return !player;
+    return !storeLib.getPlayerByUserKey(user.key);
 };
 
 var endsWith = function (str, suffix) {
