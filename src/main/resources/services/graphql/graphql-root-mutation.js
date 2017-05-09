@@ -96,6 +96,12 @@ exports.rootMutationType = graphQlLib.createObjectType({
                     description: env.args.description,
                     userKey: userKey
                 });
+                if (env.args.invitation) {
+                    var invitation = invitationLib.removeInvitationByToken(env.args.invitation);
+                    if (invitation) {
+                        storeLib.joinPlayerLeague(invitation.leagueId, createdPlayer._id);
+                    }
+                }
                 storeLib.refresh();
                 return createdPlayer;
             }

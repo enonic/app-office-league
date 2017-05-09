@@ -2,27 +2,29 @@ var nodeLib = require('/lib/xp/node');
 var portalLib = require('/lib/xp/portal');
 var storeLib = require('./office-league-store');
 
-exports.isTokenValid = function (token) {
-    var invitation = exports.findInvitationByToken(token);
-    if (invitation) {
-        var timestamp = invitation.timestamp;
-        if ((timestamp - Date.now()) < 86400000) {
-            return true;
-        } else {
-            storeLib.getAdminRepoConnection().delete(invitation._id);
-        }
-    }
-    return false;
-};
-
-exports.findInvitationByToken = function(token) {
-    var invitationQueryHit = storeLib.getAdminRepoConnection().query({
+exports.removeInvitationByToken = function(token) {
+    var invitationHit = storeLib.getAdminRepoConnection().query({
         start: 0,
         count: 1,
-        query: "token = '" + token + "'" 
+        query: "type = '" + storeLib.TYPE.INVITATION + "' AND token = '" + token + "'" 
     }).hits[0];
-    return invitationQueryHit && storeLib.getAdminRepoConnection().get(invitationQueryHit.id);
+    
+    if (invitationHit) {
+        var invitation = storeLib.getAdminRepoConnection().get(invitationHit.id);
+        if (invitation) {
+            storeLib.getAdminRepoConnection().delete(invitationHit.id);
+            if (isInvitationValid(invitation)) {
+                return invitation;
+            }
+        }        
+    }
+    return null;
 };
+
+function isInvitationValid (invitation) {
+    return true;
+    //return ((invitation.timestamp - Date.now()) < 86400000); TODO
+}
 
 exports.createInvitation = function (leagueId) {
     var league = storeLib.getLeagueById(leagueId);
@@ -34,7 +36,8 @@ exports.createInvitation = function (leagueId) {
             _permissions: storeLib.ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
             type: storeLib.TYPE.INVITATION,
             token: token,
-            timestamp : Date.now()
+            timestamp : Date.now(),
+            leagueId: leagueId
         });
     }
     return null;
