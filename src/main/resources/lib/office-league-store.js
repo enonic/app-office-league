@@ -791,20 +791,19 @@ exports.getActiveGamesByLeagueId = function (leagueId, start, count) {
 
     var now = new Date();
     var lastModifiedPlaying = now;
-    var finishedRecently = now;
-    var startedWithinOneDayAgo = now;
+    var finishedRecently = new Date(now.getTime());
+    var startedWithinTwoHoursAgo = new Date(now.getTime());
 
     lastModifiedPlaying.setSeconds(lastModifiedPlaying.getSeconds() - (60 * 30)); // 30 minutes ago
     finishedRecently.setSeconds(finishedRecently.getSeconds() - (60 * 10)); // 10 minutes ago
-    startedWithinOneDayAgo.setSeconds(startedWithinOneDayAgo.getSeconds() - (60 * 60 * 24)); // 24h ago
+    startedWithinTwoHoursAgo.setSeconds(startedWithinTwoHoursAgo.getSeconds() - (60 * 60 * 2)); // 2h ago
 
     var query = "type = '" + TYPE.GAME + "' AND leagueId = '" + leagueId + "' " +
                 "AND (" +
                 "(finished = 'false' AND _timestamp >= instant('" + lastModifiedPlaying.toISOString() + "')) " +
-                "OR ((time >= instant('" + startedWithinOneDayAgo.toISOString() + "')) "
+                "OR ((time >= instant('" + startedWithinTwoHoursAgo.toISOString() + "')) "
                 + "AND (_timestamp >= instant('" + finishedRecently.toISOString() + "')) )" +
                 ")";
-
 
     var result = repoConn.query({
         start: start,
