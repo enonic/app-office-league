@@ -272,7 +272,8 @@ var sendEmail = function (params) {
         subject: subject,
         from: from,
         to: to,
-        body: body
+        body: body,
+        contentType: 'text/html; charset="UTF-8"'
     });
 };
 
