@@ -13,13 +13,16 @@ export class ChipsComponent extends BaseComponent {
 
     @Input() availableTags: string[];
     @Input() selectedTags: string[];
+    @Input() placeholder: string;
     public autocompleteInit: any = {
         autocompleteOptions: {
             data: {
             },
             limit: Infinity,
             minLength: 1
-        }
+        },
+        placeholder: this.placeholder,
+        secondaryPlaceholder: this.placeholder
     };
     
     constructor(route: ActivatedRoute) {
@@ -48,7 +51,9 @@ export class ChipsComponent extends BaseComponent {
                 data: data,
                 limit: Infinity,
                 minLength: 1
-            }
+            },
+            placeholder: this.placeholder,
+            secondaryPlaceholder: this.placeholder
         };
     }
 
