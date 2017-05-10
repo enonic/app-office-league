@@ -1578,7 +1578,7 @@ exports.generateCreateGameParams = function (params) {
             side: gamePlayer.side,
             playerId: gamePlayer.playerId,
             winner: false,
-            ratingDelta: 0
+            ratingDelta: toInt(0)
         };
         if (gamePlayer.side === 'red') {
             redTeamPlayerIds.push(gamePlayer.playerId);
@@ -1605,7 +1605,7 @@ exports.generateCreateGameParams = function (params) {
             side: 'red',
             teamId: redTeam._id,
             winner: false,
-            ratingDelta: 0
+            ratingDelta: toInt(0)
         };
         teams['blue'] = {
             score: 0,
@@ -1613,7 +1613,7 @@ exports.generateCreateGameParams = function (params) {
             side: 'blue',
             teamId: blueTeam._id,
             winner: false,
-            ratingDelta: 0
+            ratingDelta: toInt(0)
         };
     }
 
@@ -1726,7 +1726,7 @@ exports.createGame = function (params) {
             side: gamePlayer.side,
             position: gamePlayer.position || 0,
             winner: gamePlayer.winner,
-            ratingDelta: gamePlayer.ratingDelta
+            ratingDelta: toInt(gamePlayer.ratingDelta)
         });
         gameNode.gamePlayers.push(gamePlayerNode);
     }
@@ -1747,7 +1747,7 @@ exports.createGame = function (params) {
             scoreAgainst: gameTeam.scoreAgainst,
             side: gameTeam.side,
             winner: gameTeam.winner,
-            ratingDelta: gameTeam.ratingDelta
+            ratingDelta: toInt(gameTeam.ratingDelta)
         });
         gameNode.gameTeams.push(gameTeamNode);
     }
@@ -1879,7 +1879,7 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
         type: TYPE.LEAGUE_PLAYER,
         playerId: playerId,
         leagueId: leagueId,
-        rating: rating,
+        rating: toInt(rating),
         pending: false
     });
 
@@ -2008,7 +2008,7 @@ exports.joinTeamLeague = function (leagueId, teamId, rating) {
         type: TYPE.LEAGUE_TEAM,
         teamId: teamId,
         leagueId: leagueId,
-        rating: rating
+        rating: toInt(rating)
     });
 
     repoConn.refresh('SEARCH');
@@ -2349,7 +2349,7 @@ exports.markPlayerLeaguePending = function (leagueId, playerId, pending, inactiv
             leagueId: leagueId,
             pending: !!pending,
             inactive: !!inactive,
-            rating: ratingLib.INITIAL_RATING
+            rating: toInt(ratingLib.INITIAL_RATING)
         });
         return newLeaguePlayer;
     }
