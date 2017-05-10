@@ -43,6 +43,8 @@ export class GamePlayComponent
 
     blueScore: number = 0;
     redScore: number = 0;
+    firstPeriod = true;
+    halfTime = false;
     baseTime: Date;
     secondsBeforePause: number;
     elapsedTime: string;
@@ -56,6 +58,7 @@ export class GamePlayComponent
     messagePlayer: Player;
     message: string;
     messageTimerId: any;
+    commentatorMessage:string = 'GOAL!';
 
     nameClassesBlue1: {} = {
         'game-play__player--selected': false,
@@ -200,6 +203,7 @@ export class GamePlayComponent
                     this.blueScore--;
                 }
             }
+            this.onScoreChange();
 
             this.saveGame().then((gameId) => {
 
@@ -269,6 +273,7 @@ export class GamePlayComponent
     private startGame() {
         this.blueScore = 0;
         this.redScore = 0;
+        this.onScoreChange();
         this.baseTime = new Date();
         this.secondsBeforePause = 0;
         this.elapsedTime = '';
@@ -355,10 +360,14 @@ export class GamePlayComponent
             }, 2000);
         }
 
+        this.onScoreChange();
+        this.commentatorMessage =  this.halfTime ? 'Half Time!' : 'GOAL!';
         this.nameClassesGamePlayCommentator['game-play__commentator--active'] = true;
         setTimeout(() => {
             this.nameClassesGamePlayCommentator['game-play__commentator--active'] = false;
         }, 2000);
+
+        
     }
 
     private handlePointScored(p: Player, against: boolean) {
@@ -416,12 +425,10 @@ export class GamePlayComponent
         }
     }
     
-    private isFirstPeriod(): boolean {
-        return this.blueScore < 5 && this.redScore < 5;
-    }
-    
-    private isSecondPeriod(): boolean {
-        return !this.isFirstPeriod();
+    private onScoreChange() {
+        let wasFirstPeriod:boolean = this.firstPeriod;
+        this.firstPeriod = this.blueScore < 5 && this.redScore < 5;
+        this.halfTime =(wasFirstPeriod && !this.firstPeriod) || (!wasFirstPeriod && this.firstPeriod);
     }
 
     private hasGameEnded(): boolean {
@@ -645,6 +652,7 @@ export class GamePlayComponent
                     this.blueScore++;
                 }
             }
+            this.onScoreChange();
         });
     }
 
