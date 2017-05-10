@@ -135,7 +135,7 @@
                                 <path d="m27753-4109h300v300h-300z" fill="#fff"/>
                             </mask>
                         </svg>
-                        <div class="game-play__players">
+                        <div class="game-play__players" [class.firstPeriod]="isFirstPeriod()" [class.secondPeriod]="isSecondPeriod()">
                             <div class="game-play__player game-play__player--red" [ngClass]="nameClassesRed1" (click)="onPlayerClicked(redPlayer1)">
                                 <img class="game-play__player-img-placeholder" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox%3D'0 0 200 150'%2F%3E" width="10" height="10" />
                                 <img class="game-play__player-img" src="{{redPlayer1?.imageUrl}}?size=200" alt="{{redPlayer1?.name}}">
@@ -158,7 +158,7 @@
                         </div>
                     </div>
                     <div class="side side-blue">
-                        <div class="game-play__players">
+                        <div class="game-play__players" [class.firstPeriod]="isFirstPeriod()" [class.secondPeriod]="isSecondPeriod()">
                             <div class="game-play__player game-play__player--blue" [ngClass]="nameClassesBlue1" (click)="onPlayerClicked(bluePlayer1)">
                                 <img class="game-play__player-img" src="{{bluePlayer1?.imageUrl}}?size=200" alt="{{bluePlayer1?.name}}">
                                 <div class="game-play__player-name">

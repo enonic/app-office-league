@@ -415,6 +415,14 @@ export class GamePlayComponent
             });
         }
     }
+    
+    private isFirstPeriod(): boolean {
+        return this.blueScore < 5 && this.redScore < 5;
+    }
+    
+    private isSecondPeriod(): boolean {
+        return !this.isFirstPeriod();
+    }
 
     private hasGameEnded(): boolean {
         return (this.gameState === GameState.Finished) ||
