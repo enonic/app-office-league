@@ -601,20 +601,21 @@ export class GamePlayComponent
 
     private deleteGame(): Promise<any> {
         return this.offlineService.deleteOfflineGame(this.gameId).then(() => {
-                this.deleteServerGame(this.gameId);
-            }
-        ).catch((error) => {
+            this.deleteServerGame(this.gameId);
+        }).catch((error) => {
             this.deleteServerGame(this.gameId)
         });
     }
 
-    private deleteServerGame(gameId: string): Promise<string> {
-        return this.graphQLService.post(
+    private deleteServerGame(gameId: string) {
+        this.graphQLService.post(
             GamePlayComponent.deleteGameMutation,
             {gameId: gameId}
         ).then(data => {
             console.log('Game deleted', data);
             return data && data.deleteGame;
+        }).catch((error) => {
+            console.log('Could not delete server game: ' + gameId, error);
         });
     }
 
