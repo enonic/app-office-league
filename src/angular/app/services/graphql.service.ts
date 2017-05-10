@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Response, Headers, RequestOptions} from '@angular/http';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs';
 import {Team} from '../../graphql/schemas/Team';
 import {Game} from '../../graphql/schemas/Game';
@@ -7,6 +7,7 @@ import {League} from '../../graphql/schemas/League';
 import {Player} from '../../graphql/schemas/Player';
 import {CryptoService} from './crypto.service';
 import {XPCONFIG} from '../app.config';
+import {AuthService} from './auth.service';
 
 @Injectable()
 export class GraphQLService {
@@ -17,12 +18,12 @@ export class GraphQLService {
     league: League;
     player: Player;
 
-    constructor(private http: Http, private cryptoService: CryptoService) {
+    constructor(private http: Http, private cryptoService: CryptoService, private authService: AuthService) {
     }
     post(query: string, variables?: {[key: string]: any}, successCallback?: (data) => void, failureCallback?: (error) => void): Promise<any> {
-        var body = JSON.stringify({query: query, variables: variables});
-        var hash = this.cryptoService.sha1(body);
-        var url = this.url + '?etag=' + hash;
+        let body = JSON.stringify({query: query, variables: variables});
+        let hash = this.cryptoService.sha1(body);
+        let url = this.url + '?etag=' + hash;
 
         let headers = new Headers();
         headers.append('Content-Type', 'application/json; charset=utf-8');
@@ -30,7 +31,7 @@ export class GraphQLService {
 
         let networkPromise = this.http.post(url, body, options)
             .map(this.extractData)
-            .catch(this.handleError)
+            .catch(this.handleError.bind(this))
             .toPromise();
 
         if (typeof CacheStorage !== "undefined" && !!successCallback) {
@@ -45,8 +46,8 @@ export class GraphQLService {
     }
 
     private getCachePromise(url: string, fallbackPromise: Promise<any>, responseCallback: (data) => void, failureCallback?: (error) => void): Promise<any> {
-        var responseReceived = false;
-        var cacheFound = false;
+        let responseReceived = false;
+        let cacheFound = false;
 
         fallbackPromise
             .then(data => { responseReceived = true; return data; })
@@ -85,7 +86,14 @@ export class GraphQLService {
         if (!navigator.onLine) {
             return Observable.empty<Response>();
         }
-        
+
+        if (error.status === 401) {
+            if (this.authService.isAuthenticated()) {
+                this.authService.login();
+            }
+            return Observable.empty<Response>();
+        }
+
         let errMsg: string;
         if (error instanceof Response) {
             const body = error.json() || '';
