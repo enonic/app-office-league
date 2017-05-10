@@ -795,7 +795,7 @@ exports.getActiveGamesByLeagueId = function (leagueId, start, count) {
     var startedWithinTwoHoursAgo = new Date(now.getTime());
 
     lastModifiedPlaying.setSeconds(lastModifiedPlaying.getSeconds() - (60 * 30)); // 30 minutes ago
-    finishedRecently.setSeconds(finishedRecently.getSeconds() - (60 * 10)); // 10 minutes ago
+    finishedRecently.setSeconds(finishedRecently.getSeconds() - (60)); // 1 minute ago
     startedWithinTwoHoursAgo.setSeconds(startedWithinTwoHoursAgo.getSeconds() - (60 * 60 * 2)); // 2h ago
 
     var query = "type = '" + TYPE.GAME + "' AND leagueId = '" + leagueId + "' " +
