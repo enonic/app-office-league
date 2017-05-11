@@ -64,11 +64,12 @@ export class GameListPageComponent extends BaseComponent {
         this.leagueName = this.route.snapshot.params['leagueName'];
         this.playerName = this.route.snapshot.params['playerName'];
         this.teamName = this.route.snapshot.params['teamName'];
-        this.refresh();
 
         let name = this.leagueName || this.playerName || this.teamName;
         name = name.charAt(0).toUpperCase() + name.substr(1);
         this.pageTitleService.setTitle(name + ' - Games');
+
+        this.refresh();
     }
 
     private refresh(currentPage: number = 1) {

@@ -1,9 +1,10 @@
 import {Component} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {Player} from '../../../graphql/schemas/Player';
 import {Team} from '../../../graphql/schemas/Team';
 import {GraphQLService} from '../../services/graphql.service';
+import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
     selector: 'player-team-list',
@@ -40,13 +41,14 @@ export class PlayerTeamListComponent extends BaseComponent {
     private teams: Team[];
     private pageCount: number = 1;
 
-    constructor(private router: Router, private service: GraphQLService, route: ActivatedRoute) {
+    constructor(private service: GraphQLService, route: ActivatedRoute, private pageTitleService: PageTitleService) {
         super(route);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
         this.playerName = this.route.snapshot.params['name'];
+        this.pageTitleService.setTitle(this.playerName + ' - Teams');
         this.refresh();
     }
 
