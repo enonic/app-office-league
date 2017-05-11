@@ -456,6 +456,32 @@
 
 }
 
+.game-bottom-bar {
+  position: absolute;
+  z-index: 999;
+  text-align: center;
+  width: 100%;
+  bottom: -2px;
+
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  height: 40px;
+
+  .game-bottom-bar-items {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 24px;
+
+    &__hide {
+      display: none;
+    }
+  }
+}
+
 .team-score {
   flex: 1;
 

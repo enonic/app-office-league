@@ -32,7 +32,9 @@ var importPlayers = function () {
         p = players[i];
         // log.info(JSON.stringify(p));
         var playerIds = createPlayer(p);
-        playerContentToNodeId[playerIds.contentId] = playerIds.nodeId;
+        if (playerIds) {
+            playerContentToNodeId[playerIds.contentId] = playerIds.nodeId;
+        }
     }
     return playerContentToNodeId;
 };
@@ -193,7 +195,7 @@ var createGame = function (foosGame, leagueId, playerContentToNodeId) {
             scoreAgainst: foosGame.data.winners[0].against || 0,
             side: 'red',
             winner: true,
-            ratingDelta: foosGame.data.winners[0].ratingDiff
+            ratingDelta: foosGame.data.winners[0].ratingDiff || 0
         };
         gamePlayers[playerContentToNodeId[pw2]] = {
             playerId: playerContentToNodeId[pw2],
@@ -201,7 +203,7 @@ var createGame = function (foosGame, leagueId, playerContentToNodeId) {
             scoreAgainst: foosGame.data.winners[1].against || 0,
             side: 'red',
             winner: true,
-            ratingDelta: foosGame.data.winners[1].ratingDiff
+            ratingDelta: foosGame.data.winners[1].ratingDiff || 0
         };
         gamePlayers[playerContentToNodeId[pl1]] = {
             playerId: playerContentToNodeId[pl1],
@@ -209,7 +211,7 @@ var createGame = function (foosGame, leagueId, playerContentToNodeId) {
             scoreAgainst: foosGame.data.losers[0].against || 0,
             side: 'blue',
             winner: false,
-            ratingDelta: foosGame.data.losers[0].ratingDiff
+            ratingDelta: foosGame.data.losers[0].ratingDiff || 0
         };
         gamePlayers[playerContentToNodeId[pl2]] = {
             playerId: playerContentToNodeId[pl2],
@@ -217,7 +219,7 @@ var createGame = function (foosGame, leagueId, playerContentToNodeId) {
             scoreAgainst: foosGame.data.losers[1].against || 0,
             side: 'blue',
             winner: false,
-            ratingDelta: foosGame.data.losers[1].ratingDiff
+            ratingDelta: foosGame.data.losers[1].ratingDiff || 0
         };
 
         storeLib.refresh();
@@ -237,7 +239,7 @@ var createGame = function (foosGame, leagueId, playerContentToNodeId) {
             scoreAgainst: gamePlayers[playerContentToNodeId[pw1]].scoreAgainst + gamePlayers[playerContentToNodeId[pw2]].scoreAgainst,
             side: 'red',
             winner: true,
-            ratingDelta: foosGame.data.winnerTeamRatingDiff
+            ratingDelta: foosGame.data.winnerTeamRatingDiff || 0
         };
         gameTeams[teamNodeL] = {
             teamId: teamNodeL,
@@ -245,7 +247,7 @@ var createGame = function (foosGame, leagueId, playerContentToNodeId) {
             scoreAgainst: gamePlayers[playerContentToNodeId[pl1]].scoreAgainst + gamePlayers[playerContentToNodeId[pl2]].scoreAgainst,
             side: 'blue',
             winner: false,
-            ratingDelta: foosGame.data.loserTeamRatingDiff
+            ratingDelta: foosGame.data.loserTeamRatingDiff || 0
         };
     } else {
         pw1 = foosGame.data.winners.playerId;
@@ -260,7 +262,7 @@ var createGame = function (foosGame, leagueId, playerContentToNodeId) {
             scoreAgainst: foosGame.data.winners.against,
             side: 'red',
             winner: true,
-            ratingDelta: foosGame.data.winners.ratingDiff
+            ratingDelta: foosGame.data.winners.ratingDiff || 0
         };
         gamePlayers[playerContentToNodeId[pl1]] = {
             playerId: playerContentToNodeId[pl1],
@@ -268,7 +270,7 @@ var createGame = function (foosGame, leagueId, playerContentToNodeId) {
             scoreAgainst: foosGame.data.losers.against,
             side: 'blue',
             winner: false,
-            ratingDelta: foosGame.data.losers.ratingDiff
+            ratingDelta: foosGame.data.losers.ratingDiff || 0
         };
     }
 
