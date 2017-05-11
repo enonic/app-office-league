@@ -98,12 +98,12 @@ export class PlayerEditComponent
         this.imageUrl = player.imageUrl;
 
         this.playerForm.setValue({
-            name: player.name,
-            fullname: player.fullname,
-            nationality: player.nationality,
+            name: player.name || '',
+            fullname: player.fullname || '',
+            nationality: player.nationality || '',
             handedness: Handedness[player.handedness].toLowerCase(),
-            description: player.description,
-            id: player.id
+            description: player.description || '',
+            id: player.id || ''
         });
         this.email = player.email;
 
