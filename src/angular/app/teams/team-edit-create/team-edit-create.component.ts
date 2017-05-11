@@ -105,9 +105,9 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
             TeamValidator.nameInUseValidator(this.graphQLService, team.id)));
 
         this.teamForm.setValue({
-            name: team.name,
-            description: team.description,
-            id: team.id
+            name: team.name || '',
+            description: team.description || '',
+            id: team.id || ''
         });
     }
 

@@ -6,7 +6,6 @@ export class PageTitleService {
 
     private title: Observable<string>;
     private titleSubject: Subject<string>;
-    private DEFAULT_TITLE = 'Office League';
 
     constructor() {
         this.titleSubject = new Subject();
@@ -19,7 +18,7 @@ export class PageTitleService {
     }
 
     public setTitle(title: string): PageTitleService {
-        this.titleSubject.next(title && title.length > 0 ? title : this.DEFAULT_TITLE);
+        this.titleSubject.next(title && title.length > 0 ? title : '');
         return this;
     }
 

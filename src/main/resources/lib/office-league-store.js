@@ -33,7 +33,7 @@ var INVALID_NAME_CHARS = {
     '+': true,
     ',': true,
     '=': true,
-    '@': true,
+    // '@': true,
     '%': true,
     '{': true,
     '}': true,

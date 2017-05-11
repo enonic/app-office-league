@@ -31,7 +31,13 @@ export class Player
         player.handedness = HandednessUtil.parse(json.handedness);
         player.description = json.description;
         player.teams = json.teams ? json.teams.map((team) => Team.fromJson(team)) : [];
-        player.leaguePlayers = json.leaguePlayers ? json.leaguePlayers.map((leaguePlayer) => LeaguePlayer.fromJson(leaguePlayer)) : [];
+        if (json.leaguePlayers) {
+            player.leaguePlayers = json.leaguePlayers.map((leaguePlayer) => LeaguePlayer.fromJson(leaguePlayer));
+        } else if (json.leaguePlayer) {
+            player.leaguePlayers = [LeaguePlayer.fromJson(json.leaguePlayer)];
+        } else {
+            player.leaguePlayers = [];
+        }
         player.imageUrl = json.imageUrl ? (UrlHelper.trimSlash(XPCONFIG.baseHref) + json.imageUrl) : ImageService.playerDefault();
         player.email = json.email || '';
         player.stats = json.stats ? PlayerStats.fromJson(json.stats) : null;

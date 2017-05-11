@@ -18,7 +18,7 @@ export class CustomValidators {
         '+': true,
         ',': true,
         '=': true,
-        '@': true,
+        // '@': true,
         '%': true,
         '{': true,
         '}': true,

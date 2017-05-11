@@ -13,6 +13,8 @@ import {Player} from '../graphql/schemas/Player';
     styleUrls: ['app.component.less']
 })
 export class AppComponent {
+    private static DEFAULT_TITLE = 'Office League';
+
     logoUrl: string;
     isPlayingGame: boolean;
     playerImage: string;
@@ -32,7 +34,7 @@ export class AppComponent {
         this.isNewUser = auth.isNewUser();
         this.isAuthenticated = auth.isAuthenticated();
 
-        this.pageTitleService.subscribeTitle(title => this.pageTitle = title).resetTitle();
+        this.pageTitleService.subscribeTitle(title => this.pageTitle = title).setTitle(AppComponent.DEFAULT_TITLE);
         this.userProfileService.subscribePlayer(player => this.updatePlayerProfile(player));
 
         this.displayMenu = !this.router.navigated || this.isTopLevelPage(this.router.url);

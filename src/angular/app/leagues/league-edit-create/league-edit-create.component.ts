@@ -157,9 +157,9 @@ export class LeagueEditCreateComponent
             this.pageTitleService.setTitle(league.name);
 
             this.leagueForm.setValue({
-                name: league.name,
-                description: league.description,
-                id: league.id
+                name: league.name || '',
+                description: league.description || '',
+                id: league.id || ''
             });
 
             this.leagueForm.removeControl('name');

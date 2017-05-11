@@ -14,6 +14,7 @@ import {GameSelection} from '../GameSelection';
 import {XPCONFIG} from '../../app.config';
 import {WebSocketManager} from '../../services/websocket.manager';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
+import {RankingService} from '../../services/ranking.service';
 
 enum GameState {
     NotStarted, Playing, Paused, Finished
@@ -43,8 +44,10 @@ export class GamePlayComponent
 
     blueScore: number = 0;
     redScore: number = 0;
+    expectedBlueScore: number = -1;
+    expectedRedScore: number = -1;
     firstPeriod = true;
-    halfTime = false;
+    halfTime: boolean = false;
     baseTime: Date;
     secondsBeforePause: number;
     elapsedTime: string;
@@ -58,7 +61,7 @@ export class GamePlayComponent
     messagePlayer: Player;
     message: string;
     messageTimerId: any;
-    commentatorMessage:string = 'GOAL!';
+    commentatorMessage: string = 'GOAL!';
 
     nameClassesBlue1: {} = {
         'game-play__player--selected': false,
@@ -91,7 +94,8 @@ export class GamePlayComponent
     private wsMan: WebSocketManager;
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router, private elRef: ElementRef,
-                private offlineService: OfflinePersistenceService, private gameSelection: GameSelection) {
+                private offlineService: OfflinePersistenceService, private gameSelection: GameSelection,
+                private rankingService: RankingService) {
     }
 
     ngOnInit(): void {
@@ -113,7 +117,13 @@ export class GamePlayComponent
                 .catch((error) => {
                     console.log('Could not start game', error);
                 })
-                .then(() => this.startGame())
+                .then(() => {
+                    if (!this.league) {
+                        this.router.navigate([''], {replaceUrl: true});
+                        return;
+                    }
+                    this.startGame();
+                })
             ;
         });
     }
@@ -238,11 +248,19 @@ export class GamePlayComponent
         this.showMenu = false;
     }
 
+    private redirectAfterGameDeleted() {
+        if (this.league) {
+            this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
+        } else {
+            this.router.navigate([], {replaceUrl: true});
+        }
+    }
+
     onEndGameClicked() {
         this.deleteGame().then(() => {
-            this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
+            this.redirectAfterGameDeleted();
         }).catch((error) => {
-            this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
+            this.redirectAfterGameDeleted();
         });
     }
 
@@ -361,13 +379,13 @@ export class GamePlayComponent
         }
 
         this.onScoreChange();
-        this.commentatorMessage =  this.halfTime ? 'Half Time!' : 'GOAL!';
+        this.commentatorMessage = this.halfTime ? 'Half Time!' : 'GOAL!';
         this.nameClassesGamePlayCommentator['game-play__commentator--active'] = true;
         setTimeout(() => {
             this.nameClassesGamePlayCommentator['game-play__commentator--active'] = false;
         }, 2000);
 
-        
+
     }
 
     private handlePointScored(p: Player, against: boolean) {
@@ -424,11 +442,11 @@ export class GamePlayComponent
             });
         }
     }
-    
+
     private onScoreChange() {
-        let wasFirstPeriod:boolean = this.firstPeriod;
+        let wasFirstPeriod: boolean = this.firstPeriod;
         this.firstPeriod = this.blueScore < 5 && this.redScore < 5;
-        this.halfTime =(wasFirstPeriod && !this.firstPeriod) || (!wasFirstPeriod && this.firstPeriod);
+        this.halfTime = (wasFirstPeriod && !this.firstPeriod) || (!wasFirstPeriod && this.firstPeriod);
     }
 
     private hasGameEnded(): boolean {
@@ -441,6 +459,9 @@ export class GamePlayComponent
     }
 
     private handleGamePlayersLeagueQueryResponse(data) {
+        if (!data.game) {
+            return;
+        }
         this.gameId = this.gameSelection.gameId;
         this.league = League.fromJson(data.game.league);
         let playerMap: { [id: string]: Player } = {};
@@ -472,6 +493,7 @@ export class GamePlayComponent
             point.player = playerMap[p.player.id];
             this.points.push(point);
         });
+        this.calculateExpectedScore();
     }
 
     private loadGameData(): Promise<any> {
@@ -479,7 +501,7 @@ export class GamePlayComponent
             // load existing game data
             return this.graphQLService.post(
                 GamePlayComponent.getGamePlayersLeagueQuery,
-                {gameId: this.gameSelection.gameId},
+                {gameId: this.gameSelection.gameId, leagueId: this.gameSelection.league.id},
                 data => this.handleGamePlayersLeagueQueryResponse(data)
             );
         }
@@ -514,6 +536,26 @@ export class GamePlayComponent
         this.bluePlayer2 = playerMap[this.gameSelection.bluePlayer2 && this.gameSelection.bluePlayer2.id];
         this.redPlayer1 = playerMap[this.gameSelection.redPlayer1 && this.gameSelection.redPlayer1.id];
         this.redPlayer2 = playerMap[this.gameSelection.redPlayer2 && this.gameSelection.redPlayer2.id];
+
+        this.calculateExpectedScore();
+    }
+
+    private calculateExpectedScore() {
+        let bluePlayer1Rating = this.getPlayerRating(this.bluePlayer1);
+        let bluePlayer2Rating = this.getPlayerRating(this.bluePlayer2);
+        let redPlayer1Rating = this.getPlayerRating(this.redPlayer1);
+        let redPlayer2Rating = this.getPlayerRating(this.redPlayer2);
+        let expectedScore = this.rankingService.getExpectedScore([bluePlayer1Rating, bluePlayer2Rating],
+            [redPlayer1Rating, redPlayer2Rating]);
+        this.expectedBlueScore = expectedScore[0];
+        this.expectedRedScore = expectedScore[1];
+    }
+
+    private getPlayerRating(player: Player): number {
+        if (!player) {
+            return undefined;
+        }
+        return player.leaguePlayers[0].rating || this.rankingService.defaultRating();
     }
 
     private saveGame(): Promise<string> {
@@ -803,10 +845,14 @@ export class GamePlayComponent
             nationality
             handedness
             description
+            leaguePlayer(leagueId: $leagueId) {
+                id
+                rating
+            }
         }
     }`;
 
-    private static readonly getGamePlayersLeagueQuery = `query ($gameId: ID!) {
+    private static readonly getGamePlayersLeagueQuery = `query ($gameId: ID!, $leagueId: ID!) {
       game(id: $gameId) {
         id
         finished
@@ -828,6 +874,10 @@ export class GamePlayComponent
             nationality
             handedness
             description
+            leaguePlayer(leagueId: $leagueId) {
+                id
+                rating
+            }
           }
         }
         gameTeams {

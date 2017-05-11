@@ -149,6 +149,15 @@ exports.playerType = graphQlLib.createObjectType({
                 return storeLib.getLeaguePlayersByPlayerId(env.source._id, env.args.offset, env.args.first).hits;
             }
         },
+        leaguePlayer: {
+            type: graphQlLib.reference('LeaguePlayer'),
+            args: {
+                leagueId: graphQlLib.nonNull(graphQlLib.GraphQLID)
+            },
+            resolve: function (env) {
+                return storeLib.getLeaguePlayerByLeagueIdAndPlayerId(env.args.leagueId, env.source._id);
+            }
+        },
         gamePlayers: {
             type: graphQlLib.list(graphQlLib.reference('GamePlayer')),
             args: {
