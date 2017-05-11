@@ -33,8 +33,8 @@ export class PlayerTeamListComponent extends BaseComponent {
         }
     }`;
 
+    teams: Team[];
     private playerName: string;
-    private teams: Team[];
     private pageCount: number = 1;
 
     constructor(private service: GraphQLService, route: ActivatedRoute, private pageTitleService: PageTitleService) {
