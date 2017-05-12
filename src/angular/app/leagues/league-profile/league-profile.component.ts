@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges,ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {AuthService} from '../../services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -16,10 +16,10 @@ import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist
 })
 export class LeagueProfileComponent
     extends BaseComponent
-    implements OnChanges {
+    implements OnChanges, OnDestroy {
 
     @Input() league: League;
-    @ViewChild ('addPlayerChips') addPlayerChipsViewChild;
+    @ViewChild('addPlayerChips') addPlayerChipsViewChild;
     playerInLeague: boolean;
     userAuthenticated: boolean;
     adminInLeague: boolean;
@@ -29,6 +29,7 @@ export class LeagueProfileComponent
     playerNamesToAdd: string[] = [];
     removePlayer: Player;
     approvePlayer: Player;
+    approvePollingTimerId: any;
     materializeActions = new EventEmitter<string | MaterializeAction>();
     materializeActionsRemove = new EventEmitter<string | MaterializeAction>();
     materializeActionsApprove = new EventEmitter<string | MaterializeAction>();
@@ -48,8 +49,14 @@ export class LeagueProfileComponent
         let name = this.route.snapshot.params['name'];
 
         if (!this.league && name) {
+            this.pageTitleService.setTitle(name);
             this.refreshData(name);
         }
+    }
+
+    ngOnDestroy() {
+        clearTimeout(this.approvePollingTimerId);
+        this.approvePollingTimerId = undefined;
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -99,6 +106,34 @@ export class LeagueProfileComponent
         this.nonMembersPlayerNames = data.league.nonMemberPlayers.map((player) => player.name);
 
         this.pageTitleService.setTitle(this.league.name);
+        if (this.joinLeagueRequested && !this.playerInLeague) {
+            this.pollJoinApproved();
+        }
+    }
+
+    private pollJoinApproved() {
+        clearTimeout(this.approvePollingTimerId);
+        this.approvePollingTimerId = setTimeout(() => {
+            let playerId = this.authService.isAuthenticated() ? this.authService.getUser().playerId : '-1';
+            let leagueName = (this.league && this.league.name) || '';
+
+            this.graphQLService.post(
+                LeagueProfileComponent.joinLeagueApprovedQuery,
+                {name: leagueName, playerId: playerId},
+                data => {
+                    let pending = !!(data.league && data.league.myLeaguePlayer && data.league.myLeaguePlayer.pending);
+                    if (!pending) {
+                        this.refreshData(leagueName);
+                    } else {
+                        this.pollJoinApproved();
+                    }
+                },
+                () => {
+                    this.pollJoinApproved();
+                }
+            );
+
+        }, 15000);
     }
 
     format(value: number, none: string, one: string, multiple: string): string {
@@ -440,6 +475,14 @@ export class LeagueProfileComponent
 
     private static readonly deleteLeagueQuery = `mutation ($name:String!) {
         deleteLeague(name: $name)
+    }`;
+
+    private static readonly joinLeagueApprovedQuery = `query ($name: String, $playerId: ID!) {
+        league(name: $name) {
+            myLeaguePlayer: leaguePlayer(playerId:$playerId) {
+                pending
+            }
+        }
     }`;
 
 }
