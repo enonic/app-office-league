@@ -104,7 +104,12 @@
   }
 
   &__players.secondPeriod {
-    flex-direction: row-reverse;
+    @media @landscape {
+      flex-direction: row-reverse;      
+    }
+    @media @mobile-portrait {
+      flex-direction: column-reverse;
+    }
   }
 
   &__player {
