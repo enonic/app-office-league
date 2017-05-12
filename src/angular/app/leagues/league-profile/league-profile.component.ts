@@ -49,7 +49,6 @@ export class LeagueProfileComponent
         let name = this.route.snapshot.params['name'];
 
         if (!this.league && name) {
-            this.pageTitleService.setTitle(name);
             this.refreshData(name);
         }
     }
