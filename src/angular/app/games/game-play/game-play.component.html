@@ -19,21 +19,23 @@
                 <i class="medium material-icons" [ngClass]="{hide: !showUndo}" (click)="onUndoClicked()">replay</i>
             </div>-->
         </div>
-        <div class="game-top-bar-message" [ngClass]="nameClassesGameTopBarMsg">
-            <img src="{{messagePlayer?.imageUrl}}?size=200" alt="{{messagePlayer?.name}}">
-            <span class="game-top-bar-message__name">{{messagePlayer?.name}}:</span>
-            <span class="game-top-bar-message__text">{{message}}</span>
-        </div>
     </div>
 
-    <div class="game-bottom-bar" *ngIf="showMenu && (expectedRedScore >= 0 && expectedBlueScore >= 0)">
-        <div class="game-bottom-bar-items" [ngClass]="nameClassesGameTopBarItems">
+    <div class="game-bottom-bar">
+        <div class="game-bottom-bar-items" [ngClass]="nameClassesGameTopBarItems" *ngIf="showMenu && (expectedRedScore >= 0 && expectedBlueScore >= 0)">
             <div class="game-score">
                 <div class="game-play__team-score game-play__red-score" [ngClass]="nameClassesGamePlayScoreRed">{{expectedRedScore}}</div>
                 <div class="game-play__time">
                     <span>expected</span>
                 </div>
                 <div class="game-play__team-score game-play__blue-score"[ngClass]="nameClassesGamePlayScoreBlue">{{expectedBlueScore}}</div>
+            </div>
+        </div>
+        <div class="game-bottom-bar-message" [ngClass]="nameClassesGameBottomBarMsg">
+            <div class="game-bottom-bar-message__container">
+                <img src="{{messagePlayer?.imageUrl}}?size=200" alt="{{messagePlayer?.name}}">
+                <span class="game-bottom-bar-message__container__name">{{messagePlayer?.name}}:</span>
+                <span class="game-bottom-bar-message__container__text">{{message}}</span>
             </div>
         </div>
     </div>

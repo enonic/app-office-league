@@ -276,15 +276,6 @@
   100% { color: #000; }
 }
 
-@keyframes message-blink {
-  0% { color: #fff; }
-  100% { color: #CBD9F9; }
-}
-@-webkit-keyframes message-blink {
-  0% { color: #fff; }
-  100% { color: #CBD9F9; }
-}
-
 .playing-field {
   width: 100%;
   height: 100%;
@@ -422,38 +413,6 @@
     }
   }
 
-  .game-top-bar-message {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-
-    img {
-      height: 40px;
-      padding-right:5px;
-    }
-
-    &__name {
-      color: #ccc;
-      font-size: 18px;
-      padding-right:5px;
-    }
-
-    &__text {
-      font-size: 18px;
-      text-overflow: ellipsis;
-      // TODO fix animation
-      -webkit-animation: message-blink 2s linear infinite;
-      -moz-animation: message-blink 2s linear infinite;
-      animation: message-blink 2s linear infinite;
-    }
-
-    &__hide {
-      display: none;
-    }
-  }
-
 }
 
 .game-bottom-bar {
@@ -479,6 +438,77 @@
     &__hide {
       display: none;
     }
+  }
+
+  .game-bottom-bar-message {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #401F3E;
+    overflow: hidden;
+
+    &__container {
+      overflow: visible;
+      position: relative;
+      white-space: nowrap;
+      animation: floatText 30s infinite linear;
+
+      img {
+        height: 40px;
+        padding-right:5px;
+      }
+
+      &__name {
+        color: #aaa;
+        font-size: 18px;
+        padding-right:5px;
+        vertical-align: bottom;
+        line-height: 40px;
+      }
+
+      &__text {
+        color: #fff;
+        font-size: 18px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: bottom;
+        line-height: 40px;
+      }
+    }
+
+    &__hide {
+      display: none;
+    }
+  }
+}
+
+@-webkit-keyframes floatText{
+  0% {
+    left: 00%;
+  }
+
+  50% {
+    left: 00%;
+  }
+
+  100% {
+    left: -400%;
+  }
+}
+
+@keyframes floatText{
+  0% {
+    left: 00%;
+  }
+
+  50% {
+    left: 00%;
+  }
+
+  100% {
+    left: -400%;
   }
 }
 

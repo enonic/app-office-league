@@ -87,8 +87,8 @@ export class GamePlayComponent
     nameClassesGameTopBarItems: {} = {
         'game-top-bar-items__hide': false
     };
-    nameClassesGameTopBarMsg: {} = {
-        'game-top-bar-message__hide': true
+    nameClassesGameBottomBarMsg: {} = {
+        'game-bottom-bar-message__hide': true
     };
 
     private wsMan: WebSocketManager;
@@ -799,17 +799,17 @@ export class GamePlayComponent
     private showMessage(player: Player, message: string) {
         this.messagePlayer = player;
         this.message = message.replace(/[\r\n]+/g, " ");
-        this.nameClassesGameTopBarItems['game-top-bar-items__hide'] = true;
-        this.nameClassesGameTopBarMsg['game-top-bar-message__hide'] = false;
+        this.nameClassesGameTopBarItems['game-bottom-bar-items__hide'] = true;
+        this.nameClassesGameBottomBarMsg['game-bottom-bar-message__hide'] = false;
         clearTimeout(this.messageTimerId);
-        this.messageTimerId = setTimeout(() => this.hideMessage(), 20000);
+        this.messageTimerId = setTimeout(() => this.hideMessage(), 60000);
     }
 
     private hideMessage() {
         this.messagePlayer = null;
         this.message = '';
-        this.nameClassesGameTopBarItems['game-top-bar-items__hide'] = false;
-        this.nameClassesGameTopBarMsg['game-top-bar-message__hide'] = true;
+        this.nameClassesGameTopBarItems['game-bottom-bar-items__hide'] = false;
+        this.nameClassesGameBottomBarMsg['game-bottom-bar-message__hide'] = true;
     }
 
     ngOnDestroy() {
