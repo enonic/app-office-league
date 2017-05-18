@@ -23,9 +23,10 @@ Take foosball to the next level!
 
 ## Configuration
 
-The application use the config file "com.enonic.app.officeleague.cfg":
+The application can be configured using the file "com.enonic.app.officeleague.cfg":
 
 Properties:
+
 | Property | Default value | Description |
 |----------|---------------|-------------|
 | skip-test-data | false | Skip the import of test players, teams and league on application start-up |
@@ -35,7 +36,7 @@ Properties:
 ```properties
 # Example
 skip-test-data = true
-officeleague.baseUrl=https://officeleague.rocks/app
-mail.from=contact@officeleague.rocks
+officeleague.baseUrl = https://officeleague.rocks/app
+mail.from = contact@officeleague.rocks
 ```
 
