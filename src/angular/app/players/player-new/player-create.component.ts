@@ -89,6 +89,10 @@ export class PlayerCreateComponent extends BaseComponent implements OnInit, Afte
     public updatePageTitle(title: string) {
         this.pageTitleService.setTitle(title);
     }
+    
+    onCancelClicked() {
+        return this.auth.logoutToMarketingPage();
+    }
 
     onSaveClicked() {
         if (!this.playerForm.valid) {
@@ -96,10 +100,6 @@ export class PlayerCreateComponent extends BaseComponent implements OnInit, Afte
         }
 
         this.savePlayer();
-    }
-
-    onCancelClicked() {
-        window.location.href = XPCONFIG.logoutUrl;
     }
 
     savePlayer() {

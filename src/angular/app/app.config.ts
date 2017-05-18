@@ -12,6 +12,7 @@ export interface Config {
     assetsUrl: string;
     loginUrl: string;
     logoutUrl: string;
+    logoutMarketingUrl: string;
     graphQlUrl: string;
     setImageUrl: string;
     liveGameUrl: string;

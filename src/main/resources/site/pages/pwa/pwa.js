@@ -10,6 +10,10 @@ exports.get = function (req) {
     var baseHref = portalLib.pageUrl({
         path: site._path
     });
+    var baseAbsoluteUrl = portalLib.pageUrl({
+        path: site._path,
+        type: 'absolute'
+    });
     var appBaseUrl = portalLib.pageUrl({
         path: site._path + '/app'
     });
@@ -67,6 +71,7 @@ exports.get = function (req) {
         assetsUrl: appBaseUrl + '/assets',
         loginUrl: portalLib.loginUrl({redirect: appBaseAbsoluteUrl}),
         logoutUrl: portalLib.logoutUrl({redirect: appBaseAbsoluteUrl}),
+        logoutMarketingUrl: portalLib.logoutUrl({redirect: baseAbsoluteUrl}),
         idProvider: portalLib.idProviderUrl(),
         setImageUrl: portalLib.serviceUrl({service: "set-image"}),
         liveGameUrl: getWebSocketUrl(portalLib.serviceUrl({service: "live-game", type: "absolute"}))

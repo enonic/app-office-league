@@ -36,6 +36,11 @@ export class AuthService {
         return false;
     }
 
+    public logoutToMarketingPage() {
+        this.navigateToUrl(XPCONFIG.logoutMarketingUrl);
+        return false;
+    }
+
     private navigateToUrl(url: string) {
         window.location.href = url;
     }
