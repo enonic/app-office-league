@@ -3,19 +3,39 @@
 # Office League App
 
 [![Build Status](https://travis-ci.org/enonic/app-office-league.svg?branch=master)](https://travis-ci.org/enonic/app-office-league)
+[![License](https://img.shields.io/github/license/enonic/lib-sql.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 Office League application for [Enonic XP](https://enonic.com/developer-tour).
 
-## Releases
+Take foosball to the next level!
 
-...
+- Create your league, invite and play to rule your opponents.
+- Record your games while you play
+- Interactive live game feed
+- Player and team ranking for each league
 
-## Building
 
-Build all code and run all tests:
+## Compatibility
 
-    ./gradlew build
+| Version | XP Version  | Download                       |
+|---------|-------------|----------------------------------|
+| 0.2.0   | 6.10.x      | [Download](http://repo.enonic.com/public/com/enonic/app/officeleague/0.2.0/officeleague-0.2.0.jar) |
 
-Build all code skipping all tests:
+## Configuration
 
-    ./gradlew build -x test
+The application use the config file "com.enonic.app.officeleague.cfg":
+
+Properties:
+| Property | Default value | Description |
+|----------|---------------|-------------|
+| skip-test-data | false | Skip the import of test players, teams and league on application start-up |
+| officeleague.baseUrl | http://localhost:8080/portal/draft/office-league/app | Application URL used by mail generation |
+| mail.from | | Skip the import of test players, teams and league on application start-up |
+  
+```properties
+# Example
+skip-test-data = true
+officeleague.baseUrl=https://officeleague.rocks/app
+mail.from=contact@officeleague.rocks
+```
+
