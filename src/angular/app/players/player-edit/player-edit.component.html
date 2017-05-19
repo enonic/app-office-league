@@ -19,7 +19,7 @@
                         <i class="material-icons prefix">fingerprint</i>
                         <input id="name" type="text" formControlName="name"
                                (ngModelChange)="updatePageTitle($event)" [class.invalid]="!!formErrors.name"
-                               required="required" aria-required="true" autofocus autocomplete="off">
+                               required="required" aria-required="true" autocomplete="off">
                         <label class="active" [attr.data-error]="formErrors.name" for="name">Username</label>
                     </div>
                 </div>
