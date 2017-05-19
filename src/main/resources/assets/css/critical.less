@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
+//from Materialize query ranges
+@medium-screen-up: 993px;
+
 * {
     box-sizing: border-box;
 }
@@ -26,8 +29,10 @@ a {
     color: #142663;
 }
 
-a:hover {
-    color: #ed7d3a;
+@media only screen and (min-width: @medium-screen-up) {
+    a:hover {
+        color: #ed7d3a;
+    }
 }
 
 img {
@@ -146,9 +151,11 @@ img {
     }
 }
 
-.cta__link:hover {
-    color: #ed7d3a;
-    border-color: #ed7d3a;
+@media only screen and (min-width: @medium-screen-up) {
+    .cta__link:hover {
+        color: #ed7d3a;
+        border-color: #ed7d3a;
+    }
 }
 
 .video {
