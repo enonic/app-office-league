@@ -67,42 +67,94 @@
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker
             .getRegistration()
-            .then(function (registration) {
-                if (!!registration && registration.active) {
-                    console.log('Detected active Service Worker with scope ' + registration.scope);
-                    return registration.active;
-                }
-                else {
-                    return navigator.serviceWorker
-                        .register('../service-worker.js', {scope: '{{siteUrl}}/app'})
-                        .then(function (registration) {
-                            console.log('Service Worker registered with scope ' + registration.scope);
-                            return registration.installing;
-                        }, function () {
-                            console.log('Service Worker registration failure.');
-                        })
-                }
-            })
-            .then(function (serviceWorker) {
-                if (!serviceWorker) {
-                    return;
-                }
-                let assets = [];
-                <% for (key in htmlWebpackPlugin.files.chunks) { %>
-                <%      item = htmlWebpackPlugin.files.chunks[key].entry; %>
-                assets.push('<%= '{{baseHref}}' + item %>');
-                <% }; %>
-                <% for (key in htmlWebpackPlugin.files.css) { %>
-                <%      item = htmlWebpackPlugin.files.css[key]; %>
-                assets.push('<%= '{{baseHref}}' + item %>');
-                <% }; %>
+            .then(registerServiceWorker)
+            .then(postAssets)
+            .then(requestNotificationPermission)
+            .then(subscribeToPushManager)
+            .then((value) => {console.log(value);console.log(JSON.stringify(value))});
+    }
+    
+    function registerServiceWorker(registration) {
+        if (!!registration && registration.active) {
+            console.log('Detected active Service Worker with scope ' + registration.scope);
+            return registration;
+        }
+        else {
+            return navigator.serviceWorker
+                .register('../service-worker.js', {scope: '{{siteUrl}}/app'})
+                .then(function (registration) {
+                    console.log('Service Worker registered with scope ' + registration.scope);
+                    return registration;
+                }, function () {
+                    console.log('Service Worker registration failure.');
+                })
+        }    
+    }
+    
+    function postAssets(registration) {
+        let serviceWorker = registration.installing || registration.active;
+        if (serviceWorker) {
+            let assets = [];
+            <% for (key in htmlWebpackPlugin.files.chunks) { %>
+            <%      item = htmlWebpackPlugin.files.chunks[key].entry; %>
+            assets.push('<%= '{{baseHref}}' + item %>');
+            <% }; %>
+            <% for (key in htmlWebpackPlugin.files.css) { %>
+            <%      item = htmlWebpackPlugin.files.css[key]; %>
+            assets.push('<%= '{{baseHref}}' + item %>');
+            <% }; %>
 
-                if (assets.length > 0) {
-                    serviceWorker.postMessage({
-                        assets: assets
-                    });
-                }
+            if (assets.length > 0) {
+                serviceWorker.postMessage({
+                    assets: assets
+                });
+            }
+        }
+        return registration;     
+    }
+    
+    function requestNotificationPermission(registration) {
+        return new Promise(function(resolve, reject) {
+            const permissionRequestResult = Notification.requestPermission(function(result) {
+              resolve(result);
             });
+        
+            if (permissionRequestResult) {
+              permissionRequestResult.then(resolve, reject);
+            }
+        })
+        .then(function(permissionRequestResult) {
+            console.log('Notification permission request ', permissionRequestResult);
+            if (permissionRequestResult !== 'granted') {
+              throw new Error('Notification permission not granted.');
+            }
+            return registration;
+        });   
+    }
+    
+    function subscribeToPushManager(registration) {
+        const subscribeOptions = {
+            userVisibleOnly: true,
+            applicationServerKey: base64StringToUint8Array(
+              'BBb9jCg9kjkhCufCy27_Yxa0KVYxU19ClJKKuYfBIkh4dGJYa3niCjX8V3xou6JBRdgiZFZNynqmhL1AyLRsp5o'
+            )
+        };
+        return registration.pushManager.subscribe(subscribeOptions); 
+    }
+    
+    function base64StringToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const paddedBase64String = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+    
+      const rawData = window.atob(paddedBase64String);
+      const uint8Array = new Uint8Array(rawData.length);
+    
+      for (let i = 0; i < rawData.length; ++i) {
+        uint8Array[i] = rawData.charCodeAt(i);
+      }
+      return uint8Array;
     }
     {{/isLive}}
 </script>
