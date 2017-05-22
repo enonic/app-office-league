@@ -154,6 +154,8 @@
     }
     
     function sendSubscriptionToServer(subscription) {
+        var key = subscription.getKey('p256dh');
+        var auth = subscription.getKey('auth');
         fetch(XPCONFIG.graphQlUrl, {
             method: 'POST',
             headers: {
@@ -163,10 +165,11 @@
                 query: "mutation($endpoint:String!,$key:String!,$auth:String!){addPushSubscription(endpoint:$endpoint, key:$key, auth:$auth)}", 
                 variables: {
                     endpoint: subscription.endpoint, 
-                    key: subscription.getKey('p256dh'), 
-                    auth: subscription.getKey('auth')
+                    key: btoa(String.fromCharCode.apply(null, new Uint8Array(key))), 
+                    auth: btoa(String.fromCharCode.apply(null, new Uint8Array(auth)))
                 }
-            })
+            }),
+            credentials: 'include'  
         })
         .then(function(response) {
             if (!response.ok) {

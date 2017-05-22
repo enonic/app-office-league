@@ -9,6 +9,7 @@ var REPO_NAME = 'office-league';
 var LEAGUES_PATH = '/leagues';
 var PLAYERS_PATH = '/players';
 var TEAMS_PATH = '/teams';
+var PUSH_SUBSCRIPTIONS_PATH = '/push-subscriptions';
 var LEAGUE_GAMES_REL_PATH = '/games';
 var LEAGUE_PLAYERS_REL_PATH = '/players';
 var LEAGUE_TEAMS_REL_PATH = '/teams';
@@ -58,7 +59,8 @@ var TYPE = {
     LEAGUE_PLAYER: 'leaguePlayer',
     LEAGUE_TEAM: 'leagueTeam',
     COMMENT: 'comment',
-    INVITATION: 'invitation'
+    INVITATION: 'invitation',
+    PUSH_SUBSCRIPTION: 'pushSubscription'
 };
 
 var ROOT_PERMISSIONS = [ //TODO Remove after XP issue 4801 resolution
@@ -2627,6 +2629,31 @@ exports.deleteGameById = function (id) {
         return repoConn.delete(game._id) ? game._id : null;
     }
     return null;
+};
+
+/**
+ * Adds a push subscription.
+ *
+ * @param {object} params JSON with the push subscription parameters.
+ * @param {string} params.endpoint Push subscription endpoint.
+ * @param {string} params.key Push subscription endpoint.
+ * @param {string} params.auth Push subscription endpoint.
+ * @return {string} Added push subscription.
+ */
+exports.addPushSubscription = function (params) {
+    var repoConn = newConnection();
+    
+    var createdNode = repoConn.create({
+        _parentPath: PUSH_SUBSCRIPTIONS_PATH,
+        _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
+        type: TYPE.PUSH_SUBSCRIPTION,
+        endpoint: required(params, 'endpoint'),
+        key: required(params, 'key'),
+        auth: required(params, 'auth'),
+        timestamp: valueLib.instant(new Date().toISOString())
+    });
+
+    return !!createdNode;
 };
 
 /**

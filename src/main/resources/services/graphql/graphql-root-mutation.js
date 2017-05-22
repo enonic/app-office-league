@@ -425,8 +425,13 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 auth: graphQlLib.nonNull(graphQlLib.GraphQLString)
             },
             resolve: function (env) {
-                log.info('addPushSubscription: ' + JSON.stringify(env.args));
-                return true;
+                var addedPushSubscription = storeLib.addPushSubscription({
+                    endpoint: env.args.endpoint,
+                    key: env.args.key,
+                    auth: env.args.auth
+                });
+                storeLib.refresh();
+                return !!addedPushSubscription;
             }
         }
     }

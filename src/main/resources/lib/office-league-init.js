@@ -9,6 +9,7 @@ var REPO_NAME = 'office-league';
 var LEAGUES_PATH = '/leagues';
 var PLAYERS_PATH = '/players';
 var TEAMS_PATH = '/teams';
+var PUSH_SUBSCRIPTIONS_PATH = '/push-subscriptions';
 
 var DEFAULT_SITE_NAME = 'office-league';
 var DEFAULT_SITE_PATH = '/' + DEFAULT_SITE_NAME;
@@ -276,6 +277,15 @@ var createRootNodes = function () {
         log.info('Creating node [' + PLAYERS_PATH + '] ...');
         var playersNode = repoConn.create({
             _name: PLAYERS_PATH.slice(1),
+            _parentPath: '/',
+            _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
+        });
+    }
+    var pushSubscriptionsExist = nodeWithPathExists(repoConn, PUSH_SUBSCRIPTIONS_PATH);
+    if (!pushSubscriptionsExist) {
+        log.info('Creating node [' + PUSH_SUBSCRIPTIONS_PATH + '] ...');
+        var playersNode = repoConn.create({
+            _name: PUSH_SUBSCRIPTIONS_PATH.slice(1),
             _parentPath: '/',
             _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
         });
