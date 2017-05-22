@@ -15,6 +15,7 @@ import {XPCONFIG} from '../../app.config';
 import {WebSocketManager} from '../../services/websocket.manager';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 import {RankingService} from '../../services/ranking.service';
+import {AudioService, WebAudioSound} from '../../services/audio.service';
 
 enum GameState {
     NotStarted, Playing, Paused, Finished
@@ -92,13 +93,15 @@ export class GamePlayComponent
     };
 
     private wsMan: WebSocketManager;
+    private goalSound: WebAudioSound;
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router, private elRef: ElementRef,
                 private offlineService: OfflinePersistenceService, private gameSelection: GameSelection,
-                private rankingService: RankingService) {
+                private rankingService: RankingService, private audioService: AudioService) {
     }
 
     ngOnInit(): void {
+        this.loadSounds();
         this.route.queryParams.subscribe(params => {
             if (!this.gameSelection.gameId) {
                 this.gameSelection.gameId = params['gameId'];
@@ -240,7 +243,6 @@ export class GamePlayComponent
             this.pauseGame();
             this.showMenu = true;
         }
-
     }
 
     onContinueGameClicked() {
@@ -434,6 +436,8 @@ export class GamePlayComponent
                 });
             });
         } else {
+            this.playSound(this.goalSound);
+
             this.saveGame().then((gameId) => {
                 // TODO show point feedback
             }).catch((ex) => {
@@ -814,6 +818,7 @@ export class GamePlayComponent
 
     ngOnDestroy() {
         this.wsMan.disconnect();
+        this.stopAllSounds();
     }
 
     onWsMessage(event: RemoteEvent) {
@@ -828,6 +833,29 @@ export class GamePlayComponent
 
     private getWsUrl(gameId: string): string {
         return XPCONFIG.liveGameUrl + '?gameId=' + gameId + '&scope=game-play';
+    }
+
+    private playSound(sound: WebAudioSound) {
+        if (!sound) {
+            return;
+        }
+        try {
+            sound.play();
+        } catch (e) {
+            console.warn('Unable to play sound: ', sound);
+        }
+    }
+
+    private loadSounds() {
+        try {
+            this.goalSound = this.audioService.newSound('goal6.mp3');
+        } catch (e) {
+            console.warn('Unable to load sounds: ' + e)
+        }
+    }
+
+    private stopAllSounds() {
+        [this.goalSound].forEach((sound) => sound.stop());
     }
 
     private static readonly getPlayersLeagueQuery = `query ($leagueId: ID!, $playerIds: [ID]!) {

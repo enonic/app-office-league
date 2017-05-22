@@ -69,6 +69,7 @@ exports.get = function (req) {
         siteUrl: (baseHref === '/') ? '' : baseHref,
         baseHref: appBaseUrl + '/',   // trailing slash for relative urls to be correct
         assetsUrl: appBaseUrl + '/assets',
+        audioUrl: appBaseUrl + '/assets/audio/',
         loginUrl: portalLib.loginUrl({redirect: appBaseAbsoluteUrl}),
         logoutUrl: portalLib.logoutUrl({redirect: appBaseAbsoluteUrl}),
         logoutMarketingUrl: portalLib.logoutUrl({redirect: baseAbsoluteUrl}),

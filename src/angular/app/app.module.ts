@@ -1,4 +1,4 @@
-import {NgModule, ErrorHandler} from '@angular/core';
+import {ErrorHandler, NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import {AppComponent} from './app.component';
@@ -19,6 +19,8 @@ import {OfflinePersistenceService} from './services/offline-persistence.service'
 import {RankingService} from './services/ranking.service';
 import {GlobalErrorHandler} from './common/global.errorhandler';
 import {UserProfileService} from './services/user-profile.service';
+import {WindowRefService} from './services/window-ref.service';
+import {AudioService} from './services/audio.service';
 
 const appRoutes: Routes = [
     {path: '**', redirectTo: '', pathMatch: 'full'}
@@ -40,7 +42,7 @@ const appRoutes: Routes = [
         LeaguesModule
     ],
     providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard,
-        OfflinePersistenceService, RankingService, UserProfileService,
+        OfflinePersistenceService, RankingService, UserProfileService, WindowRefService, AudioService,
         {
             provide: ErrorHandler,
             useClass: GlobalErrorHandler

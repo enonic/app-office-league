@@ -10,6 +10,7 @@ export interface Config {
     baseHref: string;
     idProvider: string;
     assetsUrl: string;
+    audioUrl: string;
     loginUrl: string;
     logoutUrl: string;
     logoutMarketingUrl: string;
