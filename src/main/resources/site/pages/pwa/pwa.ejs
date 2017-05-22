@@ -71,7 +71,7 @@
             .then(postAssets)
             .then(requestNotificationPermission)
             .then(subscribeToPushManager)
-            .then((value) => {console.log(value);console.log(JSON.stringify(value))});
+            .then(sendSubscriptionToServer);
     }
     
     function registerServiceWorker(registration) {
@@ -143,18 +143,36 @@
     }
     
     function base64StringToUint8Array(base64String) {
-      const padding = '='.repeat((4 - base64String.length % 4) % 4);
-      const paddedBase64String = (base64String + padding)
-        .replace(/\-/g, '+')
-        .replace(/_/g, '/');
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const paddedBase64String = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+        const rawData = window.atob(paddedBase64String);
+        const uint8Array = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; ++i) {
+            uint8Array[i] = rawData.charCodeAt(i);
+        }
+        return uint8Array;
+    }
     
-      const rawData = window.atob(paddedBase64String);
-      const uint8Array = new Uint8Array(rawData.length);
-    
-      for (let i = 0; i < rawData.length; ++i) {
-        uint8Array[i] = rawData.charCodeAt(i);
-      }
-      return uint8Array;
+    function sendSubscriptionToServer(subscription) {
+        fetch(XPCONFIG.graphQlUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                query: "mutation($endpoint:String!,$key:String!,$auth:String!){addPushSubscription(endpoint:$endpoint, key:$key, auth:$auth)}", 
+                variables: {
+                    endpoint: subscription.endpoint, 
+                    key: subscription.getKey('p256dh'), 
+                    auth: subscription.getKey('auth')
+                }
+            })
+        })
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error('Bad status code from server.');
+            }
+        });
     }
     {{/isLive}}
 </script>

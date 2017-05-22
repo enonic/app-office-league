@@ -416,6 +416,18 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 storeLib.refresh();
                 return createdComment;
             }
+        },
+        addPushSubscription: {
+            type: graphQlLib.GraphQLBoolean,
+            args: {
+                endpoint: graphQlLib.nonNull(graphQlLib.GraphQLString),
+                key: graphQlLib.nonNull(graphQlLib.GraphQLString),
+                auth: graphQlLib.nonNull(graphQlLib.GraphQLString)
+            },
+            resolve: function (env) {
+                log.info('addPushSubscription: ' + JSON.stringify(env.args));
+                return true;
+            }
         }
     }
 });
