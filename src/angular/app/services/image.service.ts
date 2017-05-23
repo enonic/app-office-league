@@ -21,6 +21,6 @@ export class ImageService {
     }
 
     public static logoUrl(): string {
-        return `${UrlHelper.trimSlash(XPCONFIG.baseHref)}/img/logo.svg`;
+        return `${UrlHelper.trimSlash(XPCONFIG.assetsUrl)}/img/logo.svg`;
     }
 }

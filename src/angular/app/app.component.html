@@ -1,15 +1,20 @@
 <div class="navbar-fixed" [hidden]="isPlayingGame">
     <nav class="app__navbar">
 
-        <a *ngIf="displayMenu" href="#" materialize="sideNav" [materializeParams]="[{closeOnClick: true}]"
+        <a href="#" materialize="sideNav" [materializeParams]="[{closeOnClick: true, edge: 'right'}]"
            data-activates="mobile-side-nav" class="app__navbar-menu-btn button-collapse">
             <i class="material-icons">menu</i>
         </a>
+
+        <span class="app__navbar-title">{{pageTitle}}</span>
+
         <a *ngIf="!displayMenu" href="#" (click)="back()" class="app__navbar-back button-collapse">
             <i class="material-icons">arrow_back</i>
         </a>
 
-        <span class="app__navbar-title">{{pageTitle}}</span>
+        <a *ngIf="displayMenu" href="#!" (click)="home()" class="app__navbar-home">
+            <img src="{{logoUrl}}"/>
+        </a>
 
         <ul *ngIf="!isNewUser" class="app__navbar-menu right hide-on-med-and-down">
             <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>

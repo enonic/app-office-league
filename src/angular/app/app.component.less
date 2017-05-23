@@ -4,6 +4,9 @@
   &__navbar {
     background-color: @main-theme-color;
     display: flex;
+    @media (max-width: 992px) {
+      flex-direction: row-reverse;
+    }
     box-shadow: none !important;
 
     &-title {
@@ -17,11 +20,23 @@
         padding-left: 2rem;
       }
     }
+
+    &-home {
+      @media (min-width: 993px) {
+        display: none;
+      }
+
+      margin: 0 18px;
+      padding-top: 4px;
+
+      img {
+        width: 24px;
+      }
+    }
   }
 }
 
 .navbar-fixed {
-  //margin-bottom: 20px; TODO: maybe?
   margin-bottom: 2px;
 
   .nav-wrapper {
@@ -30,13 +45,6 @@
   }
 
   .nav-title {
-
-    /*img {
-      vertical-align: middle;
-      margin-right: 10px;
-      max-height: 44px;
-      margin-top: -5px;
-    }*/
   }
 }
 

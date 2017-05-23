@@ -47,9 +47,18 @@ export class AppComponent {
                 this.pageTitleService.resetTitle();
             });
     }
-    
+
     back(): boolean {
         this.location.back();
+        return false;
+    }
+
+    home(): boolean {
+        if (this.isAuthenticated) {
+            this.router.navigate(['']);
+        } else {
+            this.router.navigate(['leagues']); // TODO go to feed page when ready
+        }
         return false;
     }
 
