@@ -58,4 +58,15 @@ export class CustomValidators {
         };
     }
 
+    static validNoWhitespace(): ValidatorFn {
+        return (control: AbstractControl) => {
+            const value: string = (control.value || '');
+            const hasWhitespace = /\s/.test(value);
+            if (hasWhitespace) {
+                return {'invalidwhitespace': true};
+            }
+            return null;
+        };
+    }
+
 }

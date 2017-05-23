@@ -15,6 +15,7 @@ import {PlayerValidator} from '../player-validator';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {Player} from '../../../graphql/schemas/Player';
 import {UserProfileService} from '../../services/user-profile.service';
+import {CustomValidators} from '../../common/validators';
 
 @Component({
     selector: 'player-create',
@@ -51,10 +52,10 @@ export class PlayerCreateComponent extends BaseComponent implements OnInit, Afte
         }
 
         this.playerForm = this.fb.group({
-            name: new FormControl(user.playerName || null,
-                [Validators.required, Validators.minLength(3), Validators.maxLength(40)],
+            name: new FormControl(null,
+                [Validators.required, Validators.minLength(3), Validators.maxLength(40), CustomValidators.validName(), CustomValidators.validNoWhitespace()],
                 PlayerValidator.nameInUseValidator(this.graphQLService)),
-            fullname: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(40)])],
+            fullname: [user.playerName || null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(40)])],
             nationality: null,
             handedness: Handedness[Handedness.RIGHT].toLowerCase(),
             description: null,
@@ -177,7 +178,6 @@ export class PlayerCreateComponent extends BaseComponent implements OnInit, Afte
             nationality
             handedness
             description
-            email
         }
     }`;
 

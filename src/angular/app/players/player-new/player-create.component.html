@@ -8,19 +8,11 @@
 
             <form [formGroup]="playerForm">
                 <div class="row">
-                    <div class="col s12">
-                        <i class="material-icons prefix">email</i>
-                        <label class="player-email__label">Email</label>
-
-                        <div class="player-email">{{email}}</div>
-                    </div>
-                </div>
-                <div class="row">
                     <div class="input-field col s12">
                         <i class="material-icons prefix">fingerprint</i>
                         <input id="name" type="text" formControlName="name"
                                (ngModelChange)="updatePageTitle($event)" [class.invalid]="!!formErrors.name"
-                               required="required" aria-required="true" autocomplete="off">
+                               required="required" aria-required="true" autocomplete="off" autofocus autocapitalize="none">
                         <label class="active" [attr.data-error]="formErrors.name" for="name">Username</label>
                     </div>
                 </div>
