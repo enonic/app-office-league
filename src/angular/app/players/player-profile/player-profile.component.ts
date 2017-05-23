@@ -41,6 +41,10 @@ export class PlayerProfileComponent
         this.profile = !this.route.snapshot.params['name'];
         let name = this.profile ? this.authService.getUser().playerName : this.route.snapshot.params['name'];
 
+        if (this.profile) {
+            this.pageTitleService.setTitle('Office League');
+        }
+
         this.graphQLService.post(
             PlayerProfileComponent.getPlayerQuery,
             {name: name},
@@ -53,7 +57,9 @@ export class PlayerProfileComponent
 
         let playerChange = changes['player'];
         if (playerChange && playerChange.currentValue) {
-            this.pageTitleService.setTitle((<Player>playerChange.currentValue).name);
+            if (!this.profile) {
+                this.pageTitleService.setTitle((<Player>playerChange.currentValue).name);
+            }
         }
     }
 
@@ -65,7 +71,9 @@ export class PlayerProfileComponent
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
         this.editable = this.player.id === currentPlayerId;
 
-        this.pageTitleService.setTitle(this.player.name);
+        if (!this.profile) {
+            this.pageTitleService.setTitle(this.player.name);
+        }
         this.precacheNewGameRequests();
     }
 

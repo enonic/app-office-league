@@ -47,9 +47,14 @@ export class AppComponent {
                 this.pageTitleService.resetTitle();
             });
     }
-    
+
     back(): boolean {
         this.location.back();
+        return false;
+    }
+
+    home(): boolean {
+        this.router.navigate(['']);
         return false;
     }
 
