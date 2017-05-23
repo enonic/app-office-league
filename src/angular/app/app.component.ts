@@ -54,7 +54,11 @@ export class AppComponent {
     }
 
     home(): boolean {
-        this.router.navigate(['']);
+        if (this.isAuthenticated) {
+            this.router.navigate(['']);
+        } else {
+            this.router.navigate(['leagues']); // TODO go to feed page when ready
+        }
         return false;
     }
 
