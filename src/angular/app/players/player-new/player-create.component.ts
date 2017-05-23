@@ -66,7 +66,7 @@ export class PlayerCreateComponent extends BaseComponent implements OnInit, Afte
             this.invitation = params['invitation'];
         });
 
-        this.imageUrl = ImageService.playerDefault();
+        this.imageUrl = ''; //ImageService.playerDefault();
         this.countries = Countries.getCountries();
         this.pageTitleService.setTitle('Create Player');
 
