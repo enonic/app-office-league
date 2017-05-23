@@ -16,6 +16,7 @@ interface OfflineGameJson {
     players: OfflineGamePlayerJson[];
     teams: OfflineGameTeamJson[];
     points: OfflineGamePointJson[];
+    _timestamp: number
 }
 
 interface OfflineLeagueJson {
@@ -51,6 +52,8 @@ export class OfflinePersistenceService {
     private static readonly dbVersion = 1;
     private static readonly dbName = 'officeleague';
     private static readonly dbStoreName = 'game';
+
+    private static readonly KEEP_MAX_HOURS_SINCE_CREATED = 24;
 
     constructor(private graphQLService: GraphQLService) {
         this.bindEvents();
@@ -108,16 +111,31 @@ export class OfflinePersistenceService {
     private pushOfflineGames() {
         this.fetchOfflineGames().then((offlineGamesJson: OfflineGameJson[]) => {
             offlineGamesJson.forEach((offlineGameJson: OfflineGameJson) => {
+
                 this.fetchServerGame(offlineGameJson.gameId).then((game) => {
                     if (!game || game.points.length < offlineGameJson.points.length) {
                         console.log('Pushing offline game state: ', offlineGameJson);
                         this.storeGame(offlineGameJson).then((gameId) => {
                             // delete pushed game from local storage
-                            this.deleteOfflineGame(offlineGameJson.gameId);
-                        })
+                            if (gameId) {
+                                this.deleteOfflineGame(offlineGameJson.gameId);
+                                console.log('Game stored and removed from offline storage');
+                            }
+                        }).catch((error) => {
+                            console.log('Could not sync offline game. Store request failed: ', error);
+                            let now = new Date();
+                            let created = offlineGameJson._timestamp ? new Date(offlineGameJson._timestamp) : new Date();
+                            let hoursSinceCreated = Math.abs(now.getTime() - created.getTime()) / (60 * 60 * 1000);
+
+                            if (hoursSinceCreated > OfflinePersistenceService.KEEP_MAX_HOURS_SINCE_CREATED) {
+                                this.deleteOfflineGame(offlineGameJson.gameId);
+                                console.log('Game removed from offline storage, could not be stored');
+                            }
+                        });
                     }
-                })
-            })
+                }); //fetchServerGame
+
+            }); //forEach
         });
     }
 
@@ -139,8 +157,12 @@ export class OfflinePersistenceService {
         let updateGameParams = {points: points, players: players, gameId: offlineGameJson.gameId};
         return this.graphQLService.post(OfflinePersistenceService.updateGameMutation, updateGameParams)
             .then(data => {
-                console.log('Game updated', data);
-                return data.updateGame && data.updateGame.id;
+                console.log('Game update response', data);
+                const gameId = data.updateGame && data.updateGame.id;
+                if (!gameId) {
+                    throw 'Game was not updated';
+                }
+                return gameId;
             });
     }
 
@@ -154,8 +176,12 @@ export class OfflinePersistenceService {
         let updateGameParams = {points: points, players: players, leagueId: offlineGameJson.league.leagueId};
         return this.graphQLService.post(OfflinePersistenceService.createGameMutation, updateGameParams)
             .then(data => {
-                console.log('Game created', data);
-                return data.createGame && data.createGame.id;
+                console.log('Game create response', data);
+                const gameId = data.createGame && data.createGame.id;
+                if (!gameId) {
+                    throw 'Game was not created';
+                }
+                return gameId;
             });
     }
 
@@ -254,7 +280,8 @@ export class OfflinePersistenceService {
             league: leagueJson,
             players: players,
             teams: teams,
-            points: points
+            points: points,
+            _timestamp: new Date().getTime()
         };
 
         return gameJson;
