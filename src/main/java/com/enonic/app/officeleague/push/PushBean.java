@@ -68,9 +68,9 @@ public class PushBean
     {
         final PushBean pushBean = new PushBean();
         pushBean.endpoint =
-            "https://fcm.googleapis.com/fcm/send/fZoEwMriqaA:APA91bGmRNr_CwZ4g0MOTNggRe_lnJ1rrde8sOaYeL7EDeGP7jQAeLQRZYgTAoSAIKedmpUmQTEET7PeRGOCl-ouVrM29j7ZxGxSIktK5CprcVXIvPF8LzEzhhFbJrauncJ5FfwFQ-7m";
-        pushBean.userPublicKey = "BCnAP0JzZvIpsBf089yzTxaYYyRgESPIQmK1MXsn7OqNaAvx2T/j8bbGVlZpjeIgGGynhhVTeEKikuUBQKbillI=";
-        pushBean.userAuth = "EvZhW07waGmjzhfWvEhu5w==";
+            "https://fcm.googleapis.com/fcm/send/f4jmBRS8o0g:APA91bHkKC8tEnpzQ_pv2LBaeQem_relU7IvCsHjbdidVvh_ho5UPxFF9TLanmRpTZgxuZnKWimmQvefrG01vBOfhs5hjVO3XXb0hWhlByJKfbVOwxyZVS0kHIgMpn4XowxOprpP7Muq";
+        pushBean.userPublicKey = "BHwmepevywvrvm9UAyuDzlLBGcoDEHb0PwRWqRaPIcQfz7wwYKZ2qXSyyQkB17W0JnNAH9EKkfn6OEUsC2sqn1U=";
+        pushBean.userAuth = "pTCvRqp8vDH0g6MGXO8PoQ==";
         pushBean.send( "Test" );
     }
 
