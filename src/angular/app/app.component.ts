@@ -19,7 +19,7 @@ export class AppComponent {
     isPlayingGame: boolean;
     playerImage: string;
     playerName: string;
-    pageTitle: string;
+    pageTitle: string = "Office League";
     isNewUser: boolean;
     isAuthenticated: boolean;
     displayMenu: boolean;

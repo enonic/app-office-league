@@ -53,7 +53,7 @@
   }
 
   &__field {
-    height: ~"calc(100vh - 50px)";
+    height: ~"calc(100vh - 40px)";
     position: relative;
   }
 
@@ -105,7 +105,7 @@
 
   &__players.secondPeriod {
     @media @landscape {
-      flex-direction: row-reverse;      
+      flex-direction: row-reverse;
     }
     @media @mobile-portrait {
       flex-direction: column-reverse;
@@ -270,6 +270,9 @@
     }
   }
 
+  &.row {
+    margin-bottom: 0;
+  }
 }
 
 @keyframes blink {
