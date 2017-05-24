@@ -2642,7 +2642,7 @@ exports.deleteGameById = function (id) {
  */
 exports.addPushSubscription = function (params) {
     var repoConn = newConnection();
-    
+
     var createdNode = repoConn.create({
         _parentPath: PUSH_SUBSCRIPTIONS_PATH,
         _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
@@ -2651,6 +2651,25 @@ exports.addPushSubscription = function (params) {
         key: required(params, 'key'),
         auth: required(params, 'auth'),
         timestamp: valueLib.instant(new Date().toISOString())
+    });
+
+    return !!createdNode;
+};
+
+/**
+ * Executes the callback for each push notification.
+ */
+exports.forEachPushSubscription = function (callback) {
+    var repoConn = newConnection();
+
+    var queryResult = repoConn.query({
+        count: -1, //TODO Batch
+        query: "type = '" + TYPE.PUSH_SUBSCRIPTION + "'"
+    });
+
+    queryResult.hits.forEach(function (pushSubscriptionHit) {
+        var pushSubscription = repoConn.get(pushSubscriptionHit.id);
+        callback(pushSubscription);
     });
 
     return !!createdNode;
