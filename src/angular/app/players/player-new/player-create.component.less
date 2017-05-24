@@ -2,32 +2,57 @@
 
 .player-create {
 
+  form {
+    margin-top: 2rem;
+  }
+
   label {
     font-size: 1rem;
     color: #fff;
+    width: 100%;
+    display: block;
   }
 
-  input, select, textarea {
+  /*input, select, textarea {
     //background-color: #DFDFDF;
     background-color: #475367;
     color: #fff;
     padding: 10px;
     box-sizing: border-box;
-    border: none;
-    border: 2px solid #475367;
+    box-shadow: none;
+    border-bottom: none;
+    border: 0 0 0 2px solid #475367;
     height: auto;
+
 
     &:focus {
       border-color: @focus-color;
       box-shadow: none;
 
     }
+
+    &.invalid {
+      -webkit-box-shadow: inset 0px -2px 0px 0px rgba(244,67,54,1);
+      -moz-box-shadow: inset 0px -2px 0px 0px rgba(244,67,54,1);
+      box-shadow: inset 0px -2px 0px 0px rgba(244,67,54,1);
+
+      &:focus {
+        border-color: @focus-color;
+      }
+
+    }
+
+
   }
 
   select {
     height: 3rem;
     -webkit-appearance: none;
     -webkit-border-radius: 0px;
+  }*/
+
+  &__avatar {
+    max-width: 200px;
   }
 
   &__submit-row {
@@ -43,6 +68,7 @@
     &--upload {
       background-color: #DFDFDF;
       color: @main-theme-color;
+      margin-top: 4px;
     }
   }
 }

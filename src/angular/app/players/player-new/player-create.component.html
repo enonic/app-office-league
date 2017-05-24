@@ -8,61 +8,65 @@
 
             <form [formGroup]="playerForm">
                 <div class="row">
-                    <div class="">
+                    <div class="input-field">
 
-                        <label class="active" [attr.data-error]="formErrors.name" for="name">Username</label>
+
                         <input id="name" type="text" formControlName="name"
                                (ngModelChange)="updatePageTitle($event)" [class.invalid]="!!formErrors.name"
                                required="required" aria-required="true" autocomplete="off" autofocus autocapitalize="none">
+                        <label class="active" [attr.data-error]="formErrors.name" for="name">Username</label>
                     </div>
                 </div>
                 <div class="row">
-                    <div class=""><!--
+                    <div class="input-field"><!--
                         <i class="material-icons prefix">label_outline</i>-->
 
-                        <label class="active" [attr.data-error]="formErrors.fullname" for="fullname">Full name</label>
+
                         <input id="fullname" type="text" formControlName="fullname" [class.invalid]="!!formErrors.fullname"
                                required="required" aria-required="true" autocomplete="off">
+                        <label class="active" [attr.data-error]="formErrors.fullname" for="fullname">Full name</label>
                     </div>
                 </div>
                 <div class="row"><!--
                     <i class="material-icons avatar-icon">perm_identity</i>-->
 
-                    <div class="">
+                    <div class="input-field">
                         <label class="active" for="player-create__avatar">Avatar image</label>
                         <input type="file" id="player-create__avatar" accept="image/*" #fileInput style="display:none;">
 
                         <div *ngIf="!!imageUrl" class="player-icon-frame">
-                            <img [src]="imageUrl" alt="Player Image" class="player-icon preview">
+                            <img [src]="imageUrl" alt="Player Image" class="player-icon preview player-create__avatar">
                         </div>
+
+                        <a class="waves-effect waves-teal btn player-create__btn--upload" (click)="fileInput.click()">Upload picture</a>
                     </div>
-                    <a class="waves-effect waves-teal btn player-create__btn--upload" (click)="fileInput.click()">Upload picture</a>
+
                 </div>
                 <div class="row">
-                    <div class=""><!--
+                    <div class="input-field"><!--
                         <i class="material-icons prefix">info_outline</i>-->
 
-                        <label class="active" for="description">About</label>
-                        <textarea id="description" class="materialize-textarea" autocomplete="off" spellcheck="false"
+                        <textarea id="description"  autocomplete="off" spellcheck="false"
                                   formControlName="description"></textarea>
+                        <label class="active" for="description">About</label>
                     </div>
                 </div>
                 <div class="row">
-                    <div class=""><!--
+                    <div class="input-field"><!--
                         <i class="material-icons prefix">language</i>-->
-                        <label class="nationality" for="player-create__nationality">Nationality</label>
                         <select class="browser-default" formControlName="nationality" id="player-create__nationality">
                             <option [value]="" disabled>Choose your nationality</option>
                             <option *ngFor="let country of countries;" [value]="country.code" [selected]="country.code == nationality">
                                 {{country.name}}
                             </option>
                         </select>
+                        <label class="nationality" for="player-create__nationality">Nationality</label>
                     </div>
                 </div>
                 <div class="row submit-row player-create__submit-row">
-                    <a class="waves-effect waves-teal btn red player-create__btn player-create__btn--cancel" (click)="onCancelClicked()"><i class="material-icons left">cancel</i>Cancel</a>
+                    <a class="waves-effect waves-teal btn red player-create__btn player-create__btn--cancel" (click)="onCancelClicked()"><!--<i class="material-icons left">cancel</i>-->Cancel</a>
                     <a class="waves-effect waves-teal btn light-blue player-create__btn player-create__btn--submit" [attr.disabled]="!playerForm.valid ? true : null"
-                       (click)="onSaveClicked()"><i class="material-icons left">save</i>Create</a>
+                       (click)="onSaveClicked()"><!--<i class="material-icons left">save</i>-->Create</a>
                 </div>
             </form>
         </div>
