@@ -19,7 +19,7 @@ export class AppComponent {
     isPlayingGame: boolean;
     playerImage: string;
     playerName: string;
-    pageTitle: string;
+    pageTitle: string = "Office League";
     isNewUser: boolean;
     isAuthenticated: boolean;
     displayMenu: boolean;
@@ -59,6 +59,10 @@ export class AppComponent {
         } else {
             this.router.navigate(['leagues']); // TODO go to feed page when ready
         }
+        return false;
+    }
+
+    closeNav(): boolean {
         return false;
     }
 

@@ -36,7 +36,7 @@
     </nav>
 </div>
 
-<div class="container" id="page">
+<div class="container" id="page" [class.game-play]="isPlayingGame">
     <div class="row">
         <router-outlet></router-outlet>
     </div>
@@ -45,6 +45,7 @@
 <ul *ngIf="!isNewUser" class="side-nav" id="mobile-side-nav">
     <template [ngIf]="isAuthenticated">
         <li class="user-profile">
+            <a href="#" class="side-nav-close right" (click)="closeNav()"><i class="material-icons right">close</i></a>
             <a href="#" routerLink="/">
                 <img [src]="playerImage" alt="{{playerName}}" class="circle">
                 <span>{{playerName}}</span>

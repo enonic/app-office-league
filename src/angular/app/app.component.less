@@ -50,6 +50,15 @@
 
 .container {
   max-width: 1024px;
+
+  &.game-play {
+    padding-left: 0;
+    padding-right: 0;
+
+    > .row {
+      margin-bottom: 0;
+    }
+  }
 }
 
 .side-nav {
@@ -65,5 +74,15 @@
         margin-right: 16px;
       }
     }
+
+    .side-nav-close {
+      padding-left: 50px;
+      padding-right: 0;
+      padding-top: 0;
+      i {
+        margin-right: 8px;
+      }
+    }
+
   }
 }
