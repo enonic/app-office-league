@@ -1,0 +1,258 @@
+package com.enonic.app.officeleague.push;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.apache.http.message.BasicHeader;
+import org.bouncycastle.jce.ECNamedCurveTable;
+import org.bouncycastle.jce.interfaces.ECPublicKey;
+import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
+import org.bouncycastle.jce.spec.ECParameterSpec;
+import org.bouncycastle.jce.spec.ECPrivateKeySpec;
+import org.bouncycastle.jce.spec.ECPublicKeySpec;
+import org.bouncycastle.math.ec.ECPoint;
+import org.jose4j.jws.AlgorithmIdentifiers;
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.lang.JoseException;
+
+import com.google.common.io.BaseEncoding;
+
+import nl.martijndwars.webpush.ClosableCallback;
+import nl.martijndwars.webpush.Encrypted;
+import nl.martijndwars.webpush.HttpEce;
+import nl.martijndwars.webpush.Notification;
+import nl.martijndwars.webpush.PushService;
+import nl.martijndwars.webpush.Utils;
+
+import com.enonic.xp.script.bean.BeanContext;
+import com.enonic.xp.script.bean.ScriptBean;
+
+public class PushBean
+    implements ScriptBean
+{
+    static
+    {
+//        if ( Security.getProvider( BouncyCastleProvider.PROVIDER_NAME ) != null )
+//        {
+//            Security.removeProvider( BouncyCastleProvider.PROVIDER_NAME );
+//        }
+//        Security.addProvider( new BouncyCastleProvider() );
+    }
+
+    private String endpoint;
+
+    private String userPublicKey;
+
+    private String userAuth;
+
+    public void setEndpoint( final String endpoint )
+    {
+        this.endpoint = endpoint;
+    }
+
+    public void setUserPublicKey( final String userPublicKey )
+    {
+        this.userPublicKey = userPublicKey;
+    }
+
+    public void setUserAuth( final String userAuth )
+    {
+        this.userAuth = userAuth;
+    }
+
+    public void send( final String payload )
+        throws InterruptedException, GeneralSecurityException, JoseException, ExecutionException, IOException
+    {
+        final Notification notification =
+            new Notification( this.endpoint, loadPublicKey( this.userPublicKey ), base64Decode( this.userAuth ), payload.getBytes() );
+        System.out.println( notification );
+
+        final PushService pushService = new PushService();
+        pushService.setPublicKey(
+            loadPublicKey( "BJCTKN2sEl2USb7aBHzPmZQZXtii1oSK35h0qtidgoXvovvXWIZIi9F31gkwHg93dNIzQ1yYGE1PVrQopW2fT9E" ) );
+        pushService.setPrivateKey( loadPrivateKey( "V0fz7xxqwHipIf3nn80VNwP5K8ljzSQ132VMWjaVk5Y" ) );
+//        final HttpResponse httpResponse = pushService.send( notification );
+
+        final PublicKey publicKey =
+            Utils.loadPublicKey( "BJCTKN2sEl2USb7aBHzPmZQZXtii1oSK35h0qtidgoXvovvXWIZIi9F31gkwHg93dNIzQ1yYGE1PVrQopW2fT9E" );
+        final PrivateKey privateKey = Utils.loadPrivateKey( "V0fz7xxqwHipIf3nn80VNwP5K8ljzSQ132VMWjaVk5Y" );
+
+        final HttpResponse httpResponse = send( notification, publicKey, privateKey ).get();
+        System.out.println( httpResponse );
+    }
+
+    public static byte[] base64Decode( String base64Encoded )
+    {
+        if ( base64Encoded.contains( "+" ) || base64Encoded.contains( "/" ) )
+        {
+            return BaseEncoding.base64().decode( base64Encoded );
+        }
+        else
+        {
+            return BaseEncoding.base64Url().decode( base64Encoded );
+        }
+    }
+
+    public static PrivateKey loadPrivateKey( String encodedPrivateKey )
+        throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        byte[] decodedPrivateKey = base64Decode( encodedPrivateKey );
+
+        // prime256v1 is NIST P-256
+        ECParameterSpec params = ECNamedCurveTable.getParameterSpec( "prime256v1" );
+        ECPrivateKeySpec prvkey = new ECPrivateKeySpec( new BigInteger( decodedPrivateKey ), params );
+        KeyFactory kf = KeyFactory.getInstance( "ECDH" );
+
+        return kf.generatePrivate( prvkey );
+    }
+
+    public static PublicKey loadPublicKey( String encodedPublicKey )
+        throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        byte[] decodedPublicKey = base64Decode( encodedPublicKey );
+
+        KeyFactory kf = KeyFactory.getInstance( "ECDH" );
+
+        // prime256v1 is NIST P-256
+        ECNamedCurveParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec( "prime256v1" );
+        ECPoint point = ecSpec.getCurve().decodePoint( decodedPublicKey );
+        ECPublicKeySpec pubSpec = new ECPublicKeySpec( point, ecSpec );
+
+        return kf.generatePublic( pubSpec );
+    }
+
+    public Future<HttpResponse> send( Notification notification, PublicKey publicKey, PrivateKey privateKey )
+        throws GeneralSecurityException, IOException, JoseException
+    {
+        BaseEncoding base64url = BaseEncoding.base64Url();
+
+        Encrypted encrypted =
+            encrypt( notification.getPayload(), notification.getUserPublicKey(), notification.getUserAuth(), notification.getPadSize() );
+
+        byte[] dh = Utils.savePublicKey( (ECPublicKey) encrypted.getPublicKey() );
+        byte[] salt = encrypted.getSalt();
+
+        HttpPost httpPost = new HttpPost( notification.getEndpoint() );
+        httpPost.addHeader( "TTL", String.valueOf( notification.getTTL() ) );
+
+        Map<String, String> headers = new HashMap<>();
+
+        if ( notification.hasPayload() )
+        {
+            headers.put( "Content-Type", "application/octet-stream" );
+            headers.put( "Content-Encoding", "aesgcm" );
+            headers.put( "Encryption", "keyid=p256dh;salt=" + base64url.omitPadding().encode( salt ) );
+            headers.put( "Crypto-Key", "keyid=p256dh;dh=" + base64url.encode( dh ) );
+
+            httpPost.setEntity( new ByteArrayEntity( encrypted.getCiphertext() ) );
+        }
+
+        if ( notification.isGcm() )
+        {
+            //TODO
+//            if (gcmApiKey == null) {
+//                throw new IllegalStateException("An GCM API key is needed to send a push notification to a GCM endpoint.");
+//            }
+//
+//            headers.put("Authorization", "key=" + gcmApiKey);
+        }
+
+        if ( !notification.isGcm() )
+        {
+            JwtClaims claims = new JwtClaims();
+            claims.setAudience( notification.getOrigin() );
+            claims.setExpirationTimeMinutesInTheFuture( 12 * 60 );
+            claims.setSubject( null );
+
+            JsonWebSignature jws = new JsonWebSignature();
+            jws.setHeader( "typ", "JWT" );
+            jws.setHeader( "alg", "ES256" );
+            jws.setPayload( claims.toJson() );
+            jws.setKey( privateKey );
+            jws.setAlgorithmHeaderValue( AlgorithmIdentifiers.ECDSA_USING_P256_CURVE_AND_SHA256 );
+
+            headers.put( "Authorization", "WebPush " + jws.getCompactSerialization() );
+
+            byte[] pk = Utils.savePublicKey( (ECPublicKey) publicKey );
+
+            if ( headers.containsKey( "Crypto-Key" ) )
+            {
+                headers.put( "Crypto-Key", headers.get( "Crypto-Key" ) + ";p256ecdsa=" + base64url.omitPadding().encode( pk ) );
+            }
+            else
+            {
+                headers.put( "Crypto-Key", "p256ecdsa=" + base64url.encode( pk ) );
+            }
+        }
+
+        for ( Map.Entry<String, String> entry : headers.entrySet() )
+        {
+            httpPost.addHeader( new BasicHeader( entry.getKey(), entry.getValue() ) );
+        }
+
+        final CloseableHttpAsyncClient closeableHttpAsyncClient = HttpAsyncClients.createDefault();
+        closeableHttpAsyncClient.start();
+
+        return closeableHttpAsyncClient.execute( httpPost, new ClosableCallback( closeableHttpAsyncClient ) );
+    }
+
+    public static Encrypted encrypt( byte[] buffer, PublicKey userPublicKey, byte[] userAuth, int padSize )
+        throws GeneralSecurityException, IOException
+    {
+        ECNamedCurveParameterSpec parameterSpec = ECNamedCurveTable.getParameterSpec( "prime256v1" );
+
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance( "ECDH" );
+        keyPairGenerator.initialize( parameterSpec );
+
+        KeyPair serverKey = keyPairGenerator.generateKeyPair();
+
+        Map<String, KeyPair> keys = new HashMap<>();
+        keys.put( "server-key-id", serverKey );
+
+        Map<String, String> labels = new HashMap<>();
+        labels.put( "server-key-id", "P-256" );
+
+        byte[] salt = SecureRandom.getSeed( 16 );
+
+        HttpEce httpEce = new HttpEce( keys, labels );
+        byte[] ciphertext = httpEce.encrypt( buffer, salt, null, "server-key-id", userPublicKey, userAuth, padSize );
+
+        return new Encrypted.Builder().withSalt( salt ).withPublicKey( serverKey.getPublic() ).withCiphertext( ciphertext ).build();
+    }
+
+    public static void main( String[] args )
+        throws InterruptedException, GeneralSecurityException, JoseException, ExecutionException, IOException
+    {
+        final PushBeanKeey pushBean = new PushBeanKeey();
+        pushBean.endpoint =
+            "https://fcm.googleapis.com/fcm/send/f4jmBRS8o0g:APA91bHkKC8tEnpzQ_pv2LBaeQem_relU7IvCsHjbdidVvh_ho5UPxFF9TLanmRpTZgxuZnKWimmQvefrG01vBOfhs5hjVO3XXb0hWhlByJKfbVOwxyZVS0kHIgMpn4XowxOprpP7Muq";
+        pushBean.userPublicKey = "BHwmepevywvrvm9UAyuDzlLBGcoDEHb0PwRWqRaPIcQfz7wwYKZ2qXSyyQkB17W0JnNAH9EKkfn6OEUsC2sqn1U=";
+        pushBean.userAuth = "pTCvRqp8vDH0g6MGXO8PoQ==";
+        pushBean.send( "Test" );
+    }
+
+    @Override
+    public void initialize( final BeanContext context )
+    {
+    }
+}
