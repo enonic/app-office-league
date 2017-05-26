@@ -144,7 +144,7 @@ export class PlayerEditComponent
         }).then(updatedPlayer => {
             const player = Player.fromJson(updatedPlayer);
             this.uploadImage(player.id).then(uploadResp => {
-                this.router.navigate(['players', player.name], {replaceUrl: true});
+                this.router.navigate([''], {replaceUrl: true});
             }).then(() => this.graphQLService.post(PlayerEditComponent.getPlayerQuery, {name: player.name})).then((data) => {
                 const player = Player.fromJson(data.player);
                 this.userProfileService.setPlayer(player);
