@@ -17,8 +17,6 @@
                              [sideClass]="'side-blue'"
                              (playerSelected)="onPlayerSelected('blue1', $event)" class="new-game__player"></new-game-player>
 
-            <span [class.invisible]="!expectedScoreBlue || !expectedScoreRed" class="new-game__expected-score">{{expectedScoreBlue}}</span>
-
             <new-game-player [player]="bluePlayer2" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
                              [sideClass]="'side-blue'"
                              (playerSelected)="onPlayerSelected('blue2', $event)" class="new-game__player" [hidden]="!teamMode"></new-game-player>
@@ -32,7 +30,6 @@
             <new-game-player [player]="redPlayer1" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
                              [sideClass]="'side-red'"
                              (playerSelected)="onPlayerSelected('red1', $event)" class="new-game__player"></new-game-player>
-            <span [class.invisible]="!expectedScoreBlue || !expectedScoreRed" class="new-game__expected-score">{{expectedScoreRed}}</span>
 
             <new-game-player [player]="redPlayer2" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
                              [sideClass]="'side-red'"
@@ -45,7 +42,7 @@
 </div>
 
 <div class="row center">
-    <a class="waves-effect waves-light center btn global__btn--toggle" (click)="onToggleClicked()">Toggle mode</a>
+    <a class="waves-effect waves-light center btn global__btn--toggle" (click)="onToggleClicked($event)">{{toggleButtonText}}</a>
 </div>
 
 <div class="row center">

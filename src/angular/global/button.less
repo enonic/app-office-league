@@ -4,10 +4,19 @@
   &__btn {
     &--play {
       background-color: @action-color;
+
+      &.btn.disabled {
+        background-color: #BFBFBF !important;
+        color: #8F8F8F !important;
+      }
     }
 
     &--shuffle {
       background-color: #000;
+      &.btn.disabled {
+        background-color: #BFBFBF !important;
+        color: #8F8F8F !important;
+      }
     }
 
     &--toggle {
