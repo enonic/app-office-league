@@ -22,6 +22,7 @@ export class PlayerProfileComponent
     extends BaseComponent
     implements OnChanges {
 
+    private static readonly HOME_TITLE = 'Office League';
     @Input() player: Player;
     private profile: boolean;
     private games: Game[] = [];
@@ -42,7 +43,7 @@ export class PlayerProfileComponent
         let name = this.profile ? this.authService.getUser().playerName : this.route.snapshot.params['name'];
 
         if (this.profile) {
-            this.pageTitleService.setTitle('Office League');
+            this.pageTitleService.setTitle(PlayerProfileComponent.HOME_TITLE);
         }
 
         this.graphQLService.post(
@@ -57,7 +58,9 @@ export class PlayerProfileComponent
 
         let playerChange = changes['player'];
         if (playerChange && playerChange.currentValue) {
-            if (!this.profile) {
+            if (this.editable) {
+                this.pageTitleService.setTitle(PlayerProfileComponent.HOME_TITLE);
+            } else {
                 this.pageTitleService.setTitle((<Player>playerChange.currentValue).name);
             }
         }
@@ -71,7 +74,9 @@ export class PlayerProfileComponent
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
         this.editable = this.player.id === currentPlayerId;
 
-        if (!this.profile) {
+        if (this.profile && this.editable) {
+            this.pageTitleService.setTitle(PlayerProfileComponent.HOME_TITLE);
+        } else {
             this.pageTitleService.setTitle(this.player.name);
         }
         this.precacheNewGameRequests();

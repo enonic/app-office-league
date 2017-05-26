@@ -19,7 +19,7 @@ import {RatingPointsComponent} from './rating-points/rating-points.component';
 import {MomentModule} from 'angular2-moment';
 
 const gameRoutes: Routes = [
-    {path: 'games', component: GameListComponent, canActivate: [PlayerRouteGuard]},
+    {path: 'games', component: GameListPageComponent, canActivate: [PlayerRouteGuard]},
     {path: 'games/:id', component: GameProfileComponent, canActivate: [PlayerRouteGuard]},
     {path: 'games/:leagueId/new-game', component: NewGameComponent, canActivate: [PlayerRouteGuard]},
     {path: 'games/:leagueId/game-play', component: GamePlayComponent, canActivate: [PlayerRouteGuard]},

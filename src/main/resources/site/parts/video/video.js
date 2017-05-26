@@ -16,7 +16,7 @@ function handleGet(req) {
         model.title = component.config.title;
         model.buttonText = component.config.buttonText;
         model.videoUrl = libs.portal.attachmentUrl({
-            id: component.config.video
+            name: component.config.video
         });
 
 

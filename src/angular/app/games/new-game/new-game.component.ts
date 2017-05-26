@@ -232,7 +232,7 @@ export class NewGameComponent implements OnInit {
             name
             imageUrl
             description
-            leaguePlayers(first:-1) {
+            leaguePlayers(first:-1, sort:"_timestamp DESC") {
                 rating
                 player {
                     id

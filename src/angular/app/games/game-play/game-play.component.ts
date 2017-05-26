@@ -381,7 +381,17 @@ export class GamePlayComponent
         }
 
         this.onScoreChange();
-        this.commentatorMessage = this.halfTime ? 'Half Time!' : 'GOAL!';
+
+        const ownGoal = this.points.slice(-1)[0].against;
+        if (this.halfTime) {
+            this.commentatorMessage = 'Half Time!';
+        } else if (ownGoal) {
+            this.commentatorMessage = 'OWN GOAL!';
+        } else {
+            this.commentatorMessage = 'GOAL!';
+        }
+        this.nameClassesGamePlayCommentator['game-play__commentator--longtext'] = this.commentatorMessage.length > 6;
+
         this.nameClassesGamePlayCommentator['game-play__commentator--active'] = true;
         setTimeout(() => {
             this.nameClassesGamePlayCommentator['game-play__commentator--active'] = false;
