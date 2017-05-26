@@ -66,8 +66,11 @@ export class GameListPageComponent extends BaseComponent {
         this.teamName = this.route.snapshot.params['teamName'];
 
         let name = this.leagueName || this.playerName || this.teamName;
-        name = name.charAt(0).toUpperCase() + name.substr(1);
-        this.pageTitleService.setTitle(name + ' - Games');
+        if (name) {
+            this.pageTitleService.setTitle(name.charAt(0).toUpperCase() + name.substr(1) + ' - Games');
+        } else {
+            this.pageTitleService.setTitle('Games');
+        }
 
         this.refresh();
     }

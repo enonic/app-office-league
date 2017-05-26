@@ -965,6 +965,34 @@ exports.getLeaguesByTeamId = function (teamId, start, count) {
 };
 
 /**
+ * Retrieve a list of players.
+ * @param  {number} [start=0] First index of the players.
+ * @param  {number} [count=10] Number of players to fetch.
+ * @return {PlayerResponse} Players.
+ */
+exports.getGames = function (start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;    
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.GAME + "'",
+        sort: "time DESC"
+    });
+    var games = result.hits.map(function (gameHit) {
+        return exports.getGameById(gameHit.id);
+    });
+
+    return {
+        "total": result.total,
+        "count": result.count,
+        "hits": games
+    };
+};
+
+/**
  * Retrieve a list of games for a team.
  * @param  {string} teamId Team id.
  * @param  {number} [start=0] First index of the league games.

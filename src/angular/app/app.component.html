@@ -20,6 +20,7 @@
             <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>
             <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
             <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
+            <li routerLinkActive="active"><a routerLink="/games" href="#">Games</a></li>
             <li *ngIf="isAuthenticated">
                 <ul id="user-dropdown" class="dropdown-content">
                     <li><a href="#" routerLink="/">{{playerName}}</a></li>
@@ -56,6 +57,7 @@
     <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>
     <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
     <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
+    <li routerLinkActive="active"><a routerLink="/games" href="#">Games</a></li>
     <li class="divider"></li>
     <template [ngIf]="!isAuthenticated" class="nav navbar-nav pull-right">
         <li><a href="#!" (click)="auth.login()">Login</a></li>
