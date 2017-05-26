@@ -21,21 +21,30 @@
     flex-direction: column;
     width: 33%;
     text-align: center;
+    new-game-player:first-child {
+      padding-bottom: 20px;
+    }
 
     &--blue {
-      background-color: @blue-team-color;
+      /deep/ .new-game-player__avatar {
+        border-color: @red-team-color;
+      }
+      /deep/ .new-game-player__player-title {
+        border-color: @red-team-color;
+      }
     }
 
     &--red {
-      background-color: @red-team-color;
+      /deep/ .new-game-player__avatar {
+        border-color: @blue-team-color;
+      }
+      /deep/ .new-game-player__player-title {
+        border-color: @blue-team-color;
+      }
     }
   }
 
-  &__expected-score {
-    font-size: 2rem;
-  }
 }
-
 
 /*
 .participants {

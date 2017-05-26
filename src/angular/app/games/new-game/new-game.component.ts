@@ -15,7 +15,8 @@ import {RankingService} from '../../services/ranking.service';
     templateUrl: 'new-game.component.html',
     styleUrls: ['new-game.component.less']
 })
-export class NewGameComponent implements OnInit {
+export class NewGameComponent
+    implements OnInit {
 
     leagueId: string;
 
@@ -27,13 +28,14 @@ export class NewGameComponent implements OnInit {
     selectedPlayerIds: string[] = [];
 
     @ViewChildren(NewGamePlayerComponent)
-        playerCmps: QueryList<NewGamePlayerComponent>;
+    playerCmps: QueryList<NewGamePlayerComponent>;
 
     league: League;
     title: string;
     expectedScoreRed: string;
     expectedScoreBlue: string;
     playerSelectionReady: boolean;
+    toggleButtonText: string = 'Team Game';
     shuffleDisabled: boolean;
     shuffleInProgress: boolean;
     teamMode: boolean = false;
@@ -57,7 +59,7 @@ export class NewGameComponent implements OnInit {
             this.graphQLService.post(
                 NewGameComponent.getPlayerLeagueQuery,
                 {playerId: playerId, leagueId: this.leagueId},
-                    data => this.handlePlayerLeagueQueryResponse(data)
+                data => this.handlePlayerLeagueQueryResponse(data)
             );
         }
     }
@@ -99,11 +101,14 @@ export class NewGameComponent implements OnInit {
         });
     }
 
-    onToggleClicked() {
+    onToggleClicked(event) {
+        event.target.blur();
         this.bluePlayer2 = null;
         this.redPlayer2 = null;
         this.updatePlayerSelectionState();
         this.teamMode = !this.teamMode;
+
+        this.toggleButtonText = this.teamMode ? 'One vs One' : 'Team Game';
     }
 
     private shuffleActions: { [id: string]: { from: NewGamePlayerComponent, to: NewGamePlayerComponent, player: Player, side: string, done: boolean } };
@@ -176,7 +181,7 @@ export class NewGameComponent implements OnInit {
             GamePlayComponent.createGameMutation,
             createGameParams
         ).then(
-                data => {
+            data => {
                 console.log('Game created', data);
                 return data.createGame.id;
             });
