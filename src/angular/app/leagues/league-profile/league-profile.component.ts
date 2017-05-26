@@ -97,11 +97,7 @@ export class LeagueProfileComponent
         this.joinLeagueRequested = !!(data.league.myLeaguePlayer && data.league.myLeaguePlayer.pending);
         this.playerInLeague = !!data.league.myLeaguePlayer && !this.joinLeagueRequested;
         this.adminInLeague = data.league.isAdmin;
-        this.activeGames = data.league.activeGames.map((gameJson) => {
-            let game = Game.fromJson(gameJson);
-            game.live = true;
-            return game;
-        });
+        this.activeGames = data.league.activeGames.map((gameJson) => Game.fromJson(gameJson));
         this.nonMembersPlayerNames = data.league.nonMemberPlayers.map((player) => player.name);
 
         this.pageTitleService.setTitle(this.league.name);

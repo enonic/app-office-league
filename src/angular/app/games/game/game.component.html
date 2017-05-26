@@ -2,7 +2,7 @@
     <loading></loading>
 </template>
 <template [ngIf]="game != null">
-    <template [ngIf]="game.live">
+    <template [ngIf]="!game.finished">
         <span class="game__live">Live</span>
     </template>
     <div class="game">

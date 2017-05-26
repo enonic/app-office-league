@@ -15,11 +15,9 @@ export class Game
     gamePlayers: GamePlayer[] = [];
     gameTeams: GameTeam[] = [];
     league: League;
-    live: boolean;
 
     constructor(id: string) {
         super(id);
-        this.live = false;
     }
 
     static fromJson(json: any): Game {

@@ -23,7 +23,7 @@
                     {{redPlayers[0]?.player.name}}
                 </template>
             </span>
-            <template [ngIf]="game.live">
+            <template [ngIf]="!game.finished">
                 <span class="game-summary__live">Live</span>
             </template>
         </div>
