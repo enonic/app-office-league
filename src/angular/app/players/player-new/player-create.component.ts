@@ -7,7 +7,6 @@ import {Countries} from '../../common/countries';
 import {Country} from '../../common/country';
 import {Headers, Http, RequestOptions} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
-import {ImageService} from '../../services/image.service';
 import {AuthService} from '../../services/auth.service';
 import {PageTitleService} from '../../services/page-title.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';

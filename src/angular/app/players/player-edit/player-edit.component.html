@@ -59,7 +59,8 @@
                     </div>
                 </div>
                 <div class="row submit-row player-edit__submit-row">
-                    <a class="waves-effect waves-teal btn light-blue player-edit__submit" [attr.disabled]="!playerForm.valid ? true : null"
+                    <a class="waves-effect waves-teal btn red player-edit__btn player-edit__btn--cancel" (click)="onCancelClicked()">Cancel</a>
+                    <a class="waves-effect waves-teal btn light-blue player-edit__btn--submit" [attr.disabled]="!playerForm.valid ? true : null"
                        (click)="onSaveClicked()">Save</a>
                 </div>
             </form>
