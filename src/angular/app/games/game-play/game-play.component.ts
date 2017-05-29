@@ -170,6 +170,9 @@ export class GamePlayComponent
         this.nameClassesField['enabled'] = true;
 
         this.nameClassesGamePlay['game-play--player-clicked'] = true;
+        let side = this.getPlayerSide(p);
+        this.nameClassesGamePlay['game-play--player-red-clicked'] = side === Side.RED;
+        this.nameClassesGamePlay['game-play--player-blue-clicked'] = side === Side.BLUE;
     }
 
     private unselectAll() {
@@ -184,6 +187,8 @@ export class GamePlayComponent
         this.nameClassesField['enabled'] = false;
 
         this.nameClassesGamePlay['game-play--player-clicked'] = false;
+        this.nameClassesGamePlay['game-play--player-red-clicked'] = false;
+        this.nameClassesGamePlay['game-play--player-blue-clicked'] = false;
     }
 
     onPauseClicked() {
@@ -360,11 +365,24 @@ export class GamePlayComponent
         this.startGameTimer();
     }
 
-    private scoreGoal(team: string) {
-        if (team === 'blue') {
+    private scoreGoal(scorerSide: Side, against: boolean) {
+        let pointWinner: Side;
+        if (scorerSide === Side.RED) {
+            pointWinner = against ? Side.BLUE : Side.RED;
+        } else {
+            pointWinner = against ? Side.RED : Side.BLUE;
+        }
+
+        if (pointWinner === Side.BLUE) {
+            this.blueScore++;
+        }
+        else {
+            this.redScore++;
+        }
+
+        if (scorerSide === Side.BLUE) {
             this.nameClassesGamePlayScoreBlue['game-play__blue-score--goal'] = true;
             this.nameClassesGamePlayCommentator['game-play__commentator--blue'] = true;
-            this.blueScore++;
             setTimeout(() => {
                 this.nameClassesGamePlayScoreBlue['game-play__blue-score--goal'] = false;
                 this.nameClassesGamePlayCommentator['game-play__commentator--blue'] = false;
@@ -373,7 +391,6 @@ export class GamePlayComponent
         else {
             this.nameClassesGamePlayScoreRed['game-play__red-score--goal'] = true;
             this.nameClassesGamePlayCommentator['game-play__commentator--red'] = true;
-            this.redScore++;
             setTimeout(() => {
                 this.nameClassesGamePlayScoreRed['game-play__red-score--goal'] = false;
                 this.nameClassesGamePlayCommentator['game-play__commentator--red'] = false;
@@ -382,10 +399,9 @@ export class GamePlayComponent
 
         this.onScoreChange();
 
-        const ownGoal = this.points.slice(-1)[0].against;
         if (this.halfTime) {
             this.commentatorMessage = 'Half Time!';
-        } else if (ownGoal) {
+        } else if (against) {
             this.commentatorMessage = 'OWN GOAL!';
         } else {
             this.commentatorMessage = 'GOAL!';
@@ -397,12 +413,11 @@ export class GamePlayComponent
             this.nameClassesGamePlayCommentator['game-play__commentator--active'] = false;
         }, 2000);
 
-
     }
 
     private handlePointScored(p: Player, against: boolean) {
         let now = new Date();
-        let side = this.getPlayerSide(p);
+        let scorerSide = this.getPlayerSide(p);
         let point = new Point();
         point.player = p;
         point.time = this.getElapsedSeconds(now);
@@ -412,23 +427,7 @@ export class GamePlayComponent
         point.against = against;
         this.points.push(point);
 
-        if (side === Side.RED) {
-            if (against) {
-                this.scoreGoal('blue');
-                //this.blueScore++;
-            } else {
-                this.scoreGoal('red');
-                //this.redScore++;
-            }
-        } else {
-            if (against) {
-                this.scoreGoal('red');
-                //this.redScore++;
-            } else {
-                this.scoreGoal('blue');
-                //this.blueScore++;
-            }
-        }
+        this.scoreGoal(scorerSide, against);
 
         if (this.hasGameEnded()) {
             this.stopGameTimer();
