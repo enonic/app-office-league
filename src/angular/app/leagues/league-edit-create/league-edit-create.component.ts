@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Location} from '@angular/common';
 import {BaseComponent} from '../../common/base.component';
 import {XPCONFIG} from '../../app.config';
 import {Headers, Http, RequestOptions} from '@angular/http';
@@ -43,7 +44,7 @@ export class LeagueEditCreateComponent
     materializeActions = new EventEmitter<string | MaterializeAction>();
 
     constructor(private http: Http, private authService: AuthService, private graphQLService: GraphQLService,
-                private pageTitleService: PageTitleService, route: ActivatedRoute,
+                private pageTitleService: PageTitleService, route: ActivatedRoute, private location: Location,
                 private router: Router, private fb: FormBuilder, private sanitizer: DomSanitizer) {
         super(route);
     }
@@ -125,6 +126,10 @@ export class LeagueEditCreateComponent
         });
     }
 
+    onCancelClicked() {
+        this.location.back();
+    }
+
     loadAdminPlayerIds(): Promise<void> {
         return this.graphQLService.post(LeagueEditCreateComponent.getAllPlayerIdsQuery).then(data => {
             if (!data || !data.players) {
@@ -157,9 +162,9 @@ export class LeagueEditCreateComponent
             this.pageTitleService.setTitle(league.name);
 
             this.leagueForm.setValue({
-                name: league.name || '',
-                description: league.description || '',
-                id: league.id || ''
+                name: league.name || '',
+                description: league.description || '',
+                id: league.id || ''
             });
 
             this.leagueForm.removeControl('name');
