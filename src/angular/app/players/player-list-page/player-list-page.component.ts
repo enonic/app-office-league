@@ -36,7 +36,7 @@ export class PlayerListPageComponent extends BaseComponent {
         this.refresh();
     }
 
-    private refresh(currentPage: number = 1, search: string = '') {
+    refresh(currentPage: number = 1, search: string = '') {
         let after = currentPage > 1 ? ((currentPage - 1) * PlayerListPageComponent.paging - 1) : undefined;
         this.service.post(
             PlayerListPageComponent.getPlayersQuery,

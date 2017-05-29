@@ -1,5 +1,5 @@
-import {Component, Input, Output, OnChanges, SimpleChanges, SimpleChange, EventEmitter, ElementRef} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChange, SimpleChanges} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {MaterializeAction} from 'angular2-materialize';
 import {List2Component} from '../list2.component';
 import {Player} from '../../../graphql/schemas/Player';
@@ -68,8 +68,12 @@ export class PlayerSelectComponent extends List2Component {
     }
 
     private filterPlayers(searchValue: string = '') {
-        this.players = this.allPlayers.filter(player => (this.excludedPlayerIds.indexOf(player.id) == -1) &&
-                                                        (searchValue === '' || new RegExp(searchValue, "i").test(player.name)));
+        const regexp = new RegExp(searchValue, "i");
+
+        this.players = this.allPlayers.filter(player => {
+            return (this.excludedPlayerIds.indexOf(player.id) == -1) &&
+                   (searchValue === '' || regexp.test(player.name) || regexp.test(player.fullname) )
+        });
     }
 
     onPlayerClicked(player: Player) {
@@ -118,6 +122,7 @@ export class PlayerSelectComponent extends List2Component {
         players(ids: $playerIds, first: $first) {
             id
             name
+            fullname
             imageUrl
             description
         }
