@@ -545,7 +545,7 @@ exports.findPlayers = function (searchText, start, count) {
     return query({
         start: start,
         count: count,
-        query: "type = '" + TYPE.PLAYER + "' AND ngram('name^5,description^3', '" + searchText + "', 'AND')"
+        query: "type = '" + TYPE.PLAYER + "' AND ngram('name^5,fullname^3,description^1', '" + searchText + "', 'AND')"
     });
 };
 
