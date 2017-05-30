@@ -33,6 +33,21 @@
         width: 24px;
       }
     }
+
+    &-connectstatus {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      display: inline-block;
+      background: darkgreen;
+      position: absolute;
+      left: 5px;
+      top: 5px;
+
+      &.offline {
+        background: darkred;
+      }
+    }
   }
 }
 

@@ -23,6 +23,7 @@ export class AppComponent {
     isNewUser: boolean;
     isAuthenticated: boolean;
     displayMenu: boolean;
+    isOffline: boolean;
 
     constructor(public auth: AuthService, private pageTitleService: PageTitleService, private location: Location, private router: Router,
                 private userProfileService: UserProfileService) {
@@ -33,6 +34,9 @@ export class AppComponent {
         this.playerName = !!user ? user.playerName : '';
         this.isNewUser = auth.isNewUser();
         this.isAuthenticated = auth.isAuthenticated();
+        this.isOffline = !navigator.onLine;
+        window.addEventListener('offline', () => this.isOffline = true);
+        window.addEventListener('online', () => this.isOffline = false);
 
         this.pageTitleService.subscribeTitle(title => this.pageTitle = title).setTitle(AppComponent.DEFAULT_TITLE);
         this.userProfileService.subscribePlayer(player => this.updatePlayerProfile(player));

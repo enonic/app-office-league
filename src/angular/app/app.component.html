@@ -1,6 +1,6 @@
 <div class="navbar-fixed" [hidden]="isPlayingGame">
     <nav class="app__navbar">
-
+        <div class="app__navbar-connectstatus" [class.offline]="isOffline"></div>
         <a href="#" materialize="sideNav" [materializeParams]="[{closeOnClick: true, edge: 'right'}]"
            data-activates="mobile-side-nav" class="app__navbar-menu-btn button-collapse">
             <i class="material-icons">menu</i>
