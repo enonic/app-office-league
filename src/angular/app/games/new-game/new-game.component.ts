@@ -9,6 +9,7 @@ import {PageTitleService} from '../../services/page-title.service';
 import {NewGamePlayerComponent} from '../new-game-player/new-game-player.component';
 import {GameSelection} from '../GameSelection';
 import {RankingService} from '../../services/ranking.service';
+import {AudioService, WebAudioSound} from '../../services/audio.service';
 
 @Component({
     selector: 'new-game',
@@ -41,13 +42,15 @@ export class NewGameComponent
     teamMode: boolean = false;
     shuffleCount: number = 0;
     private playerRatings: { [playerId: string]: number } = {};
+    private startGameSound: WebAudioSound;
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute,
                 private pageTitleService: PageTitleService, private router: Router, private gameSelection: GameSelection,
-                private rankingService: RankingService) {
+                private rankingService: RankingService, private audioService: AudioService) {
     }
 
     ngOnInit(): void {
+        this.loadSounds();
         this.leagueId = this.route.snapshot.params['leagueId'];
 
         if (!this.leagueId) {
@@ -89,6 +92,8 @@ export class NewGameComponent
         this.gameSelection.redPlayer1 = this.redPlayer1;
         this.gameSelection.redPlayer2 = this.redPlayer2;
         this.gameSelection.league = this.league;
+
+        this.playSound(this.startGameSound);
 
         this.createGame().then((gameId) => {
             console.log('Initial game created: ' + gameId);
@@ -220,6 +225,26 @@ export class NewGameComponent
             return undefined;
         }
         return this.playerRatings[playerId] || this.rankingService.defaultRating();
+    }
+
+    private playSound(sound: WebAudioSound) {
+        if (!sound) {
+            return;
+        }
+        try {
+            console.log('Playing sound: ' + sound.getUrl()); // TODO remove logging
+            sound.play();
+        } catch (e) {
+            console.warn('Unable to play sound: ', sound);
+        }
+    }
+
+    private loadSounds() {
+        try {
+            this.startGameSound = this.audioService.newSound('let-the-game-begin.wav');
+        } catch (e) {
+            console.warn('Unable to load sounds: ' + e)
+        }
     }
 
     static readonly getPlayerLeagueQuery = `query ($playerId: ID!, $leagueId: ID!) {

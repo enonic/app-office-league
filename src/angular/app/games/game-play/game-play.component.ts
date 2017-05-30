@@ -93,7 +93,16 @@ export class GamePlayComponent
     };
 
     private wsMan: WebSocketManager;
+
     private goalSound: WebAudioSound;
+    private ownGoalSound: WebAudioSound;
+    private gameEndSound: WebAudioSound;
+    private halfTimeSound: WebAudioSound;
+    private firstGoalSound: WebAudioSound;
+    private strike3Sound: WebAudioSound;
+    private strike5Sound: WebAudioSound;
+    private strike7Sound: WebAudioSound;
+    private strike9Sound: WebAudioSound;
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router, private elRef: ElementRef,
                 private offlineService: OfflinePersistenceService, private gameSelection: GameSelection,
@@ -430,6 +439,8 @@ export class GamePlayComponent
         this.scoreGoal(scorerSide, against);
 
         if (this.hasGameEnded()) {
+            this.playSound(this.gameEndSound);
+
             this.stopGameTimer();
             this.gameState = GameState.Finished;
             this.saveGame().then((gameId) => {
@@ -445,7 +456,7 @@ export class GamePlayComponent
                 });
             });
         } else {
-            this.playSound(this.goalSound);
+            this.playSoundAfterGoal();
 
             this.saveGame().then((gameId) => {
                 // TODO show point feedback
@@ -827,7 +838,7 @@ export class GamePlayComponent
 
     ngOnDestroy() {
         this.wsMan.disconnect();
-        this.stopAllSounds();
+        setTimeout(() => this.stopAllSounds(), 3000);
     }
 
     onWsMessage(event: RemoteEvent) {
@@ -844,11 +855,64 @@ export class GamePlayComponent
         return XPCONFIG.liveGameUrl + '?gameId=' + gameId + '&scope=game-play';
     }
 
+    private getCurrentStreak(): number {
+        let point: Point, streak = 0;
+        let side: Side, previousSide: Side;
+        let i, l = this.points.length;
+
+        for (i = l - 1; i >= 0; i--) {
+            point = this.points[i];
+            side = this.getPlayerSide(point.player);
+            if (point.against || (previousSide !== undefined && side != previousSide)) {
+                break;
+            }
+            previousSide = side;
+            streak++;
+        }
+        return streak;
+    }
+
+    private playSoundAfterGoal() {
+        if (this.halfTime) {
+            this.playSound(this.halfTimeSound);
+            return;
+        }
+
+        if (this.points.length === 1) {
+            this.playSound(this.firstGoalSound);
+            return;
+        }
+
+        if (this.points[this.points.length - 1].against) {
+            this.playSound(this.ownGoalSound);
+            return;
+        }
+
+        const streak = this.getCurrentStreak();
+        console.log('Current streak: ' + streak);
+        if (streak === 9) {
+            this.playSound(this.strike9Sound);
+
+        } else if (streak === 7) {
+            this.playSound(this.strike7Sound);
+
+        } else if (streak === 5) {
+            this.playSound(this.strike5Sound);
+
+        } else if (streak === 3) {
+            this.playSound(this.strike3Sound);
+
+        } else {
+            this.playSound(this.goalSound);
+        }
+    }
+
     private playSound(sound: WebAudioSound) {
         if (!sound) {
             return;
         }
         try {
+            console.log('Playing sound: ' + sound.getUrl()); // TODO remove logging
             sound.play();
         } catch (e) {
             console.warn('Unable to play sound: ', sound);
@@ -857,14 +921,23 @@ export class GamePlayComponent
 
     private loadSounds() {
         try {
-            this.goalSound = this.audioService.newSound('goal6.mp3');
+            this.goalSound = this.audioService.newSound('goal.wav');
+            this.ownGoalSound = this.audioService.newSound('own-goal.wav');
+            this.gameEndSound = this.audioService.newSound('game-over.wav');
+            this.halfTimeSound = this.audioService.newSound('halftime.wav');
+            this.firstGoalSound = this.audioService.newSound('first-blood.wav');
+            this.strike3Sound = this.audioService.newSound('dominating.wav');
+            this.strike5Sound = this.audioService.newSound('ownage.wav');
+            this.strike7Sound = this.audioService.newSound('wicked-sick.wav');
+            this.strike9Sound = this.audioService.newSound('godlike.wav');
         } catch (e) {
             console.warn('Unable to load sounds: ' + e)
         }
     }
 
     private stopAllSounds() {
-        [this.goalSound].forEach((sound) => sound.stop());
+        [this.goalSound, this.ownGoalSound, this.gameEndSound, this.halfTimeSound, this.firstGoalSound,
+            this.strike3Sound, this.strike5Sound, this.strike7Sound, this.strike9Sound].forEach((sound) => sound.stop());
     }
 
     private static readonly getPlayersLeagueQuery = `query ($leagueId: ID!, $playerIds: [ID]!) {

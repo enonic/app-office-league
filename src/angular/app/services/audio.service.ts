@@ -8,6 +8,7 @@ export interface WebAudioSound {
     stop(): void;
     getVolume(): number;
     setVolume(volume: number);
+    getUrl(): string;
 }
 
 @Injectable()
@@ -140,5 +141,9 @@ class WebAudioAPISound {
         source.connect(gainNode);
         gainNode.connect(this.manager.context.destination);
         return source;
+    }
+
+    getUrl(): string {
+        return this.url;
     }
 }
