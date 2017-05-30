@@ -19,8 +19,12 @@
             <i class="material-icons">menu</i>
         </a>
         <ul class="game-profile__btn-menu">
-            <li><a class="btn-floating global__btn--comment" (click)="onCommentClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(20px) translateX(0px); opacity: 0;"><i class="material-icons">comment</i></a></li>
-            <li (click)="onDeleteClicked()"><a class="btn-floating red" style="transform: scaleY(0.4) scaleX(0.4) translateY(20px) translateX(0px); opacity: 0;"><i class="material-icons">delete</i></a></li>
+            <li><a class="btn-floating global__btn--comment" (click)="onCommentClicked()"
+                   style="transform: scaleY(0.4) scaleX(0.4) translateY(20px) translateX(0px); opacity: 0;"><i class="material-icons">comment</i></a>
+            </li>
+            <li (click)="onDeleteClicked()"><a class="btn-floating red"
+                                               style="transform: scaleY(0.4) scaleX(0.4) translateY(20px) translateX(0px); opacity: 0;"><i
+                    class="material-icons">delete</i></a></li>
         </ul>
     </div>
 
@@ -30,7 +34,8 @@
     <div class="modal-content">
         <h6 class="center">Game comment</h6>
         <div class="input-field col s12">
-            <textarea id="comment" class="materialize-textarea" name="comment" maxlength="140" [(ngModel)]="comment" #commenttextarea></textarea>
+            <textarea id="comment" class="materialize-textarea" name="comment" autocorrect="off" spellcheck="false" maxlength="140"
+                      [(ngModel)]="comment" #commenttextarea></textarea>
             <label class="active" for="comment">What's happening?</label>
         </div>
     </div>
