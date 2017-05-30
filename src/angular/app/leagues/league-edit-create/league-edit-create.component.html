@@ -68,15 +68,16 @@
                 </div>
             </form>
         </div>
-    </div>
 
-    <div class="modal center player-select-modal" materialize="modal"
-         [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
-        <div class="modal-content">
-            <h4 class="center">Select an admin to add</h4>
-            <player-select [playerIds]="allPlayerIds" [excludedPlayerIds]="adminPlayerIds" [materializeActions]="materializeActions"
-                           (playerSelected)="onAdminSelected($event)"></player-select>
+        <div class="modal center player-select-modal" materialize="modal"
+             [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
+            <div class="modal-content">
+                <h6 class="center">Select an admin to add</h6>
+                <player-select [playerIds]="allPlayerIds" [excludedPlayerIds]="adminPlayerIds" [materializeActions]="materializeActions"
+                               (playerSelected)="onAdminSelected($event)"></player-select>
+            </div>
         </div>
     </div>
+
 
 </template>
