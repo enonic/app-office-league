@@ -1,63 +1,58 @@
-<div class="row">
-    <!--<div class="col s12 center blue-grey lighten-3 indigo-text text-darken-2">
-        <div class="league-header">
-            <template [ngIf]="league != null">
-                <img src="{{league.imageUrl}}?size=42" alt="{{league.name}}" class="league-logo">
-            </template>
-            <h4>{{title}}</h4>
-        </div>
-    </div>-->
+<div class="new-game__container">
+    <div class="row new-game__selection">
+        <div class="new-game__sides">
+            <div class="new-game__side new-game__side--blue">
 
+                <new-game-player [player]="bluePlayer1" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
+                                 [sideClass]="'side-blue'"
+                                 (playerSelected)="onPlayerSelected('blue1', $event)" class="new-game__player"></new-game-player>
 
+                <new-game-player [player]="bluePlayer2" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
+                                 [sideClass]="'side-blue'"
+                                 (playerSelected)="onPlayerSelected('blue2', $event)" class="new-game__player"
+                                 [hidden]="!teamMode"></new-game-player>
 
-    <div class="new-game__sides">
-        <div class="new-game__side new-game__side--blue">
+            </div>
+            <div class="new-game__vs">
+                <div>vs</div>
+            </div>
+            <div class="new-game__side new-game__side--red">
 
-            <new-game-player [player]="bluePlayer1" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
-                             [sideClass]="'side-blue'"
-                             (playerSelected)="onPlayerSelected('blue1', $event)" class="new-game__player"></new-game-player>
+                <new-game-player [player]="redPlayer1" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
+                                 [sideClass]="'side-red'"
+                                 (playerSelected)="onPlayerSelected('red1', $event)" class="new-game__player"></new-game-player>
 
-            <new-game-player [player]="bluePlayer2" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
-                             [sideClass]="'side-blue'"
-                             (playerSelected)="onPlayerSelected('blue2', $event)" class="new-game__player" [hidden]="!teamMode"></new-game-player>
+                <new-game-player [player]="redPlayer2" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
+                                 [sideClass]="'side-red'"
+                                 (playerSelected)="onPlayerSelected('red2', $event)" class="new-game__player"
+                                 [hidden]="!teamMode"></new-game-player>
 
-        </div>
-        <div class="new-game__vs">
-            <div>vs</div>
-        </div>
-        <div class="new-game__side new-game__side--red">
-
-            <new-game-player [player]="redPlayer1" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
-                             [sideClass]="'side-red'"
-                             (playerSelected)="onPlayerSelected('red1', $event)" class="new-game__player"></new-game-player>
-
-            <new-game-player [player]="redPlayer2" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
-                             [sideClass]="'side-red'"
-                             (playerSelected)="onPlayerSelected('red2', $event)" class="new-game__player" [hidden]="!teamMode"></new-game-player>
-
+            </div>
         </div>
     </div>
 
+    <div class="new-game__actions">
+        <div class="row center">
+            <a class="waves-effect waves-light center btn global__btn--toggle" (click)="onToggleClicked($event)"
+               [class.disabled]="shuffleInProgress">{{toggleButtonText}}</a>
+        </div>
 
-</div>
+        <div class="row center">
+            <a class="waves-effect waves-light center btn global__btn--play" (click)="onPlayClicked()"
+               [class.disabled]="!this.playerSelectionReady || (this.shuffleCount>0) || shuffleInProgress">Play</a>
+        </div>
 
-<div class="row center">
-    <a class="waves-effect waves-light center btn global__btn--toggle" (click)="onToggleClicked($event)">{{toggleButtonText}}</a>
-</div>
+        <div class="row center">
+            <a *ngIf="teamMode" class="waves-effect waves-light center btn global__btn--shuffle" (click)="onShuffleClicked()"
+               [class.disabled]="shuffleDisabled || shuffleInProgress">Shuffle</a>
+        </div>
 
-<div class="row center">
-        <a class="waves-effect waves-light center btn global__btn--play" (click)="onPlayClicked()"
-           [class.disabled]="!this.playerSelectionReady || (this.shuffleCount>0) || shuffleInProgress">Play</a>
-</div>
-
-<div class="row center">
-    <a *ngIf="teamMode" class="waves-effect waves-light center btn global__btn--shuffle" (click)="onShuffleClicked()"
-       [class.disabled]="shuffleDisabled || shuffleInProgress">Shuffle</a>
-</div>
-
-<div class="row center">
-    <h6 [class.invisible]="!expectedScoreBlue || !expectedScoreRed" class="center white-text expected-score">Score prediction</h6>
-    <div [class.invisible]="!expectedScoreBlue || !expectedScoreRed" class="center">
-        <span class="expected-score__value team-blue">{{expectedScoreBlue}}</span> &mdash; <span class="expected-score__value team-red">{{expectedScoreRed}}</span>
+        <div class="row center">
+            <h6 [class.invisible]="!expectedScoreBlue || !expectedScoreRed" class="center white-text expected-score">Score prediction</h6>
+            <div [class.invisible]="!expectedScoreBlue || !expectedScoreRed" class="center">
+                <span class="expected-score__value team-blue">{{expectedScoreBlue}}</span> &mdash; <span
+                    class="expected-score__value team-red">{{expectedScoreRed}}</span>
+            </div>
+        </div>
     </div>
 </div>

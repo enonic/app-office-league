@@ -15,7 +15,7 @@
     <div class="modal center player-select-modal" materialize="modal"
          [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
         <div class="modal-content">
-            <h5 class="center">{{modalTitle}}</h5>
+            <h5 class="center new-game-player__title">{{modalTitle}}</h5>
             <player-select [playerIds]="leaguePlayerIds" [excludedPlayerIds]="selectedPlayerIds" [materializeActions]="materializeActions"
                            (playerSelected)="onSelected($event)"></player-select>
         </div>
