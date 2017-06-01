@@ -16,6 +16,9 @@
 
   &__red-score {
     background-color: @red-team-color;
+    &_paused {
+      background-color: @red-team-color-shade;
+    }
 
     &--goal {
       background-color: #fff;
@@ -27,6 +30,9 @@
 
   &__blue-score {
     background-color: @blue-team-color;
+    &_paused {
+      background-color: @blue-team-color-shade;
+    }
 
     &--goal {
       background-color: #fff;
@@ -52,11 +58,19 @@
     margin-left: 0.5rem;
   }
 
+  &__paused {
+    animation: blinker 2s linear infinite;
+    @keyframes blinker {
+      50% {
+        opacity: 0.3;
+      }
+    }
+  }
+
   &__field {
     height: ~"calc(100vh - 40px)";
     position: relative;
   }
-
 
   &__commentator {
     display: none;
@@ -140,7 +154,6 @@
       opacity: 0;
     }
 
-
     /*&-container {
       position: relative;
       width: 75%;
@@ -176,8 +189,6 @@
       box-sizing: border-box;
       position: relative;
 
-
-
       &-placeholder {
         position: absolute;
         z-index: 0;
@@ -192,7 +203,6 @@
           width: 0;
         }
       }
-
 
     }
 
@@ -222,16 +232,17 @@
 
     }
 
-
   }
 
   &__menu {
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.85);
     position: absolute;
     z-index: 999;
     width: 100%;
-    height: 100%;
-    top:0;
+    //height: 100%;
+    height: ~"calc(100% - 76px)";
+    margin-top: 40px;
+    top: 0;
     left: 0;
     display: none;
     align-items: center;
@@ -250,26 +261,35 @@
     }
 
     &-btn {
-
-      width: 150px;
-      height: 150px;
       margin: 20px;
-      border-radius: 50%;
-      border-width: 0;
+
+      border: none;
+      border-radius: 2px;
+      display: inline-block;
+      height: 36px;
+      line-height: 36px;
+      padding: 0 2rem;
+      text-transform: uppercase;
+      vertical-align: middle;
+      -webkit-tap-highlight-color: transparent;
+
+      text-decoration: none;
+      color: #fff;
+      text-align: center;
+      letter-spacing: .5px;
+      font-size: 1rem;
+      outline: 0;
 
       &--continue {
-        background-color: #fff;
-        color: #000;
+        background-color: #429E69;
       }
 
       &--undo {
-        background-color: #000;
-        color: #fff;
+        background-color: #2196F3;
       }
 
       &--end {
-        background-color: @red-team-color;
-        color: #fff;
+        background-color: #F44336;
       }
     }
   }
@@ -282,7 +302,7 @@
 @keyframes blink {
   0% { color: #fff; }
   100% { color: #000; }
-}
+  }
 @-webkit-keyframes blink {
   0% { color: #fff; }
   100% { color: #000; }
@@ -320,12 +340,6 @@
   }
 }
 
-
-
-
-
-
-
 .sides {
   display: flex;
   flex-direction: row;
@@ -357,7 +371,6 @@
   }
 
   .players {
-
 
   }
 
@@ -451,8 +464,6 @@
   }
 }*/
 
-
-
 .game-top-bar {
   //position: absolute;
   //top: 0;
@@ -523,13 +534,13 @@
 
       img {
         height: 40px;
-        padding-right:5px;
+        padding-right: 5px;
       }
 
       &__name {
         color: #aaa;
         font-size: 18px;
-        padding-right:5px;
+        padding-right: 5px;
         vertical-align: bottom;
         line-height: 40px;
       }
@@ -550,7 +561,7 @@
   }
 }
 
-@-webkit-keyframes floatText{
+@-webkit-keyframes floatText {
   0% {
     left: 00%;
   }
@@ -564,7 +575,7 @@
   }
 }
 
-@keyframes floatText{
+@keyframes floatText {
   0% {
     left: 00%;
   }
@@ -595,8 +606,6 @@
   align-items: center;
   color: #fff;
 }
-
-
 
 .game-play {
   position: relative;

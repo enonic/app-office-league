@@ -3,15 +3,15 @@
         <div class="game-top-bar-items" [ngClass]="nameClassesGameTopBarItems">
 
             <div class="game-score">
-                <div class="game-play__team-score game-play__red-score" [ngClass]="nameClassesGamePlayScoreRed">{{redScore}}</div>
+                <div class="game-play__team-score game-play__red-score" [class.game-play__red-score_paused]="showMenu" [ngClass]="nameClassesGamePlayScoreRed">{{redScore}}</div>
                 <div class="game-play__time" (click)="onGameTimeClicked()">
                     <span [hidden]="showPlay">
                         <span>{{elapsedTime}}</span>
                         <span class="game-play__pause"></span>
                     </span>
-                    <span [hidden]="!showPlay">Paused</span>
+                    <span class="game-play__paused" [hidden]="!showPlay">Paused</span>
                 </div>
-                <div class="game-play__team-score game-play__blue-score"[ngClass]="nameClassesGamePlayScoreBlue">{{blueScore}}</div>
+                <div class="game-play__team-score game-play__blue-score" [class.game-play__blue-score_paused]="showMenu" [ngClass]="nameClassesGamePlayScoreBlue">{{blueScore}}</div>
             </div><!--
             <div class="actions">
                 <i class="medium material-icons green-text" [ngClass]="{hide: !showPlay}" (click)="onPlayClicked()">play_arrow</i>
@@ -24,11 +24,11 @@
     <div class="game-bottom-bar">
         <div class="game-bottom-bar-items" [ngClass]="nameClassesGameTopBarItems" *ngIf="showMenu && (expectedRedScore >= 0 && expectedBlueScore >= 0)">
             <div class="game-score">
-                <div class="game-play__team-score game-play__red-score" [ngClass]="nameClassesGamePlayScoreRed">{{expectedRedScore}}</div>
+                <div class="game-play__team-score game-play__red-score" [class.game-play__red-score_paused]="showMenu" [ngClass]="nameClassesGamePlayScoreRed">{{expectedRedScore}}</div>
                 <div class="game-play__time">
                     <span>Expected</span>
                 </div>
-                <div class="game-play__team-score game-play__blue-score"[ngClass]="nameClassesGamePlayScoreBlue">{{expectedBlueScore}}</div>
+                <div class="game-play__team-score game-play__blue-score" [class.game-play__blue-score_paused]="showMenu" [ngClass]="nameClassesGamePlayScoreBlue">{{expectedBlueScore}}</div>
             </div>
         </div>
         <div class="game-bottom-bar-message" [ngClass]="nameClassesGameBottomBarMsg">

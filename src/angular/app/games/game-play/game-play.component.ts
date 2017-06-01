@@ -250,12 +250,12 @@ export class GamePlayComponent
     onGameTimeClicked() {
         this.unselectAll();
 
-        if (this.gameState === GameState.Paused) {
-            this.resumeGame();
-        }
-        else {
+        if (this.gameState !== GameState.Paused) {
             this.pauseGame();
             this.showMenu = true;
+        }
+        else if (!this.showMenu) {
+            this.resumeGame();
         }
     }
 
