@@ -10,7 +10,7 @@
                 <new-game-player [player]="bluePlayer2" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
                                  [sideClass]="'side-blue'"
                                  (playerSelected)="onPlayerSelected('blue2', $event)" class="new-game__player"
-                                 [hidden]="!teamMode"></new-game-player>
+                                 [class.invisible]="!teamMode"></new-game-player>
 
             </div>
             <div class="new-game__vs">
@@ -25,7 +25,7 @@
                 <new-game-player [player]="redPlayer2" [leaguePlayerIds]="leaguePlayerIds" [selectedPlayerIds]="selectedPlayerIds"
                                  [sideClass]="'side-red'"
                                  (playerSelected)="onPlayerSelected('red2', $event)" class="new-game__player"
-                                 [hidden]="!teamMode"></new-game-player>
+                                 [class.invisible]="!teamMode"></new-game-player>
 
             </div>
         </div>
@@ -33,8 +33,13 @@
 
     <div class="new-game__actions">
         <div class="row center">
-            <a class="waves-effect waves-light center btn global__btn--toggle" (click)="onToggleClicked($event)"
-               [class.disabled]="shuffleInProgress">{{toggleButtonText}}</a>
+            <div class="switch new-game__actions--team-toggle">
+                <label>
+                    <input type="checkbox" (click)="onToggleClicked($event)" [disabled]="shuffleInProgress">
+                    <span class="lever"></span>
+                    Team Game
+                </label>
+            </div>
         </div>
 
         <div class="row center">

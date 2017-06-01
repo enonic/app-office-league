@@ -33,9 +33,32 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-around;
+      justify-content: flex-start;
     }
     @media @mobile-portrait {
+    }
+
+    &--team-toggle {
+      &.switch label input[type=checkbox]:checked+.lever {
+        //background-color: #fa3;
+        //background-color: #84c7c1;
+        background-color: #2196F3;
+      }
+
+      &.switch label input[type=checkbox]:checked+.lever:after {
+        //background-color: #f93;
+        //background-color: #26a69a;
+        background-color: #fff;
+      }
+      &.switch label input[type=checkbox][disabled]+.lever:after, .switch label input[type=checkbox][disabled]:checked+.lever:after {
+        background-color: #BDBDBD;
+      }
+
+      label {
+        font-size: 1rem;
+        color: #fff;
+        text-transform: uppercase;
+      }
     }
   }
 
