@@ -4,6 +4,9 @@
 <div *ngIf="game != null" class="game-profile">
 
     <game [game]="game"></game>
+    <div class="game__date">
+        <small class="center grey-text">{{game.time | amCalendar:{lastDay: '[Yesterday at] HH:mm', sameDay: '[Today at] HH:mm', nextDay : '[Tomorrow at] HH:mm', lastWeek : '[last] dddd [at] HH:mm', nextWeek : 'dddd [at] HH:mm', sameElse : 'll HH:mm'} }}</small>
+    </div>
     <game-flow [game]="game"></game-flow>
     <template [ngIf]="playerId && !deletable">
         <div class="fixed-action-btn">

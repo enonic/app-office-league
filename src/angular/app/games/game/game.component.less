@@ -9,10 +9,28 @@
     flex-direction: row;
   }
 
+  &__header {
+    width: ~"calc(100% + 20px)";
+    left: -10px;
+    position: relative;
+  }
+
   &__side {
     width: 50%;
     display: flex;
     flex-direction: column;
+
+    &--1 {
+      &.game__side--header {
+        background-color: @blue-team-color;
+      }
+    }
+
+    &--2 {
+      &.game__side--header {
+        background-color: @red-team-color;
+      }
+    }
 
     &-intro {
       width: 100%;
@@ -37,6 +55,7 @@
       width: 100%;
       display: block;
       border-radius: 50%;
+      padding: 6px;
 
       &-wrapper {
         width: 50%;
@@ -80,6 +99,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    padding-bottom: 3px;
 
     &--2 {
       flex-direction: row-reverse;
@@ -89,15 +109,20 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
+      border: 2px solid;
+
+      &--1 {
+        border-color: @blue-team-color;
+      }
+
+      &--2 {
+        border-color: @red-team-color;
+      }
     }
 
     &-name {
       padding: 0 10px;
     }
-  }
-
-  &__date {
-    text-align: center;
   }
 
   &__live {
