@@ -43,6 +43,7 @@ export class NewGameComponent
     shuffleCount: number = 0;
     private playerRatings: { [playerId: string]: number } = {};
     private startGameSound: WebAudioSound;
+    private backgroundSound: WebAudioSound;
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute,
                 private pageTitleService: PageTitleService, private router: Router, private gameSelection: GameSelection,
@@ -94,6 +95,7 @@ export class NewGameComponent
         this.gameSelection.league = this.league;
 
         this.playSound(this.startGameSound);
+        this.playSound(this.backgroundSound);
         this.enterFullScreen();
 
         this.createGame().then((gameId) => {
@@ -121,8 +123,14 @@ export class NewGameComponent
         }
     }
 
-    enterFullScreen() {
-        this.requestFullScreen(document.documentElement);
+    private enterFullScreen() {
+        if (this.isMobileDevice()) {
+            this.requestFullScreen(document.documentElement);
+        }
+    }
+
+    private isMobileDevice(): boolean {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 
     onToggleClicked(event) {
@@ -260,7 +268,8 @@ export class NewGameComponent
 
     private loadSounds() {
         try {
-            this.startGameSound = this.audioService.newSound('let-the-game-begin.wav');
+            this.startGameSound = this.audioService.newSound('Blastwave_FX_WhistleBlowLong_BWU.693.mp3');
+            this.backgroundSound = this.audioService.newSound('sport_soccer_match_stadium_crowd_chant_cheer_001.mp3', true);
         } catch (e) {
             console.warn('Unable to load sounds: ' + e)
         }

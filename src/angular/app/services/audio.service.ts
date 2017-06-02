@@ -15,6 +15,7 @@ export interface WebAudioSound {
 export class AudioService {
     private _window: Window;
     private initialized: boolean;
+    private webAudioAPISoundManager: WebAudioAPISoundManager;
 
     constructor(windowRef: WindowRefService) {
         this._window = windowRef.nativeWindow;
@@ -25,6 +26,7 @@ export class AudioService {
             let window = <any>this._window;
             window.AudioContext = window.AudioContext || window.webkitAudioContext;
             window.audioContext = new window.AudioContext();
+            this.webAudioAPISoundManager = this.webAudioAPISoundManager || new WebAudioAPISoundManager(window.audioContext);
         } catch (e) {
             console.log("No Web Audio API support");
         }
@@ -36,7 +38,12 @@ export class AudioService {
             this.initialized = true;
         }
         let url = XPCONFIG.audioUrl + soundFile;
-        return new WebAudioAPISound(url, loop, this._window);
+        return new WebAudioAPISound(url, loop, this.webAudioAPISoundManager);
+    }
+
+    public stopSound(soundFile: string) {
+        let url = XPCONFIG.audioUrl + soundFile;
+        this.webAudioAPISoundManager.stopSoundWithUrl(url);
     }
 }
 
@@ -92,10 +99,9 @@ class WebAudioAPISound {
     private manager: WebAudioAPISoundManager;
     private volume: number;
 
-    constructor(private url: string, private loop: boolean = false, _window: any) {
+    constructor(private url: string, private loop: boolean = false, soundManager: WebAudioAPISoundManager) {
         this.url = url;
-        _window.webAudioAPISoundManager = _window.webAudioAPISoundManager || new WebAudioAPISoundManager(_window.audioContext);
-        this.manager = _window.webAudioAPISoundManager;
+        this.manager = soundManager;
         this.manager.addSound(this.url);
     }
 

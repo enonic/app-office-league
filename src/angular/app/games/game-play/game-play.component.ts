@@ -926,15 +926,23 @@ export class GamePlayComponent
 
     private loadSounds() {
         try {
-            this.goalSound = this.audioService.newSound('goal.wav');
-            this.ownGoalSound = this.audioService.newSound('own-goal.wav');
-            this.gameEndSound = this.audioService.newSound('game-over.wav');
-            this.halfTimeSound = this.audioService.newSound('halftime.wav');
-            this.firstGoalSound = this.audioService.newSound('first-blood.wav');
-            this.strike3Sound = this.audioService.newSound('dominating.wav');
-            this.strike5Sound = this.audioService.newSound('ownage.wav');
-            this.strike7Sound = this.audioService.newSound('wicked-sick.wav');
-            this.strike9Sound = this.audioService.newSound('godlike.wav');
+            this.goalSound = this.audioService.newSound('cheer_8k.mp3');
+            this.halfTimeSound = this.audioService.newSound('Blastwave_FX_WhistleBlowLong_BWU.693.mp3');
+
+            this.ownGoalSound = this.goalSound;
+            this.gameEndSound = this.halfTimeSound;
+            this.firstGoalSound = this.goalSound;
+            this.strike3Sound = this.goalSound;
+            this.strike5Sound = this.goalSound;
+            this.strike7Sound = this.goalSound;
+            this.strike9Sound = this.goalSound;
+            // this.ownGoalSound = this.audioService.newSound('own-goal.wav');
+            // this.gameEndSound = this.audioService.newSound('game-over.wav');
+            // this.firstGoalSound = this.audioService.newSound('first-blood.wav');
+            // this.strike3Sound = this.audioService.newSound('dominating.wav');
+            // this.strike5Sound = this.audioService.newSound('ownage.wav');
+            // this.strike7Sound = this.audioService.newSound('wicked-sick.wav');
+            // this.strike9Sound = this.audioService.newSound('godlike.wav');
         } catch (e) {
             console.warn('Unable to load sounds: ' + e)
         }
@@ -943,6 +951,7 @@ export class GamePlayComponent
     private stopAllSounds() {
         [this.goalSound, this.ownGoalSound, this.gameEndSound, this.halfTimeSound, this.firstGoalSound,
             this.strike3Sound, this.strike5Sound, this.strike7Sound, this.strike9Sound].forEach((sound) => sound.stop());
+        this.audioService.stopSound('sport_soccer_match_stadium_crowd_chant_cheer_001.mp3');
     }
 
     private leaveFullScreen() {
