@@ -48,8 +48,8 @@
         </div>
 
         <div class="row center">
-            <a *ngIf="teamMode" class="waves-effect waves-light center btn global__btn--shuffle" (click)="onShuffleClicked()"
-               [class.disabled]="shuffleDisabled || shuffleInProgress">Shuffle</a>
+            <a class="waves-effect waves-light center btn global__btn--shuffle" (click)="onShuffleClicked()"
+               [class.disabled]="!teamMode || (shuffleDisabled || shuffleInProgress)">Shuffle</a>
         </div>
 
         <div class="row center">
