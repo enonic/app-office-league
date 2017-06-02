@@ -131,6 +131,7 @@ export class GamePlayComponent
                 })
                 .then(() => {
                     if (!this.league) {
+                        this.leaveFullScreen();
                         this.router.navigate([''], {replaceUrl: true});
                         return;
                     }
@@ -265,6 +266,7 @@ export class GamePlayComponent
     }
 
     private redirectAfterGameDeleted() {
+        this.leaveFullScreen();
         if (this.league) {
             this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
         } else {
@@ -323,6 +325,7 @@ export class GamePlayComponent
 
         if (this.hasGameEnded()) {
             this.gameState = GameState.Finished;
+            this.leaveFullScreen();
             this.router.navigate(['games', this.gameId], {replaceUrl: true});
         } else {
             this.startGameTimer();
@@ -445,11 +448,13 @@ export class GamePlayComponent
             this.gameState = GameState.Finished;
             this.saveGame().then((gameId) => {
                 console.log('Game created: ' + gameId);
+                this.leaveFullScreen();
                 this.router.navigate(['games', gameId], {replaceUrl: true});
             }).catch((ex) => {
                 console.warn('Could not save final game. TODO: Save data in local storage');
                 this.onlineMode = false;
                 this.saveGameOffline().then((game) => {
+                    this.leaveFullScreen();
                     this.router.navigate(['games', game.id], {replaceUrl: true});
                 }).catch((ex) => {
                     console.log(ex); // TODO retry?
@@ -938,6 +943,19 @@ export class GamePlayComponent
     private stopAllSounds() {
         [this.goalSound, this.ownGoalSound, this.gameEndSound, this.halfTimeSound, this.firstGoalSound,
             this.strike3Sound, this.strike5Sound, this.strike7Sound, this.strike9Sound].forEach((sound) => sound.stop());
+    }
+
+    private leaveFullScreen() {
+        const doc = <any> document;
+        if (doc.exitFullscreen) {
+            doc.exitFullscreen();
+        } else if (doc.mozCancelFullScreen) {
+            doc.mozCancelFullScreen();
+        } else if (doc.webkitExitFullscreen) {
+            doc.webkitExitFullscreen();
+        } else if (doc.msExitFullscreen) {
+            doc.msExitFullscreen();
+        }
     }
 
     private static readonly getPlayersLeagueQuery = `query ($leagueId: ID!, $playerIds: [ID]!) {

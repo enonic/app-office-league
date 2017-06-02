@@ -94,6 +94,7 @@ export class NewGameComponent
         this.gameSelection.league = this.league;
 
         this.playSound(this.startGameSound);
+        this.enterFullScreen();
 
         this.createGame().then((gameId) => {
             console.log('Initial game created: ' + gameId);
@@ -104,6 +105,24 @@ export class NewGameComponent
             this.gameSelection.gameId = null;
             this.router.navigate(['games', this.leagueId, 'game-play'], {replaceUrl: true});
         });
+    }
+
+    private requestFullScreen(element) {
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullScreen) {
+            element.webkitRequestFullScreen();
+        } else if (element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        }
+    }
+
+    enterFullScreen() {
+        this.requestFullScreen(document.documentElement);
     }
 
     onToggleClicked(event) {
