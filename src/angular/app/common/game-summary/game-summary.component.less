@@ -2,11 +2,28 @@
 
 .game-summary {
   .summary-list-mixin;
+  padding: 5px 10px;
+  line-height: 1.5;
+
+  &__avatar {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 5%;
+  }
 
   &__sides {
     flex-grow: 1;
     text-align: left;
+    overflow-x: hidden;
+  }
+
+  &__side {
     text-overflow: ellipsis;
+    overflow-x: hidden;
+    white-space: nowrap;
   }
 
   &__live {
@@ -16,11 +33,13 @@
 
   &__result {
     flex-grow: 0;
-    width: 75px;
+    width: 20px;
     text-align: right;
   }
 
   @keyframes blinker {
-    50% { opacity: 0; }
+    50% {
+      opacity: 0;
+    }
   }
 }

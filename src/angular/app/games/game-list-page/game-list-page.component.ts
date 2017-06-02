@@ -43,6 +43,10 @@ export class GameListPageComponent extends BaseComponent {
                             imageUrl
                         }
                     }
+                    league {
+                        name
+                        imageUrl
+                    }
                 }
             }
         }
