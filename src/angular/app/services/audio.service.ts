@@ -87,7 +87,11 @@ class WebAudioAPISoundManager {
         if (this.playingSounds.hasOwnProperty(url)) {
             for (let i in this.playingSounds[url]) {
                 if (this.playingSounds[url].hasOwnProperty(i)) {
-                    this.playingSounds[url][i].stop(0);
+                    try {
+                        this.playingSounds[url][i].stop(0);
+                    } catch (e) {
+                        console && console.warn('Could not stop sound: ' + url, e);
+                    }
                 }
             }
         }

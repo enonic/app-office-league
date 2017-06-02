@@ -949,9 +949,9 @@ export class GamePlayComponent
     }
 
     private stopAllSounds() {
+        this.audioService.stopSound('sport_soccer_match_stadium_crowd_chant_cheer_001.mp3');
         [this.goalSound, this.ownGoalSound, this.gameEndSound, this.halfTimeSound, this.firstGoalSound,
             this.strike3Sound, this.strike5Sound, this.strike7Sound, this.strike9Sound].forEach((sound) => sound.stop());
-        this.audioService.stopSound('sport_soccer_match_stadium_crowd_chant_cheer_001.mp3');
     }
 
     private leaveFullScreen() {
