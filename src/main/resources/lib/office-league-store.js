@@ -420,7 +420,7 @@ exports.getLeaguePlayersByLeagueIdAndPlayerIds = function (leagueId, playerIds) 
     return query({
         start: 0,
         count: playerIds.length,
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND (" + playersCondition + ")"
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND (" + playersCondition + ")"
     });
 };
 
@@ -1575,6 +1575,9 @@ var createDefaultTeamForPlayers = function (playerId1, playerId2) {
 exports.generateCreateGameParams = function (params) {
     params.points = params.points || [];
 
+    if (params.gamePlayers.length < 2) {
+        throw 'Not enough players to create game: ' + params.gamePlayers.length;
+    }
     var singlesGame = params.gamePlayers.length === 2;
     var time = new Date().toISOString();
     var blueScore = 0, redScore = 0;
