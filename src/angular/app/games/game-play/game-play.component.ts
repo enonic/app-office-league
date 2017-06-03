@@ -331,6 +331,14 @@ export class GamePlayComponent
             this.startGameTimer();
 
             if (!this.gameId) {
+                if (!this.bluePlayer1 || !this.redPlayer1) {
+                    if (this.league) {
+                        this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
+                    } else {
+                        this.router.navigate([], {replaceUrl: true});
+                    }
+                    return;
+                }
                 this.createGame().then((gameId) => {
                     console.log('Initial game created: ' + gameId);
                     this.gameId = gameId;
@@ -494,6 +502,11 @@ export class GamePlayComponent
         this.gameId = this.gameSelection.gameId;
         this.league = League.fromJson(data.game.league);
         let playerMap: { [id: string]: Player } = {};
+
+        this.bluePlayer1 = null;
+        this.bluePlayer2 = null;
+        this.redPlayer1 = null;
+        this.redPlayer2 = null;
 
         data.game.gamePlayers.sort(this.compareGamePlayer).forEach((gp) => {
             const p = Player.fromJson(gp.player);
