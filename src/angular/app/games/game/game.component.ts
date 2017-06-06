@@ -49,20 +49,32 @@ export class GameComponent
             query,
             {gameId: gameId},
             data => {
+                if (!data || !data.game) {
+                    this.onRequestError();
+                    return;
+                }
+
                 this.game = Game.fromJson(data.game);
                 this.processGame(this.game);
                 this.afterGameLoaded(this.game);
             },
             error => {
                 this.offlineService.loadGame(gameId).then(game => {
+                    if (!game) {
+                        this.onRequestError();
+                        return;
+                    }
+
                     this.game = game;
                     this.processGame(this.game);
                     this.afterGameLoaded(this.game);
                 }).catch(error => {
                     console.log('Could not load game: ' + gameId);
-                    this.router.navigate([''], {replaceUrl: true});
+                    this.onRequestError();
                 })
-            });
+            }).catch(error => {
+            this.onRequestError();
+        });
     }
 
     protected getGameQuery(): string {
@@ -70,6 +82,9 @@ export class GameComponent
     }
 
     protected afterGameLoaded(game: Game) {
+    }
+
+    protected onRequestError() {
     }
 
     private processGame(game: Game) {

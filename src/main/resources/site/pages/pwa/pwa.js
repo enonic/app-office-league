@@ -32,6 +32,16 @@ exports.get = function (req) {
         }
     }
 
+    var user = authLib.getUser();
+    if (!user && hasLoginSuggestParam(req)) {
+        return {
+            redirect: portalLib.loginUrl({
+                type: 'absolute',
+                redirect: req.url
+            })
+        }
+    }
+
     if (isPlayerCreatePage(req, appBaseUrl)) {
         if (req.params.invitation) {
             var player = getPlayer();
@@ -42,8 +52,8 @@ exports.get = function (req) {
                     storeLib.refresh();
                 }
             }
-            
-        } 
+
+        }
     } else {
         if (isLoggedInUserWithoutPlayer()) {
             return {
@@ -53,7 +63,6 @@ exports.get = function (req) {
     }
 
 
-    var user = authLib.getUser();
     var userObj = user && {key: user.key};
     if (user) {
         var player = storeLib.getPlayerByUserKey(user.key);
@@ -91,6 +100,10 @@ var isPlayerCreatePage = function (req, appBaseUrl) {
 
 var mustLogIn = function (req) {
     return !authLib.getUser() && (req.path.search(/\/app$/) !== -1 || req.path.search(/\/app\/player-create$/) !== -1);
+};
+
+var hasLoginSuggestParam = function (req) {
+    return req.params.login;
 };
 
 var getPlayer = function () {

@@ -1,0 +1,5 @@
+<div class="connection-error">
+    <p *ngIf="!offline" class="connection-error__error-text">Sorry, we could not complete your request.</p>
+    <p *ngIf="offline" class="connection-error__offline-text">The internet connection appears to be offline.</p>
+    <p class="connection-error__retry-text"><a href="#" (click)="reload()">Please try again</a> in a moment.</p>
+</div>

@@ -20,6 +20,7 @@ export class LeagueProfileComponent
 
     @Input() league: League;
     @ViewChild('addPlayerChips') addPlayerChipsViewChild;
+    connectionError: boolean;
     playerInLeague: boolean;
     userAuthenticated: boolean;
     adminInLeague: boolean;
@@ -49,7 +50,9 @@ export class LeagueProfileComponent
         let name = this.route.snapshot.params['name'];
 
         if (!this.league && name) {
-            this.refreshData(name);
+            this.refreshData(name).catch(error => {
+                this.handleQueryError();
+            });
         }
     }
 
@@ -89,10 +92,11 @@ export class LeagueProfileComponent
     }
 
     private handleLeagueQueryResponse(data) {
-        if (!data.league) {
-            this.router.navigate(['leagues']);
-            return null;
+        if (!data || !data.league) {
+            this.handleQueryError();
+            return;
         }
+
         this.league = League.fromJson(data.league);
         this.joinLeagueRequested = !!(data.league.myLeaguePlayer && data.league.myLeaguePlayer.pending);
         this.playerInLeague = !!data.league.myLeaguePlayer && !this.joinLeagueRequested;
@@ -104,6 +108,11 @@ export class LeagueProfileComponent
         if (this.joinLeagueRequested && !this.playerInLeague) {
             this.pollJoinApproved();
         }
+        this.connectionError = false;
+    }
+
+    private handleQueryError() {
+        this.connectionError = true;
     }
 
     private pollJoinApproved() {

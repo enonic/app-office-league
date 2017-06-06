@@ -1,5 +1,8 @@
-<template [ngIf]="team == null">
+<template [ngIf]="team == null && !connectionError">
     <loading></loading>
+</template>
+<template [ngIf]="team == null && connectionError">
+    <connection-error></connection-error>
 </template>
 <div *ngIf="team != null" class="team-profile">
 
@@ -25,39 +28,6 @@
         </div>
     </div>
 
-
-
-
-
-
-
-   <!-- <div class="row team-profile__header">
-
-        <div class="col s4 m2">
-            <img src="{{team.imageUrl}}?size=200" alt="{{team.name}}" class="circle">
-        </div>
-            <div class="col s5 m8">
-                <div>{{team.description}}</div>
-            </div>
-
-        <div *ngIf="editable" class="col s3 m2 right-align" (click)="onEditClicked()">
-            <a class="waves-effect waves-light btn light-blue darken-3"><i class="material-icons left">mode_edit</i>Edit</a>
-        </div>
-
-    </div>-->
-   <!-- <div class="row">
-        <div class="col s12">
-            <form>
-                <div>
-                    <div>
-                        <label>About</label>
-                        <span>{{team.description}}</span>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>-->
-
     <div class="row">
         <league-team-list [leagueTeams]="team.leagueTeams" displayLeagues="true" title="Leagues"></league-team-list>
     </div>
@@ -69,6 +39,5 @@
     <div class="row">
         <game-list [games]="games" [title]="'Latest games'" [detailsPath]="['teams', team.name.toLowerCase(), 'games']"></game-list>
     </div>
-
 
 </div>

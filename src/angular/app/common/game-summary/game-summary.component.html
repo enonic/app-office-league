@@ -22,10 +22,12 @@
                     {{redPlayers[0]?.player.name}}
                 </template>
             </div>
-            <template [ngIf]="!game.finished">
-                <span class="game-summary__live">Live</span>
-            </template>
         </div>
+        <template [ngIf]="!game.finished">
+            <div class="game-summary__live">
+                <span class="game-summary__live--text">Live</span>
+            </div>
+        </template>
         <div class="game-summary__result">
             <div class="">{{blueScore}}</div>
             <div class="">{{redScore}}</div>
