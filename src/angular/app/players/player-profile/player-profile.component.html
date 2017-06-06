@@ -1,24 +1,10 @@
-<template [ngIf]="player == null">
+<template [ngIf]="player == null && !connectionError">
     <loading></loading>
 </template>
+<template [ngIf]="connectionError">
+    <connection-error></connection-error>
+</template>
 <div *ngIf="player != null" class="player-profile">
-
-<!--    <div class="row">
-        <div class="col s10">
-            <div class="player-header">
-
-&lt;!&ndash;
-                <h2 class="header light-blue-text text-darken-4">{{player.name}}</h2>&ndash;&gt;
-            </div>
-        </div>
-    </div>-->
-<!--    <div class="row">
-
-        &lt;!&ndash;
-        <div *ngIf="editable" class="col s6 center-align" (click)="onCreateTeamClicked()">
-            <a class="waves-effect waves-light btn green"><i class="material-icons left">person_add</i>Create Team</a>
-        </div>&ndash;&gt;
-    </div>-->
 
 
     <div *ngIf="editable" class="fixed-action-btn" (click)="onEditClicked()">

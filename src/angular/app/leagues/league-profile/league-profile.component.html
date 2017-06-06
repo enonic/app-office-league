@@ -1,14 +1,10 @@
-<template [ngIf]="league == null">
+<template [ngIf]="league == null && !connectionError">
     <loading></loading>
 </template>
+<template [ngIf]="connectionError">
+    <connection-error></connection-error>
+</template>
 <template [ngIf]="league != null">
-
- <!--   <div class="row league-profile">
-        <div class="col s12 m12 l12">
-            <league-summary [league]="league"></league-summary>
-        </div>
-    </div>-->
-
 
     <div class="row league-profile__details">
 
@@ -25,19 +21,6 @@
             </div>
 
         </div>
-      <!--
-        <img src="{{league.imageUrl}}" class="league-profile__avatar" alt="{{league.name}}">
-        <div class="primary">
-            <span class="title">{{league.name}}</span>
-            <p class="grey-text darken-3">{{league.description}}</p>
-        </div>
-        <div class="secondary" *ngIf="ranking > 0">
-            <div class="badges-container">
-                <span class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
-                <span class="badge grey darken-1 white-text"><small class="rating-points">{{ratingPoints()}}</small></span>
-            </div>
-            <a class="waves-effect waves-light btn green" *ngIf="displayPlayBtn" (click)="onPlayClicked()"><i class="material-icons center">play_arrow</i>Play</a>
-        </div>-->
     </div>
 
     <div class="row league-profile__play">

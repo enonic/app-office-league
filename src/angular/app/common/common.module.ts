@@ -15,6 +15,7 @@ import {PlayerSelectComponent} from './player-select/player-select.component';
 import {ChipsComponent} from './chips/chips.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {MaterializeModule} from 'angular2-materialize/dist/index';
+import {ConnectionErrorComponent} from './connection-error/connection-error.component';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import {MaterializeModule} from 'angular2-materialize/dist/index';
         ListComponent,
         List2Component,
         LoadingComponent,
+        ConnectionErrorComponent,
         PlayerSelectComponent,
         ChipsComponent
     ],
@@ -51,6 +53,7 @@ import {MaterializeModule} from 'angular2-materialize/dist/index';
         ListComponent,
         List2Component,
         LoadingComponent,
+        ConnectionErrorComponent,
         PlayerSelectComponent,
         ChipsComponent,
     ]

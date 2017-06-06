@@ -27,6 +27,7 @@ export class GameProfileComponent
     comment: string;
     playerId: string;
     deletable: boolean;
+    connectionError: boolean;
     private gameId: string;
     private wsMan: WebSocketManager;
 
@@ -71,10 +72,19 @@ export class GameProfileComponent
                 this.pageTitleService.setTitle('Live game');
             }
         }
+        this.connectionError = false;
     }
 
     protected getGameQuery(): string {
         return GameProfileComponent.getGameWithCommentsQuery;
+    }
+
+    protected onRequestError() {
+        this.handleQueryError();
+    }
+
+    private handleQueryError() {
+        this.connectionError = true;
     }
 
     onCommentClicked() {

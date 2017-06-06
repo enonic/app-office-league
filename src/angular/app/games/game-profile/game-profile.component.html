@@ -1,5 +1,8 @@
-<template [ngIf]="game == null">
+<template [ngIf]="game == null && !connectionError">
     <loading></loading>
+</template>
+<template [ngIf]="connectionError">
+    <connection-error></connection-error>
 </template>
 <div *ngIf="game != null" class="game-profile">
 

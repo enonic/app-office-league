@@ -29,7 +29,7 @@ export class PlayerProfileComponent
     private teams: Team[] = [];
     private teamDetailsPath: string[];
     private editable: boolean;
-
+    connectionError: boolean;
 
     constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService, private authService: AuthService,
                 private pageTitleService: PageTitleService) {
@@ -49,8 +49,11 @@ export class PlayerProfileComponent
         this.graphQLService.post(
             PlayerProfileComponent.getPlayerQuery,
             {name: name},
-            data => this.handlePlayerQueryResponse(data)
-        );
+            data => this.handlePlayerQueryResponse(data),
+            () => this.handleQueryError()
+        ).catch(error => {
+            this.handleQueryError();
+        });
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -67,6 +70,11 @@ export class PlayerProfileComponent
     }
 
     private handlePlayerQueryResponse(data) {
+        if (!data || !data.player) {
+            this.handleQueryError();
+            return;
+        }
+
         this.player = Player.fromJson(data.player);
         this.games = data.player.gamePlayers.map((gm) => Game.fromJson(gm.game));
         this.teams = data.player.teamsConnection.edges.map((edge) => Team.fromJson(edge.node));
@@ -80,6 +88,11 @@ export class PlayerProfileComponent
             this.pageTitleService.setTitle(this.player.name);
         }
         this.precacheNewGameRequests();
+        this.connectionError = false;
+    }
+
+    private handleQueryError() {
+        this.connectionError = true;
     }
 
     private precacheNewGameRequests() {

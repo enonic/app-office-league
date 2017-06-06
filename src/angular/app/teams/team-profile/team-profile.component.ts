@@ -1,4 +1,4 @@
-import {Component, Input, SimpleChanges, OnChanges, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
@@ -17,6 +17,7 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
     @Input() team: Team;
     games: Game[] = [];
     editable: boolean;
+    connectionError: boolean;
 
     constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService) {
@@ -32,8 +33,11 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
             this.graphQLService.post(
                 TeamProfileComponent.getTeamQuery,
                 {name: name},
-                data => this.handleTeamQueryResponse(data)
-            );
+                data => this.handleTeamQueryResponse(data),
+                () => this.handleQueryError()
+            ).catch(error => {
+                this.handleQueryError();
+            });
         }
     }
 
@@ -47,6 +51,11 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
     }
 
     private handleTeamQueryResponse(data) {
+        if (!data || !data.team) {
+            this.handleQueryError();
+            return;
+        }
+
         this.team = Team.fromJson(data.team);
         this.games = data.team.gameTeams.map((gm) => Game.fromJson(gm.game));
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
@@ -54,6 +63,11 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
             this.team.players.length === 2 && ( this.team.players[0].id === currentPlayerId || this.team.players[1].id === currentPlayerId);
 
         this.pageTitleService.setTitle(this.team.name);
+        this.connectionError = false;
+    }
+
+    private handleQueryError() {
+        this.connectionError = true;
     }
 
     format(value: number, none: string, one: string, multiple: string): string {
