@@ -211,7 +211,7 @@ var doSendJoinRequestNotification = function (playerId, leagueId) {
             requesterName: player.name,
             requesterFullName: player.fullname,
             requesterProfileUrl: playerUrl(baseUrl, player),
-            leaguePlayersUrl: leaguePlayersUrl(baseUrl, league)
+            leaguePlayersUrl: leaguePlayersUrl(baseUrl, league, true)
         };
         var body = mustache.render(resolve('mail/join.request.html'), params);
 
@@ -281,8 +281,12 @@ var leagueUrl = function (baseUrl, league) {
     return baseUrl + '/leagues/' + encodeURIComponent(league.name)
 };
 
-var leaguePlayersUrl = function (baseUrl, league) {
-    return baseUrl + '/leagues/' + encodeURIComponent(league.name) + '/players'
+var leaguePlayersUrl = function (baseUrl, league, requireLogin) {
+    var url = baseUrl + '/leagues/' + encodeURIComponent(league.name) + '/players';
+    if (requireLogin) {
+        url = url + '?login=yes';
+    }
+    return url;
 };
 
 var playerUrl = function (baseUrl, player) {
