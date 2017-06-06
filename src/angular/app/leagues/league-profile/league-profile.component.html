@@ -1,7 +1,7 @@
 <template [ngIf]="league == null && !connectionError">
     <loading></loading>
 </template>
-<template [ngIf]="connectionError">
+<template [ngIf]="league == null && connectionError">
     <connection-error></connection-error>
 </template>
 <template [ngIf]="league != null">
