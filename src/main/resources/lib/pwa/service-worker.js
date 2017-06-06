@@ -94,7 +94,6 @@ function getFallbackImage(url) {
 
 self.addEventListener('install', function (e) {
     consoleLog('Install');
-    e.waitUntil(self.skipWaiting());
     e.waitUntil(
         caches.open(cacheName).then(function (cache) {
             consoleLog('Caching App Shell');
@@ -120,22 +119,21 @@ self.addEventListener('install', function (e) {
 
         }).catch(function (err) {
             console.log(err);
-        })
+        }).then(() => self.skipWaiting())
     );
 });
 
 self.addEventListener('activate', function (e) {
     consoleLog('Activate');
-    e.waitUntil(self.clients.claim());
     e.waitUntil(
-        caches.keys().then(function (cacheKeyList) {
+        self.clients.claim().then(() => caches.keys().then(function (cacheKeyList) {
             return Promise.all(cacheKeyList.map(function (cacheKey) {
                 if (cacheNames.indexOf(cacheKey) === -1) {
                     consoleLog('Removing old cache ' + cacheKey);
                     return caches.delete(cacheKey);
                 }
             }));
-        })
+        }))
     );
 });
 
