@@ -105,7 +105,7 @@ var doSendAllowJoinRequestNotification = function (playerId, leagueId) {
         return;
     }
 
-    var baseUrl = app.config['officeleague.baseUrl'] || 'http://localhost:8080/portal/draft/office-league/app';
+    var baseUrl = getBaseUrl();
     var recipient = authLib.getPrincipal(player.userKey);
     var email = recipient.email;
     if (!email) {
@@ -147,7 +147,7 @@ var doSendDenyJoinRequestNotification = function (playerId, leagueId) {
         return;
     }
 
-    var baseUrl = app.config['officeleague.baseUrl'] || 'http://localhost:8080/portal/draft/office-league/app';
+    var baseUrl = getBaseUrl();
     var recipient = authLib.getPrincipal(player.userKey);
     var email = recipient.email;
     if (!email) {
@@ -194,7 +194,7 @@ var doSendJoinRequestNotification = function (playerId, leagueId) {
     }
     var adminPlayers = storeLib.getPlayersById(adminIds);
 
-    var baseUrl = app.config['officeleague.baseUrl'] || 'http://localhost:8080/portal/draft/office-league/app';
+    var baseUrl = getBaseUrl();
     var a, admin;
     for (a = 0; a < adminPlayers.length; a++) {
         admin = adminPlayers[a];
@@ -256,9 +256,16 @@ var doSendInvitation = function (email, leagueId, adminId, token) {
         ? app.config['officeleague.baseUrl'] + '/player-create?invitation=' + token
         : 'http://localhost:8080/portal/draft/office-league/app/player-create?invitation=' + token;
 
+    var baseUrl = getBaseUrl();
+
     var params = {
+        logoUrl: getLogoUrl(baseUrl),
         leagueName: league.name,
+        leagueImageUrl: leagueImageUrl(baseUrl, league),
+        leagueUrl: leagueUrl(baseUrl, league),
         requesterName: admin.name,
+        requesterProfileUrl: playerUrl(baseUrl, admin),
+        requesterImageUrl: playerImageUrl(baseUrl, admin),
         callbackUrl: callbackUrl
     };
     var body = mustache.render(resolve('mail/invitation.request.html'), params);
@@ -308,6 +315,10 @@ var playerImageUrl = function (baseUrl, player) {
     return baseUrl + storeLib.getImageUrl(player);
 };
 
+var leagueImageUrl = function (baseUrl, league) {
+    return baseUrl + storeLib.getImageUrl(league);
+};
+
 var getLogoUrl = function (baseUrl) {
     return baseUrl + '/assets/icons/apple-touch-icon.png';
 };
@@ -317,4 +328,8 @@ var getLogoImage = function () {
     log.info(logoRes.exists());
     log.info(logoRes);
     return logoRes.getStream();
+};
+
+var getBaseUrl = function () {
+    return app.config['officeleague.baseUrl'] || 'http://localhost:8080/portal/draft/office-league/app';
 };
