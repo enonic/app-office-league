@@ -1118,10 +1118,13 @@ exports.getRankingForPlayerLeague = function (playerId, leagueId) {
         return -1;
     }
 
-    var ranking = 0, prevRating = 0;
+    var ranking = 0, prevRating = 0, incrementValue = 1;
     for (var i = 0; i < result.hits.length; i++) {
         if (prevRating != result.hits[i].rating) {
-            ranking++;
+            ranking += incrementValue;
+            incrementValue = 1;
+        } else {
+            incrementValue++;
         }
         if (result.hits[i].playerId === playerId) {
             return ranking;
@@ -1150,10 +1153,13 @@ exports.getRankingForTeamLeague = function (teamId, leagueId) {
         return -1;
     }
 
-    var ranking = 0, prevRating = 0;
+    var ranking = 0, prevRating = 0, incrementValue = 1;
     for (var i = 0; i < result.hits.length; i++) {
         if (prevRating != result.hits[i].rating) {
-            ranking++;
+            ranking += incrementValue;
+            incrementValue = 1;
+        } else {
+            incrementValue++;
         }
         if (result.hits[i].teamId === teamId) {
             return ranking;
