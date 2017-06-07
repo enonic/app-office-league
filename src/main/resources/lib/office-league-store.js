@@ -2858,6 +2858,7 @@ var getImageUrl = function (node) {
     var version = node._versionKey;
     return '/' + type + '/image/' + version + '/' + encodeURIComponent(node.name);
 };
+exports.getImageUrl = getImageUrl;
 
 var setImageUrl = function (node) {
     if (node && (node.type === TYPE.LEAGUE || node.type === TYPE.PLAYER || node.type === TYPE.TEAM)) {

@@ -3,6 +3,7 @@ var taskLib = require('/lib/xp/task');
 var mustache = require('/lib/xp/mustache');
 var storeLib = require('office-league-store');
 var authLib = require('/lib/xp/auth');
+var ioLib = require('/lib/xp/io');
 
 exports.sendJoinRequestNotification = function (playerId, leagueId) {
     log.info('Join request notification email will be sent in the background.');
@@ -211,7 +212,9 @@ var doSendJoinRequestNotification = function (playerId, leagueId) {
             requesterName: player.name,
             requesterFullName: player.fullname,
             requesterProfileUrl: playerUrl(baseUrl, player),
-            leaguePlayersUrl: leaguePlayersUrl(baseUrl, league, true)
+            requesterImageUrl: playerImageUrl(baseUrl, player),
+            leaguePlayersUrl: leaguePlayersUrl(baseUrl, league, true),
+            logoUrl: getLogoUrl(baseUrl)
         };
         var body = mustache.render(resolve('mail/join.request.html'), params);
 
@@ -220,6 +223,11 @@ var doSendJoinRequestNotification = function (playerId, leagueId) {
             to: admin.fullname ? admin.fullname + ' <' + email + '>' : email,
             body: body,
             subject: 'Office League - Join League Request from \'' + player.name + '\''
+            // attachments: [{
+            //     fileName: 'logo.png',
+            //     mimeType: 'image/png',
+            //     data: getLogoImage()
+            // }]
         });
 
     }
@@ -244,8 +252,9 @@ var doSendInvitation = function (email, leagueId, adminId, token) {
         return;
     }
 
-    var callbackUrl = app.config['officeleague.baseUrl'] ? app.config['officeleague.baseUrl'] + '/player-create?invitation=' + token :
-                      'http://localhost:8080/portal/draft/office-league/app/player-create?invitation=' + token;
+    var callbackUrl = app.config['officeleague.baseUrl']
+        ? app.config['officeleague.baseUrl'] + '/player-create?invitation=' + token
+        : 'http://localhost:8080/portal/draft/office-league/app/player-create?invitation=' + token;
 
     var params = {
         leagueName: league.name,
@@ -267,13 +276,15 @@ var sendEmail = function (params) {
     var from = params.from;
     var to = params.to;
     var body = params.body;
+    var attachments = params.attachments;
 
     mail.send({
         subject: subject,
         from: from,
         to: to,
         body: body,
-        contentType: 'text/html; charset="UTF-8"'
+        contentType: 'text/html; charset="UTF-8"',
+        attachments: attachments
     });
 };
 
@@ -291,4 +302,19 @@ var leaguePlayersUrl = function (baseUrl, league, requireLogin) {
 
 var playerUrl = function (baseUrl, player) {
     return baseUrl + '/players/' + encodeURIComponent(player.name)
+};
+
+var playerImageUrl = function (baseUrl, player) {
+    return baseUrl + storeLib.getImageUrl(player);
+};
+
+var getLogoUrl = function (baseUrl) {
+    return baseUrl + '/assets/icons/apple-touch-icon.png';
+};
+
+var getLogoImage = function () {
+    var logoRes = ioLib.getResource('/assets/icons/office-league-logo.png');
+    log.info(logoRes.exists());
+    log.info(logoRes);
+    return logoRes.getStream();
 };
