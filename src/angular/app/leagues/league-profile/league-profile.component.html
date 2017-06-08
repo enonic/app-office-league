@@ -24,14 +24,14 @@
     </div>
 
     <div class="row league-profile__play">
-        <div *ngIf="playerInLeague" class="center" (click)="onPlayClicked()">
-            <a class="waves-effect waves-light btn global__btn global__btn--play"><i class="material-icons left">play_arrow</i>Play Game</a>
+        <div *ngIf="playerInLeague" class="center">
+            <a class="waves-effect waves-light btn global__btn global__btn--play" (click)="onPlayClicked()"><i class="material-icons left">play_arrow</i>Play Game</a>
         </div>
-        <div *ngIf="userAuthenticated && !playerInLeague && !joinLeagueRequested" class="center" (click)="onJoinClicked()">
-            <a class="waves-effect waves-light btn global__btn global__btn--play"><i class="material-icons left">stars</i>Join this league</a>
+        <div *ngIf="userAuthenticated && !playerInLeague && !joinLeagueRequested" class="center">
+            <a class="waves-effect waves-light btn global__btn global__btn--play" (click)="onJoinClicked()" [attr.disabled]="online?null:true"><i class="material-icons left">stars</i>Join this league</a>
         </div>
-        <div *ngIf="!playerInLeague && joinLeagueRequested" class="center" (click)="showModalPending()">
-            <a class="waves-effect waves-light btn global__btn global__btn--pending"><i class="material-icons left">more_horiz</i>Waiting for approval</a>
+        <div *ngIf="!playerInLeague && joinLeagueRequested" class="center">
+            <a class="waves-effect waves-light btn global__btn global__btn--pending" (click)="showModalPending()"><i class="material-icons left">more_horiz</i>Waiting for approval</a>
         </div>
     </div>
 
@@ -40,14 +40,14 @@
             <i class="material-icons">more_vert</i>
         </a>
         <ul>
-            <li (click)="onAddPlayerClicked()"><a class="btn-floating green" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="material-icons">person_add</i></a></li>
-            <li (click)="onEditClicked()"><a class="btn-floating blue" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="material-icons">mode_edit</i></a></li>
-            <li *ngIf="playerInLeague || joinLeagueRequested" (click)="onLeaveClicked()"><a class="btn-floating red" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="material-icons">directions_run</i></a></li>
-            <li (click)="onDeleteClicked()"><a class="btn-floating red" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="material-icons">delete</i></a></li>
+            <li><a class="btn-floating green" (click)="onAddPlayerClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">person_add</i></a></li>
+            <li><a class="btn-floating blue" (click)="onEditClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">mode_edit</i></a></li>
+            <li *ngIf="playerInLeague || joinLeagueRequested"><a class="btn-floating red" (click)="onLeaveClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">directions_run</i></a></li>
+            <li><a class="btn-floating red" (click)="onDeleteClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">delete</i></a></li>
         </ul>
     </div>
     <div *ngIf="!adminInLeague && (playerInLeague || joinLeagueRequested)" class="fixed-action-btn">
-        <a (click)="onLeaveClicked()" class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">directions_run</i></a>
+        <a (click)="onLeaveClicked()" class="btn-floating btn-large waves-effect waves-light red" [attr.disabled]="online?null:true"><i class="material-icons">directions_run</i></a>
     </div>
 
 
