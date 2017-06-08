@@ -7,8 +7,8 @@
 <div *ngIf="team != null" class="team-profile">
 
 
-    <div *ngIf="editable" class="fixed-action-btn" (click)="onEditClicked()">
-        <a class="btn-floating btn-large waves-effect waves-light light-blue"><i class="material-icons">mode_edit</i></a>
+    <div *ngIf="editable" class="fixed-action-btn">
+        <a class="btn-floating btn-large waves-effect waves-light light-blue" (click)="onEditClicked()" [attr.disabled]="online?null:true"><i class="material-icons">mode_edit</i></a>
     </div>
 
     <div class="row team-profile__details">

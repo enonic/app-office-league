@@ -2,6 +2,7 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core'
 import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
+import {OnlineStatusService} from '../../services/online-status.service';
 import {Game} from '../../../graphql/schemas/Game';
 import {Team} from '../../../graphql/schemas/Team';
 import {XPCONFIG} from '../../app.config';
@@ -17,10 +18,12 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
     @Input() team: Team;
     games: Game[] = [];
     editable: boolean;
+    private online: boolean;
+    private onlineStateCallback = () => this.online = navigator.onLine;
     connectionError: boolean;
 
     constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
-                private pageTitleService: PageTitleService) {
+                private pageTitleService: PageTitleService, private onlineStatusService: OnlineStatusService) {
         super(route);
     }
 
@@ -39,6 +42,9 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
                 this.handleQueryError();
             });
         }
+
+        this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
+        this.online = navigator.onLine;
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -48,6 +54,10 @@ export class TeamProfileComponent extends BaseComponent implements OnInit, OnCha
         if (teamChane && teamChane.currentValue) {
             this.pageTitleService.setTitle((<Team>teamChane.currentValue).name);
         }
+    }
+
+    ngOnDestroy(): void {
+        this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
     }
 
     private handleTeamQueryResponse(data) {

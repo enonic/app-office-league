@@ -67,7 +67,7 @@
                             [leaguePlayers]="league.leaguePlayers"
                             [detailsPath]="['leagues', league.name.toLowerCase(), 'players']"
                             [seeMoreText]="'See full player ranking'"
-                            [allowRemove]="adminInLeague" (removePlayer)="onRemovePlayer($event)"
+                            [allowRemove]="adminInLeague && online" (removePlayer)="onRemovePlayer($event)"
                             (approvePlayer)="onApprovePlayerJoin($event)"></league-player-list>
     </div>
 
