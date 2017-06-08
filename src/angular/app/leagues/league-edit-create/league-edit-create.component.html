@@ -56,13 +56,13 @@
                     <template [ngIf]="!editMode">
                         <a class="waves-effect waves-teal btn red league-edit-create__btn league-edit-create__btn--cancel" (click)="onCancelClicked()">Cancel</a>
                         <a class="waves-effect waves-teal btn light-blue league-edit-create__btn league-edit-create__btn--submit"
-                           [attr.disabled]="!leagueForm.valid||admins.length===0?true:null"
+                           [attr.disabled]="!online||!leagueForm.valid||admins.length===0?true:null"
                            (click)="onCreateClicked()">Create</a>
                     </template>
                     <template [ngIf]="editMode">
                         <a class="waves-effect waves-teal btn red league-edit-create__btn league-edit-create__btn--cancel" (click)="onCancelClicked()">Cancel</a>
                         <a class="waves-effect waves-teal btn light-blue league-edit-create__btn league-edit-create__btn--submit"
-                           [attr.disabled]="!leagueForm.valid||admins.length===0?true:null" (click)="onUpdateClicked()">Save</a>
+                           [attr.disabled]="!online||!leagueForm.valid||admins.length===0?true:null" (click)="onUpdateClicked()">Save</a>
                     </template>
 
                 </div>

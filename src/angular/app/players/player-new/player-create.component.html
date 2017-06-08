@@ -65,7 +65,7 @@
                 </div>
                 <div class="row submit-row player-create__submit-row">
                     <a class="waves-effect waves-teal btn red player-create__btn player-create__btn--cancel" (click)="onCancelClicked()"><!--<i class="material-icons left">cancel</i>-->Cancel</a>
-                    <a class="waves-effect waves-teal btn light-blue player-create__btn player-create__btn--submit" [attr.disabled]="!playerForm.valid ? true : null"
+                    <a class="waves-effect waves-teal btn light-blue player-create__btn player-create__btn--submit" [attr.disabled]="!online || !playerForm.valid ? true : null"
                        (click)="onSaveClicked()"><!--<i class="material-icons left">save</i>-->Create</a>
                 </div>
             </form>

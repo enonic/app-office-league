@@ -10,6 +10,7 @@ import {League} from '../../../graphql/schemas/League';
 import {AuthService} from '../../services/auth.service';
 import {PageTitleService} from '../../services/page-title.service';
 import {ImageService} from '../../services/image.service';
+import {OnlineStatusService} from '../../services/online-status.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LeagueValidator} from '../league-validator';
 import {CustomValidators} from '../../common/validators';
@@ -42,10 +43,13 @@ export class LeagueEditCreateComponent
         'description': ''
     };
     materializeActions = new EventEmitter<string | MaterializeAction>();
+    private online: boolean;
+    private onlineStateCallback = () => this.online = navigator.onLine;
 
     constructor(private http: Http, private authService: AuthService, private graphQLService: GraphQLService,
-                private pageTitleService: PageTitleService, route: ActivatedRoute, private location: Location,
-                private router: Router, private fb: FormBuilder, private sanitizer: DomSanitizer) {
+                private pageTitleService: PageTitleService, private onlineStatusService: OnlineStatusService,
+                route: ActivatedRoute, private location: Location, private router: Router, private fb: FormBuilder,
+                private sanitizer: DomSanitizer) {
         super(route);
     }
 
@@ -64,6 +68,8 @@ export class LeagueEditCreateComponent
         };
         this.leagueForm.valueChanges.subscribe(data => updateFormErrors(data));
         this.leagueForm.statusChanges.subscribe(data => updateFormErrors(data));
+        this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
+        this.online = navigator.onLine;
 
         updateFormErrors(); // (re)set validation messages now
 
@@ -80,6 +86,10 @@ export class LeagueEditCreateComponent
     ngAfterViewInit(): void {
         let inputEl: HTMLInputElement = this.inputEl.nativeElement;
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
+    }
+
+    ngOnDestroy(): void {
+        this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
     }
 
     public updatePageTitle(title: string) {

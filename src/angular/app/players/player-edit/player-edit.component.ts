@@ -16,6 +16,7 @@ import {ImageService} from '../../services/image.service';
 import {CustomValidators} from '../../common/validators';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {UserProfileService} from '../../services/user-profile.service';
+import {OnlineStatusService} from '../../services/online-status.service';
 
 @Component({
     selector: 'player-edit',
@@ -33,12 +34,13 @@ export class PlayerEditComponent
         'fullname': ''
     };
     email: string;
-
     countries: Country[] = [];
+    private online: boolean;
+    private onlineStateCallback = () => this.online = navigator.onLine;
     @ViewChild('fileInput') inputEl: ElementRef;
 
     constructor(private http: Http, route: ActivatedRoute, private pageTitleService: PageTitleService,
-                private graphQLService: GraphQLService,
+                private graphQLService: GraphQLService, private onlineStatusService: OnlineStatusService,
                 private router: Router, private location: Location, private fb: FormBuilder, private sanitizer: DomSanitizer,
                 private userProfileService: UserProfileService) {
         super(route);
@@ -65,6 +67,8 @@ export class PlayerEditComponent
 
         this.playerForm.valueChanges.subscribe(data => updateFormErrors(data));
         this.playerForm.statusChanges.subscribe(data => updateFormErrors(data));
+        this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
+        this.online = navigator.onLine;
 
         updateFormErrors(); // (re)set validation messages now
 
@@ -76,10 +80,14 @@ export class PlayerEditComponent
         this.loadPlayer(name);
     }
 
+    ngOnDestroy(): void {
+        this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
+    }
+
     ngAfterViewInit(): void {
         let inputEl: HTMLInputElement = this.inputEl.nativeElement;
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
-    }
+    }    
 
     public updatePageTitle(title: string) {
         this.pageTitleService.setTitle(title);

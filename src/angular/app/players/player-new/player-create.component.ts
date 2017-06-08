@@ -14,6 +14,7 @@ import {PlayerValidator} from '../player-validator';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {Player} from '../../../graphql/schemas/Player';
 import {UserProfileService} from '../../services/user-profile.service';
+import {OnlineStatusService} from '../../services/online-status.service';
 import {CustomValidators} from '../../common/validators';
 
 @Component({
@@ -32,10 +33,12 @@ export class PlayerCreateComponent extends BaseComponent implements OnInit, Afte
     };
     countries: Country[] = [];
     invitation: string;
+    private online: boolean;
+    private onlineStateCallback = () => this.online = navigator.onLine;
     @ViewChild('fileInput') inputEl: ElementRef;
 
     constructor(private http: Http, route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
-                private pageTitleService: PageTitleService,
+                private pageTitleService: PageTitleService, private onlineStatusService: OnlineStatusService,
                 private auth: AuthService, private fb: FormBuilder, private sanitizer: DomSanitizer,
                 private userProfileService: UserProfileService) {
         super(route);
@@ -75,8 +78,14 @@ export class PlayerCreateComponent extends BaseComponent implements OnInit, Afte
 
         this.playerForm.valueChanges.subscribe(data => updateFormErrors(data));
         this.playerForm.statusChanges.subscribe(data => updateFormErrors(data));
+        this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
+        this.online = navigator.onLine;
 
         updateFormErrors(); // (re)set validation messages now
+    }
+
+    ngOnDestroy(): void {
+        this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
     }
 
     ngAfterViewInit(): void {
