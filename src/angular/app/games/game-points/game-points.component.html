@@ -17,12 +17,7 @@
             </div>
             <img *ngIf="entry.imageUrl" src="{{entry.imageUrl}}?size=200" class="game-points__avatar game-points__avatar--{{entry.side}}"/>
             <div class="game-points__event">
-                <template [ngIf]="!entry.isComment">
-                    <div class="game-points__name">{{entry.name}} scores</div>
-                </template>
-                <template [ngIf]="entry.isComment">
-                    <div class="game-points__comment">{{entry.text}}</div>
-                </template>
+                <div class="game-points__comment">{{entry.text}}</div>
             </div>
             <div class="game-points__time">{{entry.time}}</div>
         </div>
