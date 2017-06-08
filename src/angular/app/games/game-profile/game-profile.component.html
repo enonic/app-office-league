@@ -13,7 +13,7 @@
     <game-flow [game]="game"></game-flow>
     <template [ngIf]="playerId && !deletable">
         <div class="fixed-action-btn">
-            <a class="btn-floating global__btn--comment" (click)="onCommentClicked()"><i class="material-icons">comment</i></a>
+            <a class="btn-floating global__btn--comment green" (click)="onCommentClicked()" [attr.disabled]="online?null:true"><i class="material-icons">comment</i></a>
         </div>
     </template>
 

@@ -16,6 +16,7 @@ import {CommonModule} from './common/common.module';
 import {MaterializeModule} from 'angular2-materialize';
 import {PageTitleService} from './services/page-title.service';
 import {OfflinePersistenceService} from './services/offline-persistence.service';
+import {OnlineStatusService} from './services/online-status.service';
 import {RankingService} from './services/ranking.service';
 import {GlobalErrorHandler} from './common/global.errorhandler';
 import {UserProfileService} from './services/user-profile.service';
@@ -42,7 +43,7 @@ const appRoutes: Routes = [
         LeaguesModule
     ],
     providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard,
-        OfflinePersistenceService, RankingService, UserProfileService, WindowRefService, AudioService,
+        OfflinePersistenceService, OnlineStatusService, RankingService, UserProfileService, WindowRefService, AudioService,
         {
             provide: ErrorHandler,
             useClass: GlobalErrorHandler

@@ -9,6 +9,7 @@ import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist
 import {AuthService} from '../../services/auth.service';
 import {OfflinePersistenceService} from '../../services/offline-persistence.service';
 import {PageTitleService} from '../../services/page-title.service';
+import {OnlineStatusService} from '../../services/online-status.service';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 import {WebSocketManager} from '../../services/websocket.manager';
 
@@ -28,12 +29,14 @@ export class GameProfileComponent
     playerId: string;
     deletable: boolean;
     connectionError: boolean;
+    private online: boolean;
+    private onlineStateCallback = () => this.online = navigator.onLine;
     private gameId: string;
     private wsMan: WebSocketManager;
 
     constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, protected router: Router,
                 private authService: AuthService, private _renderer: Renderer, private pageTitleService: PageTitleService,
-                protected offlineService: OfflinePersistenceService) {
+                protected offlineService: OfflinePersistenceService, private onlineStatusService: OnlineStatusService) {
         super(graphQLService, route, router, offlineService);
     }
 
@@ -45,8 +48,16 @@ export class GameProfileComponent
         this.playerId = user && user.playerId;
         this.deletable = false;
 
+        this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
+        this.online = navigator.onLine;
+
         this.wsMan = new WebSocketManager(this.getWsUrl(this.gameId), true);
         this.wsMan.onMessage(this.onWsMessage.bind(this));
+    }
+
+    ngOnDestroy(): void {
+        this.wsMan.disconnect();
+        this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
     }
 
     protected afterGameLoaded(game: Game) {
@@ -187,10 +198,6 @@ export class GameProfileComponent
         }
         const userIsLeagueAdmin = !!league.adminPlayers.find((p) => p.id === this.playerId);
         return userIsLeagueAdmin;
-    }
-
-    ngOnDestroy() {
-        this.wsMan.disconnect();
     }
 
     private getWsUrl(gameId: string): string {

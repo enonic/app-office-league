@@ -1,4 +1,4 @@
-import {Component, OnChanges, SimpleChanges, OnInit} from '@angular/core';
+import {Component, OnChanges, SimpleChanges, OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
@@ -7,7 +7,7 @@ import {Observable} from 'rxjs/Observable';
     selector: 'base',
     template: ''
 })
-export class BaseComponent implements OnInit, OnChanges {
+export class BaseComponent implements OnInit, OnChanges, OnDestroy {
 
     protected query: any;
 
@@ -19,6 +19,9 @@ export class BaseComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         //console.log('BaseComponent.ngOnChanges()', changes);
+    }
+    
+    ngOnDestroy(): void {        
     }
 
     protected setQuery(query: string): BaseComponent {

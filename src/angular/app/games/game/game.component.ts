@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, OnDestroy, SimpleChange, SimpleChanges} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Game} from '../../../graphql/schemas/Game';
@@ -13,7 +13,7 @@ import {OfflinePersistenceService} from '../../services/offline-persistence.serv
     styleUrls: ['game.component.less']
 })
 export class GameComponent
-    implements OnInit, OnChanges {
+    implements OnInit, OnChanges, OnDestroy {
 
     @Input() game: Game;
 
@@ -41,6 +41,9 @@ export class GameComponent
         if (gameChange && gameChange.currentValue) {
             this.processGame(gameChange.currentValue);
         }
+    }
+
+    ngOnDestroy(): void {
     }
 
     protected loadGame(gameId: string) {

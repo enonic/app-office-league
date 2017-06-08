@@ -10,6 +10,7 @@ import {Game} from '../../../graphql/schemas/Game';
 import {Team} from '../../../graphql/schemas/Team';
 import {XPCONFIG} from '../../app.config';
 import {PageTitleService} from '../../services/page-title.service';
+import {OnlineStatusService} from '../../services/online-status.service';
 import {NewGameComponent} from '../../games/new-game/new-game.component';
 import {PlayerSelectComponent} from '../../common/player-select/player-select.component';
 
@@ -29,10 +30,12 @@ export class PlayerProfileComponent
     private teams: Team[] = [];
     private teamDetailsPath: string[];
     private editable: boolean;
+    private online: boolean;
+    private onlineStateCallback = () => this.online = navigator.onLine;
     connectionError: boolean;
 
     constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService, private authService: AuthService,
-                private pageTitleService: PageTitleService) {
+                private pageTitleService: PageTitleService, private onlineStatusService: OnlineStatusService) {
         super(route);
     }
 
@@ -54,6 +57,9 @@ export class PlayerProfileComponent
         ).catch(error => {
             this.handleQueryError();
         });
+
+        this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
+        this.online = navigator.onLine;
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -67,6 +73,10 @@ export class PlayerProfileComponent
                 this.pageTitleService.setTitle((<Player>playerChange.currentValue).name);
             }
         }
+    }
+
+    ngOnDestroy(): void {
+        this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
     }
 
     private handlePlayerQueryResponse(data) {

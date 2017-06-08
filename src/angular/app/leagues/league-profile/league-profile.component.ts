@@ -6,6 +6,7 @@ import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
 import {Game} from '../../../graphql/schemas/Game';
 import {PageTitleService} from '../../services/page-title.service';
+import {OnlineStatusService} from '../../services/online-status.service';
 import {Player} from '../../../graphql/schemas/Player';
 import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
 
@@ -37,9 +38,11 @@ export class LeagueProfileComponent
     materializeActionsPending = new EventEmitter<string | MaterializeAction>();
     materializeActionsDelete = new EventEmitter<string | MaterializeAction>();
     materializeActionsLeave = new EventEmitter<string | MaterializeAction>();
+    online: boolean;
+    onlineStateCallback = () => this.online = navigator.onLine;
 
     constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
-                private pageTitleService: PageTitleService, private router: Router) {
+                private pageTitleService: PageTitleService, private onlineStatusService: OnlineStatusService, private router: Router) {
         super(route);
     }
 
@@ -48,17 +51,21 @@ export class LeagueProfileComponent
 
         this.userAuthenticated = this.authService.isAuthenticated();
         let name = this.route.snapshot.params['name'];
-
+        
         if (!this.league && name) {
             this.refreshData(name).catch(error => {
                 this.handleQueryError();
             });
         }
+
+        this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
+        this.online = navigator.onLine;
     }
 
     ngOnDestroy() {
         clearTimeout(this.approvePollingTimerId);
         this.approvePollingTimerId = undefined;
+        this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
     }
 
     ngOnChanges(changes: SimpleChanges): void {
