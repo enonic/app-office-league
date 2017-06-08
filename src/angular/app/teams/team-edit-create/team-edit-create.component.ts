@@ -11,6 +11,7 @@ import {PageTitleService} from '../../services/page-title.service';
 import {Player} from '../../../graphql/schemas/Player';
 import {ImageService} from '../../services/image.service';
 import {AuthService} from '../../services/auth.service';
+import {OnlineStatusService} from '../../services/online-status.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {TeamValidator} from '../team-validator';
 import {CustomValidators} from '../../common/validators';
@@ -41,12 +42,14 @@ export class TeamEditCreateComponent
         'description': ''
     };
     private currentPlayer: Player;
-
+    private online: boolean;
+    private onlineStateCallback = () => this.online = navigator.onLine;
     @ViewChild('fileInput') inputEl: ElementRef;
 
     constructor(private http: Http, route: ActivatedRoute, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private router: Router, private location: Location,
-                private authService: AuthService, private fb: FormBuilder, private sanitizer: DomSanitizer) {
+                private authService: AuthService, private onlineStatusService: OnlineStatusService, 
+                private fb: FormBuilder, private sanitizer: DomSanitizer) {
         super(route);
     }
 
@@ -65,6 +68,8 @@ export class TeamEditCreateComponent
         };
         this.teamForm.valueChanges.subscribe(data => updateFormErrors(data));
         this.teamForm.statusChanges.subscribe(data => updateFormErrors(data));
+        this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
+        this.online = navigator.onLine;
 
         updateFormErrors(); // (re)set validation messages now
 
@@ -74,6 +79,10 @@ export class TeamEditCreateComponent
         } else {
             this.setupCreate();
         }
+    }
+
+    ngOnDestroy(): void {
+        this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
     }
 
     ngAfterViewInit(): void {

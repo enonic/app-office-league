@@ -57,7 +57,7 @@
                 </div>
                 <div class="row submit-row team-edit__submit-row">
                     <a class="waves-effect waves-teal btn red team-edit__btn team-edit__btn--cancel" (click)="onCancelClicked()">Cancel</a>
-                    <a class="waves-effect waves-teal btn light-blue team-edit__btn--submit" [attr.disabled]="!teamForm.valid ? true : null" (click)="onSaveClicked()">
+                    <a class="waves-effect waves-teal btn light-blue team-edit__btn--submit" [attr.disabled]="!online || !teamForm.valid ? true : null" (click)="onSaveClicked()">
                         Save</a>
                 </div>
             </form>
