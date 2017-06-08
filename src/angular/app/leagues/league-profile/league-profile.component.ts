@@ -193,7 +193,6 @@ export class LeagueProfileComponent
             data => {
                 this.refreshData(this.league.name);
             });
-        this.playerNamesToAdd = [];
         this.hideModal();
     }
 
@@ -253,8 +252,9 @@ export class LeagueProfileComponent
     }
 
     showModal(): void {
+        this.playerNamesToAdd = [];
         this.materializeActions.emit({action: "modal", params: ['open']});
-        this.addPlayerChipsViewChild.focus();
+        setTimeout(() =>this.addPlayerChipsViewChild.focus(), 300); //No possibility to set a callback on display
     }
 
     hideModal(): void {
