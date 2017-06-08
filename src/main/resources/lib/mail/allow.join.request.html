@@ -1,8 +1,36 @@
-<p>Hello {{{requesterName}}},</p>
-<p>Your request to join league '{{{leagueName}}}' in Office League has been approved.<br/>
-    You can now browse and play games in '{{{leagueName}}}': <a href="{{{leagueUrl}}}">Browse</a></p>
-<p>Sincerely yours,<br/>
-    Office League</p>
-—
-<p>You are receiving this because you requested to join '{{{leagueName}}}' in Office League.<br/>
-    Do not reply to this email directly.</p>
+<div style="font-family: 'Open Sans', sans-serif;font-size:14px">
+    <p>Hello {{{requesterName}}},</p>
+
+    <div style="background-color: #eee; padding-left: 20px; line-height: 40px;">
+        Your request to join league <b>{{{leagueName}}}</b> in Office League has been approved.
+    </div>
+    <br/>
+
+    <p>You can now browse and play games in <b>{{{leagueName}}}</b></p>
+
+    <div>
+        <a href="{{{leagueUrl}}}" style="padding: 8px 10px; background-color: #142663; color: #fff; text-decoration: none;">Go To
+            League</a>
+    </div>
+    <br/>
+    <br/>
+
+    <hr style="background-color: #ddd; height: 1px; border: 1px;">
+
+    <br/>
+    <table cellspacing="0" cellpadding="0" border="0">
+        <tr>
+            <td style="vertical-align:top;width:64px;">
+                <img src="{{{logoUrl}}}" title="Office League" width="64" height="64">
+            </td>
+            <td>
+                Sincerely yours,<br/>
+                Office League
+            </td>
+        </tr>
+    </table>
+
+    <p style="font-size: small; color: #888;">&mdash;<br/>
+        You are receiving this because you requested to join <b>{{{leagueName}}}</b> in Office League.<br/>
+        Do not reply to this email directly.</p>
+</div>

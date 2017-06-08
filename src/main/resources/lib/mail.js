@@ -117,7 +117,8 @@ var doSendAllowJoinRequestNotification = function (playerId, leagueId) {
         leagueName: league.name,
         requesterName: player.name,
         requesterFullName: player.fullname,
-        leagueUrl: leagueUrl(baseUrl, league)
+        leagueUrl: leagueUrl(baseUrl, league),
+        logoUrl: getLogoUrl(baseUrl)
     };
     var body = mustache.render(resolve('mail/allow.join.request.html'), params);
 
@@ -158,7 +159,8 @@ var doSendDenyJoinRequestNotification = function (playerId, leagueId) {
     var params = {
         leagueName: league.name,
         requesterName: player.name,
-        requesterFullName: player.fullname
+        requesterFullName: player.fullname,
+        logoUrl: getLogoUrl(baseUrl)
     };
     var body = mustache.render(resolve('mail/deny.join.request.html'), params);
 
