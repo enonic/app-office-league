@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ConfigUser} from '../../app.config';
 import {GraphQLService} from '../../services/graphql.service';
 import {AuthService} from '../../services/auth.service';
+import {OnlineStatusService} from '../../services/online-status.service';
 import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
 import {PageTitleService} from '../../services/page-title.service';
@@ -35,9 +36,11 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
     @Input() discoverLeagues: League[];
     @Input() playerId: string;
     @Input() teamId: string;
+    private online: boolean;
+    private onlineStateCallback = () => this.online = navigator.onLine;
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private pageTitleService: PageTitleService,
-                public authService: AuthService,
+                public authService: AuthService, private onlineStatusService: OnlineStatusService,
                 private elementRef: ElementRef) {
         super(route);
     }
@@ -47,12 +50,19 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
 
         let user: ConfigUser = this.authService.getUser();
         this.graphQLService.post(
-            LeagueBrowserComponent.getLeaguesQuery, 
+            LeagueBrowserComponent.getLeaguesQuery,
             {playerId: user ? user.playerId : 'unknown'},
-            data => this.handleLeaguesQueryResponse(data)
+                data => this.handleLeaguesQueryResponse(data)
         );
 
+        this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
+        this.online = navigator.onLine;
+
         this.pageTitleService.setTitle('Leagues');
+    }
+
+    ngOnDestroy(): void {
+        this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
     }
 
     private handleLeaguesQueryResponse(data) {
@@ -62,12 +72,12 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
         }
         let myLeagueIds = data.myLeagues.map(league => league.id);
 
-        this.discoverLeagues = 
+        this.discoverLeagues =
             data.allLeagues
                 .filter((league) => myLeagueIds.indexOf(league.id) == -1)
                 .map(league => League.fromJson(league));
     }
-    
+
     ngAfterViewInit(): void {
         $(this.elementRef.nativeElement).find('ul.tabs').tabs();
     }
