@@ -24,16 +24,14 @@ export class ChipsComponent extends BaseComponent implements AfterViewInit {
         super.ngOnInit();
     }
 
-    ngAfterViewInit(): void {
-        this.refreshAvailableTags();
+    ngAfterViewInit(): void {        
+        this.refreshChips();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         super.ngOnChanges(changes);
-
-        let availableTagsChange = changes['availableTags'];
-        if (availableTagsChange) {
-            this.refreshAvailableTags();
+        if (changes['availableTags'] || changes['selectedTags']) {
+            this.refreshChips();
         }
     }
 
@@ -43,7 +41,7 @@ export class ChipsComponent extends BaseComponent implements AfterViewInit {
         }
     }
     
-    refreshAvailableTags(): void {
+    refreshChips(): void {
         let autocompleteData = {};
         this.availableTags.forEach((tag) => autocompleteData[tag] = null);
         $('.chips').material_chip({
