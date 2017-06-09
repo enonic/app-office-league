@@ -27,6 +27,7 @@ export class LeagueProfilePlayersComponent
     materializeActionsApprove = new EventEmitter<string | MaterializeAction>();
     removePlayer: Player;
     approvePlayer: Player;
+    connectionError: boolean;
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private authService: AuthService, private router: Router,
                 private pageTitleService: PageTitleService) {
@@ -52,17 +53,30 @@ export class LeagueProfilePlayersComponent
                 sort: 'pending DESC, rating DESC, name ASC',
                 playerId: playerId
             },
-            data => this.handleLeagueQueryResponse(data)
-        );
+            data => this.handleLeagueQueryResponse(data),
+            () => this.handleQueryError()
+        ).catch(error => {
+            this.handleQueryError();
+        });
     }
 
     private handleLeagueQueryResponse(data) {
+        if (!data || !data.league) {
+            this.handleQueryError();
+            return;
+        }
+
         this.league = League.fromJson(data.league);
         this.leaguePlayers = data.league.leaguePlayersConnection.edges.map((edge) => LeaguePlayer.fromJson(edge.node));
         this.pageTitleService.setTitle(this.league.name + ' - Player ranking');
         let totalCount = data.league.leaguePlayersConnection.totalCount;
         this.pageCount = Math.floor((totalCount == 0 ? 0 : totalCount - 1) / LeagueProfilePlayersComponent.paging) + 1;
         this.adminInLeague = data.league.isAdmin;
+        this.connectionError = false;
+    }
+
+    private handleQueryError() {
+        this.connectionError = true;
     }
 
     onRemovePlayer(player: Player) {

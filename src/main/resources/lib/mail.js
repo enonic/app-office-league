@@ -244,13 +244,13 @@ var doSendInvitation = function (email, leagueId, adminId, token) {
 
     var league = storeLib.getLeagueById(leagueId);
     if (!league) {
-        throw 'Could not send invitiation. League not found: ' + leagueId;
+        throw 'Could not send invitation. League not found: ' + leagueId;
         return;
     }
 
     var admin = storeLib.getPlayerById(adminId);
     if (!admin) {
-        throw 'Could not send invitiation. Admin not found: ' + adminId;
+        throw 'Could not send invitation. Admin not found: ' + adminId;
         return;
     }
 

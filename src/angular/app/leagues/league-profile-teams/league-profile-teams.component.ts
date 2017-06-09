@@ -12,7 +12,8 @@ import {PageTitleService} from '../../services/page-title.service';
     selector: 'league-profile-teams',
     templateUrl: 'league-profile-teams.component.html'
 })
-export class LeagueProfileTeamsComponent extends BaseComponent {
+export class LeagueProfileTeamsComponent
+    extends BaseComponent {
 
     private static readonly paging = 10;
     private static readonly getLeagueQuery = `query ($name: String, $after:Int, $first:Int, $sort: String) {
@@ -41,14 +42,16 @@ export class LeagueProfileTeamsComponent extends BaseComponent {
             }
         }
     }`;
-    
+
     @Input() league: League;
     @Input() leagueTeams: LeagueTeam[];
     private leagueName: string;
     private members: Team[];
     private pageCount: number = 1;
+    connectionError: boolean;
 
-    constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private authService: AuthService, private router: Router, private pageTitleService: PageTitleService) {
+    constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private authService: AuthService, private router: Router,
+                private pageTitleService: PageTitleService) {
         super(route);
     }
 
@@ -63,15 +66,29 @@ export class LeagueProfileTeamsComponent extends BaseComponent {
         this.graphQLService.post(
             LeagueProfileTeamsComponent.getLeagueQuery,
             {name: this.leagueName, after: after, first: LeagueProfileTeamsComponent.paging, sort: 'rating DESC, name ASC'},
-            data => this.handleLeagueQueryResponse(data)
-        );
+            data => this.handleLeagueQueryResponse(data),
+            () => this.handleQueryError()
+        ).catch(error => {
+            this.handleQueryError();
+        });
     }
 
     private handleLeagueQueryResponse(data) {
+        if (!data || !data.league) {
+            this.handleQueryError();
+            return;
+        }
+
         this.league = League.fromJson(data.league);
         this.leagueTeams = data.league.leagueTeamsConnection.edges.map((edge) => LeagueTeam.fromJson(edge.node));
         this.pageTitleService.setTitle(this.league.name + ' - Team ranking');
         let totalCount = data.league.leagueTeamsConnection.totalCount;
-        this.pageCount = Math.floor((totalCount == 0 ? 0: totalCount - 1) / LeagueProfileTeamsComponent.paging) + 1;
+        this.pageCount = Math.floor((totalCount == 0 ? 0 : totalCount - 1) / LeagueProfileTeamsComponent.paging) + 1;
+        this.connectionError = false;
     }
+
+    private handleQueryError() {
+        this.connectionError = true;
+    }
+
 }
