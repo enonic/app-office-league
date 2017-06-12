@@ -35,6 +35,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     adminPlayerIds: string[] = [];
     players: Player[] = [];
     playerNames: string[] = [];
+    playerNamesToAdd: string[] = [];
     allPlayerIds: string[] = [];
     allPlayerNames: string[] = [];
     allPlayerMap: any = {};
@@ -280,7 +281,11 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     }
 
     onPlayersSelected() {
-        this.players = this.playerNames.map((playerName) => this.allPlayerMap[playerName] || new Player(undefined,playerName));
+        this.playerNamesToAdd.forEach((playerName) => {
+            let player = this.allPlayerMap[playerName] || new Player(undefined,playerName);
+            this.playerNames.push(playerName);
+            this.players.push(player);
+        });
         this.hideSelectPlayerModal();
     }
 
@@ -289,6 +294,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     }
 
     showSelectPlayerModal(): void {
+        this.playerNamesToAdd = [];
         this.materializeActionsPlayer.emit({action: "modal", params: ['open']});
     }
 

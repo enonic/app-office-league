@@ -93,7 +93,7 @@
              [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActionsPlayer">
             <div class="modal-content">
                 <h6 class="center">Select a player to add</h6>
-                <chips #addPlayerChips [availableTags]="allPlayerNames" [selectedTags]="playerNames" placeholder="Enter a player name or email"></chips>
+                <chips #addPlayerChips [availableTags]="allPlayerNames" [selectedTags]="playerNamesToAdd" placeholder="Enter a player name or email"></chips>
                 <div class="row submit-row">
                     <a class="waves-effect waves-teal btn green" [attr.disabled]="playerNames.length===0?true:null" (click)="onPlayersSelected()"><i class="material-icons left">add</i>Add</a>
                 </div>
