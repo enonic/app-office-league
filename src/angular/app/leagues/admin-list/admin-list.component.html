@@ -7,7 +7,7 @@
 
 <div class="admin-list" [class.with-header]="!!title">
     <h4 *ngIf="title" class="admin-list__heading">{{title}}</h4>
-    <a href="#!" class="admin-list__item" *ngFor="let admin of admins;">
+    <a href="#!" onclick="return false;" class="admin-list__item" *ngFor="let admin of admins;">
         <admin-summary [admin]="admin" (removeAdmin)="onRemoveClicked($event)"></admin-summary>
     </a>
     <p *ngIf="admins?.length == 0" class="empty" class="admin-list__item admin-list__item--empty">
