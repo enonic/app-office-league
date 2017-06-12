@@ -27,6 +27,10 @@ export class AuthService {
         return !!this.user;
     }
 
+    public isSystemAdmin() {
+        return this.user && this.user.isAdmin;
+    }
+
     public getUser(): ConfigUser {
         return this.user;
     }

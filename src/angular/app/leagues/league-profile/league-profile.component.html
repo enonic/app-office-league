@@ -35,11 +35,12 @@
         </div>
     </div>
 
-    <div *ngIf="adminInLeague" class="fixed-action-btn click-to-toggle">
+    <div *ngIf="adminInLeague || playerSystemAdmin" class="fixed-action-btn click-to-toggle">
         <a class="btn-floating btn-large light-blue lighten-2">
             <i class="material-icons">more_vert</i>
         </a>
         <ul>
+            <li *ngIf="playerSystemAdmin"><a class="btn-floating purple" (click)="onRankingRefreshClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">poll</i></a></li>
             <li><a class="btn-floating green" (click)="onAddPlayerClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">person_add</i></a></li>
             <li><a class="btn-floating blue" (click)="onEditClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">mode_edit</i></a></li>
             <li *ngIf="playerInLeague || joinLeagueRequested"><a class="btn-floating red" (click)="onLeaveClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">directions_run</i></a></li>
@@ -49,7 +50,6 @@
     <div *ngIf="!adminInLeague && (playerInLeague || joinLeagueRequested)" class="fixed-action-btn">
         <a (click)="onLeaveClicked()" class="btn-floating btn-large waves-effect waves-light red" [attr.disabled]="online?null:true"><i class="material-icons">directions_run</i></a>
     </div>
-
 
     <div class="row">
         <div class="col s12">
@@ -148,6 +148,17 @@
         <div class="modal-footer">
             <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
             <a (click)="onConfirmLeaveClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Leave</a>
+        </div>
+    </div>
+    <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
+         [materializeActions]="materializeActionsRegenerateRanking">
+        <div class="modal-content">
+            <h5 class="center">Regenerate league ranking</h5>
+            <p>Are you sure you want to regenerate '<strong>{{league.name}}</strong>' league's ranking?</p>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">No</a>
+            <a (click)="onConfirmRegenerateClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Yes</a>
         </div>
     </div>
 

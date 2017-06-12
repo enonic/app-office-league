@@ -389,9 +389,11 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 if (createGameParams.finished) {
                     // update ranking
                     var game = storeLib.getGameById(env.args.gameId);
-                    storeLib.updateGameRanking(game);
-                    storeLib.refresh();
-                    storeLib.logGameRanking(game);
+                    if (game) {
+                        storeLib.updateGameRanking(game);
+                        storeLib.refresh();
+                        storeLib.logGameRanking(game);
+                    }
                 }
                 return storeLib.getGameById(env.args.gameId);
             }
@@ -428,6 +430,31 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 });
                 storeLib.refresh();
                 return createdComment;
+            }
+        },
+        regenerateLeagueRanking: {
+            type: graphQlObjectTypesLib.leagueType,
+            args: {
+                leagueId: graphQlLib.GraphQLID,
+                leagueName: graphQlLib.GraphQLID
+            },
+            resolve: function (env) {
+                var leagueId = env.args.leagueId;
+                var leagueName = env.args.leagueName;
+                var league;
+                if (leagueId) {
+                    league = storeLib.getLeagueById(leagueId);
+                } else {
+                    league = storeLib.getLeagueByName(leagueName);
+                }
+
+                if (!league) {
+                    throw "League not found: '" + (leagueId || leagueName || '') + "'";
+                }
+                checkRegenerateLeagueRankingPermissions(league);
+
+                storeLib.regenerateLeagueRanking(league);
+                return league;
             }
         }
     }
@@ -741,6 +768,25 @@ var checkDeleteGamePermissions = function (gameId) {
 
     if (userIsGamePlayer && game.finished) {
         throw "Finished games can only be deleted by league administrators.";
+    }
+};
+
+var checkRegenerateLeagueRankingPermissions = function (league) {
+    if (isAdmin()) {
+        return;
+    }
+
+    var adminPlayerIds = league.adminPlayerIds ? [].concat(league.adminPlayerIds) : [];
+    var currentPlayerId = getCurrentPlayerId();
+    var userIsLeagueAdmin = false;
+    adminPlayerIds.forEach(function (adminId) {
+        if (adminId === currentPlayerId) {
+            userIsLeagueAdmin = true;
+        }
+    });
+
+    if (!userIsLeagueAdmin) {
+        throw "User not authorized to regenerate league ranking.";
     }
 };
 

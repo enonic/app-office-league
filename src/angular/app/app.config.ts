@@ -3,6 +3,7 @@ export interface ConfigUser {
     playerId: string;
     playerName: string;
     playerImageUrl: string;
+    isAdmin: boolean;
 }
 
 export interface Config {

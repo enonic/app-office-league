@@ -26,6 +26,7 @@ export class LeagueProfileComponent
     userAuthenticated: boolean;
     adminInLeague: boolean;
     joinLeagueRequested: boolean;
+    playerSystemAdmin: boolean;
     activeGames: Game[] = [];
     nonMembersPlayerNames: string[] = [];
     playerNamesToAdd: string[] = [];
@@ -38,6 +39,7 @@ export class LeagueProfileComponent
     materializeActionsPending = new EventEmitter<string | MaterializeAction>();
     materializeActionsDelete = new EventEmitter<string | MaterializeAction>();
     materializeActionsLeave = new EventEmitter<string | MaterializeAction>();
+    materializeActionsRegenerateRanking = new EventEmitter<string | MaterializeAction>();
     online: boolean;
     onlineStateCallback = () => this.online = navigator.onLine;
 
@@ -50,8 +52,9 @@ export class LeagueProfileComponent
         super.ngOnInit();
 
         this.userAuthenticated = this.authService.isAuthenticated();
+        this.playerSystemAdmin = this.authService.isSystemAdmin();
         let name = this.route.snapshot.params['name'];
-        
+
         if (!this.league && name) {
             this.refreshData(name).catch(error => {
                 this.handleQueryError();
@@ -251,10 +254,22 @@ export class LeagueProfileComponent
             });
     }
 
+    onRankingRefreshClicked() {
+        this.showModalRanking();
+    }
+
+    onConfirmRegenerateClicked() {
+        this.graphQLService.post(LeagueProfileComponent.regenerateLeagueRanking,
+            {leagueId: this.league.id}).then(
+            data => {
+                this.hideModalRanking();
+            });
+    }
+
     showModal(): void {
         this.playerNamesToAdd = [];
         this.materializeActions.emit({action: "modal", params: ['open']});
-        setTimeout(() =>this.addPlayerChipsViewChild.focus(), 300); //No possibility to set a callback on display
+        setTimeout(() => this.addPlayerChipsViewChild.focus(), 300); //No possibility to set a callback on display
     }
 
     hideModal(): void {
@@ -304,6 +319,14 @@ export class LeagueProfileComponent
 
     public hideModalLeave(): void {
         this.materializeActionsLeave.emit({action: "modal", params: ['close']});
+    }
+
+    public showModalRanking(): void {
+        this.materializeActionsRegenerateRanking.emit({action: "modal", params: ['open']});
+    }
+
+    public hideModalRanking(): void {
+        this.materializeActionsRegenerateRanking.emit({action: "modal", params: ['close']});
     }
 
     private static readonly getLeagueQuery = `query ($name: String, $first:Int, $sort: String, $playerId: ID!, $activeGameCount:Int, $gameCount:Int) {
@@ -496,4 +519,9 @@ export class LeagueProfileComponent
         }
     }`;
 
+    private static readonly regenerateLeagueRanking = `mutation ($leagueId: ID) {
+        regenerateLeagueRanking(leagueId: $leagueId) {
+            id
+        }
+    }`;
 }
