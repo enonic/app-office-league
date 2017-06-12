@@ -108,6 +108,7 @@ exports.OFFICE_LEAGUE_COMMENT_EVENT_ID = OFFICE_LEAGUE_COMMENT_EVENT_ID;
  * @property {Object} config League config.
  * @property {string[]} adminPlayerIds Array with ids of the admin players.
  * @property {Attachment|Attachment[]} [attachment] League attachments.
+ * @property {string} [rankingUpdateStart] Date and time when the ranking update was started. An ISO-8601-formatted instant (e.g '2011-12-03T10:15:30Z').
  */
 
 /**
@@ -2788,6 +2789,187 @@ exports.getAttachment = function (player, attachmentName) {
     return null;
 };
 
+/**
+ * Re-calculates the player and team rankings for a given league.
+ *
+ * @param {League} league League object.
+ */
+exports.regenerateLeagueRanking = function (league) {
+    var updatedLeague = setRankingUpdateStart(league._id);
+    if (!updatedLeague) {
+        log.info('Regenerate ranking for league already in progress: "' + league.name + '" (' + league._id + ')');
+        return;
+    }
+
+    try {
+
+        log.info('======================================================================');
+        log.info('Regenerate league ranking for league: "' + league.name + '" (' + league._id + ')');
+        log.info('======================================================================');
+        var t0 = new Date();
+
+        log.info('Reset players ratings');
+        resetPlayerRatings(league);
+        log.info('Reset teams ratings');
+        resetTeamRatings(league);
+        exports.refresh();
+
+        var start = 0, gamesResp, games, game, i;
+        gamesResp = exports.getGamesByLeagueId(league._id, 0, 0);
+        var total = gamesResp.total;
+        log.info('Calculate games ratings. There are ' + total + ' games in the league.');
+
+        do {
+            gamesResp = exports.getGamesByLeagueId(league._id, start, 10, null, 'time ASC');
+            games = gamesResp.hits;
+            for (i = 0; i < games.length; i++) {
+                game = games[i];
+                exports.updateGameRanking(game);
+                exports.refresh();
+                game = exports.getGameById(game._id);
+                exports.logGameRanking(game);
+            }
+
+            start += gamesResp.count;
+            log.info('Calculating game ratings [' + start + ' / ' + total + '] games in the league.');
+
+        } while (gamesResp.count > 0);
+
+        var totalSec = secondsBetween(new Date(), t0);
+        log.info('Total time: ' + formatTimeDiff(totalSec));
+        log.info('===================== League ranking regenerated =====================');
+
+        clearRankingUpdateStart(league._id);
+    } catch (e) {
+        log.info('==================== League ranking update failed ====================');
+        try {
+            clearRankingUpdateStart(league._id);
+        } catch (e2) {
+        }
+        throw e;
+    }
+};
+
+var resetPlayerRatings = function (league) {
+    var start = 0, leaguePlayerResp, leaguePlayers, leaguePlayer, i;
+    do {
+        leaguePlayerResp = exports.getLeaguePlayersByLeagueId(league._id, start, 10, 'name ASC');
+        leaguePlayers = leaguePlayerResp.hits;
+        for (i = 0; i < leaguePlayers.length; i++) {
+            leaguePlayer = leaguePlayers[i];
+            exports.setPlayerLeagueRating(leaguePlayer.leagueId, leaguePlayer.playerId, ratingLib.INITIAL_RATING);
+            var p = exports.getPlayerById(leaguePlayer.playerId);
+            var lp = exports.getLeaguePlayerByLeagueIdAndPlayerId(leaguePlayer.leagueId, leaguePlayer.playerId);
+            log.info('Reset player ' + p.name + ': new rating=' + lp.rating);
+        }
+
+        start += leaguePlayerResp.count;
+    } while (leaguePlayerResp.count === 10);
+};
+
+var resetTeamRatings = function (league) {
+    var start = 0, leagueTeamResp, leagueTeams, leagueTeam, i;
+    do {
+        leagueTeamResp = exports.getLeagueTeamsByLeagueId(league._id, start, 10, 'name ASC');
+        leagueTeams = leagueTeamResp.hits;
+        for (i = 0; i < leagueTeams.length; i++) {
+            leagueTeam = leagueTeams[i];
+            exports.setTeamLeagueRating(leagueTeam.leagueId, leagueTeam.teamId, ratingLib.INITIAL_RATING);
+            var t = exports.getTeamById(leagueTeam.teamId);
+            var lt = exports.getLeagueTeamByLeagueIdAndTeamId(leagueTeam.leagueId, leagueTeam.teamId);
+            log.info('Reset team ' + t.name + ': new rating=' + lt.rating);
+        }
+
+        start += leagueTeamResp.count;
+    } while (leagueTeamResp.count === 10);
+};
+
+
+/**
+ * Set ranking update timestamp mark.
+ *
+ * @param {string} leagueId Id of the league.
+ * @return {League|null} Updated league, or null if the ranking was already in progress.
+ */
+var setRankingUpdateStart = function (leagueId) {
+    var repoConn = newConnection();
+
+    var updated = false;
+
+    var now = new Date();
+    var leagueNode = repoConn.modify({
+        key: leagueId,
+        editor: function (node) {
+            var prevRankingUpdateStart = node.rankingUpdateStart;
+            log.info(JSON.stringify(node, null, 2));
+            log.info(node.rankingUpdateStart);
+
+            if (prevRankingUpdateStart) {
+                try {
+                    prevRankingUpdateStart = new Date(prevRankingUpdateStart.toString());
+                } catch (e) {
+                    log.info("Error parsing instant: " + prevRankingUpdateStart);
+                }
+            }
+
+            if (prevRankingUpdateStart && secondsBetween(prevRankingUpdateStart, now) < 3600) {
+                log.info(secondsBetween(prevRankingUpdateStart, now));
+                return node;
+            }
+
+            var t = valueLib.instant(now.toISOString());
+            node.rankingUpdateStart = t;
+            node._timestamp = t;
+            updated = true;
+            return node;
+        }
+    });
+    log.info(JSON.stringify(leagueNode, null, 2));
+
+    if (updated) {
+        setImageUrl(leagueNode);
+        return leagueNode;
+    } else {
+        return null;
+    }
+};
+
+/**
+ * Clear ranking update timestamp mark.
+ *
+ * @param {string} leagueId Id of the league.
+ */
+var clearRankingUpdateStart = function (leagueId) {
+    var repoConn = newConnection();
+
+    repoConn.modify({
+        key: leagueId,
+        editor: function (node) {
+            delete node.rankingUpdateStart;
+            return node;
+        }
+    });
+};
+
+var secondsBetween = function (t1, t2) {
+    return Math.floor(Math.abs(t2.getTime() - t1.getTime()) / 1000);
+};
+
+var formatTimeDiff = function (totalSeconds) {
+    var days = Math.floor(totalSeconds / 86400);
+    totalSeconds -= days * 86400;
+    var hours = Math.floor(totalSeconds / 3600) % 24;
+    totalSeconds -= hours * 3600;
+    var minutes = Math.floor(totalSeconds / 60) % 60;
+    totalSeconds -= minutes * 60;
+    var seconds = Math.floor(totalSeconds % 60);
+
+    var hoursStr = (hours < 10) ? "0" + String(hours) : String(hours);
+    var minutesStr = (minutes < 10) ? "0" + String(minutes) : String(minutes);
+    var secondsStr = (seconds < 10) ? "0" + String(seconds) : String(seconds);
+    return (hoursStr === '00') ? minutesStr + ':' + secondsStr : hoursStr + ':' + minutesStr + ':' + secondsStr;
+};
+
 var required = function (params, name) {
     var value = params[name];
     if (value === undefined) {
@@ -2798,7 +2980,7 @@ var required = function (params, name) {
 };
 
 var notNull = function (value, paramName) {
-    if (notNull == null) {
+    if (paramName == null) {
         throw "Parameter '" + paramName + "' is required";
     }
     return value;

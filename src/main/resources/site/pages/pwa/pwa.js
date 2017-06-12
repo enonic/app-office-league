@@ -69,6 +69,7 @@ exports.get = function (req) {
         userObj.playerId = player && player._id;
         userObj.playerName = (player && player.name) || user.displayName;
         userObj.playerImageUrl = player ? appBaseUrl + player.imageUrl : '';
+        userObj.isAdmin = authLib.hasRole('system.admin');
     }
 
     var params = {
