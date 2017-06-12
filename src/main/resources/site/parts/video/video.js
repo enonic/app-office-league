@@ -3,27 +3,46 @@ var libs = {
     thymeleaf: require('/lib/xp/thymeleaf')
 };
 
-exports.get = handleGet;
+var view = resolve('video.html');
 
-function handleGet(req) {
+exports.get = function (req) {
     var component = libs.portal.getComponent();
-    var view = resolve('video.html');
-    var model = createModel();
 
-    function createModel() {
-        var model = {};
-
-        model.title = component.config.title;
-        model.buttonText = component.config.buttonText;
-        model.videoUrl = libs.portal.attachmentUrl({
-            name: component.config.video
-        });
-
-
-        return model;
+    var videos = [].concat(component.config.video);
+    var v, videoFile;
+    var videoUrls = [], videoTypes = [];
+    for (v = 0; v < videos.length; v++) {
+        videoFile = videos[v];
+        if (!videoFile) {
+            continue;
+        }
+        videoUrls.push(libs.portal.attachmentUrl({name: videoFile}));
+        videoTypes.push(mimeTypeFromFileName(videoFile));
     }
+    var model = {
+        title: component.config.title,
+        buttonText: component.config.buttonText,
+        videoUrls: videoUrls,
+        videoTypes: videoTypes
+    };
 
     return {
         body: libs.thymeleaf.render(view, model)
     };
-}
+};
+
+var mimeTypeFromFileName = function (fileName) {
+    var ext = fileName.indexOf('.') > 0 ? fileName.split('.').pop().toLowerCase() : '';
+
+    var mimeType = '';
+    if (ext.indexOf('mp4') > -1) {
+        mimeType = 'video/mp4';
+
+    } else if (ext.indexOf('ogv') > -1) {
+        mimeType = 'video/ogg';
+
+    } else if (ext.indexOf('webm') > -1) {
+        mimeType = 'video/webm';
+    }
+    return mimeType;
+};

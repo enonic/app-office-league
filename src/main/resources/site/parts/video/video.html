@@ -1,11 +1,10 @@
 <div class="video">
     <h2 data-th-text="${title}"></h2>
-    <video class="video__player" width="100%" height="auto" loop="true" autoplay muted playsinline controls onplaying="this.controls=false" data-th-attr="poster=${portal.assetUrl({'_path=video/game-play.png'})}">
-        <source data-th-src="${videoUrl}" type="video/mp4">
-        <!--<source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">-->
-<!--
-        <source data-th-src="${portal.assetUrl({'_path=video/game-play.ogg'})}" type="video/ogg">
-        <source data-th-src="${portal.assetUrl({'_path=video/game-play.webm'})}" type="video/webm">-->
+    <video class="video__player" width="100%" height="auto" loop="true" autoplay muted playsinline controls onplaying="this.controls=false"
+           data-th-attr="poster=${portal.assetUrl({'_path=video/game-play.png'})}">
+        <div data-th-each="index : ${#numbers.sequence( 0, #lists.size(videoUrls)-1)}" data-th-remove="tag">
+            <source data-th-src="${videoUrls[index]}" data-th-attr="type=${videoTypes[index]}" type="video/mp4">
+        </div>
         Your browser does not support the video tag or the file format of this video.
     </video>
     <div>
