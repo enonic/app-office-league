@@ -31,10 +31,16 @@ exports.rootMutationType = graphQlLib.createObjectType({
                     config: env.args.config ? JSON.parse(env.args.config) : {}, //TODO
                     adminPlayerIds: env.args.adminPlayerIds
                 });
+                
                 storeLib.refresh();
+                if (adminPlayerIds) {
+                    adminPlayerIds.forEach(function(adminPlayerId){
+                        storeLib.joinPlayerLeague(createdLeague._id, adminPlayerId);
+                    });
+                }
                 storeLib.joinPlayerLeague(createdLeague._id, currentPlayerId);
+                
                 storeLib.refresh();
-
                 return createdLeague;
             }
         },
