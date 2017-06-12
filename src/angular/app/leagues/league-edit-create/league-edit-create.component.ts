@@ -34,8 +34,10 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     admins: Player[] = [];
     adminPlayerIds: string[] = [];
     players: Player[] = [];
-    playerIds: string[] = [];
+    playerNames: string[] = [];
     allPlayerIds: string[] = [];
+    allPlayerNames: string[] = [];
+    allPlayerMap: any = {};
     editMode: boolean;
     leagueForm: FormGroup;
     formErrors = {
@@ -127,7 +129,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             description: this.description || '',
             sport: this.sport,
             adminPlayerIds: this.adminPlayerIds,
-            playerIds: this.playerIds
+            playerNames: this.playerNames
         };
         this.graphQLService.post(LeagueEditCreateComponent.createLeagueMutation, createLeagueParams).then(data => {
             return data && data.createLeague;
@@ -143,11 +145,14 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     }
 
     loadAdminPlayerIds(): Promise<void> {
-        return this.graphQLService.post(LeagueEditCreateComponent.getAllPlayerIdsQuery).then(data => {
+        return this.graphQLService.post(LeagueEditCreateComponent.getAllPlayersQuery).then(data => {
             if (!data || !data.players) {
                 return;
             }
             this.allPlayerIds = data.players.map(p => p.id);
+            this.allPlayerNames = data.players.map(p => p.name);
+            this.allPlayerMap = {};
+            data.players.forEach(p => this.allPlayerMap[p.name] = Player.fromJson(p));
             return;
         });
     }
@@ -198,7 +203,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             this.admins = [player];
             this.adminPlayerIds = [player.id];
             this.players = [player];
-            this.playerIds = [player.id];
+            this.playerNames = [player.name];
         });
     }
 
@@ -245,8 +250,8 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
         if (!removedPlayer) {
             return;
         }
-        this.players = this.players.filter((player) => player.id !== removedPlayer.id);
-        this.playerIds = this.players.map((p) => p.id);
+        this.players = this.players.filter((player) => player.name !== removedPlayer.name);
+        this.playerNames = this.players.map((p) => p.name);
     }
 
     onAddAdminClicked() {
@@ -269,20 +274,13 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
         existing = this.players.find((player) => player.id === newAdmin.id);
         if (!existing) {
             this.players.push(newAdmin);
-            this.playerIds = this.players.map((p) => p.id);
+            this.playerNames = this.players.map((p) => p.name);
         }
         this.hideSelectAdminModal();
     }
 
-    onPlayerSelected(newPlayer: Player) {
-        if (!newPlayer) {
-            return;
-        }
-        let existing = this.players.find((player) => player.id === newPlayer.id);
-        if (!existing) {
-            this.players.push(newPlayer);
-            this.playerIds = this.players.map((p) => p.id);
-        }
+    onPlayersSelected() {
+        this.players = this.playerNames.map((playerName) => this.allPlayerMap[playerName] || new Player(undefined,playerName));
         this.hideSelectPlayerModal();
     }
 
@@ -302,8 +300,8 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
         this.materializeActionsPlayer.emit({action: "modal", params: ['close']});
     }
 
-    private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $adminPlayerIds: [ID], $playerIds: [ID]) {
-        createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: $adminPlayerIds, playerIds: $playerIds) {
+    private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $adminPlayerIds: [ID], $playerNames: [String]) {
+        createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: $adminPlayerIds, playerNames: $playerNames) {
             id
             name
             imageUrl
@@ -334,9 +332,11 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
         }
     }`;
 
-    private static readonly getAllPlayerIdsQuery = `query{
+    private static readonly getAllPlayersQuery = `query{
         players(first: -1) {
             id
+            name
+            imageUrl
         }
     }`;
 

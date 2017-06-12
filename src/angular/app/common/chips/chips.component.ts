@@ -43,7 +43,8 @@ export class ChipsComponent extends BaseComponent implements AfterViewInit {
     
     refreshChips(): void {
         let autocompleteData = {};
-        this.availableTags.forEach((tag) => autocompleteData[tag] = null);
+        this.availableTags.filter((tag) => this.selectedTags.indexOf(tag) == -1 ).
+            forEach((tag) => autocompleteData[tag] = null);
         $('.chips').material_chip({
             autocompleteOptions: {
                 data: autocompleteData,

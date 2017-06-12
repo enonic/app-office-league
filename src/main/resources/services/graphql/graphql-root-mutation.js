@@ -18,12 +18,12 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 description: graphQlLib.GraphQLString,
                 config: graphQlLib.GraphQLString,//TODO
                 adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID),
-                playerIds: graphQlLib.list(graphQlLib.GraphQLID)
+                playerNames: graphQlLib.list(graphQlLib.GraphQLString)
             },
             resolve: function (env) {
                 var currentPlayerId = getCurrentPlayerId();
                 var adminPlayerIds = env.args.adminPlayerIds || [];
-                var playerIds = env.args.playerIds || [];
+                var playerNames = env.args.playerNames || [];
                 checkCreateLeaguePermissions(currentPlayerId, adminPlayerIds);
 
                 var createdLeague = storeLib.createLeague({
@@ -35,8 +35,16 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 });
 
                 storeLib.refresh();
-                playerIds.forEach(function(playerId){
-                    storeLib.joinPlayerLeague(createdLeague._id, playerId);
+                playerNames.map(function (playerName) {
+                    var player = storeLib.getPlayerByName(playerName);
+                    if (player) {
+                        storeLib.joinPlayerLeague(createdLeague._id, player._id, env.args.rating);
+                    } else if (playerName.indexOf('@') !== -1) {
+                        var invitation = invitationLib.createInvitation(createdLeague._id);
+                        mailLib.sendInvitation(playerName, createdLeague._id, getCurrentPlayerId(), invitation.token)
+                    } else {
+                        log.warning('[' + playerName + '] is not an existing player name or an email address.');
+                    }
                 });
                 
                 storeLib.refresh();
