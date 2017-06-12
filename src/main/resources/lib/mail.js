@@ -314,7 +314,13 @@ var playerUrl = function (baseUrl, player) {
 };
 
 var playerImageUrl = function (baseUrl, player) {
-    return baseUrl + storeLib.getImageUrl(player);
+    var attachmentImg = storeLib.getAttachment(player, player.image);
+    log.info(JSON.stringify(attachmentImg,null,4));
+    if (!attachmentImg || attachmentImg.mimeType.indexOf('image/svg+xml') === 0) {
+        return baseUrl + '/assets/icons/default-player.png';
+    } else {
+        return baseUrl + storeLib.getImageUrl(player);
+    }
 };
 
 var leagueImageUrl = function (baseUrl, league) {
@@ -322,13 +328,11 @@ var leagueImageUrl = function (baseUrl, league) {
 };
 
 var getLogoUrl = function (baseUrl) {
-    return baseUrl + '/assets/icons/apple-touch-icon.png';
+    return baseUrl + '/assets/icons/office-league-logo.png';
 };
 
 var getLogoImage = function () {
     var logoRes = ioLib.getResource('/assets/icons/office-league-logo.png');
-    log.info(logoRes.exists());
-    log.info(logoRes);
     return logoRes.getStream();
 };
 

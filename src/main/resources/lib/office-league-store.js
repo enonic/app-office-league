@@ -2760,6 +2760,34 @@ var newAttachment = function (attachmentName, attachmentBinary, mimeType, label)
     };
 };
 
+/**
+ * Get attachment from a player.
+ *
+ * @param {Player} player Player object.
+ * @param {string} attachmentName Attachment name.
+ * @return {Attachment|null} Attachment object.
+ */
+exports.getAttachment = function (player, attachmentName) {
+    if (!player || !player.attachment || !attachmentName) {
+        return null;
+    }
+    if (player.attachment.name === attachmentName) {
+        return player.attachment;
+    }
+
+    var i, att;
+    if (player.attachment.length > 0) {
+        for (i = 0; i < player.attachment.length; i++) {
+            att = player.attachment[i];
+            if (att.name === attachmentName) {
+                retunr
+                att;
+            }
+        }
+    }
+    return null;
+};
+
 var required = function (params, name) {
     var value = params[name];
     if (value === undefined) {
