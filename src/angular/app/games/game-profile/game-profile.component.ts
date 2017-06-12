@@ -184,11 +184,12 @@ export class GameProfileComponent
     }
 
     private isGameDeletable(game: Game): boolean {
-        if (!game || game.finished) {
+        if (!game) {
             return false;
         }
+
         const userInGame = (game.gamePlayers || []).find((gp) => gp.player.id === this.playerId);
-        if (userInGame) {
+        if (userInGame && !game.finished) {
             return true;
         }
 

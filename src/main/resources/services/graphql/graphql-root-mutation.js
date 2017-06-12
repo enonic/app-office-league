@@ -31,15 +31,15 @@ exports.rootMutationType = graphQlLib.createObjectType({
                     config: env.args.config ? JSON.parse(env.args.config) : {}, //TODO
                     adminPlayerIds: env.args.adminPlayerIds
                 });
-                
+
                 storeLib.refresh();
                 if (adminPlayerIds) {
-                    adminPlayerIds.forEach(function(adminPlayerId){
+                    adminPlayerIds.forEach(function (adminPlayerId) {
                         storeLib.joinPlayerLeague(createdLeague._id, adminPlayerId);
                     });
                 }
                 storeLib.joinPlayerLeague(createdLeague._id, currentPlayerId);
-                
+
                 storeLib.refresh();
                 return createdLeague;
             }
@@ -714,8 +714,26 @@ var checkDeleteGamePermissions = function (gameId) {
             userIsGamePlayer = true;
         }
     });
-    if (!userIsGamePlayer) {
-        throw "Game cannot be deleted, current user is not a player in the game.";
+
+    var league = storeLib.getLeagueById(game.leagueId);
+    var adminPlayerIds = league.adminPlayerIds ? [].concat(league.adminPlayerIds) : [];
+    var currentPlayerId = getCurrentPlayerId();
+    var userIsLeagueAdmin = false;
+    adminPlayerIds.forEach(function (adminId) {
+        if (adminId === currentPlayerId) {
+            userIsLeagueAdmin = true;
+        }
+    });
+
+    if (userIsLeagueAdmin) {
+        return;
+    }
+    if (!userIsLeagueAdmin && !userIsGamePlayer) {
+        throw "User not authorized to delete game.";
+    }
+
+    if (userIsGamePlayer && game.finished) {
+        throw "Finished games can only be deleted by league administrators.";
     }
 };
 
