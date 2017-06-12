@@ -23,9 +23,7 @@ import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist
     templateUrl: 'league-edit-create.component.html',
     styleUrls: ['league-edit-create.component.less']
 })
-export class LeagueEditCreateComponent
-    extends BaseComponent
-    implements AfterViewInit {
+export class LeagueEditCreateComponent extends BaseComponent implements AfterViewInit {
 
     @ViewChild('fileInput') inputEl: ElementRef;
     name: string;
@@ -35,6 +33,8 @@ export class LeagueEditCreateComponent
     sport: string = Sport[Sport.FOOS].toLowerCase();
     admins: Player[] = [];
     adminPlayerIds: string[] = [];
+    players: Player[] = [];
+    playerIds: string[] = [];
     allPlayerIds: string[] = [];
     editMode: boolean;
     leagueForm: FormGroup;
@@ -42,7 +42,8 @@ export class LeagueEditCreateComponent
         'name': '',
         'description': ''
     };
-    materializeActions = new EventEmitter<string | MaterializeAction>();
+    materializeActionsAdmin = new EventEmitter<string | MaterializeAction>();
+    materializeActionsPlayer = new EventEmitter<string | MaterializeAction>();
     private online: boolean;
     private onlineStateCallback = () => this.online = navigator.onLine;
 
@@ -125,7 +126,8 @@ export class LeagueEditCreateComponent
             name: this.name,
             description: this.description || '',
             sport: this.sport,
-            adminPlayerIds: this.adminPlayerIds
+            adminPlayerIds: this.adminPlayerIds,
+            playerIds: this.playerIds
         };
         this.graphQLService.post(LeagueEditCreateComponent.createLeagueMutation, createLeagueParams).then(data => {
             return data && data.createLeague;
@@ -195,6 +197,8 @@ export class LeagueEditCreateComponent
             let player = Player.fromJson(data.player);
             this.admins = [player];
             this.adminPlayerIds = [player.id];
+            this.players = [player];
+            this.playerIds = [player.id];
         });
     }
 
@@ -237,8 +241,20 @@ export class LeagueEditCreateComponent
         this.adminPlayerIds = this.admins.map((p) => p.id);
     }
 
+    onRemovePlayerClicked(removedPlayer: Player) {
+        if (!removedPlayer) {
+            return;
+        }
+        this.players = this.players.filter((player) => player.id !== removedPlayer.id);
+        this.playerIds = this.players.map((p) => p.id);
+    }
+
     onAddAdminClicked() {
         this.showSelectAdminModal();
+    }
+
+    onAddPlayerClicked() {
+        this.showSelectPlayerModal();
     }
 
     onAdminSelected(newAdmin: Player) {
@@ -250,19 +266,44 @@ export class LeagueEditCreateComponent
             this.admins.push(newAdmin);
             this.adminPlayerIds = this.admins.map((p) => p.id);
         }
+        existing = this.players.find((player) => player.id === newAdmin.id);
+        if (!existing) {
+            this.players.push(newAdmin);
+            this.playerIds = this.players.map((p) => p.id);
+        }
         this.hideSelectAdminModal();
     }
 
+    onPlayerSelected(newPlayer: Player) {
+        if (!newPlayer) {
+            return;
+        }
+        let existing = this.players.find((player) => player.id === newPlayer.id);
+        if (!existing) {
+            this.players.push(newPlayer);
+            this.playerIds = this.players.map((p) => p.id);
+        }
+        this.hideSelectPlayerModal();
+    }
+
     showSelectAdminModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['open']});
+        this.materializeActionsAdmin.emit({action: "modal", params: ['open']});
+    }
+
+    showSelectPlayerModal(): void {
+        this.materializeActionsPlayer.emit({action: "modal", params: ['open']});
     }
 
     hideSelectAdminModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['close']});
+        this.materializeActionsAdmin.emit({action: "modal", params: ['close']});
     }
 
-    private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $adminPlayerIds: [ID]) {
-        createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: $adminPlayerIds) {
+    hideSelectPlayerModal(): void {
+        this.materializeActionsPlayer.emit({action: "modal", params: ['close']});
+    }
+
+    private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $adminPlayerIds: [ID], $playerIds: [ID]) {
+        createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: $adminPlayerIds, playerIds: $playerIds) {
             id
             name
             imageUrl

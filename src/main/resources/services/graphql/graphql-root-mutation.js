@@ -17,11 +17,13 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 sport: graphQlLib.nonNull(graphQlEnumsLib.sportEnumType),
                 description: graphQlLib.GraphQLString,
                 config: graphQlLib.GraphQLString,//TODO
-                adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID)
+                adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID),
+                playerIds: graphQlLib.list(graphQlLib.GraphQLID)
             },
             resolve: function (env) {
                 var currentPlayerId = getCurrentPlayerId();
                 var adminPlayerIds = env.args.adminPlayerIds || [];
+                var playerIds = env.args.playerIds || [];
                 checkCreateLeaguePermissions(currentPlayerId, adminPlayerIds);
 
                 var createdLeague = storeLib.createLeague({
@@ -33,12 +35,9 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 });
                 
                 storeLib.refresh();
-                if (adminPlayerIds) {
-                    adminPlayerIds.forEach(function(adminPlayerId){
-                        storeLib.joinPlayerLeague(createdLeague._id, adminPlayerId);
-                    });
-                }
-                storeLib.joinPlayerLeague(createdLeague._id, currentPlayerId);
+                playerIds.forEach(function(playerId){
+                    storeLib.joinPlayerLeague(createdLeague._id, playerId);
+                });
                 
                 storeLib.refresh();
                 return createdLeague;

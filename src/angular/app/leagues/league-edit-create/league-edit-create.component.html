@@ -38,10 +38,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class=""><!--
-                        <div class="league__admins-title">
-                            <h6 class="league__admins-titletext"> Administrators</h6>
-                        </div>-->
+                    <div class="">
                         <label>Administrators</label>
                         <admin-list [admins]="admins" [pageCount]="1" hideSearchField="true"
                                     (removeAdmin)="onRemoveAdminClicked($event)"></admin-list>
@@ -52,6 +49,20 @@
                         </div>
                     </div>
                 </div>
+                <template [ngIf]="!editMode">
+                    <div class="row">
+                        <div class="">
+                            <label>Players</label>
+                            <admin-list [admins]="players" [pageCount]="1" hideSearchField="true"
+                                        (removeAdmin)="onRemovePlayerClicked($event)"></admin-list>
+                            <div class="league__admins-add">
+                                <button class="btn global__btn-small waves-effect waves-light light-blue darken-3 right"
+                                        (click)="onAddPlayerClicked()">Add player
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
                 <div class="row submit-row league-edit-create__submit-row">
                     <template [ngIf]="!editMode">
                         <a class="waves-effect waves-teal btn red league-edit-create__btn league-edit-create__btn--cancel" (click)="onCancelClicked()">Cancel</a>
@@ -70,11 +81,20 @@
         </div>
 
         <div class="modal center player-select-modal" materialize="modal"
-             [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
+             [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActionsAdmin">
             <div class="modal-content">
                 <h6 class="center">Select an admin to add</h6>
-                <player-select [playerIds]="allPlayerIds" [excludedPlayerIds]="adminPlayerIds" [materializeActions]="materializeActions"
+                <player-select [playerIds]="allPlayerIds" [excludedPlayerIds]="adminPlayerIds" [materializeActions]="materializeActionsAdmin"
                                (playerSelected)="onAdminSelected($event)"></player-select>
+            </div>
+        </div>
+
+        <div class="modal center player-select-modal" materialize="modal"
+             [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActionsPlayer">
+            <div class="modal-content">
+                <h6 class="center">Select a player to add</h6>
+                <player-select [playerIds]="allPlayerIds" [excludedPlayerIds]="playerIds" [materializeActions]="materializeActionsPlayer"
+                               (playerSelected)="onPlayerSelected($event)"></player-select>
             </div>
         </div>
     </div>
