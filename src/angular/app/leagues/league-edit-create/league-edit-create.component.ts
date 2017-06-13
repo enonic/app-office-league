@@ -290,7 +290,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
 
     onPlayersSelected() {
         this.onlyPlayerNamesToAdd.forEach((playerName) => {
-            if (this.playerNames.indexOf(playerName) === -1) {
+            if ((this.allPlayerMap[playerName] || playerName.indexOf('@') !== -1) && this.playerNames.indexOf(playerName) === -1) {
                 let player = this.allPlayerMap[playerName] || new Player(undefined,playerName);
                 this.onlyPlayers.push(player);
                 this.onlyPlayerNames.push(playerName);

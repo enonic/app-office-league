@@ -40,7 +40,7 @@
                 <div class="row">
                     <div class="">
                         <label>Administrators</label>
-                        <admin-list [admins]="admins" [pageCount]="1" hideSearchField="true"
+                        <admin-list [admins]="admins" [pageCount]="1" hideSearchField="true" emptyMessage="No administrator selected"
                                     (removeAdmin)="onRemoveAdminClicked($event)"></admin-list>
                         <div class="league__admins-add">
                             <button class="btn global__btn-small waves-effect waves-light light-blue darken-3 right"
@@ -53,7 +53,7 @@
                     <div class="row">
                         <div class="">
                             <label>Players</label>
-                            <admin-list [admins]="onlyPlayers" [pageCount]="1" hideSearchField="true"
+                            <admin-list [admins]="onlyPlayers" [pageCount]="1" hideSearchField="true" emptyMessage="No player selected"
                                         (removeAdmin)="onRemovePlayerClicked($event)"></admin-list>
                             <div class="league__admins-add">
                                 <button class="btn global__btn-small waves-effect waves-light light-blue darken-3 right"
