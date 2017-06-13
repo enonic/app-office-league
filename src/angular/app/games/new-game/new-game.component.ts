@@ -268,8 +268,8 @@ export class NewGameComponent
 
     private loadSounds() {
         try {
-            this.startGameSound = this.audioService.newSound('Blastwave_FX_WhistleBlowLong_BWU.693.mp3');
-            this.backgroundSound = this.audioService.newSound('sport_soccer_match_stadium_crowd_chant_cheer_001.mp3', true);
+            this.startGameSound = this.audioService.newSound(AudioService.WHISTLE_SOUND_FILE);
+            this.backgroundSound = this.audioService.newSound(AudioService.BACKGROUND_SOUND_FILE, true);
         } catch (e) {
             console.warn('Unable to load sounds: ' + e)
         }

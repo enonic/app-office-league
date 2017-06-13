@@ -13,12 +13,18 @@ export interface WebAudioSound {
 
 @Injectable()
 export class AudioService {
+    public static readonly BACKGROUND_SOUND_FILE = 'sport_soccer_match_stadium_crowd_chant_cheer_001.mp3';
+    public static readonly WHISTLE_SOUND_FILE = 'Blastwave_FX_WhistleBlowLong_BWU.693.mp3';
+    public static readonly GOAL_SOUND_FILE = 'cheer_8k.mp3';
+
     private _window: Window;
     private initialized: boolean;
     private webAudioAPISoundManager: WebAudioAPISoundManager;
+    private sounds: { [key: string]: WebAudioAPISound };
 
     constructor(windowRef: WindowRefService) {
         this._window = windowRef.nativeWindow;
+        this.sounds = {};
     }
 
     public initialize(): void {
@@ -38,12 +44,30 @@ export class AudioService {
             this.initialized = true;
         }
         let url = XPCONFIG.audioUrl + soundFile;
-        return new WebAudioAPISound(url, loop, this.webAudioAPISoundManager);
+        let sound = new WebAudioAPISound(url, loop, this.webAudioAPISoundManager);
+        this.sounds[url] = sound;
+        return sound;
     }
 
     public stopSound(soundFile: string) {
         let url = XPCONFIG.audioUrl + soundFile;
         this.webAudioAPISoundManager.stopSoundWithUrl(url);
+    }
+
+    public pauseSound(soundFile: string) {
+        let url = XPCONFIG.audioUrl + soundFile;
+        let sound = this.sounds[url];
+        if (sound) {
+            sound.suspend();
+        }
+    }
+
+    public resumeSound(soundFile: string) {
+        let url = XPCONFIG.audioUrl + soundFile;
+        let sound = this.sounds[url];
+        if (sound) {
+            sound.resume();
+        }
     }
 }
 
@@ -128,6 +152,26 @@ class WebAudioAPISound {
 
     stop() {
         this.manager.stopSoundWithUrl(this.url);
+    }
+
+    resume() {
+        if (this.manager.context.resume) {
+            try {
+                this.manager.context.resume();
+            } catch (e) {
+                console.log('Could not resume audio context', e);
+            }
+        }
+    }
+
+    suspend() {
+        if (this.manager.context.suspend) {
+            try {
+                this.manager.context.suspend();
+            } catch (e) {
+                console.log('Could not suspend audio context', e);
+            }
+        }
     }
 
     getVolume(): number {
