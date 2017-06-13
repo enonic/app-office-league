@@ -26,6 +26,7 @@ import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist
 export class LeagueEditCreateComponent extends BaseComponent implements AfterViewInit {
 
     @ViewChild('fileInput') inputEl: ElementRef;
+    @ViewChild('addPlayerChips') addPlayerChipsViewChild;
     name: string;
     leagueId: string;
     description: string;
@@ -296,6 +297,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     showSelectPlayerModal(): void {
         this.playerNamesToAdd = [];
         this.materializeActionsPlayer.emit({action: "modal", params: ['open']});
+        setTimeout(() => this.addPlayerChipsViewChild.focus(), 300); //No possibility to set a callback on display
     }
 
     hideSelectAdminModal(): void {
