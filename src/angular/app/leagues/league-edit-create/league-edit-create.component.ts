@@ -283,9 +283,11 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
 
     onPlayersSelected() {
         this.playerNamesToAdd.forEach((playerName) => {
-            let player = this.allPlayerMap[playerName] || new Player(undefined,playerName);
-            this.playerNames.push(playerName);
-            this.players.push(player);
+            if (this.playerNames.indexOf(playerName) === -1) {
+                let player = this.allPlayerMap[playerName] || new Player(undefined,playerName);
+                this.playerNames.push(playerName);
+                this.players.push(player);
+            }
         });
         this.hideSelectPlayerModal();
     }
