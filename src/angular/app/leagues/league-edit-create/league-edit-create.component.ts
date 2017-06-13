@@ -34,9 +34,11 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     sport: string = Sport[Sport.FOOS].toLowerCase();
     admins: Player[] = [];
     adminPlayerIds: string[] = [];
-    players: Player[] = [];
-    playerNames: string[] = [];
-    playerNamesToAdd: string[] = [];
+    adminPlayerNames: string[] = [];
+    onlyPlayers: Player[] = [];
+    onlyPlayerNames: string[] = [];
+    onlyPlayerNamesToAdd: string[] = [];
+    playerNames : string[] = [];
     allPlayerIds: string[] = [];
     allPlayerNames: string[] = [];
     allPlayerMap: any = {};
@@ -177,6 +179,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             this.sport = Sport[sport].toLowerCase();
             this.admins = league.adminPlayers;
             this.adminPlayerIds = this.admins.map((p) => p.id);
+            this.adminPlayerNames = this.admins.map((p) => p.name);
 
             this.pageTitleService.setTitle(league.name);
 
@@ -204,7 +207,9 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             let player = Player.fromJson(data.player);
             this.admins = [player];
             this.adminPlayerIds = [player.id];
-            this.players = [player];
+            this.adminPlayerNames = [player.id];
+            this.onlyPlayers = [];
+            this.onlyPlayerNames = [];
             this.playerNames = [player.name];
         });
     }
@@ -245,15 +250,19 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             return;
         }
         this.admins = this.admins.filter((player) => player.id !== admin.id);
-        this.adminPlayerIds = this.admins.map((p) => p.id);
+        this.adminPlayerIds = this.adminPlayerIds.filter((playerId) => playerId !== admin.id);
+        this.adminPlayerNames = this.adminPlayerNames.filter((playerName) => playerName !== admin.name);
+        this.playerNames = this.playerNames.filter((playerName) => playerName !== admin.name);
+        
     }
 
     onRemovePlayerClicked(removedPlayer: Player) {
         if (!removedPlayer) {
             return;
         }
-        this.players = this.players.filter((player) => player.name !== removedPlayer.name);
-        this.playerNames = this.players.map((p) => p.name);
+        this.onlyPlayers = this.onlyPlayers.filter((player) => player.name !== removedPlayer.name);
+        this.onlyPlayerNames = this.onlyPlayerNames.filter((playerName) => playerName !== removedPlayer.name);
+        this.playerNames = this.playerNames.filter((playerName) => playerName !== removedPlayer.name);
     }
 
     onAddAdminClicked() {
@@ -271,22 +280,21 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
         let existing = this.admins.find((player) => player.id === newAdmin.id);
         if (!existing) {
             this.admins.push(newAdmin);
-            this.adminPlayerIds = this.admins.map((p) => p.id);
-        }
-        existing = this.players.find((player) => player.id === newAdmin.id);
-        if (!existing) {
-            this.players.push(newAdmin);
-            this.playerNames = this.players.map((p) => p.name);
+            this.adminPlayerIds.push(newAdmin.id);
+            this.adminPlayerNames.push(newAdmin.name);
+            this.onRemovePlayerClicked(newAdmin);
+            this.playerNames.push(newAdmin.name);
         }
         this.hideSelectAdminModal();
     }
 
     onPlayersSelected() {
-        this.playerNamesToAdd.forEach((playerName) => {
+        this.onlyPlayerNamesToAdd.forEach((playerName) => {
             if (this.playerNames.indexOf(playerName) === -1) {
                 let player = this.allPlayerMap[playerName] || new Player(undefined,playerName);
+                this.onlyPlayers.push(player);
+                this.onlyPlayerNames.push(playerName);
                 this.playerNames.push(playerName);
-                this.players.push(player);
             }
         });
         this.hideSelectPlayerModal();
@@ -297,7 +305,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     }
 
     showSelectPlayerModal(): void {
-        this.playerNamesToAdd = [];
+        this.onlyPlayerNamesToAdd = [];
         this.materializeActionsPlayer.emit({action: "modal", params: ['open']});
         setTimeout(() => this.addPlayerChipsViewChild.focus(), 300); //No possibility to set a callback on display
     }

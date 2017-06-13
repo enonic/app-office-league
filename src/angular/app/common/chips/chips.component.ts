@@ -12,7 +12,8 @@ declare var $: any;
 export class ChipsComponent extends BaseComponent implements AfterViewInit {
 
     @Input() availableTags: string[];
-    @Input() selectedTags: string[];
+    @Input() excludedTags: string[] = [];
+    @Input() selectedTags: string[] = [];
     @Input() placeholder: string;
     @ViewChild ('div') div;
     
@@ -43,7 +44,7 @@ export class ChipsComponent extends BaseComponent implements AfterViewInit {
     
     refreshChips(): void {
         let autocompleteData = {};
-        this.availableTags.filter((tag) => this.selectedTags.indexOf(tag) == -1 ).
+        this.availableTags.filter((tag) => this.excludedTags.indexOf(tag) == -1 ).
             forEach((tag) => autocompleteData[tag] = null);
         $('.chips').material_chip({
             autocompleteOptions: {

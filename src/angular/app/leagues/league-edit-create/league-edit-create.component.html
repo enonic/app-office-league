@@ -53,7 +53,7 @@
                     <div class="row">
                         <div class="">
                             <label>Players</label>
-                            <admin-list [admins]="players" [pageCount]="1" hideSearchField="true"
+                            <admin-list [admins]="onlyPlayers" [pageCount]="1" hideSearchField="true"
                                         (removeAdmin)="onRemovePlayerClicked($event)"></admin-list>
                             <div class="league__admins-add">
                                 <button class="btn global__btn-small waves-effect waves-light light-blue darken-3 right"
@@ -93,9 +93,9 @@
              [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActionsPlayer">
             <div class="modal-content">
                 <h6 class="center">Select a player to add</h6>
-                <chips #addPlayerChips [availableTags]="allPlayerNames" [selectedTags]="playerNamesToAdd" placeholder="Enter a player name or email"></chips>
+                <chips #addPlayerChips [availableTags]="allPlayerNames" [excludedTags]="playerNames" [selectedTags]="onlyPlayerNamesToAdd" placeholder="Enter a player name or email"></chips>
                 <div class="row submit-row">
-                    <a class="waves-effect waves-teal btn green" [attr.disabled]="playerNames.length===0?true:null" (click)="onPlayersSelected()"><i class="material-icons left">add</i>Add</a>
+                    <a class="waves-effect waves-teal btn green" [attr.disabled]="onlyPlayerNamesToAdd.length===0?true:null" (click)="onPlayersSelected()"><i class="material-icons left">add</i>Add</a>
                 </div>
             </div>
         </div>
