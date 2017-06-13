@@ -103,6 +103,7 @@ export class GamePlayComponent
     private strike5Sound: WebAudioSound;
     private strike7Sound: WebAudioSound;
     private strike9Sound: WebAudioSound;
+    private visibilityChangeHandler: EventListenerOrEventListenerObject;
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router, private elRef: ElementRef,
                 private offlineService: OfflinePersistenceService, private gameSelection: GameSelection,
@@ -139,6 +140,10 @@ export class GamePlayComponent
                 })
             ;
         });
+        if ('hidden' in document) {
+            this.visibilityChangeHandler = this.visibilityChange.bind(this);
+            document.addEventListener("visibilitychange", this.visibilityChangeHandler);
+        }
     }
 
     ngAfterViewInit() {
@@ -856,6 +861,7 @@ export class GamePlayComponent
 
     ngOnDestroy() {
         this.wsMan.disconnect();
+        document.removeEventListener("visibilitychange", this.visibilityChangeHandler);
         setTimeout(() => this.stopAllSounds(), 3000);
     }
 
@@ -939,8 +945,8 @@ export class GamePlayComponent
 
     private loadSounds() {
         try {
-            this.goalSound = this.audioService.newSound('cheer_8k.mp3');
-            this.halfTimeSound = this.audioService.newSound('Blastwave_FX_WhistleBlowLong_BWU.693.mp3');
+            this.goalSound = this.audioService.newSound(AudioService.GOAL_SOUND_FILE);
+            this.halfTimeSound = this.audioService.newSound(AudioService.WHISTLE_SOUND_FILE);
 
             this.ownGoalSound = this.goalSound;
             this.gameEndSound = this.halfTimeSound;
@@ -962,7 +968,7 @@ export class GamePlayComponent
     }
 
     private stopAllSounds() {
-        this.audioService.stopSound('sport_soccer_match_stadium_crowd_chant_cheer_001.mp3');
+        this.audioService.stopSound(AudioService.BACKGROUND_SOUND_FILE);
         [this.goalSound, this.ownGoalSound, this.gameEndSound, this.halfTimeSound, this.firstGoalSound,
             this.strike3Sound, this.strike5Sound, this.strike7Sound, this.strike9Sound].forEach((sound) => sound.stop());
     }
@@ -978,6 +984,23 @@ export class GamePlayComponent
         } else if (doc.msExitFullscreen) {
             doc.msExitFullscreen();
         }
+    }
+
+    private visibilityChange() {
+        const pageVisible = !document.hidden;
+        if (pageVisible) {
+            this.resumeBackgroundSound();
+        } else {
+            this.pauseBackgroundSound();
+        }
+    }
+
+    private pauseBackgroundSound() {
+        this.audioService.pauseSound(AudioService.BACKGROUND_SOUND_FILE);
+    }
+
+    private resumeBackgroundSound() {
+        this.audioService.resumeSound(AudioService.BACKGROUND_SOUND_FILE);
     }
 
     private static readonly getPlayersLeagueQuery = `query ($leagueId: ID!, $playerIds: [ID]!) {
