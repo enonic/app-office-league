@@ -1773,6 +1773,8 @@ exports.createGame = function (params) {
             ratingDelta: toInt(gameTeam.ratingDelta)
         });
         gameNode.gameTeams.push(gameTeamNode);
+
+        exports.joinTeamLeague(params.leagueId, gameTeam.teamId);
     }
 
     notifyGameUpdate(gameNode._id);
