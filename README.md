@@ -1,6 +1,7 @@
 <a href="https://officeleague.rocks">
 <img align="right" style="margin-top:10px;" alt="Office League" src="https://raw.githubusercontent.com/enonic/app-office-league/master/src/main/resources/assets/img/office-league-logo.png" width="200">
 </a>
+
 # Office League App
 
 [![Build Status](https://travis-ci.org/enonic/app-office-league.svg?branch=master)](https://travis-ci.org/enonic/app-office-league)
