@@ -450,7 +450,7 @@ exports.getLeagueTeamsByLeagueIdAndTeamIds = function (leagueId, teamIds) {
     return query({
         start: 0,
         count: teamIds.length,
-        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND (" + teamsCondition + ")"
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND leagueId='" + leagueId + "' AND (" + teamsCondition + ")"
     });
 };
 
