@@ -16,15 +16,15 @@ declare var $: any;
 })
 export class LeagueBrowserComponent extends BaseComponent implements AfterViewInit {
 
-    private static readonly getLeaguesQuery: string = `query($playerId: ID) {
-        myLeagues : leagues(playerId:$playerId){
+    private static readonly getLeaguesQuery: string = `query($playerId: ID, $leagueCount: Int) {
+        myLeagues : leagues(playerId:$playerId, first: $leagueCount){
             id
             name 
             imageUrl
             description 
         }
         
-        allLeagues: leagues{
+        allLeagues: leagues(first: $leagueCount){
             id
             name 
             imageUrl
@@ -51,8 +51,11 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
         let user: ConfigUser = this.authService.getUser();
         this.graphQLService.post(
             LeagueBrowserComponent.getLeaguesQuery,
-            {playerId: user ? user.playerId : 'unknown'},
-                data => this.handleLeaguesQueryResponse(data)
+            {
+                playerId: user ? user.playerId : 'unknown',
+                leagueCount: -1
+            },
+            data => this.handleLeaguesQueryResponse(data)
         );
 
         this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
