@@ -53,12 +53,13 @@ export class PlayerCreateComponent extends BaseComponent implements OnInit, Afte
             return;
         }
 
+        const defaultNationality = 'no';
         this.playerForm = this.fb.group({
             name: new FormControl(null,
                 [Validators.required, Validators.minLength(3), Validators.maxLength(40), CustomValidators.validName(), CustomValidators.validNoWhitespace()],
                 PlayerValidator.nameInUseValidator(this.graphQLService)),
             fullname: [user.playerName || null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(40)])],
-            nationality: null,
+            nationality: defaultNationality,
             handedness: Handedness[Handedness.RIGHT].toLowerCase(),
             description: null,
             invitation: new FormControl()
