@@ -147,7 +147,7 @@ export class LeagueProfileComponent
                 }
             );
 
-        }, 15000);
+        }, 3000);
     }
 
     format(value: number, none: string, one: string, multiple: string): string {
