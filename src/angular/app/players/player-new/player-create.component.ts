@@ -53,7 +53,7 @@ export class PlayerCreateComponent extends BaseComponent implements OnInit, Afte
             return;
         }
 
-        const defaultNationality = 'no';
+        const defaultNationality = 'no'; // autodetect country from IP
         this.playerForm = this.fb.group({
             name: new FormControl(null,
                 [Validators.required, Validators.minLength(3), Validators.maxLength(40), CustomValidators.validName(), CustomValidators.validNoWhitespace()],
