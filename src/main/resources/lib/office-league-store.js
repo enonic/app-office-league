@@ -14,6 +14,7 @@ var LEAGUE_PLAYERS_REL_PATH = '/players';
 var LEAGUE_TEAMS_REL_PATH = '/teams';
 var OFFICE_LEAGUE_GAME_EVENT_ID = 'office-league-game';
 var OFFICE_LEAGUE_COMMENT_EVENT_ID = 'office-league-comment';
+var OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID = 'office-league-join-league';
 
 var NAME_MAX_LENGTH = 40;
 var NAME_MIN_LENGTH = 3;
@@ -87,6 +88,7 @@ exports.TYPE = TYPE;
 exports.ROOT_PERMISSIONS = ROOT_PERMISSIONS;
 exports.OFFICE_LEAGUE_GAME_EVENT_ID = OFFICE_LEAGUE_GAME_EVENT_ID;
 exports.OFFICE_LEAGUE_COMMENT_EVENT_ID = OFFICE_LEAGUE_COMMENT_EVENT_ID;
+exports.OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID = OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID;
 
 /**
  * @typedef {Object} Attachment
@@ -1895,6 +1897,9 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
         // set player teams in league as active
         setLeagueTeamsFromPlayerInactive(leagueId, playerId, false);
         repoConn.refresh('SEARCH');
+
+        notifyJoinedLeague(leagueId, playerId);
+
         return updatedLeaguePlayer;
     }
 
@@ -1911,6 +1916,8 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
     // set player teams in league as active
     setLeagueTeamsFromPlayerInactive(leagueId, playerId, false);
     repoConn.refresh('SEARCH');
+
+    notifyJoinedLeague(leagueId, playerId);
 
     return leaguePlayer;
 };
@@ -2586,6 +2593,18 @@ var notifyGameComment = function (gameId, commentId) {
         data: {
             gameId: gameId,
             commentId: commentId
+        }
+    });
+};
+
+
+var notifyJoinedLeague = function (leagueId, playerId) {
+    eventLib.send({
+        type: OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID,
+        distributed: true,
+        data: {
+            leagueId: leagueId,
+            playerId: playerId
         }
     });
 };

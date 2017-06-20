@@ -4,8 +4,10 @@ var storeLib = require('/lib/office-league-store');
 
 var OFFICE_LEAGUE_GAME_EVENT_ID = storeLib.OFFICE_LEAGUE_GAME_EVENT_ID;
 var OFFICE_LEAGUE_COMMENT_EVENT_ID = storeLib.OFFICE_LEAGUE_COMMENT_EVENT_ID;
+var OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID = storeLib.OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID;
 var GAME_PLAY_SCOPE = 'game-play';
 var LIVE_GAME_SCOPE = 'live-game';
+var NEW_GAME_SCOPE = 'new-game';
 
 exports.get = function (req) {
     if (req.webSocket) {
@@ -26,13 +28,18 @@ exports.webSocketEvent = function (event) {
     log.info(JSON.stringify(event));
     var sessionId = event.session.id;
     var gameId = event.session.params['gameId'];
+    var leagueId = event.session.params['leagueId'];
     var scope = event.session.params['scope'];
     var group = scope + '-' + gameId;
+    var groupLeague = scope + '-' + leagueId;
 
     switch (event.type) {
     case 'open':
         if (gameId) {
             webSocketLib.addToGroup(group, sessionId);
+        }
+        if (leagueId) {
+            webSocketLib.addToGroup(groupLeague, sessionId);
         }
         break;
 
@@ -42,6 +49,9 @@ exports.webSocketEvent = function (event) {
     case 'close':
         if (gameId) {
             webSocketLib.removeFromGroup(group, sessionId);
+        }
+        if (leagueId) {
+            webSocketLib.removeFromGroup(groupLeague, sessionId);
         }
         break;
     }
@@ -90,5 +100,17 @@ eventLib.listener({
 
         var gamePlayGroup = GAME_PLAY_SCOPE + '-' + gameId;
         webSocketLib.sendToGroup(gamePlayGroup, data);
+    }
+});
+
+eventLib.listener({
+    type: 'custom.' + OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID,
+    localOnly: false,
+    callback: function (event) {
+        var leagueId = event.data.leagueId;
+        var playerId = event.data.playerId;
+        var data = JSON.stringify({leagueId: leagueId, playerId: playerId, event: 'join_league'});
+        var group = NEW_GAME_SCOPE + '-' + leagueId;
+        webSocketLib.sendToGroup(group, data);
     }
 });

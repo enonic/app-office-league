@@ -1,4 +1,4 @@
-import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
@@ -10,6 +10,8 @@ import {NewGamePlayerComponent} from '../new-game-player/new-game-player.compone
 import {GameSelection} from '../GameSelection';
 import {RankingService} from '../../services/ranking.service';
 import {AudioService, WebAudioSound} from '../../services/audio.service';
+import {WebSocketManager} from '../../services/websocket.manager';
+import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 
 @Component({
     selector: 'new-game',
@@ -17,7 +19,7 @@ import {AudioService, WebAudioSound} from '../../services/audio.service';
     styleUrls: ['new-game.component.less']
 })
 export class NewGameComponent
-    implements OnInit {
+    implements OnInit, OnDestroy {
 
     leagueId: string;
 
@@ -45,6 +47,8 @@ export class NewGameComponent
     private startGameSound: WebAudioSound;
     private backgroundSound: WebAudioSound;
 
+    private wsMan: WebSocketManager;
+
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute,
                 private pageTitleService: PageTitleService, private router: Router, private gameSelection: GameSelection,
                 private rankingService: RankingService, private audioService: AudioService) {
@@ -66,6 +70,9 @@ export class NewGameComponent
                 data => this.handlePlayerLeagueQueryResponse(data)
             );
         }
+        this.wsMan = new WebSocketManager(this.getWsUrl(this.leagueId), true);
+        this.wsMan.onMessage(this.onWsMessage.bind(this));
+        this.wsMan.connect();
     }
 
     private handlePlayerLeagueQueryResponse(data) {
@@ -275,6 +282,42 @@ export class NewGameComponent
         }
     }
 
+    ngOnDestroy() {
+        this.wsMan.disconnect();
+    }
+
+    onWsMessage(event: RemoteEvent) {
+        if ((event.type === EventType.JOIN_LEAGUE) && event.leagueId === this.leagueId) {
+            this.reloadLeaguePlayers();
+        }
+    }
+
+    private getWsUrl(leagueId: string): string {
+        return XPCONFIG.liveGameUrl + '?leagueId=' + leagueId + '&scope=new-game';
+    }
+
+    reloadLeaguePlayers(): void {
+        if (!this.leagueId) {
+            return;
+        }
+        this.graphQLService.post(
+            NewGameComponent.getLeaguePlayersQuery,
+            {leagueId: this.leagueId},
+            data => this.handleLeaguePlayersQueryResponse(data)
+        );
+    }
+
+    private handleLeaguePlayersQueryResponse(data) {
+        const league = League.fromJson(data.league);
+        this.leaguePlayerIds = league.leaguePlayers.map((leaguePlayer) => {
+            if (!leaguePlayer.player) {
+                return null;
+            }
+            this.playerRatings[leaguePlayer.player.id] = leaguePlayer.rating;
+            return leaguePlayer.player.id;
+        }).filter((id) => !!id);
+    }
+
     static readonly getPlayerLeagueQuery = `query ($playerId: ID!, $leagueId: ID!) {
         player(id: $playerId) {
             id
@@ -300,4 +343,19 @@ export class NewGameComponent
         }
     }`;
 
+    static readonly getLeaguePlayersQuery = `query ($leagueId: ID!) {
+        league(id: $leagueId) {
+            id
+            name
+            imageUrl
+            description
+            leaguePlayers(first:-1, sort:"_timestamp DESC") {
+                rating
+                player {
+                    id
+                    imageUrl
+                }
+            }
+        }
+    }`;
 }

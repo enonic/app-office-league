@@ -1,5 +1,5 @@
 export enum EventType {
-    UNKNOWN, GAME_UPDATE, GAME_COMMENT
+    UNKNOWN, GAME_UPDATE, GAME_COMMENT, JOIN_LEAGUE
 }
 
 export class EventTypeUtil {
@@ -18,12 +18,16 @@ export class EventTypeUtil {
 export interface EventJson {
     event: string;
     gameId?: string;
+    leagueId?: string;
+    playerId?: string;
     data?: { [key: string]: any };
 }
 
 export class RemoteEvent {
     type: EventType;
     gameId: string;
+    leagueId: string;
+    playerId: string;
     data: { [key: string]: any } = {};
 
     constructor(type?: EventType) {
@@ -41,6 +45,8 @@ export class RemoteEvent {
         let remoteEvent = new RemoteEvent();
         remoteEvent.type = EventTypeUtil.parse(json.event);
         remoteEvent.gameId = json.gameId;
+        remoteEvent.leagueId = json.leagueId;
+        remoteEvent.playerId = json.playerId;
         remoteEvent.data = json.data;
         return remoteEvent;
     }
