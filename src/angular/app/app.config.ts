@@ -8,6 +8,7 @@ export interface ConfigUser {
 
 export interface Config {
     locale: string;
+    countryIsoCode: string;
     baseHref: string;
     idProvider: string;
     assetsUrl: string;

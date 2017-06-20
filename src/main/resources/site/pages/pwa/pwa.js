@@ -3,6 +3,7 @@ var authLib = require('/lib/xp/auth');
 var mustacheLib = require('/lib/xp/mustache');
 var storeLib = require('/lib/office-league-store');
 var invitationLib = require('/lib/invitation');
+var geoipLib = require('/lib/enonic/geoip');
 var view = resolve('pwa.html');
 
 exports.get = function (req) {
@@ -72,8 +73,16 @@ exports.get = function (req) {
         userObj.isAdmin = authLib.hasRole('system.admin');
     }
 
+    var countryIsoCode;
+    if (req.remoteAddress) {
+        var locationData = geoipLib.getLocationData(req.remoteAddress);
+        countryIsoCode = geoipLib.countryISO(locationData);
+    }
+    countryIsoCode = countryIsoCode || 'no';
+
     var params = {
         locale: req.params.locale || 'en',
+        countryIsoCode: countryIsoCode,
         user: userObj && JSON.stringify(userObj),
         isLive: (req.mode === 'live'),
         siteUrl: (baseHref === '/') ? '' : baseHref,

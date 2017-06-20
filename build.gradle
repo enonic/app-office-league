@@ -53,6 +53,7 @@ dependencies {
     include "com.enonic.xp:lib-mail:${xpVersion}"
     include "com.enonic.lib:util:1.1.1"
     include "com.enonic.lib:graphql:0.1.0"
+    include 'com.enonic.lib:geoip:1.0.0'
 }
 
 repositories {
