@@ -541,6 +541,7 @@ export class GamePlayComponent
             this.points.push(point);
         });
         this.calculateExpectedScore();
+        this.refreshLayout();
     }
 
     private loadGameData(): Promise<any> {
@@ -585,6 +586,7 @@ export class GamePlayComponent
         this.redPlayer2 = playerMap[this.gameSelection.redPlayer2 && this.gameSelection.redPlayer2.id];
 
         this.calculateExpectedScore();
+        this.refreshLayout();
     }
 
     private calculateExpectedScore() {
@@ -841,6 +843,10 @@ export class GamePlayComponent
                 img.style.width = playerImgPlaceholder.clientWidth + 'px';
             }
         });
+    }
+
+    private refreshLayout() {
+        setTimeout(() => this.handleResize(), 0);
     }
 
     private showMessage(player: Player, message: string) {

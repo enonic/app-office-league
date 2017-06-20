@@ -188,6 +188,7 @@
       background: #fff;
       box-sizing: border-box;
       position: relative;
+      max-width: none;
 
       &-placeholder {
         position: absolute;
@@ -209,6 +210,7 @@
     &-name {
       position: absolute;
       left: 50%;
+      border-color: inherit;
 
       @media @mobile-portrait {
         bottom: 10%;
@@ -381,12 +383,12 @@
   opacity: 0;
 
   @media @landscape {
-    width: 25%;
+    width: 35%;
     height: 100%;
   }
 
   @media @mobile-portrait {
-    height: 25%;
+    height: 35%;
     width: 100%;
   }
 
@@ -417,12 +419,12 @@
   opacity: 0;
 
   @media @landscape {
-    width: 25%;
+    width: 35%;
     height: 100%;
   }
 
   @media @mobile-portrait {
-    height: 25%;
+    height: 35%;
     width: 100%;
   }
 
