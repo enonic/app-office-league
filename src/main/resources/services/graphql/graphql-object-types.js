@@ -88,8 +88,9 @@ exports.playerType = graphQlLib.createObjectType({
             type: graphQlLib.GraphQLString,
             resolve: function (env) {
                 var user = authLib.getUser();
-                if (user && user.key === env.source.userKey) {
-                    return user.email;
+                if (isAdmin() || ( user && user.key === env.source.userKey)) {
+                    user = authLib.getPrincipal(env.source.userKey);
+                    return user && user.email;
                 } else {
                     return null;
                 }
@@ -818,4 +819,8 @@ var getCurrentPlayerId = function () {
     }
     var player = storeLib.getPlayerByUserKey(user.key);
     return player && player._id;
+};
+
+var isAdmin = function () {
+    return authLib.hasRole('system.admin');
 };
