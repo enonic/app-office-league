@@ -290,6 +290,15 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 }
             }
         },
+        infoPage: {
+            type: graphQlInfoPagesLib.infoPageType,
+            args: {
+                name: graphQlLib.GraphQLString
+            },
+            resolve: function (env) {
+                return contentLib.getContent('/office-league/app/' + env.args.name);
+            }
+        },
         infoPages: {
             type: graphQlLib.list(graphQlInfoPagesLib.infoPageType),
             args: {

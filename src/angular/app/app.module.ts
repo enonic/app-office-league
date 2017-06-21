@@ -8,6 +8,7 @@ import {GraphQLService} from './services/graphql.service';
 import {GamesModule} from './games/games.module';
 import {TeamsModule} from './teams/team.module';
 import {LeaguesModule} from './leagues/league.module';
+import {InfoPageModule} from './info-page/info-page.module';
 import {AuthenticatedRouteGuard} from './guards/authenticated.route.guard';
 import {PlayerRouteGuard} from './guards/player.route.guard';
 import {AuthService} from './services/auth.service';
@@ -40,7 +41,8 @@ const appRoutes: Routes = [
         PlayersModule,
         GamesModule,
         TeamsModule,
-        LeaguesModule
+        LeaguesModule,
+        InfoPageModule
     ],
     providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard,
         OfflinePersistenceService, OnlineStatusService, RankingService, UserProfileService, WindowRefService, AudioService,
