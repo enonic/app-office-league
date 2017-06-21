@@ -37,6 +37,7 @@ export class AppComponent {
         this.isOffline = !navigator.onLine;
         window.addEventListener('offline', () => this.isOffline = true);
         window.addEventListener('online', () => this.isOffline = false);
+        window.addEventListener('gesturestart', (e) => e.preventDefault());
 
         this.pageTitleService.subscribeTitle(title => this.pageTitle = title).setTitle(AppComponent.DEFAULT_TITLE);
         this.userProfileService.subscribePlayer(player => this.updatePlayerProfile(player));
