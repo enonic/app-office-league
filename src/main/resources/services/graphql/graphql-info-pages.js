@@ -13,6 +13,12 @@ exports.infoPageType = graphQlLib.createObjectType({
                 return env.source.displayName;
             }
         },
+        name: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLString),
+            resolve: function (env) {
+                return env.source._name;
+            }
+        },
         body: {
             type: graphQlLib.nonNull(graphQlLib.GraphQLString),
             resolve: function (env) {
