@@ -70,7 +70,7 @@ export class NewGameComponent
                 data => this.handlePlayerLeagueQueryResponse(data)
             );
         }
-        this.wsMan = new WebSocketManager(this.getWsUrl(this.leagueId), true);
+        this.wsMan = new WebSocketManager(this.getWsUrl(this.leagueId));
         this.wsMan.onMessage(this.onWsMessage.bind(this));
         this.wsMan.connect();
     }

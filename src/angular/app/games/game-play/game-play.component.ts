@@ -123,7 +123,7 @@ export class GamePlayComponent
                 }
             }
 
-            this.wsMan = new WebSocketManager(this.getWsUrl(this.gameId), true);
+            this.wsMan = new WebSocketManager(this.getWsUrl(this.gameId));
             this.wsMan.onMessage(this.onWsMessage.bind(this));
 
             this.loadGameData()

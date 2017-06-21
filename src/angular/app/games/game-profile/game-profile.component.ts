@@ -51,7 +51,7 @@ export class GameProfileComponent
         this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
         this.online = navigator.onLine;
 
-        this.wsMan = new WebSocketManager(this.getWsUrl(this.gameId), true);
+        this.wsMan = new WebSocketManager(this.getWsUrl(this.gameId));
         this.wsMan.onMessage(this.onWsMessage.bind(this));
     }
 
@@ -151,7 +151,6 @@ export class GameProfileComponent
 
     onWsMessage(event: RemoteEvent) {
         if ((event.type === EventType.GAME_UPDATE || event.type === EventType.GAME_COMMENT) && event.gameId === this.gameId) {
-            console.log('Game updated -> refresh data');
             super.loadGame(event.gameId);
         }
     }

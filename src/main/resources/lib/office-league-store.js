@@ -1779,7 +1779,7 @@ exports.createGame = function (params) {
         exports.joinTeamLeague(params.leagueId, gameTeam.teamId);
     }
 
-    notifyGameUpdate(gameNode._id);
+    notifyGameUpdate(gameNode._id, params.leagueId);
 
     return gameNode;
 };
@@ -2486,6 +2486,7 @@ exports.updateGame = function (params) {
         query: "type = '" + TYPE.GAME + "' AND _id='" + params.gameId + "'"
     });
 
+    var leagueId = '';
     if (result.count > 0) {
         repoConn.modify({
             key: result.hits[0].id,
@@ -2497,6 +2498,7 @@ exports.updateGame = function (params) {
                     node.points = params.points;
                 }
                 node._timestamp = valueLib.instant(new Date().toISOString());
+                leagueId = node.leagueId;
                 return node;
             }
         });
@@ -2573,15 +2575,16 @@ exports.updateGame = function (params) {
         }
     }
 
-    notifyGameUpdate(params.gameId);
+    notifyGameUpdate(params.gameId, leagueId);
 };
 
-var notifyGameUpdate = function (gameId) {
+var notifyGameUpdate = function (gameId, leagueId) {
     eventLib.send({
         type: OFFICE_LEAGUE_GAME_EVENT_ID,
         distributed: true,
         data: {
-            gameId: gameId
+            gameId: gameId,
+            leagueId: leagueId
         }
     });
 };
@@ -2666,11 +2669,13 @@ exports.deleteLeagueByName = function (name) {
  */
 exports.deleteGameById = function (id) {
     var game = exports.getGameById(id);
+    var result = null;
     if (game) {
         var repoConn = newConnection();
-        return repoConn.delete(game._id) ? game._id : null;
+        result = repoConn.delete(game._id) ? game._id : null;
+        notifyGameUpdate(game._id, game.leagueId);
     }
-    return null;
+    return result;
 };
 
 /**

@@ -9,6 +9,9 @@ import {PageTitleService} from '../../services/page-title.service';
 import {OnlineStatusService} from '../../services/online-status.service';
 import {Player} from '../../../graphql/schemas/Player';
 import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
+import {WebSocketManager} from '../../services/websocket.manager';
+import {XPCONFIG} from '../../app.config';
+import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 
 @Component({
     selector: 'league-profile',
@@ -42,6 +45,7 @@ export class LeagueProfileComponent
     materializeActionsRegenerateRanking = new EventEmitter<string | MaterializeAction>();
     online: boolean;
     onlineStateCallback = () => this.online = navigator.onLine;
+    private wsMan: WebSocketManager;
 
     constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private onlineStatusService: OnlineStatusService, private router: Router) {
@@ -56,7 +60,13 @@ export class LeagueProfileComponent
         let name = this.route.snapshot.params['name'];
 
         if (!this.league && name) {
-            this.refreshData(name).catch(error => {
+            this.refreshData(name).then(() => {
+                if (this.league) {
+                    this.wsMan = new WebSocketManager(this.getWsUrl(this.league.id), true);
+                    this.wsMan.onMessage(this.onWsMessage.bind(this));
+                    this.wsMan.connect();
+                }
+            }).catch(error => {
                 this.handleQueryError();
             });
         }
@@ -69,6 +79,7 @@ export class LeagueProfileComponent
         clearTimeout(this.approvePollingTimerId);
         this.approvePollingTimerId = undefined;
         this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
+        this.wsMan.disconnect();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -327,6 +338,16 @@ export class LeagueProfileComponent
 
     public hideModalRanking(): void {
         this.materializeActionsRegenerateRanking.emit({action: "modal", params: ['close']});
+    }
+
+    onWsMessage(event: RemoteEvent) {
+        if ((event.type === EventType.GAME_UPDATE) && event.leagueId === this.league.id) {
+            this.refreshData(this.league.name);
+        }
+    }
+
+    private getWsUrl(leagueId: string): string {
+        return XPCONFIG.liveGameUrl + '?leagueId=' + leagueId + '&scope=league-profile';
     }
 
     private static readonly getLeagueQuery = `query ($name: String, $first:Int, $sort: String, $playerId: ID!, $activeGameCount:Int, $gameCount:Int) {

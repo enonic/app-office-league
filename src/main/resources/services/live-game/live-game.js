@@ -8,6 +8,7 @@ var OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID = storeLib.OFFICE_LEAGUE_JOIN_LEAGUE_EVEN
 var GAME_PLAY_SCOPE = 'game-play';
 var LIVE_GAME_SCOPE = 'live-game';
 var NEW_GAME_SCOPE = 'new-game';
+var LEAGUE_PROFILE_SCOPE = 'league-profile';
 
 exports.get = function (req) {
     if (req.webSocket) {
@@ -62,9 +63,14 @@ eventLib.listener({
     localOnly: false,
     callback: function (event) {
         var gameId = event.data.gameId;
-        var data = JSON.stringify({gameId: gameId, event: 'game_update'});
+        var leagueId = event.data.leagueId;
+
+        var data = JSON.stringify({gameId: gameId, leagueId: leagueId, event: 'game_update'});
         var group = LIVE_GAME_SCOPE + '-' + gameId;
         webSocketLib.sendToGroup(group, data);
+
+        var groupLeague = LEAGUE_PROFILE_SCOPE + '-' + leagueId;
+        webSocketLib.sendToGroup(groupLeague, data);
     }
 });
 
