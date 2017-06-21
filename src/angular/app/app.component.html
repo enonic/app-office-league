@@ -62,6 +62,7 @@
     <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
     <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
     <li routerLinkActive="active"><a routerLink="/games" href="#">Games</a></li>
+    <li *ngIf="infoPages?.length > 0" class="divider"></li>
     <li *ngFor="let infoPage of infoPages" routerLinkActive="active"><a routerLink="/{{infoPage.name}}" href="#">{{infoPage.title}}</a></li>
     <li class="divider"></li>
     <template [ngIf]="!isAuthenticated" class="nav navbar-nav pull-right">
