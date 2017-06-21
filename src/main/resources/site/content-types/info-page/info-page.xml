@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<content-type>
+  <display-name>Info Page</display-name>
+  <super-type>base:structured</super-type>
+  <form>
+    <input name="body" type="HtmlArea">
+      <label>Body</label>
+      <occurrences minimum="1" maximum="1"/>
+    </input>
+  </form>
+</content-type>
