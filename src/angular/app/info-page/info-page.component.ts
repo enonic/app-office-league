@@ -23,7 +23,7 @@ export class InfoPageComponent extends BaseComponent {
     ngOnInit(): void {
         super.ngOnInit();
 
-        let name = this.route.snapshot.params['info-page'];
+        let name = this.route.snapshot.params['info-page'] || (XPCONFIG.content && XPCONFIG.content.name);
         if (!this.infoPage) {
             this.graphQLService.post(
                 InfoPageComponent.getInfoPageQuery,
