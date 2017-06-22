@@ -22,18 +22,21 @@ export class InfoPageComponent extends BaseComponent {
 
     ngOnInit(): void {
         super.ngOnInit();
-
+        this.retrieveInfoPage();
+        this.route.params.subscribe(() => this.retrieveInfoPage());        
+    }
+    
+    retrieveInfoPage() {
         let name = this.route.snapshot.params['info-page'] || (XPCONFIG.content && XPCONFIG.content.name);
-        if (!this.infoPage) {
-            this.graphQLService.post(
-                InfoPageComponent.getInfoPageQuery,
-                {name: name},
+        this.graphQLService.post(
+            InfoPageComponent.getInfoPageQuery,
+            {name: name},
                 data => this.handleInfoPageQueryResponse(data),
-                () => this.handleQueryError()
-            ).catch(error => {
+            () => this.handleQueryError()
+        ).catch(error => {
                 this.handleQueryError();
             });
-        }
+        
     }
 
     handleInfoPageQueryResponse(data): void {
