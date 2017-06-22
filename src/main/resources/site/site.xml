@@ -61,9 +61,9 @@
     <mapping controller="/lib/pwa/favicon-controller.js">
       <pattern>/favicon.ico</pattern>
     </mapping>
-    <mapping controller="/site/pages/pwa/pwa.js">
-      <match>type:'com.enonic.app.officeleague:info-page'</match>
-    </mapping>
+    <!--<mapping controller="/site/pages/pwa/pwa.js">-->
+      <!--<match>type:'com.enonic.app.officeleague:info-page'</match>-->
+    <!--</mapping>-->
   </mappings>
 
 </site>
