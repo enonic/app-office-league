@@ -8,7 +8,6 @@ var view = resolve('pwa.html');
 
 exports.get = function (req) {
 
-    log.info('req: ' + JSON.stringify(req, null, 2));
     var site = portalLib.getSite();
     var baseHref = portalLib.pageUrl({
         path: site._path
