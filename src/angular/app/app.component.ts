@@ -1,6 +1,7 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {AuthService} from './services/auth.service';
+import {GraphQLService} from './services/graphql.service';
 import {ImageService} from './services/image.service';
 import {NavigationStart, Router} from '@angular/router';
 import {PageTitleService} from './services/page-title.service';
@@ -12,7 +13,7 @@ import {Player} from '../graphql/schemas/Player';
     templateUrl: './app.component.html',
     styleUrls: ['app.component.less']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
     private static DEFAULT_TITLE = 'Office League';
 
     logoUrl: string;
@@ -24,8 +25,9 @@ export class AppComponent {
     isAuthenticated: boolean;
     displayMenu: boolean;
     isOffline: boolean;
+    infoPages: any[];
 
-    constructor(public auth: AuthService, private pageTitleService: PageTitleService, private location: Location, private router: Router,
+    constructor(public auth: AuthService,private graphQlService: GraphQLService, private pageTitleService: PageTitleService, private location: Location, private router: Router,
                 private userProfileService: UserProfileService) {
         this.logoUrl = ImageService.logoUrl();
         this.isPlayingGame = new RegExp('/games/.*/game-play').test(location.path());
@@ -51,6 +53,12 @@ export class AppComponent {
                 this.displayMenu = !this.router.navigated || this.isTopLevelPage(event.url);
                 this.pageTitleService.resetTitle();
             });
+    }
+
+    ngOnInit(): void {
+        this.graphQlService.post(AppComponent.initQuery, {}, data => {
+            this.infoPages = data.infoPages || [];
+        });
     }
 
     back(): boolean {
@@ -88,4 +96,11 @@ export class AppComponent {
             this.playerName = '';
         }
     }
+
+    private static readonly initQuery = `query {
+      infoPages(first:-1) {
+        title,
+        name
+      }
+    }`;
 }

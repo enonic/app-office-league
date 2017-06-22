@@ -7,6 +7,8 @@ var geoipLib = require('/lib/enonic/geoip');
 var view = resolve('pwa.html');
 
 exports.get = function (req) {
+
+    log.info('req: ' + JSON.stringify(req, null, 2));
     var site = portalLib.getSite();
     var baseHref = portalLib.pageUrl({
         path: site._path
@@ -84,6 +86,7 @@ exports.get = function (req) {
         locale: req.params.locale || 'en',
         countryIsoCode: countryIsoCode,
         user: userObj && JSON.stringify(userObj),
+        content: req.mode === 'edit' && portalLib.getContent(),
         isLive: (req.mode === 'live'),
         siteUrl: (baseHref === '/') ? '' : baseHref,
         baseHref: appBaseUrl + '/',   // trailing slash for relative urls to be correct

@@ -6,6 +6,11 @@ export interface ConfigUser {
     isAdmin: boolean;
 }
 
+export interface Content {
+    name: string;
+    type: string;
+}
+
 export interface Config {
     locale: string;
     countryIsoCode: string;
@@ -19,7 +24,8 @@ export interface Config {
     graphQlUrl: string;
     setImageUrl: string;
     liveGameUrl: string;
-    user: ConfigUser
+    user: ConfigUser;
+    content: Content;
 }
 
 declare var XPCONFIG: Config;

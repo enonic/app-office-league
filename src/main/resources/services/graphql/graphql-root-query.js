@@ -1,6 +1,8 @@
 var graphQlLib = require('/lib/graphql');
 var graphQlObjectTypesLib = require('./graphql-object-types');
+var graphQlInfoPagesLib = require('./graphql-info-pages');
 var storeLib = require('office-league-store');
+var contentLib = require('office-league-content');
 
 exports.rootQueryType = graphQlLib.createObjectType({
     name: 'Query',
@@ -286,6 +288,31 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 } else {
                     return storeLib.getLeagues(offset, first).hits;
                 }
+            }
+        },
+        infoPage: {
+            type: graphQlInfoPagesLib.infoPageType,
+            args: {
+                name: graphQlLib.GraphQLString
+            },
+            resolve: function (env) {
+                return contentLib.getContent('/office-league/app/' + env.args.name);
+            }
+        },
+        infoPages: {
+            type: graphQlLib.list(graphQlInfoPagesLib.infoPageType),
+            args: {
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt
+            },
+            resolve: function (env) {
+                var offset = env.args.offset;
+                var first = env.args.first;
+                return contentLib.query({
+                    query: 'type = \'' + app.name + ':info-page\'',
+                    start: offset,
+                    count: first
+                });
             }
         }
     }

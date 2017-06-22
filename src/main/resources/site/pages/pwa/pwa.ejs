@@ -53,7 +53,11 @@
     var XPCONFIG = {
         locale: '{{{locale}}}',
         countryIsoCode: '{{{countryIsoCode}}}',
-        {{#user}}user: {{{.}}},{{/user}}
+        {{#user}}user: {{{.}}},{{/user}}        
+        {{#content}}content: {
+            name: '{{_name}}',
+            type: '{{type}}'
+        },{{/content}}
         baseHref: '{{{baseHref}}}',
         assetsUrl: '{{{assetsUrl}}}',
         audioUrl: '{{{audioUrl}}}',
