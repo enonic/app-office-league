@@ -244,7 +244,7 @@ export class NewGameComponent
             let redPlayer1Rating = this.getPlayerRating(this.redPlayer1 && this.redPlayer1.id);
             let redPlayer2Rating = this.getPlayerRating(this.redPlayer2 && this.redPlayer2.id);
             let expectedScore = this.rankingService.getExpectedScore([bluePlayer1Rating, bluePlayer2Rating],
-                [redPlayer1Rating, redPlayer2Rating]);
+                [redPlayer1Rating, redPlayer2Rating], this.league.rules);
 
             this.expectedScoreBlue = `${expectedScore[0]}`;
             this.expectedScoreRed = `${expectedScore[1]}`;
@@ -333,6 +333,11 @@ export class NewGameComponent
             name
             imageUrl
             description
+            rules {
+                pointsToWin
+                minimumDifference
+                halfTimeSwitch
+            }
             leaguePlayers(first:-1, sort:"_timestamp DESC") {
                 rating
                 player {
@@ -349,6 +354,11 @@ export class NewGameComponent
             name
             imageUrl
             description
+            rules {
+                pointsToWin
+                minimumDifference
+                halfTimeSwitch
+            }
             leaguePlayers(first:-1, sort:"_timestamp DESC") {
                 rating
                 player {
