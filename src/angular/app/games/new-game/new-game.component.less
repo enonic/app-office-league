@@ -60,6 +60,21 @@
         text-transform: uppercase;
       }
     }
+
+    .row {
+
+      @media (max-width: 600px) and (orientation: landscape) {
+        margin-bottom: 10px;
+      }
+
+      @media (max-width: 320px) and (orientation: portrait) {
+        margin-bottom: 10px;
+      }
+
+      @media (min-width: 601px) and (max-width: 667px) and (orientation: landscape) {
+        margin-bottom: 14px;
+      }
+    }
   }
 
   &__sides {
@@ -105,6 +120,15 @@
     }
   }
 
+  &__rules {
+    @media (max-width: 600px) and (orientation: landscape) {
+      font-size: 12px;
+    }
+
+    &--value {
+      color: #ed7d3a;
+    }
+  }
 }
 
 h4.vs {

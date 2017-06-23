@@ -59,5 +59,18 @@
                     class="expected-score__value team-red">{{expectedScoreRed}}</span>
             </div>
         </div>
+
+        <div *ngIf="pointsToWin" class="row center new-game__rules">
+            <div>
+                <hr/>
+                <div>The first one to score <span class="new-game__rules--value">{{pointsToWin}}</span><span *ngIf="minimumDifference > 1">, by at least <span
+                        class="new-game__rules--value">{{minimumDifference}}</span> points difference,</span>
+                    wins.
+                </div>
+                <div *ngIf="teamMode && halfTimeSwitch">Team players switch position after one side gets to <span
+                        class="new-game__rules--value">{{halfTimeScore}}</span> points.
+                </div>
+            </div>
+        </div>
     </div>
 </div>
