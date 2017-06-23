@@ -69,4 +69,20 @@ export class CustomValidators {
         };
     }
 
+    static integer(min: number, max: number): ValidatorFn {
+        return (control: AbstractControl) => {
+            let value = parseInt(control.value, 10);
+            if (isNaN(value)) {
+                return {'integer': true}
+            }
+
+            if (value < min) {
+                return {'integerlow': true};
+            } else if (value > max) {
+                return {'integerhigh': true};
+            } else {
+                return null;
+            }
+        };
+    }
 }

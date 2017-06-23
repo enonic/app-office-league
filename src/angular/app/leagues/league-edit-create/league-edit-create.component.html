@@ -63,6 +63,34 @@
                         </div>
                     </div>
                 </template>
+
+                <fieldset>
+                    <legend>Rules</legend>
+
+                    <div class="row">
+                        <div class="input-field">
+                            <input id="pointsToWin" class="league-edit-create__rules--number" type="text" name="pointsToWin" autocomplete="off"
+                                   formControlName="pointsToWin" [class.invalid]="!!formErrors.pointsToWin" [(ngModel)]="pointsToWin">
+                            <label [ngClass]="{'active': !!pointsToWin}" for="pointsToWin" [attr.data-error]="formErrors.pointsToWin">Points to win</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-field">
+                            <input id="minimumDifference" class="league-edit-create__rules--number" type="text" name="minimumDifference" autocomplete="off"
+                                   formControlName="minimumDifference" [class.invalid]="!!formErrors.minimumDifference" [(ngModel)]="minimumDifference">
+                            <label [ngClass]="{'active': !!minimumDifference}" for="minimumDifference" [attr.data-error]="formErrors.minimumDifference">Minimum point difference to win</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div>
+                            <input id="halfTimeSwitch" type="checkbox" name="halfTimeSwitch" [(ngModel)]="halfTimeSwitch" [ngModelOptions]="{standalone: true}">
+                            <label for="halfTimeSwitch">Switch player positions at half time</label>
+                        </div>
+                    </div>
+                </fieldset>
+
                 <div class="row submit-row league-edit-create__submit-row">
                     <template [ngIf]="!editMode">
                         <a class="waves-effect waves-teal btn red league-edit-create__btn league-edit-create__btn--cancel" (click)="onCancelClicked()">Cancel</a>

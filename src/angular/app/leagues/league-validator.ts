@@ -10,6 +10,18 @@ export class LeagueValidator {
             'maxlength': 'Name must be no longer than 40 characters.',
             'nameinuse': 'This name is already taken, sorry.',
             'invalidname': 'The name contains invalid characters.'
+        },
+        'pointsToWin': {
+            'required': 'Points to win is required.',
+            'integer': 'The value should be an integer number.',
+            'integerlow': 'The value is too low.',
+            'integerhigh': 'The value is too high.'
+        },
+        'minimumDifference': {
+            'required': 'Minimum point difference to win is required.',
+            'integer': 'The value should be an integer number.',
+            'integerlow': 'The value is too low.',
+            'integerhigh': 'The value is too high.'
         }
     };
 
