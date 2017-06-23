@@ -52,7 +52,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                         log.warning('[' + playerName + '] is not an existing player name or an email address.');
                     }
                 });
-                
+
                 storeLib.refresh();
                 return createdLeague;
             }
@@ -384,8 +384,9 @@ exports.rootMutationType = graphQlLib.createObjectType({
             resolve: function (env) {
                 checkUpdateGamePermissions(env.args.gameId, env.args.gamePlayers);
 
+                var gameToUpdate = storeLib.getGameById(env.args.gameId);
                 var createGameParams = storeLib.generateCreateGameParams({
-                    leagueId: '',
+                    leagueId: gameToUpdate.leagueId,
                     points: env.args.points || [],
                     gamePlayers: env.args.gamePlayers
                 });

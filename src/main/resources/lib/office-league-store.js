@@ -1707,7 +1707,13 @@ exports.generateCreateGameParams = function (params) {
             }
         }
     }
-    var finished = (blueScore >= 10 || redScore >= 10) && Math.abs(blueScore - redScore) >= 2;
+
+    var league = exports.getLeagueById(params.leagueId);
+    var leagueRules = (league && league.rules) || {};
+    var pointsToWin = leagueRules.pointsToWin || DEFAULT_POINTS_TO_WIN;
+    var minimumDifference = leagueRules.minimumDifference || DEFAULT_MINIMUM_DIFFERENCE;
+
+    var finished = (blueScore >= pointsToWin || redScore >= pointsToWin) && Math.abs(blueScore - redScore) >= minimumDifference;
     var winnerSide = blueScore > redScore ? 'blue' : 'red';
     var gamePlayers = [];
     for (p = 0; p < params.gamePlayers.length; p++) {
