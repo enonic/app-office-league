@@ -83,6 +83,14 @@ var ROOT_PERMISSIONS = [ //TODO Remove after XP issue 4801 resolution
     }
 ];
 
+var DEFAULT_POINTS_TO_WIN = 10;
+var DEFAULT_MINIMUM_DIFFERENCE = 2;
+var DEFAULT_HALF_TIME_SWITCH = true;
+
+exports.DEFAULT_POINTS_TO_WIN = DEFAULT_POINTS_TO_WIN;
+exports.DEFAULT_MINIMUM_DIFFERENCE = DEFAULT_MINIMUM_DIFFERENCE;
+exports.DEFAULT_HALF_TIME_SWITCH = DEFAULT_HALF_TIME_SWITCH;
+
 exports.REPO_NAME = REPO_NAME;
 exports.TYPE = TYPE;
 exports.ROOT_PERMISSIONS = ROOT_PERMISSIONS;
@@ -100,6 +108,13 @@ exports.OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID = OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID;
  */
 
 /**
+ * @typedef {Object} LeagueRules
+ * @property {number} pointsToWin Number of points required to win a game.
+ * @property {boolean} halfTimeSwitch Switch team player positions at half time.
+ * @property {number} minimumDifference Point difference from the opponent required to win a game.
+ */
+
+/**
  * @typedef {Object} League
  * @property {string} type Object type: 'league'
  * @property {string} name Name of the league.
@@ -110,6 +125,7 @@ exports.OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID = OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID;
  * @property {Object} config League config.
  * @property {string[]} adminPlayerIds Array with ids of the admin players.
  * @property {Attachment|Attachment[]} [attachment] League attachments.
+ * @property {LeagueRules} [rules] League rules.
  * @property {string} [rankingUpdateStart] Date and time when the ranking update was started. An ISO-8601-formatted instant (e.g '2011-12-03T10:15:30Z').
  */
 
@@ -1392,6 +1408,9 @@ function queryExists(query, repoConn) {
  * @param {string} [params.imageType] Mime type of the league's image.
  * @param {Object} [params.config] League config.
  * @param {string[]} [params.adminPlayerIds] Array with ids of the admin players.
+ * @param {number} [params.pointsToWin=10] Number of points required to win a game.
+ * @param {number} [params.minimumDifference=2] Point difference from the opponent required to win a game.
+ * @param {boolean} [params.halfTimeSwitch=true] Switch team player positions at half time.
  * @return {string} League id.
  */
 exports.createLeague = function (params) {
@@ -1401,6 +1420,16 @@ exports.createLeague = function (params) {
     params.sport = params.sport || 'foos';
     required(params, 'name');
     params.name = validateName(params.name);
+    params.pointsToWin = params.pointsToWin || DEFAULT_POINTS_TO_WIN;
+    params.pointsToWin = params.pointsToWin < 2 || params.pointsToWin > 100 ? DEFAULT_POINTS_TO_WIN : params.pointsToWin;
+    params.minimumDifference = params.minimumDifference || DEFAULT_MINIMUM_DIFFERENCE;
+    params.minimumDifference =
+        params.minimumDifference < 1 || params.minimumDifference > 10 ? DEFAULT_MINIMUM_DIFFERENCE : params.minimumDifference;
+    params.halfTimeSwitch = params.halfTimeSwitch == null ? DEFAULT_HALF_TIME_SWITCH : params.halfTimeSwitch;
+
+    if (params.minimumDifference >= params.pointsToWin) {
+        throw "Minimum difference cannot be higher than points to win (" + params.minimumDifference + ' , ' + params.pointsToWin + ')';
+    }
 
     var imageAttachment = null;
     if (params.imageStream && required(params, 'imageType')) {
@@ -1419,7 +1448,12 @@ exports.createLeague = function (params) {
         description: params.description,
         config: params.config,
         adminPlayerIds: params.adminPlayerIds || [],
-        attachment: imageAttachment
+        attachment: imageAttachment,
+        rules: {
+            pointsToWin: toInt(params.pointsToWin),
+            minimumDifference: toInt(params.minimumDifference),
+            halfTimeSwitch: !!params.halfTimeSwitch
+        }
     });
 
     var playersNode = repoConn.create({
@@ -1673,7 +1707,13 @@ exports.generateCreateGameParams = function (params) {
             }
         }
     }
-    var finished = (blueScore >= 10 || redScore >= 10) && Math.abs(blueScore - redScore) >= 2;
+
+    var league = exports.getLeagueById(params.leagueId);
+    var leagueRules = (league && league.rules) || {};
+    var pointsToWin = leagueRules.pointsToWin || DEFAULT_POINTS_TO_WIN;
+    var minimumDifference = leagueRules.minimumDifference || DEFAULT_MINIMUM_DIFFERENCE;
+
+    var finished = (blueScore >= pointsToWin || redScore >= pointsToWin) && Math.abs(blueScore - redScore) >= minimumDifference;
     var winnerSide = blueScore > redScore ? 'blue' : 'red';
     var gamePlayers = [];
     for (p = 0; p < params.gamePlayers.length; p++) {
@@ -2224,6 +2264,9 @@ exports.updateTeam = function (params) {
  * @param {string} [params.description] New description text.
  * @param {object} [params.config] New league config.
  * @param {string[]} [params.adminPlayerIds] New array with ids of the admin players.
+ * @param {number} [params.pointsToWin=10] Number of points required to win a game.
+ * @param {number} [params.minimumDifference=2] Point difference from the opponent required to win a game.
+ * @param {boolean} [params.halfTimeSwitch=true] Switch team player positions at half time.
  * @return {League} Updated league or null if the league could not be updated.
  */
 exports.updateLeague = function (params) {
@@ -2273,7 +2316,37 @@ exports.updateLeague = function (params) {
             if (params.adminPlayerIds != null) {
                 node.adminPlayerIds = params.adminPlayerIds;
             }
-            node._timestamp = valueLib.instant(new Date().toISOString())
+            node._timestamp = valueLib.instant(new Date().toISOString());
+
+            if (!node.rules) {
+                node.rules = {
+                    pointsToWin: toInt(DEFAULT_POINTS_TO_WIN),
+                    minimumDifference: toInt(DEFAULT_MINIMUM_DIFFERENCE),
+                    halfTimeSwitch: DEFAULT_HALF_TIME_SWITCH
+                };
+            }
+
+            if (params.pointsToWin != null) {
+                params.pointsToWin = params.pointsToWin < 2 || params.pointsToWin > 100 ? DEFAULT_POINTS_TO_WIN : params.pointsToWin;
+                node.rules.pointsToWin = toInt(params.pointsToWin);
+            }
+            if (params.minimumDifference != null) {
+                params.minimumDifference =
+                    params.minimumDifference < 1 || params.minimumDifference > 10
+                        ? DEFAULT_MINIMUM_DIFFERENCE
+                        : params.minimumDifference;
+                node.rules.minimumDifference = toInt(params.minimumDifference);
+            }
+            if (params.halfTimeSwitch != null) {
+                node.rules.halfTimeSwitch = params.halfTimeSwitch;
+            }
+
+            if (node.rules.minimumDifference >= node.rules.pointsToWin) {
+                throw "Minimum difference cannot be higher than points to win (" + node.rules.minimumDifference + ' , ' +
+                      node.rules.pointsToWin +
+                      ')';
+            }
+
             return node;
         }
     });

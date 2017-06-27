@@ -12,6 +12,7 @@ import {RankingService} from '../../services/ranking.service';
 import {AudioService, WebAudioSound} from '../../services/audio.service';
 import {WebSocketManager} from '../../services/websocket.manager';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
+import {LeagueRules} from '../../../graphql/schemas/LeagueRules';
 
 @Component({
     selector: 'new-game',
@@ -43,6 +44,10 @@ export class NewGameComponent
     shuffleInProgress: boolean;
     teamMode: boolean = false;
     shuffleCount: number = 0;
+    halfTimeScore: number;
+    halfTimeSwitch: boolean;
+    pointsToWin: number;
+    minimumDifference: number;
     private playerRatings: { [playerId: string]: number } = {};
     private startGameSound: WebAudioSound;
     private backgroundSound: WebAudioSound;
@@ -89,6 +94,7 @@ export class NewGameComponent
 
         this.pageTitleService.setTitle(this.league.name);
         this.updatePlayerSelectionState();
+        this.setRulesDescription(this.league.rules);
     }
 
     onPlayClicked() {
@@ -244,7 +250,7 @@ export class NewGameComponent
             let redPlayer1Rating = this.getPlayerRating(this.redPlayer1 && this.redPlayer1.id);
             let redPlayer2Rating = this.getPlayerRating(this.redPlayer2 && this.redPlayer2.id);
             let expectedScore = this.rankingService.getExpectedScore([bluePlayer1Rating, bluePlayer2Rating],
-                [redPlayer1Rating, redPlayer2Rating]);
+                [redPlayer1Rating, redPlayer2Rating], this.league.rules);
 
             this.expectedScoreBlue = `${expectedScore[0]}`;
             this.expectedScoreRed = `${expectedScore[1]}`;
@@ -316,6 +322,14 @@ export class NewGameComponent
             this.playerRatings[leaguePlayer.player.id] = leaguePlayer.rating;
             return leaguePlayer.player.id;
         }).filter((id) => !!id);
+        this.setRulesDescription(league.rules);
+    }
+
+    private setRulesDescription(rules: LeagueRules) {
+        this.halfTimeScore = Math.ceil(rules.pointsToWin / 2);
+        this.halfTimeSwitch = rules.halfTimeSwitch;
+        this.pointsToWin = rules.pointsToWin;
+        this.minimumDifference = rules.minimumDifference;
     }
 
     static readonly getPlayerLeagueQuery = `query ($playerId: ID!, $leagueId: ID!) {
@@ -333,6 +347,11 @@ export class NewGameComponent
             name
             imageUrl
             description
+            rules {
+                pointsToWin
+                minimumDifference
+                halfTimeSwitch
+            }
             leaguePlayers(first:-1, sort:"_timestamp DESC") {
                 rating
                 player {
@@ -349,6 +368,11 @@ export class NewGameComponent
             name
             imageUrl
             description
+            rules {
+                pointsToWin
+                minimumDifference
+                halfTimeSwitch
+            }
             leaguePlayers(first:-1, sort:"_timestamp DESC") {
                 rating
                 player {

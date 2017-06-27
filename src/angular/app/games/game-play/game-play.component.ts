@@ -137,8 +137,7 @@ export class GamePlayComponent
                         return;
                     }
                     this.startGame();
-                })
-            ;
+                });
         });
         if ('hidden' in document) {
             this.visibilityChangeHandler = this.visibilityChange.bind(this);
@@ -486,14 +485,22 @@ export class GamePlayComponent
     }
 
     private onScoreChange() {
-        let wasFirstPeriod: boolean = this.firstPeriod;
-        this.firstPeriod = this.blueScore < 5 && this.redScore < 5;
-        this.halfTime = (wasFirstPeriod && !this.firstPeriod) || (!wasFirstPeriod && this.firstPeriod);
+        if (this.league.rules.halfTimeSwitch) {
+            let wasFirstPeriod: boolean = this.firstPeriod;
+            let halfTimeScore = Math.ceil(this.league.rules.pointsToWin / 2);
+
+            this.firstPeriod = this.blueScore < halfTimeScore && this.redScore < halfTimeScore;
+            this.halfTime = (wasFirstPeriod && !this.firstPeriod) || (!wasFirstPeriod && this.firstPeriod);
+        }
     }
 
     private hasGameEnded(): boolean {
+        const pointsToWin = this.league.rules.pointsToWin;
+        const minimumDifference = this.league.rules.minimumDifference;
+
         return (this.gameState === GameState.Finished) ||
-               ((this.blueScore >= 10 || this.redScore >= 10) && Math.abs(this.blueScore - this.redScore) >= 2);
+               ((this.blueScore >= pointsToWin || this.redScore >= pointsToWin) &&
+                Math.abs(this.blueScore - this.redScore) >= minimumDifference);
     }
 
     private compareGamePlayer(gp1: GamePlayer, gp2: GamePlayer) {
@@ -595,7 +602,7 @@ export class GamePlayComponent
         let redPlayer1Rating = this.getPlayerRating(this.redPlayer1);
         let redPlayer2Rating = this.getPlayerRating(this.redPlayer2);
         let expectedScore = this.rankingService.getExpectedScore([bluePlayer1Rating, bluePlayer2Rating],
-            [redPlayer1Rating, redPlayer2Rating]);
+            [redPlayer1Rating, redPlayer2Rating], this.league.rules);
         this.expectedBlueScore = expectedScore[0];
         this.expectedRedScore = expectedScore[1];
     }
@@ -1015,6 +1022,11 @@ export class GamePlayComponent
             name
             imageUrl
             description
+            rules {
+                pointsToWin
+                minimumDifference
+                halfTimeSwitch
+            }
         }
         
         players(ids: $playerIds) {
@@ -1072,6 +1084,11 @@ export class GamePlayComponent
           name
           imageUrl
           description
+          rules {
+            pointsToWin
+            minimumDifference
+            halfTimeSwitch
+          }
         }
       }
     }`;

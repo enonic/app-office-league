@@ -23,7 +23,12 @@ import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist
     templateUrl: 'league-edit-create.component.html',
     styleUrls: ['league-edit-create.component.less']
 })
-export class LeagueEditCreateComponent extends BaseComponent implements AfterViewInit {
+export class LeagueEditCreateComponent
+    extends BaseComponent
+    implements AfterViewInit {
+
+    private static readonly DEFAULT_POINTS_TO_WIN: number = 10;
+    private static readonly DEFAULT_MIN_DIFFERENCE: number = 2;
 
     @ViewChild('fileInput') inputEl: ElementRef;
     @ViewChild('addPlayerChips') addPlayerChipsViewChild;
@@ -31,6 +36,9 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     leagueId: string;
     description: string;
     leagueImageUrl: SafeUrl;
+    pointsToWin: string;
+    minimumDifference: string;
+    halfTimeSwitch: boolean = true;
     sport: string = Sport[Sport.FOOS].toLowerCase();
     admins: Player[] = [];
     adminPlayerIds: string[] = [];
@@ -38,7 +46,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     onlyPlayers: Player[] = [];
     onlyPlayerNames: string[] = [];
     onlyPlayerNamesToAdd: string[] = [];
-    playerNames : string[] = [];
+    playerNames: string[] = [];
     allPlayerIds: string[] = [];
     allPlayerNames: string[] = [];
     allPlayerMap: any = {};
@@ -46,7 +54,9 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     leagueForm: FormGroup;
     formErrors = {
         'name': '',
-        'description': ''
+        'description': '',
+        'pointsToWin': '',
+        'minimumDifference': ''
     };
     materializeActionsAdmin = new EventEmitter<string | MaterializeAction>();
     materializeActionsPlayer = new EventEmitter<string | MaterializeAction>();
@@ -63,13 +73,17 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     ngOnInit(): void {
         super.ngOnInit();
 
+        const defaultPointsToWin = LeagueEditCreateComponent.DEFAULT_POINTS_TO_WIN + '';
+        const defaultMinimumDifference = LeagueEditCreateComponent.DEFAULT_MIN_DIFFERENCE + '';
         this.leagueForm = this.fb.group({
             name: new FormControl(null,
                 [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(40), CustomValidators.validName()],
                 LeagueValidator.nameInUseValidator(this.graphQLService)),
             description: null,
-            id: null
-        });
+            id: null,
+            pointsToWin: new FormControl(defaultPointsToWin, [Validators.required, CustomValidators.integer(2, 100)]),
+            minimumDifference: new FormControl(defaultMinimumDifference, [Validators.required, CustomValidators.integer(1, 10)])
+        }, {validator: LeagueValidator.minimumDifference()});
         const updateFormErrors = (data?: any) => {
             LeagueValidator.updateFormErrors(this.leagueForm, this.formErrors);
         };
@@ -112,7 +126,10 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             leagueId: this.leagueId,
             name: this.name,
             description: this.description || '',
-            adminPlayerIds: this.adminPlayerIds
+            adminPlayerIds: this.adminPlayerIds,
+            pointsToWin: parseInt(this.pointsToWin, 10),
+            minimumDifference: parseInt(this.minimumDifference, 10),
+            halfTimeSwitch: this.halfTimeSwitch
         };
         this.graphQLService.post(LeagueEditCreateComponent.updateLeagueMutation, updateLeagueParams).then(data => {
             return data && data.updateLeague;
@@ -133,7 +150,10 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             description: this.description || '',
             sport: this.sport,
             adminPlayerIds: this.adminPlayerIds,
-            playerNames: this.playerNames
+            playerNames: this.playerNames,
+            pointsToWin: parseInt(this.pointsToWin, 10),
+            minimumDifference: parseInt(this.minimumDifference, 10),
+            halfTimeSwitch: this.halfTimeSwitch
         };
         this.graphQLService.post(LeagueEditCreateComponent.createLeagueMutation, createLeagueParams).then(data => {
             return data && data.createLeague;
@@ -180,13 +200,19 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
             this.admins = league.adminPlayers;
             this.adminPlayerIds = this.admins.map((p) => p.id);
             this.adminPlayerNames = this.admins.map((p) => p.name);
+            // rules
+            this.pointsToWin = league.rules.pointsToWin + '';
+            this.minimumDifference = league.rules.minimumDifference + '';
+            this.halfTimeSwitch = league.rules.halfTimeSwitch;
 
             this.pageTitleService.setTitle(league.name);
 
             this.leagueForm.setValue({
                 name: league.name || '',
                 description: league.description || '',
-                id: league.id || ''
+                id: league.id || '',
+                pointsToWin: this.pointsToWin || '',
+                minimumDifference: this.minimumDifference || ''
             });
 
             this.leagueForm.removeControl('name');
@@ -194,6 +220,12 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
                 [Validators.required, Validators.minLength(3), Validators.maxLength(40), CustomValidators.validName()],
                 LeagueValidator.nameInUseValidator(this.graphQLService, league.id)));
 
+            this.leagueForm.removeControl('pointsToWin');
+            this.leagueForm.addControl('pointsToWin',
+                new FormControl(this.pointsToWin, [Validators.required, CustomValidators.integer(2, 100)]));
+            this.leagueForm.removeControl('minimumDifference');
+            this.leagueForm.addControl('minimumDifference',
+                new FormControl(this.minimumDifference, [Validators.required, CustomValidators.integer(1, 10)]));
             return league;
         });
     }
@@ -253,7 +285,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
         this.adminPlayerIds = this.adminPlayerIds.filter((playerId) => playerId !== admin.id);
         this.adminPlayerNames = this.adminPlayerNames.filter((playerName) => playerName !== admin.name);
         this.playerNames = this.playerNames.filter((playerName) => playerName !== admin.name);
-        
+
     }
 
     onRemovePlayerClicked(removedPlayer: Player) {
@@ -291,7 +323,7 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
     onPlayersSelected() {
         this.onlyPlayerNamesToAdd.forEach((playerName) => {
             if ((this.allPlayerMap[playerName] || playerName.indexOf('@') !== -1) && this.playerNames.indexOf(playerName) === -1) {
-                let player = this.allPlayerMap[playerName] || new Player(undefined,playerName);
+                let player = this.allPlayerMap[playerName] || new Player(undefined, playerName);
                 this.onlyPlayers.push(player);
                 this.onlyPlayerNames.push(playerName);
                 this.playerNames.push(playerName);
@@ -318,19 +350,29 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
         this.materializeActionsPlayer.emit({action: "modal", params: ['close']});
     }
 
-    private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $adminPlayerIds: [ID], $playerNames: [String]) {
-        createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: $adminPlayerIds, playerNames: $playerNames) {
+    private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $adminPlayerIds: [ID], $playerNames: [String], $pointsToWin: Int, $minimumDifference: Int, $halfTimeSwitch: Boolean) {
+        createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: $adminPlayerIds, playerNames: $playerNames, pointsToWin: $pointsToWin, minimumDifference: $minimumDifference, halfTimeSwitch: $halfTimeSwitch) {
             id
             name
             imageUrl
+            rules {
+                pointsToWin
+                minimumDifference
+                halfTimeSwitch
+            }
         }
     }`;
 
-    private static readonly updateLeagueMutation = `mutation ($leagueId: ID!, $name: String, $description: String, $adminPlayerIds: [ID]) {
-        updateLeague(id: $leagueId, name: $name, description: $description, adminPlayerIds: $adminPlayerIds) {
+    private static readonly updateLeagueMutation = `mutation ($leagueId: ID!, $name: String, $description: String, $adminPlayerIds: [ID], $pointsToWin: Int, $minimumDifference: Int, $halfTimeSwitch: Boolean) {
+        updateLeague(id: $leagueId, name: $name, description: $description, adminPlayerIds: $adminPlayerIds, pointsToWin: $pointsToWin, minimumDifference: $minimumDifference, halfTimeSwitch: $halfTimeSwitch) {
             id
             name
             imageUrl
+            rules {
+                pointsToWin
+                minimumDifference
+                halfTimeSwitch
+            }
         }
     }`;
 
@@ -346,6 +388,11 @@ export class LeagueEditCreateComponent extends BaseComponent implements AfterVie
                 id
                 name
                 imageUrl
+            }
+            rules {
+                pointsToWin
+                minimumDifference
+                halfTimeSwitch
             }
         }
     }`;

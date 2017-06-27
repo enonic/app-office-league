@@ -8,6 +8,7 @@ import {LeagueTeam} from './LeagueTeam';
 import {XPCONFIG} from '../../app/app.config';
 import {UrlHelper} from './UrlHelper';
 import {LeagueStats} from './LeagueStats';
+import {LeagueRules} from './LeagueRules';
 
 export class League
     extends NamedEntity {
@@ -21,6 +22,7 @@ export class League
     adminPlayers: Player[];
     imageUrl: string;
     stats: LeagueStats;
+    rules: LeagueRules;
 
     constructor(id: string, name: string) {
         super(id, name);
@@ -31,7 +33,6 @@ export class League
         let league = new League(json.id, json.name);
         league.sport = SportUtil.parse(json.sport);
         league.description = json.description;
-        //TODO Config
         league.leaguePlayers = json.leaguePlayers && json.leaguePlayers.map(leaguePlayer => LeaguePlayer.fromJson(leaguePlayer));
         league.leagueTeams = json.leagueTeams && json.leagueTeams.map(leagueTeam => LeagueTeam.fromJson(leagueTeam));
         league.nonMemberPlayers = json.nonMemberPlayers && json.nonMemberPlayers.map(nonMemberPlayer => Player.fromJson(nonMemberPlayer));
@@ -39,6 +40,7 @@ export class League
         league.imageUrl = json.imageUrl ? (UrlHelper.trimSlash(XPCONFIG.baseHref) + json.imageUrl) : ImageService.leagueDefault();
         league.stats = json.stats ? LeagueStats.fromJson(json.stats) : null;
         league.adminPlayers = json.adminPlayers ? json.adminPlayers.map(p => Player.fromJson(p)) : [];
+        league.rules = json.rules ? LeagueRules.fromJson(json.rules) : new LeagueRules();
         return league;
     }
 }

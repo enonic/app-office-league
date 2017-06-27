@@ -85,7 +85,8 @@ var createGameJson = function (game, baseUrl) {
         teamJson.ranking = storeLib.getRankingForTeamLeague(gt.teamId, game.leagueId);
         gameJson.teams[teamJson.teamId] = teamJson;
     }
-    setExpectedScore(gameJson);
+    var winPoints = (league.rules || {}).pointsToWin || 10;
+    setExpectedScore(gameJson, winPoints);
 
     return gameJson;
 };
@@ -131,7 +132,7 @@ var createLeagueJson = function (league, baseUrl) {
     };
 };
 
-var setExpectedScore = function (gameJson) {
+var setExpectedScore = function (gameJson, winPoints) {
     var player, redRating = [], blueRating = [];
     for (var id in gameJson.players) {
         player = gameJson.players[id];
@@ -143,7 +144,7 @@ var setExpectedScore = function (gameJson) {
     }
 
     var expectedScore = eloRating.calculateExpectedScore(avg(redRating), avg(blueRating));
-    var sideExpectedPoints = eloRating.scoreToPoints(expectedScore);
+    var sideExpectedPoints = eloRating.scoreToPoints(expectedScore, winPoints);
 
     gameJson.sides.red.expectedScore = sideExpectedPoints[0];
     gameJson.sides.blue.expectedScore = sideExpectedPoints[1];

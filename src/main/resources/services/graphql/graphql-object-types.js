@@ -646,6 +646,31 @@ exports.leagueStatsType = graphQlLib.createObjectType({
     }
 });
 
+exports.rulesType = graphQlLib.createObjectType({
+    name: 'Rules',
+    description: 'Domain representation of rules for a league.',
+    fields: {
+        pointsToWin: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
+            resolve: function (env) {
+                return env.source.pointsToWin || storeLib.DEFAULT_POINTS_TO_WIN;
+            }
+        },
+        minimumDifference: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
+            resolve: function (env) {
+                return env.source.minimumDifference || storeLib.DEFAULT_MINIMUM_DIFFERENCE;
+            }
+        },
+        halfTimeSwitch: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLBoolean),
+            resolve: function (env) {
+                return env.source.halfTimeSwitch == null ? storeLib.DEFAULT_HALF_TIME_SWITCH : env.source.halfTimeSwitch;
+            }
+        }
+    }
+});
+
 exports.leagueType = graphQlLib.createObjectType({
     name: 'League',
     description: 'Domain representation of a league. A league contains games. Players can join 0..* leagues and indirectly their teams.',
@@ -807,6 +832,12 @@ exports.leagueType = graphQlLib.createObjectType({
             type: exports.leagueStatsType,
             resolve: function (env) {
                 return env.source;
+            }
+        },
+        rules: {
+            type: exports.rulesType,
+            resolve: function (env) {
+                return env.source.rules || {};
             }
         }
     }

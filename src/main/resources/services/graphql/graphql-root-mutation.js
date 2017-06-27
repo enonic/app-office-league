@@ -18,7 +18,10 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 description: graphQlLib.GraphQLString,
                 config: graphQlLib.GraphQLString,//TODO
                 adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID),
-                playerNames: graphQlLib.list(graphQlLib.GraphQLString)
+                playerNames: graphQlLib.list(graphQlLib.GraphQLString),
+                pointsToWin: graphQlLib.GraphQLInt,
+                minimumDifference: graphQlLib.GraphQLInt,
+                halfTimeSwitch: graphQlLib.GraphQLBoolean
             },
             resolve: function (env) {
                 var currentPlayerId = getCurrentPlayerId();
@@ -31,7 +34,10 @@ exports.rootMutationType = graphQlLib.createObjectType({
                     sport: env.args.sport,
                     description: env.args.description,
                     config: env.args.config ? JSON.parse(env.args.config) : {}, //TODO
-                    adminPlayerIds: env.args.adminPlayerIds
+                    adminPlayerIds: env.args.adminPlayerIds,
+                    pointsToWin: env.args.pointsToWin,
+                    minimumDifference: env.args.minimumDifference,
+                    halfTimeSwitch: env.args.halfTimeSwitch
                 });
 
                 storeLib.refresh();
@@ -46,7 +52,7 @@ exports.rootMutationType = graphQlLib.createObjectType({
                         log.warning('[' + playerName + '] is not an existing player name or an email address.');
                     }
                 });
-                
+
                 storeLib.refresh();
                 return createdLeague;
             }
@@ -58,7 +64,10 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 name: graphQlLib.GraphQLString,
                 description: graphQlLib.GraphQLString,
                 config: graphQlLib.GraphQLString,//TODO
-                adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID)
+                adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID),
+                pointsToWin: graphQlLib.GraphQLInt,
+                minimumDifference: graphQlLib.GraphQLInt,
+                halfTimeSwitch: graphQlLib.GraphQLBoolean,
             },
             resolve: function (env) {
                 checkUpdateLeaguePermissions(env.args.id, env.args.adminPlayerIds);
@@ -68,7 +77,10 @@ exports.rootMutationType = graphQlLib.createObjectType({
                     name: env.args.name,
                     description: env.args.description,
                     config: env.args.config ? JSON.parse(env.args.config) : {}, //TODO
-                    adminPlayerIds: env.args.adminPlayerIds
+                    adminPlayerIds: env.args.adminPlayerIds,
+                    pointsToWin: env.args.pointsToWin,
+                    minimumDifference: env.args.minimumDifference,
+                    halfTimeSwitch: env.args.halfTimeSwitch
                 });
                 storeLib.refresh();
                 return updatedLeague;
@@ -372,8 +384,9 @@ exports.rootMutationType = graphQlLib.createObjectType({
             resolve: function (env) {
                 checkUpdateGamePermissions(env.args.gameId, env.args.gamePlayers);
 
+                var gameToUpdate = storeLib.getGameById(env.args.gameId);
                 var createGameParams = storeLib.generateCreateGameParams({
-                    leagueId: '',
+                    leagueId: gameToUpdate.leagueId,
                     points: env.args.points || [],
                     gamePlayers: env.args.gamePlayers
                 });
