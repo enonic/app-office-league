@@ -77,9 +77,15 @@
 
                     <div class="row">
                         <div class="input-field">
-                            <input id="minimumDifference" class="league-edit-create__rules--number" type="text" name="minimumDifference" autocomplete="off"
-                                   formControlName="minimumDifference" [class.invalid]="!!formErrors.minimumDifference" [(ngModel)]="minimumDifference">
-                            <label [ngClass]="{'active': !!minimumDifference}" for="minimumDifference" [attr.data-error]="formErrors.minimumDifference">Minimum point difference to win</label>
+                            <input id="minimumDifference" class="league-edit-create__rules--number" type="text" name="minimumDifference"
+                                   autocomplete="off"
+                                   formControlName="minimumDifference"
+                                   [class.invalid]="!!formErrors.minimumDifference || leagueForm.hasError('lessthanpoints')"
+                                   [(ngModel)]="minimumDifference">
+                            <label [ngClass]="{'active': !!minimumDifference}" for="minimumDifference"
+                                   [attr.data-error]="formErrors.minimumDifference"
+                                   [attr.data-error]="leagueForm.hasError('lessthanpoints')? 'Minimum point difference must be less than points to win.': null">Minimum
+                                point difference to win</label>
                         </div>
                     </div>
 

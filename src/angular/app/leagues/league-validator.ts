@@ -52,6 +52,23 @@ export class LeagueValidator {
         };
     }
 
+    static minimumDifference(): ValidatorFn {
+        return (group: FormGroup): { [key: string]: any } => {
+            let minDiffControl = group.controls['minimumDifference'];
+            let pointsToWinControl = group.controls['pointsToWin'];
+            if (!minDiffControl || !pointsToWinControl) {
+                return null;
+            }
+
+            let minDiff = parseInt(minDiffControl.value, 10);
+            let pointsToWin = parseInt(pointsToWinControl.value, 10);
+            if (!isNaN(minDiff) && !isNaN(pointsToWin) && pointsToWin <= minDiff) {
+                return {'lessthanpoints': true}
+            }
+            return null;
+        };
+    }
+
     private static readonly leagueNameInUseQuery = `query($name: String) {
         league(name: $name) {
             id

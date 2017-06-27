@@ -83,7 +83,7 @@ export class LeagueEditCreateComponent
             id: null,
             pointsToWin: new FormControl(defaultPointsToWin, [Validators.required, CustomValidators.integer(2, 100)]),
             minimumDifference: new FormControl(defaultMinimumDifference, [Validators.required, CustomValidators.integer(1, 10)])
-        });
+        }, {validator: LeagueValidator.minimumDifference()});
         const updateFormErrors = (data?: any) => {
             LeagueValidator.updateFormErrors(this.leagueForm, this.formErrors);
         };

@@ -71,8 +71,12 @@ export class CustomValidators {
 
     static integer(min: number, max: number): ValidatorFn {
         return (control: AbstractControl) => {
+            if (control.value === '') {
+                return null;
+            }
+
             let value = parseInt(control.value, 10);
-            if (isNaN(value)) {
+            if (isNaN(control.value) || isNaN(value)) {
                 return {'integer': true}
             }
 
