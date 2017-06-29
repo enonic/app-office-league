@@ -653,13 +653,17 @@ exports.rulesType = graphQlLib.createObjectType({
         pointsToWin: {
             type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
             resolve: function (env) {
-                return env.source.pointsToWin || storeLib.DEFAULT_POINTS_TO_WIN;
+                return env.source.pointsToWin
+                    ? graphQlUtilLib.toInt(env.source.pointsToWin, storeLib.DEFAULT_POINTS_TO_WIN)
+                    : storeLib.DEFAULT_POINTS_TO_WIN;
             }
         },
         minimumDifference: {
             type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
             resolve: function (env) {
-                return env.source.minimumDifference || storeLib.DEFAULT_MINIMUM_DIFFERENCE;
+                return env.source.minimumDifference
+                    ? graphQlUtilLib.toInt(env.source.minimumDifference, storeLib.DEFAULT_MINIMUM_DIFFERENCE)
+                    : storeLib.DEFAULT_MINIMUM_DIFFERENCE;
             }
         },
         halfTimeSwitch: {
