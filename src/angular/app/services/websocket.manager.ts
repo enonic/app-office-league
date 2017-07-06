@@ -86,7 +86,7 @@ export class WebSocketManager {
             if (this.debug) {
                 console.log('WebSocket reconnecting...');
             }
-            setTimeout(() => this.connect, WebSocketManager.ReconnectTimeMs); // attempt to reconnect
+            setTimeout(() => this.connect(), WebSocketManager.ReconnectTimeMs); // attempt to reconnect
         }
     }
 
