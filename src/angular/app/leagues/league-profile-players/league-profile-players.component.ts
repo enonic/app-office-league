@@ -43,6 +43,8 @@ export class LeagueProfilePlayersComponent
     refresh(currentPage: number = 1) {
         let playerId = this.authService.isAuthenticated() ? this.authService.getUser().playerId : '-1';
 
+        let gamesSince = new Date();
+        gamesSince.setDate(gamesSince.getDate() - 90);
         let after = currentPage > 1 ? ((currentPage - 1) * LeagueProfilePlayersComponent.paging - 1) : undefined;
         this.graphQLService.post(
             LeagueProfilePlayersComponent.getLeagueQuery,
@@ -51,7 +53,8 @@ export class LeagueProfilePlayersComponent
                 after: after,
                 first: LeagueProfilePlayersComponent.paging,
                 sort: 'pending DESC, rating DESC, name ASC',
-                playerId: playerId
+                playerId: playerId,
+                gamesSince: gamesSince.toISOString()
             },
             data => this.handleLeagueQueryResponse(data),
             () => this.handleQueryError()
@@ -132,7 +135,7 @@ export class LeagueProfilePlayersComponent
         this.materializeActionsApprove.emit({action: "modal", params: ['close']});
     }
 
-    private static readonly getLeagueQuery = `query ($name: String, $after:Int, $first:Int, $sort: String, $playerId: ID!) {
+    private static readonly getLeagueQuery = `query ($name: String, $after:Int, $first:Int, $sort: String, $playerId: ID!, $gamesSince: String) {
         league(name: $name) {
             id
             name
@@ -149,7 +152,11 @@ export class LeagueProfilePlayersComponent
                             name
                             imageUrl
                             description
-                        }    
+                        }
+                        gamePlayers(since: $gamesSince, sort: "time desc", first: -1) {
+                            ratingDelta
+                            time
+                        }
                     }
                 }
                 

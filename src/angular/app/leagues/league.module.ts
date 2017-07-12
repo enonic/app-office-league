@@ -13,9 +13,11 @@ import {LeagueProfileTeamsComponent} from './league-profile-teams/league-profile
 import {LeagueEditCreateComponent} from './league-edit-create/league-edit-create.component';
 import {FormsModule} from '@angular/forms';
 import {MaterializeModule} from 'angular2-materialize/dist/index';
-import {PlayerRouteGuard, } from '../guards/player.route.guard';
+import {ChartsModule} from 'ng2-charts';
+import {PlayerRouteGuard} from '../guards/player.route.guard';
 import {AdminListComponent} from './admin-list/admin-list.component';
 import {AdminSummaryComponent} from './admin-summary/admin-summary.component';
+import {LeaguePlayerGraphComponent} from './league-player-graph/league-player-graph.component';
 
 const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, canActivate: [PlayerRouteGuard,]},
@@ -37,6 +39,7 @@ const leagueRoutes: Routes = [
         LeagueProfilePlayersComponent,
         LeagueProfileTeamsComponent,
         LeagueEditCreateComponent,
+        LeaguePlayerGraphComponent,
         AdminListComponent,
         AdminSummaryComponent
     ],
@@ -45,6 +48,7 @@ const leagueRoutes: Routes = [
         FormsModule,
         CommonModule,
         GamesModule,
+        ChartsModule,
         RouterModule.forChild(leagueRoutes)
     ],
     exports: [LeagueListComponent, LeaguePlayerListComponent, LeagueTeamListComponent],

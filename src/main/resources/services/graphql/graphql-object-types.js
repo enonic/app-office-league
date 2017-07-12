@@ -573,6 +573,26 @@ exports.leaguePlayerType = graphQlLib.createObjectType({
             resolve: function (env) {
                 return storeLib.getLeagueById(env.source.leagueId);
             }
+        },
+        gamePlayers: {
+            type: graphQlLib.list(exports.gamePlayerType),
+            args: {
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt,
+                sort: graphQlLib.GraphQLString,
+                since: graphQlLib.GraphQLString
+            },
+            resolve: function (env) {
+                var since = env.args.since ? new Date(env.args.since) : undefined;
+                return storeLib.getGamePlayersByLeagueIdAndPlayerId({
+                    leagueId: env.source.leagueId,
+                    playerId: env.source.playerId,
+                    count: env.args.first,
+                    start: env.args.offset,
+                    sort: env.args.sort,
+                    since: since
+                }).hits;
+            }
         }
     }
 });

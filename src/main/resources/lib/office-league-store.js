@@ -912,7 +912,6 @@ exports.getTeamsByPlayerId = function (playerId, start, count) {
     });
 };
 
-
 /**
  * Retrieve a list of games for a player.
  * @param  {string} playerId Player id.
@@ -926,6 +925,43 @@ exports.getGamePlayersByPlayerId = function (playerId, start, count) {
         count: count,
         query: "type = '" + TYPE.GAME_PLAYER + "' AND playerId = '" + playerId + "'",
         sort: "time DESC"
+    });
+};
+
+/**
+ * Retrieve a list of games in a league for a player.
+ * @param {object} params JSON parameters.
+ * @param {string} params.leagueId League id.
+ * @param {string} params.playerId Player id.
+ * @param {number} [params.start=0] First index of the league games.
+ * @param {number} [params.count=10] Number of games to fetch.
+ * @param {Date} [params.since] Initial date and time of the games to be retrieved.
+ * @param {string} [params.sort] Sort expression.
+ * @return {GamePlayersResponse} Player games.
+ */
+exports.getGamePlayersByLeagueIdAndPlayerId = function (params) {
+    var league = exports.getLeagueById(params.leagueId);
+    var leaguePath = league && league._path;
+    if (!leaguePath) {
+        return {
+            total: 0,
+            start: 0,
+            count: 0,
+            hits: []
+        };
+    }
+
+    var queryStr = "type = '" + TYPE.GAME_PLAYER + "' AND playerId = '" + params.playerId + "' AND _path LIKE '" + leaguePath + "/*'";
+    if (params.since != null) {
+        var time = params.since.toISOString();
+        queryStr += " AND (time > instant('" + time + "') )";
+    }
+
+    return query({
+        start: params.start,
+        count: params.count,
+        query: queryStr,
+        sort: params.sort || "time DESC"
     });
 };
 
