@@ -75,8 +75,6 @@ export class LeaguePlayerGraphComponent
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.log(changes);
-
         let leaguePlayers: SimpleChange = changes['leaguePlayers'];
         if (leaguePlayers.currentValue && leaguePlayers.previousValue) {
             this.processData(this.leaguePlayers);
@@ -108,7 +106,6 @@ export class LeaguePlayerGraphComponent
     }
 
     private processData(leaguePlayers: LeaguePlayer[]) {
-        console.log('processData', leaguePlayers);
         let chartDatasets = [];
         let lineChartColors = [];
         let lastDatePoint = 0, firstDatePoint = Number.MAX_SAFE_INTEGER;
@@ -116,9 +113,14 @@ export class LeaguePlayerGraphComponent
         // group points by date
         leaguePlayers.forEach((leaguePlayer) => {
             let gamePlayers = leaguePlayer.gamePlayers;
-            let nl = 0;
+            let nl = 0, prevTime = '';
+            if (gamePlayers.length === 0) {
+                return;
+            }
+
             for (let gp = 0, l = gamePlayers.length; gp < l; gp++) {
                 let gamePlayer = gamePlayers[gp];
+                gamePlayer.time.setHours(0, 0, 0, 0);
                 let t = gamePlayer.time.getTime();
                 if (t > lastDatePoint) {
                     lastDatePoint = t;
@@ -127,32 +129,52 @@ export class LeaguePlayerGraphComponent
                 }
 
                 if (gp > 0) {
-                    if (gamePlayers[nl].time.toDateString() === gamePlayers[gp].time.toDateString()) {
+                    if (prevTime === gamePlayers[gp].time.toDateString()) {
                         gamePlayers[nl].ratingDelta += gamePlayers[gp].ratingDelta;
                     } else {
+                        prevTime = gamePlayers[gp].time.toDateString();
                         nl++;
+                        gamePlayers[nl].ratingDelta = gamePlayers[gp].ratingDelta;
+                        gamePlayers[nl].time = gamePlayers[gp].time;
                     }
+                } else {
+                    prevTime = gamePlayers[gp].time.toDateString();
                 }
             }
-            leaguePlayer.gamePlayers = gamePlayers.slice(0, nl);
+            leaguePlayer.gamePlayers = gamePlayers.slice(0, nl + 1);
         });
+
+        if (firstDatePoint === lastDatePoint) {
+            let lastDatePointObj = new Date(lastDatePoint);
+            lastDatePointObj.setDate(lastDatePointObj.getDate() + 1);
+            lastDatePoint = lastDatePointObj.getTime();
+        }
 
         // generate datasets
         leaguePlayers.forEach((leaguePlayer, idx) => {
             let data = [];
 
             let ratingCurrent = leaguePlayer.rating;
-            data.push({x: lastDatePoint, y: ratingCurrent});
 
-            leaguePlayer.gamePlayers.forEach((gamePlayer => {
-                ratingCurrent = ratingCurrent - gamePlayer.ratingDelta;
-                data.push({x: gamePlayer.time.getTime(), y: ratingCurrent});
-            }));
+            if (leaguePlayer.gamePlayers.length === 0) {
+                data.push({x: lastDatePoint, y: ratingCurrent});
+                data.push({x: firstDatePoint, y: ratingCurrent});
 
-            if (data.length === 0) {
-                data.push({x: firstDatePoint, y: leaguePlayer.rating});
-            } else if (data[0].x !== firstDatePoint) {
-                data.push({x: firstDatePoint, y: data[data.length - 1].y});
+            } else {
+                leaguePlayer.gamePlayers.forEach((gamePlayer => {
+                    ratingCurrent = ratingCurrent - gamePlayer.ratingDelta;
+                    data.push({x: gamePlayer.time.getTime(), y: ratingCurrent});
+                }));
+
+                if (data[0].x === lastDatePoint) {
+                    data[0].y = leaguePlayer.rating;
+                } else {
+                    data.unshift({x: lastDatePoint, y: leaguePlayer.rating});
+                }
+
+                if (data[data.length - 1].x !== firstDatePoint) {
+                    data.push({x: firstDatePoint, y: data[data.length - 1].y});
+                }
             }
 
             let chartDataset = {
