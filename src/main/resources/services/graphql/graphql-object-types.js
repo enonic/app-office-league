@@ -11,9 +11,10 @@ var authLib = require('/lib/xp/auth');
 var entityType = graphQlLib.createInterfaceType({
     name: 'Entity',
     description: 'Data entity. Contains a field id with a unique value',
+    typeResolver: function() { return null;},
     fields: {
         id: {
-            type: graphQlLib.nonNull(graphQlLib.GraphQLID),
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID)
         }
     }
 });
@@ -68,10 +69,7 @@ exports.playerType = graphQlLib.createObjectType({
             }
         },
         name: {
-            type: graphQlLib.nonNull(graphQlLib.GraphQLString),
-            resolve: function (env) {
-                return env.source.name;
-            }
+            type: graphQlLib.nonNull(graphQlLib.GraphQLString)
         },
         fullname: {
             type: graphQlLib.GraphQLString,
@@ -97,28 +95,16 @@ exports.playerType = graphQlLib.createObjectType({
             }
         },
         nationality: {
-            type: graphQlLib.GraphQLString, //TODO Change to enum
-            resolve: function (env) {
-                return env.source.nationality;
-            }
+            type: graphQlLib.GraphQLString //TODO Change to enum
         },
         handedness: {
-            type: graphQlEnumsLib.handednessEnumType,
-            resolve: function (env) {
-                return env.source.handedness;
-            }
+            type: graphQlEnumsLib.handednessEnumType
         },
         description: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.description;
-            }
+            type: graphQlLib.GraphQLString
         },
         imageUrl: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.imageUrl;
-            }
+            type: graphQlLib.GraphQLString
         },
         teams: {
             type: graphQlLib.list(graphQlLib.reference('Team')),
@@ -177,7 +163,8 @@ exports.playerType = graphQlLib.createObjectType({
         }
     }
 });
-exports.playerConnectionType = graphQlConnectionLib.createConnectionType('Player', exports.playerType);
+
+exports.playerConnectionType = graphQlConnectionLib.createConnectionType(exports.playerType);
 
 exports.teamStatsType = graphQlLib.createObjectType({
     name: 'TeamStats',
@@ -219,22 +206,13 @@ exports.teamType = graphQlLib.createObjectType({
             }
         },
         name: {
-            type: graphQlLib.nonNull(graphQlLib.GraphQLString),
-            resolve: function (env) {
-                return env.source.name;
-            }
+            type: graphQlLib.nonNull(graphQlLib.GraphQLString)
         },
         description: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.description;
-            }
+            type: graphQlLib.GraphQLString
         },
         imageUrl: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.imageUrl;
-            }
+            type: graphQlLib.GraphQLString
         },
         players: {
             type: graphQlLib.list(exports.playerType),
@@ -272,7 +250,7 @@ exports.teamType = graphQlLib.createObjectType({
         }
     }
 });
-exports.teamConnectionType = graphQlConnectionLib.createConnectionType('Team', exports.teamType);
+exports.teamConnectionType = graphQlConnectionLib.createConnectionType(exports.teamType);
 
 exports.gamePlayerType = graphQlLib.createObjectType({
     name: 'GamePlayer',
@@ -287,10 +265,7 @@ exports.gamePlayerType = graphQlLib.createObjectType({
             }
         },
         time: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.time;
-            }
+            type: graphQlLib.GraphQLString
         },
         score: {
             type: graphQlLib.GraphQLInt,
@@ -305,10 +280,7 @@ exports.gamePlayerType = graphQlLib.createObjectType({
             }
         },
         side: {
-            type: graphQlEnumsLib.sideEnumType,
-            resolve: function (env) {
-                return env.source.side;
-            }
+            type: graphQlEnumsLib.sideEnumType
         },
         position: {
             type: graphQlLib.GraphQLInt,
@@ -317,10 +289,7 @@ exports.gamePlayerType = graphQlLib.createObjectType({
             }
         },
         winner: {
-            type: graphQlLib.GraphQLBoolean,
-            resolve: function (env) {
-                return env.source.winner;
-            }
+            type: graphQlLib.GraphQLBoolean
         },
         ratingDelta: {
             type: graphQlLib.GraphQLInt,
@@ -356,10 +325,7 @@ exports.gameTeamType = graphQlLib.createObjectType({
             }
         },
         time: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.time;
-            }
+            type: graphQlLib.GraphQLString
         },
         score: {
             type: graphQlLib.GraphQLInt,
@@ -374,16 +340,10 @@ exports.gameTeamType = graphQlLib.createObjectType({
             }
         },
         side: {
-            type: graphQlEnumsLib.sideEnumType,
-            resolve: function (env) {
-                return env.source.side;
-            }
+            type: graphQlEnumsLib.sideEnumType
         },
         winner: {
-            type: graphQlLib.GraphQLBoolean,
-            resolve: function (env) {
-                return env.source.winner;
-            }
+            type: graphQlLib.GraphQLBoolean
         },
         ratingDelta: {
             type: graphQlLib.GraphQLInt,
@@ -417,10 +377,7 @@ exports.pointType = graphQlLib.createObjectType({
             }
         },
         against: {
-            type: graphQlLib.nonNull(graphQlLib.GraphQLBoolean),
-            resolve: function (env) {
-                return env.source.against;
-            }
+            type: graphQlLib.nonNull(graphQlLib.GraphQLBoolean)
         },
         player: {
             type: graphQlLib.nonNull(exports.playerType),
@@ -443,10 +400,7 @@ exports.commentType = graphQlLib.createObjectType({
             }
         },
         text: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.text;
-            }
+            type: graphQlLib.GraphQLString
         },
         author: {
             type: exports.playerType,
@@ -455,10 +409,7 @@ exports.commentType = graphQlLib.createObjectType({
             }
         },
         time: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.time;
-            }
+            type: graphQlLib.GraphQLString
         },
         likes: {
             type: graphQlLib.list(exports.playerType),
@@ -483,16 +434,10 @@ exports.gameType = graphQlLib.createObjectType({
             }
         },
         time: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.time;
-            }
+            type: graphQlLib.GraphQLString
         },
         finished: {
-            type: graphQlLib.GraphQLBoolean,
-            resolve: function (env) {
-                return env.source.finished;
-            }
+            type: graphQlLib.GraphQLBoolean
         },
         points: {
             type: graphQlLib.list(exports.pointType),
@@ -511,16 +456,10 @@ exports.gameType = graphQlLib.createObjectType({
             }
         },
         gamePlayers: {
-            type: graphQlLib.list(exports.gamePlayerType),
-            resolve: function (env) {
-                return env.source.gamePlayers;
-            }
+            type: graphQlLib.list(exports.gamePlayerType)
         },
         gameTeams: {
-            type: graphQlLib.list(exports.gameTeamType),
-            resolve: function (env) {
-                return env.source.gameTeams;
-            }
+            type: graphQlLib.list(exports.gameTeamType)
         },
         league: {
             type: graphQlLib.reference('League'),
@@ -530,7 +469,7 @@ exports.gameType = graphQlLib.createObjectType({
         }
     }
 });
-exports.gameConnectionType = graphQlConnectionLib.createConnectionType('Game', exports.gameType);
+exports.gameConnectionType = graphQlConnectionLib.createConnectionType(exports.gameType);
 
 exports.leaguePlayerType = graphQlLib.createObjectType({
     name: 'LeaguePlayer',
@@ -596,7 +535,7 @@ exports.leaguePlayerType = graphQlLib.createObjectType({
         }
     }
 });
-exports.leaguePlayerConnectionType = graphQlConnectionLib.createConnectionType('LeaguePlayer', exports.leaguePlayerType);
+exports.leaguePlayerConnectionType = graphQlConnectionLib.createConnectionType(exports.leaguePlayerType);
 
 exports.leagueTeamType = graphQlLib.createObjectType({
     name: 'LeagueTeam',
@@ -636,7 +575,7 @@ exports.leagueTeamType = graphQlLib.createObjectType({
         }
     }
 });
-exports.leagueTeamConnectionType = graphQlConnectionLib.createConnectionType('LeagueTeam', exports.leagueTeamType);
+exports.leagueTeamConnectionType = graphQlConnectionLib.createConnectionType(exports.leagueTeamType);
 
 exports.leagueStatsType = graphQlLib.createObjectType({
     name: 'LeagueStats',
@@ -707,28 +646,16 @@ exports.leagueType = graphQlLib.createObjectType({
             }
         },
         name: {
-            type: graphQlLib.nonNull(graphQlLib.GraphQLString),
-            resolve: function (env) {
-                return env.source.name;
-            }
+            type: graphQlLib.nonNull(graphQlLib.GraphQLString)
         },
         imageUrl: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.imageUrl;
-            }
+            type: graphQlLib.GraphQLString
         },
         sport: {
-            type: graphQlLib.nonNull(graphQlEnumsLib.sportEnumType),
-            resolve: function (env) {
-                return env.source.sport;
-            }
+            type: graphQlLib.nonNull(graphQlEnumsLib.sportEnumType)
         },
         description: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.description;
-            }
+            type: graphQlLib.GraphQLString
         },
         config: {
             type: graphQlLib.GraphQLString, //TODO Is it? Is there a unstructured type?
