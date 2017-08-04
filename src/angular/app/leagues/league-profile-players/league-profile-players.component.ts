@@ -50,7 +50,7 @@ export class LeagueProfilePlayersComponent
             LeagueProfilePlayersComponent.getLeagueQuery,
             {
                 name: this.leagueName,
-                after: after,
+                after: after && btoa('' + after),
                 first: LeagueProfilePlayersComponent.paging,
                 sort: 'pending DESC, rating DESC, name ASC',
                 playerId: playerId,
@@ -135,7 +135,7 @@ export class LeagueProfilePlayersComponent
         this.materializeActionsApprove.emit({action: "modal", params: ['close']});
     }
 
-    private static readonly getLeagueQuery = `query ($name: String, $after:Int, $first:Int, $sort: String, $playerId: ID!, $gamesSince: String) {
+    private static readonly getLeagueQuery = `query ($name: String, $after:String, $first:Int, $sort: String, $playerId: ID!, $gamesSince: String) {
         league(name: $name) {
             id
             name

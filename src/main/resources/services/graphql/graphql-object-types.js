@@ -119,11 +119,12 @@ exports.playerType = graphQlLib.createObjectType({
         teamsConnection: {
             type: graphQlLib.reference('TeamConnection'),
             args: {
-                after: graphQlLib.GraphQLInt, //TODO Change for base64
+                after: graphQlLib.GraphQLString,
                 first: graphQlLib.GraphQLInt
             },
             resolve: function (env) {
-                return storeLib.getTeamsByPlayerId(env.source._id, env.args.after ? (env.args.after + 1) : 0, env.args.first);
+                var start = env.args.after ? parseInt(graphQlConnectionLib.decodeCursor(env.args.after)) + 1 : 0;
+                return storeLib.getTeamsByPlayerId(env.source._id, start, env.args.first);
             }
         },
         leaguePlayers: {
@@ -710,14 +711,15 @@ exports.leagueType = graphQlLib.createObjectType({
         leaguePlayersConnection: {
             type: exports.leaguePlayerConnectionType,
             args: {
-                after: graphQlLib.GraphQLInt,
+                after: graphQlLib.GraphQLString,
                 first: graphQlLib.GraphQLInt,
                 sort: graphQlLib.GraphQLString
             },
             resolve: function (env) {
+                var start = env.args.after ? parseInt(graphQlConnectionLib.decodeCursor(env.args.after)) + 1 : 0;
                 var currentPlayerId = getCurrentPlayerId();
                 var playerIsLeagueAdmin = graphQlUtilLib.toArray(env.source.adminPlayerIds).indexOf(currentPlayerId) > -1;
-                return storeLib.getLeaguePlayersByLeagueId(env.source._id, env.args.after ? (env.args.after + 1) : 0, env.args.first,
+                return storeLib.getLeaguePlayersByLeagueId(env.source._id, start, env.args.first,
                     env.args.sort, playerIsLeagueAdmin);
             }
         },
@@ -735,12 +737,13 @@ exports.leagueType = graphQlLib.createObjectType({
         leagueTeamsConnection: {
             type: exports.leagueTeamConnectionType,
             args: {
-                after: graphQlLib.GraphQLInt,
+                after: graphQlLib.GraphQLString,
                 first: graphQlLib.GraphQLInt,
                 sort: graphQlLib.GraphQLString
             },
             resolve: function (env) {
-                return storeLib.getLeagueTeamsByLeagueId(env.source._id, env.args.after ? (env.args.after + 1) : 0, env.args.first,
+                var start = env.args.after ? parseInt(graphQlConnectionLib.decodeCursor(env.args.after)) + 1 : 0;
+                return storeLib.getLeagueTeamsByLeagueId(env.source._id, start, env.args.first,
                     env.args.sort);
             }
         },

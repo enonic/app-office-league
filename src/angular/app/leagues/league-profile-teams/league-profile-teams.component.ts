@@ -16,7 +16,7 @@ export class LeagueProfileTeamsComponent
     extends BaseComponent {
 
     private static readonly paging = 10;
-    private static readonly getLeagueQuery = `query ($name: String, $after:Int, $first:Int, $sort: String) {
+    private static readonly getLeagueQuery = `query ($name: String, $after:String, $first:Int, $sort: String) {
         league(name: $name) {
             id
             name
@@ -65,7 +65,7 @@ export class LeagueProfileTeamsComponent
         let after = currentPage > 1 ? ((currentPage - 1) * LeagueProfileTeamsComponent.paging - 1) : undefined;
         this.graphQLService.post(
             LeagueProfileTeamsComponent.getLeagueQuery,
-            {name: this.leagueName, after: after, first: LeagueProfileTeamsComponent.paging, sort: 'rating DESC, name ASC'},
+            {name: this.leagueName, after: after && btoa('' + after), first: LeagueProfileTeamsComponent.paging, sort: 'rating DESC, name ASC'},
             data => this.handleLeagueQueryResponse(data),
             () => this.handleQueryError()
         ).catch(error => {

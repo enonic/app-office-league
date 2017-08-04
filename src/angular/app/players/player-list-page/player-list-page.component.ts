@@ -11,7 +11,7 @@ import {PageTitleService} from '../../services/page-title.service';
 })
 export class PlayerListPageComponent extends BaseComponent {
     private static readonly paging = 10;
-    private static readonly getPlayersQuery = `query($after:Int,$first:Int, $search:String) {
+    private static readonly getPlayersQuery = `query($after:String,$first:Int, $search:String) {
         playersConnection(after:$after, first:$first, search:$search) {
             totalCount
             edges {
@@ -40,7 +40,7 @@ export class PlayerListPageComponent extends BaseComponent {
         let after = currentPage > 1 ? ((currentPage - 1) * PlayerListPageComponent.paging - 1) : undefined;
         this.service.post(
             PlayerListPageComponent.getPlayersQuery,
-            {after: after,first: PlayerListPageComponent.paging, search: search},
+            {after: after && btoa('' + after),first: PlayerListPageComponent.paging, search: search},
             data => {
                 this.players = data.playersConnection.edges.map(edge => Player.fromJson(edge.node));
                 let totalCount = data.playersConnection.totalCount;

@@ -1,4 +1,5 @@
 var graphQlLib = require('/lib/graphql');
+var graphQlConnectionLib = require('/lib/graphql-connection');
 var graphQlObjectTypesLib = require('./graphql-object-types');
 var graphQlInfoPagesLib = require('./graphql-info-pages');
 var storeLib = require('office-league-store');
@@ -53,18 +54,18 @@ exports.rootQueryType = graphQlLib.createObjectType({
         playersConnection: {
             type: graphQlObjectTypesLib.playerConnectionType,
             args: {
-                after: graphQlLib.GraphQLInt, //TODO Change for base64
+                after: graphQlLib.GraphQLString,
                 first: graphQlLib.GraphQLInt,
                 search: graphQlLib.GraphQLString
             },
             resolve: function (env) {
-                var after = env.args.after;
+                var start = env.args.after ? parseInt(graphQlConnectionLib.decodeCursor(env.args.after)) + 1 : 0;
                 var first = env.args.first;
                 var search = env.args.search;
                 if (search) {
-                    return storeLib.findPlayers(search, after ? (after + 1) : 0, first);
+                    return storeLib.findPlayers(search, start, first);
                 } else {
-                    return storeLib.getPlayers(after ? (after + 1) : 0, first);
+                    return storeLib.getPlayers(start, first);
                 }
             }
         },
@@ -110,18 +111,18 @@ exports.rootQueryType = graphQlLib.createObjectType({
         teamsConnection: {
             type: graphQlObjectTypesLib.teamConnectionType,
             args: {
-                after: graphQlLib.GraphQLInt, //TODO Change for base64
+                after: graphQlLib.GraphQLString,
                 first: graphQlLib.GraphQLInt,
                 search: graphQlLib.GraphQLString
             },
             resolve: function (env) {
-                var after = env.args.after;
+                var start = env.args.after ? parseInt(graphQlConnectionLib.decodeCursor(env.args.after)) + 1 : 0;
                 var first = env.args.first;
                 var search = env.args.search;
                 if (search) {
-                    return storeLib.findTeams(search, after ? (after + 1) : 0, first);
+                    return storeLib.findTeams(search, start, first);
                 } else {
-                    return storeLib.getTeams(after ? (after + 1) : 0, first);
+                    return storeLib.getTeams(start, first);
                 }
             }
         },
@@ -144,7 +145,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
         gamesConnection: {
             type: graphQlObjectTypesLib.gameConnectionType,
             args: {
-                after: graphQlLib.GraphQLInt, //TODO Change for base64
+                after: graphQlLib.GraphQLString,
                 first: graphQlLib.GraphQLInt,
                 leagueName: graphQlLib.GraphQLString,
                 playerName: graphQlLib.GraphQLString,
@@ -152,7 +153,7 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 finished: graphQlLib.GraphQLBoolean,
             },
             resolve: function (env) {
-                var after = env.args.after;
+                var start = env.args.after ? parseInt(graphQlConnectionLib.decodeCursor(env.args.after)) + 1 : 0;
                 var first = env.args.first;
                 var leagueName = env.args.leagueName;
                 var playerName = env.args.playerName;
@@ -162,25 +163,25 @@ exports.rootQueryType = graphQlLib.createObjectType({
                 if (leagueName) {
                     var league = storeLib.getLeagueByName(leagueName);
                     if (league) {
-                        return storeLib.getGamesByLeagueId(league._id, after ? (after + 1) : 0, first, finished);
+                        return storeLib.getGamesByLeagueId(league._id, start, first, finished);
                     }
                 } else if (playerName) {
                     var player = storeLib.getPlayerByName(playerName);
                     if (player) {
-                        return storeLib.getGamesByPlayerId(player._id, after ? (after + 1) : 0, first);
+                        return storeLib.getGamesByPlayerId(player._id, start, first);
                     }
                 } else if (teamName) {
                     var team = storeLib.getTeamByName(teamName);
                     if (team) {
-                        return storeLib.getGamesByTeamId(team._id, after ? (after + 1) : 0, first);
+                        return storeLib.getGamesByTeamId(team._id, start, first);
                     }
                 } else {
-                    return storeLib.getGames(after ? (after + 1) : 0, first);
+                    return storeLib.getGames(start, first);
                 }
 
                 return {
                     total: 0,
-                    count: 0,
+                    start: start,
                     hits: []
                 };
             }

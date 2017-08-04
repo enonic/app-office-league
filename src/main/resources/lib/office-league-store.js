@@ -792,9 +792,10 @@ exports.getGamesByLeagueId = function (leagueId, start, count, finished, sort) {
     }
 
     return {
-        "total": result.total,
-        "count": result.count,
-        "hits": games
+        total: result.total,
+        start: start,
+        count: result.count,
+        hits: games
     };
 };
 
@@ -1026,9 +1027,10 @@ exports.getGames = function (start, count) {
     });
 
     return {
-        "total": result.total,
-        "count": result.count,
-        "hits": games
+        total: result.total,
+        start: start,
+        count: result.count,
+        hits: games
     };
 };
 
@@ -1066,9 +1068,10 @@ exports.getGamesByTeamId = function (teamId, start, count) {
     });
 
     return {
-        "total": result.total,
-        "count": result.count,
-        "hits": games
+        total: result.total,
+        start: start,
+        count: result.count,
+        hits: games
     };
 };
 
@@ -1106,9 +1109,10 @@ exports.getGamesByPlayerId = function (playerId, start, count) {
     });
 
     return {
-        "total": result.total,
-        "count": result.count,
-        "hits": games
+        total: result.total,
+        start: start,        
+        count: result.count,
+        hits: games
     };
 };
 
