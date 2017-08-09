@@ -29,6 +29,10 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
             name 
             imageUrl
             description 
+            games(first:1 , finished:true) {
+                id
+                time
+            }
         }
     }`;
 
@@ -75,13 +79,27 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
         }
         let myLeagueIds = data.myLeagues.map(league => league.id);
 
-        this.discoverLeagues =
+        let leagues =
             data.allLeagues
                 .filter((league) => myLeagueIds.indexOf(league.id) == -1)
                 .map(league => League.fromJson(league));
+
+        leagues.sort(LeagueBrowserComponent.compareLeagueByLastGameTime);
+        this.discoverLeagues = leagues;
     }
 
     ngAfterViewInit(): void {
         $(this.elementRef.nativeElement).find('ul.tabs').tabs();
+    }
+
+    private static compareLeagueByLastGameTime(l1: League, l2: League) {
+        if (l1.games.length === 0 && l2.games.length === 0) {
+            return 0;
+        } else if (l1.games.length === 0 && l2.games.length > 0) {
+            return 1;
+        } else if (l1.games.length > 0 && l2.games.length === 0) {
+            return -1;
+        }
+        return l2.games[0].time.getTime() - l1.games[0].time.getTime();
     }
 }
