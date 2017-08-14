@@ -16,6 +16,7 @@ import {Player} from '../../../graphql/schemas/Player';
 import {UserProfileService} from '../../services/user-profile.service';
 import {OnlineStatusService} from '../../services/online-status.service';
 import {CustomValidators} from '../../common/validators';
+import {ImageService} from '../../services/image.service';
 
 @Component({
     selector: 'player-create',
@@ -68,7 +69,7 @@ export class PlayerCreateComponent extends BaseComponent implements OnInit, Afte
             this.invitation = params['invitation'];
         });
 
-        this.imageUrl = ''; //ImageService.playerDefault();
+        this.imageUrl = ImageService.userImageProfileUrl(user);
         this.countries = Countries.getCountries();
         this.pageTitleService.setTitle('Create Player');
 

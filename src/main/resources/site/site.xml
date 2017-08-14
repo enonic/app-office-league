@@ -18,6 +18,11 @@
       <pattern>/app/leagues/image/.*</pattern>
     </mapping>
 
+    <!-- /<site>/players/image-profile/<userKey> -->
+    <mapping controller="/site/controllers/user-image.js" order="10">
+      <pattern>/app/players/image-profile/.*</pattern>
+    </mapping>
+
     <mapping controller="/services/graphql/graphql.js" order="10">
       <pattern>/app/api/graphql</pattern>
     </mapping>

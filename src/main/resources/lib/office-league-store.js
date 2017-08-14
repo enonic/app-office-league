@@ -4,6 +4,7 @@ var ratingLib = require('/lib/office-league-rating');
 var eventLib = require('/lib/xp/event');
 var randomLib = require('/lib/random-names');
 var imageLib = require('/lib/image');
+var userProfileLib = require('/lib/user-profile');
 
 var REPO_NAME = 'office-league';
 var LEAGUES_PATH = '/leagues';
@@ -1110,7 +1111,7 @@ exports.getGamesByPlayerId = function (playerId, start, count) {
 
     return {
         total: result.total,
-        start: start,        
+        start: start,
         count: result.count,
         hits: games
     };
@@ -1541,10 +1542,18 @@ exports.createPlayer = function (params) {
     required(params, 'name');
     params.name = validateName(params.name);
 
-    var imageAttachment = null;
+    var imageAttachment = null, ext;
     if (params.imageStream && required(params, 'imageType')) {
-        var ext = extensionFromMimeType(params.imageType);
+        ext = extensionFromMimeType(params.imageType);
         imageAttachment = newAttachment('player' + ext, params.imageStream, params.imageType);
+    } else {
+        log.info('Get profile image for new user');
+        var profileImage = userProfileLib.getUserProfileImage(params.userKey);
+        if (profileImage) {
+            log.info('Profile image: ' + JSON.stringify(profileImage, null, 4));
+            ext = extensionFromMimeType(profileImage.contentType);
+            imageAttachment = newAttachment('player' + ext, profileImage.body, profileImage.contentType);
+        }
     }
 
     var playerNode = repoConn.create({

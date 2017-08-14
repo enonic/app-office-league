@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {XPCONFIG} from '../app.config';
+import {ConfigUser, XPCONFIG} from '../app.config';
 import {UrlHelper} from '../../graphql/schemas/UrlHelper';
 
 @Injectable()
@@ -22,5 +22,9 @@ export class ImageService {
 
     public static logoUrl(): string {
         return `${UrlHelper.trimSlash(XPCONFIG.assetsUrl)}/img/logo.svg`;
+    }
+
+    public static userImageProfileUrl(user: ConfigUser): string {
+        return `${UrlHelper.trimSlash(XPCONFIG.baseHref)}/players/image-profile/${user.key}`;
     }
 }
