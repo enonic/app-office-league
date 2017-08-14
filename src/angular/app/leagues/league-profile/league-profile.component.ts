@@ -79,7 +79,7 @@ export class LeagueProfileComponent
         clearTimeout(this.approvePollingTimerId);
         this.approvePollingTimerId = undefined;
         this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
-        this.wsMan.disconnect();
+        this.wsMan && this.wsMan.disconnect();
     }
 
     ngOnChanges(changes: SimpleChanges): void {

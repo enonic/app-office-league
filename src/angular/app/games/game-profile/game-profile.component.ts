@@ -56,7 +56,7 @@ export class GameProfileComponent
     }
 
     ngOnDestroy(): void {
-        this.wsMan.disconnect();
+        this.wsMan && this.wsMan.disconnect();
         this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
     }
 

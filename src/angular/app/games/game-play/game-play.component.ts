@@ -873,7 +873,7 @@ export class GamePlayComponent
     }
 
     ngOnDestroy() {
-        this.wsMan.disconnect();
+        this.wsMan && this.wsMan.disconnect();
         document.removeEventListener("visibilitychange", this.visibilityChangeHandler);
         setTimeout(() => this.stopAllSounds(), 3000);
     }

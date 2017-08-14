@@ -289,7 +289,7 @@ export class NewGameComponent
     }
 
     ngOnDestroy() {
-        this.wsMan.disconnect();
+        this.wsMan && this.wsMan.disconnect();
     }
 
     onWsMessage(event: RemoteEvent) {
