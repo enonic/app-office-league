@@ -160,7 +160,9 @@ self.addEventListener('fetch', function (e) {
                     return fetch(e.request)
                         .then(function (response) {
                             consoleLog('Fetched and cached ' + requestUrl);
-                            cache.put(requestUrl, response.clone());
+                            if (response && response.status == 200) {
+                                cache.put(requestUrl, response.clone());
+                            }
                             return response;
                         })
                         .catch(function () {
@@ -196,14 +198,17 @@ self.addEventListener('fetch', function (e) {
                     return response ||
                            fetch(e.request)
                                .then(function (response) {
-                                   consoleLog('Fetched and cached new image: ' + requestUrl);
-                                   return caches
-                                       .open(imageCacheName)
-                                       .then(function (cache) {
-                                           cache.put(requestUrl, response.clone());
+                                   if (response && response.status == 200) {
+                                       consoleLog('Fetched and cached new image: ' + requestUrl);
+                                       return caches
+                                           .open(imageCacheName)
+                                           .then(function (cache) {
+                                               cache.put(requestUrl, response.clone());
 
-                                           return response;
-                                       });
+                                               return response;
+                                           });
+                                   }
+                                   return response;
                                })
                                .catch(function () {
                                    consoleLog('Failed to fetch ' + requestUrl + '. Serving default image.');
@@ -223,15 +228,17 @@ self.addEventListener('fetch', function (e) {
         e.respondWith(
             fetch(e.request)
                 .then(function (response) {
+                    if (response && response.status == 200) {
+                        return caches
+                            .open(cacheName)
+                            .then(function (cache) {
+                                consoleLog('Fetched and cached ' + requestUrl);
+                                cache.put(requestUrl, response.clone());
 
-                    return caches
-                        .open(cacheName)
-                        .then(function (cache) {
-                            consoleLog('Fetched and cached ' + requestUrl);
-                            cache.put(requestUrl, response.clone());
-
-                            return response;
-                        });
+                                return response;
+                            });
+                    }
+                    return response;
                 })
                 .catch(function () {
                     if (e.request.method == 'GET') {
@@ -269,12 +276,13 @@ self.addEventListener('fetch', function (e) {
                 return response ||
                        fetch(e.request)
                            .then(function (response) {
-                               if (isRequestToDynamicAsset(requestUrl)) {
+                               if (response && response.status == 200 && isRequestToDynamicAsset(requestUrl)) {
                                    let clonedResponse = response.clone();
                                    consoleLog('Caching dynamic asset: ' + requestUrl);
                                    caches.open(cacheName).then(function (cache) {
                                        cache.put(requestUrl, clonedResponse);
                                    });
+                                   
                                }
                                return response;
                            }).catch(function (err) {
