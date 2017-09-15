@@ -692,6 +692,9 @@ export class GamePlayComponent
             createGameParams
         ).then(
             data => {
+                if (!data) {
+                    throw 'Could not create Game';
+                }
                 console.log('Game created', data);
                 return data.createGame.id;
             }
@@ -706,6 +709,9 @@ export class GamePlayComponent
             updateGameParams
         ).then(
             data => {
+                if (!data) {
+                    throw 'Could not update Game';
+                }
                 console.log('Game updated', data);
                 return data.updateGame.id;
             }
