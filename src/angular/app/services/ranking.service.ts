@@ -10,7 +10,7 @@ export class RankingService {
     getExpectedScore(ratings: [number, number], opponentRatings: [number, number], rules: LeagueRules): [number, number] {
         let rating = this.averageRatings(ratings);
         let opponentRating = this.averageRatings(opponentRatings);
-        let score = this.calculateExpectedScore(rating, opponentRating);
+        let score = this.calculateExpectedScore(rating, opponentRating, rules);
         return this.scoreToGoals(score, rules);
     }
 
@@ -32,8 +32,8 @@ export class RankingService {
         return Math.round(value * 10) / 10;
     }
 
-    private calculateExpectedScore(rating: number, opponentRating: number): number {
-        return 1.0 / (1.0 + Math.pow(10.0, (opponentRating - rating) / 400.0));
+    private calculateExpectedScore(rating: number, opponentRating: number, rules: LeagueRules): number {
+        return 1.0 / (1.0 + Math.pow(rules.pointsToWin, (opponentRating - rating) / 400.0));
     }
 
     private averageRatings(ratings: [number, number]): number {
