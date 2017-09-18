@@ -45,14 +45,16 @@ exports.calculateExpectedScore = function (rating, opponentRating) {
 /**
  * Returns the final points scored for each team based on the game score (between 0 and 1).
  * @param {number} score Expected score (value between 0 and 1).
+ * @param {number} [winPoints=10] Number of points required for winning a game (integer).
  * @returns {[number, number]} Array with the 2 resulting points, one value for each opponent.
  */
-exports.scoreToPoints = function (score) {
-    var diff = (score * 20) - 10;
+exports.scoreToPoints = function (score, winPoints) {
+    winPoints = winPoints || 10;
+    var diff = (score * winPoints * 2) - winPoints;
     if (diff > 0) {
-        return [10, roundScore(10 - diff)];
+        return [winPoints, roundScore(winPoints - diff)];
     } else {
-        return [roundScore(10 + diff), 10];
+        return [roundScore(winPoints + diff), winPoints];
     }
 };
 

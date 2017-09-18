@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, OnDestroy, SimpleChange, SimpleChanges} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Game} from '../../../graphql/schemas/Game';
@@ -13,7 +13,7 @@ import {OfflinePersistenceService} from '../../services/offline-persistence.serv
     styleUrls: ['game.component.less']
 })
 export class GameComponent
-    implements OnInit, OnChanges {
+    implements OnInit, OnChanges, OnDestroy {
 
     @Input() game: Game;
 
@@ -43,26 +43,41 @@ export class GameComponent
         }
     }
 
+    ngOnDestroy(): void {
+    }
+
     protected loadGame(gameId: string) {
         const query = this.getGameQuery();
         this.graphQLService.post(
             query,
             {gameId: gameId},
             data => {
+                if (!data || !data.game) {
+                    this.onRequestError();
+                    return;
+                }
+
                 this.game = Game.fromJson(data.game);
                 this.processGame(this.game);
                 this.afterGameLoaded(this.game);
             },
             error => {
                 this.offlineService.loadGame(gameId).then(game => {
+                    if (!game) {
+                        this.onRequestError();
+                        return;
+                    }
+
                     this.game = game;
                     this.processGame(this.game);
                     this.afterGameLoaded(this.game);
                 }).catch(error => {
                     console.log('Could not load game: ' + gameId);
-                    this.router.navigate([''], {replaceUrl: true});
+                    this.onRequestError();
                 })
-            });
+            }).catch(error => {
+            this.onRequestError();
+        });
     }
 
     protected getGameQuery(): string {
@@ -70,6 +85,9 @@ export class GameComponent
     }
 
     protected afterGameLoaded(game: Game) {
+    }
+
+    protected onRequestError() {
     }
 
     private processGame(game: Game) {

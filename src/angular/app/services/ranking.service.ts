@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {LeagueRules} from '../../graphql/schemas/LeagueRules';
 
 @Injectable()
 export class RankingService {
@@ -6,23 +7,24 @@ export class RankingService {
     constructor() {
     }
 
-    getExpectedScore(ratings: [number, number], opponentRatings: [number, number]): [number, number] {
+    getExpectedScore(ratings: [number, number], opponentRatings: [number, number], rules: LeagueRules): [number, number] {
         let rating = this.averageRatings(ratings);
         let opponentRating = this.averageRatings(opponentRatings);
         let score = this.calculateExpectedScore(rating, opponentRating);
-        return this.scoreToGoals(score);
+        return this.scoreToGoals(score, rules);
     }
 
     defaultRating(): number {
         return 1500;
     }
 
-    private scoreToGoals(score: number): [number, number] {
-        let diff = (score * 20) - 10;
+    private scoreToGoals(score: number, rules: LeagueRules): [number, number] {
+        let pointsToWin = rules.pointsToWin;
+        let diff = (score * pointsToWin * 2) - pointsToWin;
         if (diff > 0) {
-            return [10, this.round(10 - diff)];
+            return [pointsToWin, this.round(pointsToWin - diff)];
         } else {
-            return [this.round(10 + diff), 10];
+            return [this.round(pointsToWin + diff), pointsToWin];
         }
     }
 

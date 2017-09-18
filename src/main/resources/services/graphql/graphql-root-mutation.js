@@ -17,11 +17,16 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 sport: graphQlLib.nonNull(graphQlEnumsLib.sportEnumType),
                 description: graphQlLib.GraphQLString,
                 config: graphQlLib.GraphQLString,//TODO
-                adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID)
+                adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID),
+                playerNames: graphQlLib.list(graphQlLib.GraphQLString),
+                pointsToWin: graphQlLib.GraphQLInt,
+                minimumDifference: graphQlLib.GraphQLInt,
+                halfTimeSwitch: graphQlLib.GraphQLBoolean
             },
             resolve: function (env) {
                 var currentPlayerId = getCurrentPlayerId();
                 var adminPlayerIds = env.args.adminPlayerIds || [];
+                var playerNames = env.args.playerNames || [];
                 checkCreateLeaguePermissions(currentPlayerId, adminPlayerIds);
 
                 var createdLeague = storeLib.createLeague({
@@ -29,12 +34,26 @@ exports.rootMutationType = graphQlLib.createObjectType({
                     sport: env.args.sport,
                     description: env.args.description,
                     config: env.args.config ? JSON.parse(env.args.config) : {}, //TODO
-                    adminPlayerIds: env.args.adminPlayerIds
+                    adminPlayerIds: env.args.adminPlayerIds,
+                    pointsToWin: env.args.pointsToWin,
+                    minimumDifference: env.args.minimumDifference,
+                    halfTimeSwitch: env.args.halfTimeSwitch
                 });
-                storeLib.refresh();
-                storeLib.joinPlayerLeague(createdLeague._id, currentPlayerId);
-                storeLib.refresh();
 
+                storeLib.refresh();
+                playerNames.map(function (playerName) {
+                    var player = storeLib.getPlayerByName(playerName);
+                    if (player) {
+                        storeLib.joinPlayerLeague(createdLeague._id, player._id, env.args.rating);
+                    } else if (playerName.indexOf('@') !== -1) {
+                        var invitation = invitationLib.createInvitation(createdLeague._id);
+                        mailLib.sendInvitation(playerName, createdLeague._id, getCurrentPlayerId(), invitation.token)
+                    } else {
+                        log.warning('[' + playerName + '] is not an existing player name or an email address.');
+                    }
+                });
+
+                storeLib.refresh();
                 return createdLeague;
             }
         },
@@ -45,7 +64,10 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 name: graphQlLib.GraphQLString,
                 description: graphQlLib.GraphQLString,
                 config: graphQlLib.GraphQLString,//TODO
-                adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID)
+                adminPlayerIds: graphQlLib.list(graphQlLib.GraphQLID),
+                pointsToWin: graphQlLib.GraphQLInt,
+                minimumDifference: graphQlLib.GraphQLInt,
+                halfTimeSwitch: graphQlLib.GraphQLBoolean,
             },
             resolve: function (env) {
                 checkUpdateLeaguePermissions(env.args.id, env.args.adminPlayerIds);
@@ -55,7 +77,10 @@ exports.rootMutationType = graphQlLib.createObjectType({
                     name: env.args.name,
                     description: env.args.description,
                     config: env.args.config ? JSON.parse(env.args.config) : {}, //TODO
-                    adminPlayerIds: env.args.adminPlayerIds
+                    adminPlayerIds: env.args.adminPlayerIds,
+                    pointsToWin: env.args.pointsToWin,
+                    minimumDifference: env.args.minimumDifference,
+                    halfTimeSwitch: env.args.halfTimeSwitch
                 });
                 storeLib.refresh();
                 return updatedLeague;
@@ -359,8 +384,9 @@ exports.rootMutationType = graphQlLib.createObjectType({
             resolve: function (env) {
                 checkUpdateGamePermissions(env.args.gameId, env.args.gamePlayers);
 
+                var gameToUpdate = storeLib.getGameById(env.args.gameId);
                 var createGameParams = storeLib.generateCreateGameParams({
-                    leagueId: '',
+                    leagueId: gameToUpdate.leagueId,
                     points: env.args.points || [],
                     gamePlayers: env.args.gamePlayers
                 });
@@ -376,9 +402,11 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 if (createGameParams.finished) {
                     // update ranking
                     var game = storeLib.getGameById(env.args.gameId);
-                    storeLib.updateGameRanking(game);
-                    storeLib.refresh();
-                    storeLib.logGameRanking(game);
+                    if (game) {
+                        storeLib.updateGameRanking(game);
+                        storeLib.refresh();
+                        storeLib.logGameRanking(game);
+                    }
                 }
                 return storeLib.getGameById(env.args.gameId);
             }
@@ -415,6 +443,31 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 });
                 storeLib.refresh();
                 return createdComment;
+            }
+        },
+        regenerateLeagueRanking: {
+            type: graphQlObjectTypesLib.leagueType,
+            args: {
+                leagueId: graphQlLib.GraphQLID,
+                leagueName: graphQlLib.GraphQLID
+            },
+            resolve: function (env) {
+                var leagueId = env.args.leagueId;
+                var leagueName = env.args.leagueName;
+                var league;
+                if (leagueId) {
+                    league = storeLib.getLeagueById(leagueId);
+                } else {
+                    league = storeLib.getLeagueByName(leagueName);
+                }
+
+                if (!league) {
+                    throw "League not found: '" + (leagueId || leagueName || '') + "'";
+                }
+                checkRegenerateLeagueRankingPermissions(league);
+
+                storeLib.regenerateLeagueRanking(league);
+                return league;
             }
         },
         addPushSubscription: {
@@ -725,8 +778,45 @@ var checkDeleteGamePermissions = function (gameId) {
             userIsGamePlayer = true;
         }
     });
-    if (!userIsGamePlayer) {
-        throw "Game cannot be deleted, current user is not a player in the game.";
+
+    var league = storeLib.getLeagueById(game.leagueId);
+    var adminPlayerIds = league.adminPlayerIds ? [].concat(league.adminPlayerIds) : [];
+    var currentPlayerId = getCurrentPlayerId();
+    var userIsLeagueAdmin = false;
+    adminPlayerIds.forEach(function (adminId) {
+        if (adminId === currentPlayerId) {
+            userIsLeagueAdmin = true;
+        }
+    });
+
+    if (userIsLeagueAdmin) {
+        return;
+    }
+    if (!userIsLeagueAdmin && !userIsGamePlayer) {
+        throw "User not authorized to delete game.";
+    }
+
+    if (userIsGamePlayer && game.finished) {
+        throw "Finished games can only be deleted by league administrators.";
+    }
+};
+
+var checkRegenerateLeagueRankingPermissions = function (league) {
+    if (isAdmin()) {
+        return;
+    }
+
+    var adminPlayerIds = league.adminPlayerIds ? [].concat(league.adminPlayerIds) : [];
+    var currentPlayerId = getCurrentPlayerId();
+    var userIsLeagueAdmin = false;
+    adminPlayerIds.forEach(function (adminId) {
+        if (adminId === currentPlayerId) {
+            userIsLeagueAdmin = true;
+        }
+    });
+
+    if (!userIsLeagueAdmin) {
+        throw "User not authorized to regenerate league ranking.";
     }
 };
 

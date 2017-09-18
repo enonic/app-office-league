@@ -10,6 +10,7 @@ import {List2Component} from '../../common/list2.component';
 })
 export class AdminListComponent extends List2Component {
     @Input() admins: Player[];
+    @Input() emptyMessage: string;
     @Output() removeAdmin: EventEmitter<Player> = new EventEmitter<Player>();
 
     constructor(route: ActivatedRoute, router: Router) {

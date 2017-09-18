@@ -10,6 +10,7 @@ import {Game} from '../../../graphql/schemas/Game';
 import {Team} from '../../../graphql/schemas/Team';
 import {XPCONFIG} from '../../app.config';
 import {PageTitleService} from '../../services/page-title.service';
+import {OnlineStatusService} from '../../services/online-status.service';
 import {NewGameComponent} from '../../games/new-game/new-game.component';
 import {PlayerSelectComponent} from '../../common/player-select/player-select.component';
 
@@ -22,16 +23,19 @@ export class PlayerProfileComponent
     extends BaseComponent
     implements OnChanges {
 
+    private static readonly HOME_TITLE = 'Office League';
     @Input() player: Player;
     private profile: boolean;
     private games: Game[] = [];
     private teams: Team[] = [];
     private teamDetailsPath: string[];
     private editable: boolean;
-
+    private online: boolean;
+    private onlineStateCallback = () => this.online = navigator.onLine;
+    connectionError: boolean;
 
     constructor(route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService, private authService: AuthService,
-                private pageTitleService: PageTitleService) {
+                private pageTitleService: PageTitleService, private onlineStatusService: OnlineStatusService) {
         super(route);
     }
 
@@ -41,11 +45,21 @@ export class PlayerProfileComponent
         this.profile = !this.route.snapshot.params['name'];
         let name = this.profile ? this.authService.getUser().playerName : this.route.snapshot.params['name'];
 
+        if (this.profile) {
+            this.pageTitleService.setTitle(PlayerProfileComponent.HOME_TITLE);
+        }
+
         this.graphQLService.post(
             PlayerProfileComponent.getPlayerQuery,
             {name: name},
-            data => this.handlePlayerQueryResponse(data)
-        );
+            data => this.handlePlayerQueryResponse(data),
+            () => this.handleQueryError()
+        ).catch(error => {
+            this.handleQueryError();
+        });
+
+        this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
+        this.online = navigator.onLine;
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -53,11 +67,24 @@ export class PlayerProfileComponent
 
         let playerChange = changes['player'];
         if (playerChange && playerChange.currentValue) {
-            this.pageTitleService.setTitle((<Player>playerChange.currentValue).name);
+            if (this.editable) {
+                this.pageTitleService.setTitle(PlayerProfileComponent.HOME_TITLE);
+            } else {
+                this.pageTitleService.setTitle((<Player>playerChange.currentValue).name);
+            }
         }
     }
 
+    ngOnDestroy(): void {
+        this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
+    }
+
     private handlePlayerQueryResponse(data) {
+        if (!data || !data.player) {
+            this.handleQueryError();
+            return;
+        }
+
         this.player = Player.fromJson(data.player);
         this.games = data.player.gamePlayers.map((gm) => Game.fromJson(gm.game));
         this.teams = data.player.teamsConnection.edges.map((edge) => Team.fromJson(edge.node));
@@ -65,8 +92,17 @@ export class PlayerProfileComponent
         let currentPlayerId = XPCONFIG.user && XPCONFIG.user.playerId;
         this.editable = this.player.id === currentPlayerId;
 
-        this.pageTitleService.setTitle(this.player.name);
+        if (this.profile && this.editable) {
+            this.pageTitleService.setTitle(PlayerProfileComponent.HOME_TITLE);
+        } else {
+            this.pageTitleService.setTitle(this.player.name);
+        }
         this.precacheNewGameRequests();
+        this.connectionError = false;
+    }
+
+    private handleQueryError() {
+        this.connectionError = true;
     }
 
     private precacheNewGameRequests() {

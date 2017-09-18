@@ -27,6 +27,7 @@ export class LeagueProfilePlayersComponent
     materializeActionsApprove = new EventEmitter<string | MaterializeAction>();
     removePlayer: Player;
     approvePlayer: Player;
+    connectionError: boolean;
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private authService: AuthService, private router: Router,
                 private pageTitleService: PageTitleService) {
@@ -42,27 +43,43 @@ export class LeagueProfilePlayersComponent
     refresh(currentPage: number = 1) {
         let playerId = this.authService.isAuthenticated() ? this.authService.getUser().playerId : '-1';
 
+        let gamesSince = new Date();
+        gamesSince.setDate(gamesSince.getDate() - 90);
         let after = currentPage > 1 ? ((currentPage - 1) * LeagueProfilePlayersComponent.paging - 1) : undefined;
         this.graphQLService.post(
             LeagueProfilePlayersComponent.getLeagueQuery,
             {
                 name: this.leagueName,
-                after: after,
+                after: after && btoa('' + after),
                 first: LeagueProfilePlayersComponent.paging,
                 sort: 'pending DESC, rating DESC, name ASC',
-                playerId: playerId
+                playerId: playerId,
+                gamesSince: gamesSince.toISOString()
             },
-            data => this.handleLeagueQueryResponse(data)
-        );
+            data => this.handleLeagueQueryResponse(data),
+            () => this.handleQueryError()
+        ).catch(error => {
+            this.handleQueryError();
+        });
     }
 
     private handleLeagueQueryResponse(data) {
+        if (!data || !data.league) {
+            this.handleQueryError();
+            return;
+        }
+
         this.league = League.fromJson(data.league);
         this.leaguePlayers = data.league.leaguePlayersConnection.edges.map((edge) => LeaguePlayer.fromJson(edge.node));
         this.pageTitleService.setTitle(this.league.name + ' - Player ranking');
         let totalCount = data.league.leaguePlayersConnection.totalCount;
         this.pageCount = Math.floor((totalCount == 0 ? 0 : totalCount - 1) / LeagueProfilePlayersComponent.paging) + 1;
         this.adminInLeague = data.league.isAdmin;
+        this.connectionError = false;
+    }
+
+    private handleQueryError() {
+        this.connectionError = true;
     }
 
     onRemovePlayer(player: Player) {
@@ -118,7 +135,7 @@ export class LeagueProfilePlayersComponent
         this.materializeActionsApprove.emit({action: "modal", params: ['close']});
     }
 
-    private static readonly getLeagueQuery = `query ($name: String, $after:Int, $first:Int, $sort: String, $playerId: ID!) {
+    private static readonly getLeagueQuery = `query ($name: String, $after:String, $first:Int, $sort: String, $playerId: ID!, $gamesSince: String) {
         league(name: $name) {
             id
             name
@@ -135,7 +152,11 @@ export class LeagueProfilePlayersComponent
                             name
                             imageUrl
                             description
-                        }    
+                        }
+                        gamePlayers(since: $gamesSince, sort: "time desc", first: -1) {
+                            ratingDelta
+                            time
+                        }
                     }
                 }
                 

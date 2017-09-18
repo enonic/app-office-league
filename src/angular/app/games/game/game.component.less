@@ -9,10 +9,28 @@
     flex-direction: row;
   }
 
+  &__header {
+    width: ~"calc(100% + 20px)";
+    left: -10px;
+    position: relative;
+  }
+
   &__side {
     width: 50%;
     display: flex;
     flex-direction: column;
+
+    &--1 {
+      &.game__side--header {
+        background-color: @blue-team-color;
+      }
+    }
+
+    &--2 {
+      &.game__side--header {
+        background-color: @red-team-color;
+      }
+    }
 
     &-intro {
       width: 100%;
@@ -36,6 +54,8 @@
     &-avatar {
       width: 100%;
       display: block;
+      border-radius: 50%;
+      padding: 16px;
 
       &-wrapper {
         width: 50%;
@@ -79,6 +99,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    padding-bottom: 3px;
 
     &--2 {
       flex-direction: row-reverse;
@@ -87,6 +108,16 @@
     &-avatar {
       width: 40px;
       height: 40px;
+      border-radius: 50%;
+      border: 2px solid;
+
+      &--1 {
+        border-color: @blue-team-color;
+      }
+
+      &--2 {
+        border-color: @red-team-color;
+      }
     }
 
     &-name {
@@ -94,142 +125,15 @@
     }
   }
 
-  &__date {
-    text-align: center;
-  }
-
-  /*.game__date {
-    padding-top: 5px;
-  }
-
-  .game__double {
-    padding-top: 2.5rem;
-  }
-
-  &__result {
-    width: 33%;
-    flex: 1 100%;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-
-    &__score {
-      font-size: 2.4rem;
-      font-weight: 300;
-    }
-  }
-
-  &__team-name {
-    font-weight: bold;
-  }
-
-  //TODO fix live styles
   &__live {
-    color: red;
+    font-style: italic;
+    animation: blinker 2s linear infinite;
 
-    animation: blink-animation 1s steps(5, start) infinite;
-    -webkit-animation: blink-animation 1s steps(5, start) infinite;
-    @keyframes blink-animation {
-      to {
-        visibility: hidden;
-      }
-    }
-    @-webkit-keyframes blink-animation {
-      to {
-        visibility: hidden;
-      }
-    }
   }
 
-  .game__team__player {
-    width: 24px;
-    height: 24px;
-    vertical-align: middle;
-  }*/
-}
-
-/*
-.game {
-  font-family: "Roboto Mono", monospace;
-}
-
-.results, .teams {
-  display: flex;
-  justify-content: center;
-}
-
-.results {
-  align-items: center;
-
-  .logo {
-    width: 4rem;
-    height: 4rem;
-  }
-
-  .score {
-    width: 3rem;
-    font-size: 2.5rem;
-    font-weight: bold;
-
-    &--blue {
-      text-align: right;
-      margin-left: 1rem;
-    }
-
-    &--red {
-      text-align: left;
-      margin-right: 1rem;
-    }
-  }
-
-  .colon {
-    width: 2.8rem;
-    text-align: center;
-    font-size: 2rem;
-    font-weight: bold;
-    color: #aaa;
-  }
-}
-
-.teams {
-  margin: 0.25rem 0;
-
-  .side {
-    &--blue, &--red {
-      flex-basis: 50%;
-    }
-
-    &--blue {
-      text-align: right;
-      padding-right: 1.5rem;
-    }
-
-    &--red {
-      text-align: left;
-      padding-left: 1.5rem;
-    }
-
-    .team {
-      font-weight: bold;
-      font-size: 1.2em;
-    }
-
-    .players {
-      margin: 0.25rem 0 0;
+  @keyframes blinker {
+    50% {
+      opacity: 0;
     }
   }
 }
-
-.side-red {
-  color: @red-team-color;
-}
-
-.side-blue {
-  color: @blue-team-color;
-}
-
-.date {
-  text-align: center;
-  margin: 0;
-  color: #999;
-}*/

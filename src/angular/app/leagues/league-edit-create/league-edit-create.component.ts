@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Location} from '@angular/common';
 import {BaseComponent} from '../../common/base.component';
 import {XPCONFIG} from '../../app.config';
 import {Headers, Http, RequestOptions} from '@angular/http';
@@ -9,6 +10,7 @@ import {League} from '../../../graphql/schemas/League';
 import {AuthService} from '../../services/auth.service';
 import {PageTitleService} from '../../services/page-title.service';
 import {ImageService} from '../../services/image.service';
+import {OnlineStatusService} from '../../services/online-status.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LeagueValidator} from '../league-validator';
 import {CustomValidators} from '../../common/validators';
@@ -25,44 +27,70 @@ export class LeagueEditCreateComponent
     extends BaseComponent
     implements AfterViewInit {
 
+    private static readonly DEFAULT_POINTS_TO_WIN: number = 10;
+    private static readonly DEFAULT_MIN_DIFFERENCE: number = 2;
+
     @ViewChild('fileInput') inputEl: ElementRef;
+    @ViewChild('addPlayerChips') addPlayerChipsViewChild;
     name: string;
     leagueId: string;
     description: string;
     leagueImageUrl: SafeUrl;
+    pointsToWin: string;
+    minimumDifference: string;
+    halfTimeSwitch: boolean = true;
     sport: string = Sport[Sport.FOOS].toLowerCase();
     admins: Player[] = [];
     adminPlayerIds: string[] = [];
+    adminPlayerNames: string[] = [];
+    onlyPlayers: Player[] = [];
+    onlyPlayerNames: string[] = [];
+    onlyPlayerNamesToAdd: string[] = [];
+    playerNames: string[] = [];
     allPlayerIds: string[] = [];
+    allPlayerNames: string[] = [];
+    allPlayerMap: any = {};
     editMode: boolean;
     leagueForm: FormGroup;
     formErrors = {
         'name': '',
-        'description': ''
+        'description': '',
+        'pointsToWin': '',
+        'minimumDifference': ''
     };
-    materializeActions = new EventEmitter<string | MaterializeAction>();
+    materializeActionsAdmin = new EventEmitter<string | MaterializeAction>();
+    materializeActionsPlayer = new EventEmitter<string | MaterializeAction>();
+    private online: boolean;
+    private onlineStateCallback = () => this.online = navigator.onLine;
 
     constructor(private http: Http, private authService: AuthService, private graphQLService: GraphQLService,
-                private pageTitleService: PageTitleService, route: ActivatedRoute,
-                private router: Router, private fb: FormBuilder, private sanitizer: DomSanitizer) {
+                private pageTitleService: PageTitleService, private onlineStatusService: OnlineStatusService,
+                route: ActivatedRoute, private location: Location, private router: Router, private fb: FormBuilder,
+                private sanitizer: DomSanitizer) {
         super(route);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
 
+        const defaultPointsToWin = LeagueEditCreateComponent.DEFAULT_POINTS_TO_WIN + '';
+        const defaultMinimumDifference = LeagueEditCreateComponent.DEFAULT_MIN_DIFFERENCE + '';
         this.leagueForm = this.fb.group({
             name: new FormControl(null,
                 [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(40), CustomValidators.validName()],
                 LeagueValidator.nameInUseValidator(this.graphQLService)),
             description: null,
-            id: null
-        });
+            id: null,
+            pointsToWin: new FormControl(defaultPointsToWin, [Validators.required, CustomValidators.integer(2, 100)]),
+            minimumDifference: new FormControl(defaultMinimumDifference, [Validators.required, CustomValidators.integer(1, 10)])
+        }, {validator: LeagueValidator.minimumDifference()});
         const updateFormErrors = (data?: any) => {
             LeagueValidator.updateFormErrors(this.leagueForm, this.formErrors);
         };
         this.leagueForm.valueChanges.subscribe(data => updateFormErrors(data));
         this.leagueForm.statusChanges.subscribe(data => updateFormErrors(data));
+        this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
+        this.online = navigator.onLine;
 
         updateFormErrors(); // (re)set validation messages now
 
@@ -81,6 +109,10 @@ export class LeagueEditCreateComponent
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
     }
 
+    ngOnDestroy(): void {
+        this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
+    }
+
     public updatePageTitle(title: string) {
         this.pageTitleService.setTitle(title);
     }
@@ -94,7 +126,10 @@ export class LeagueEditCreateComponent
             leagueId: this.leagueId,
             name: this.name,
             description: this.description || '',
-            adminPlayerIds: this.adminPlayerIds
+            adminPlayerIds: this.adminPlayerIds,
+            pointsToWin: parseInt(this.pointsToWin, 10),
+            minimumDifference: parseInt(this.minimumDifference, 10),
+            halfTimeSwitch: this.halfTimeSwitch
         };
         this.graphQLService.post(LeagueEditCreateComponent.updateLeagueMutation, updateLeagueParams).then(data => {
             return data && data.updateLeague;
@@ -114,7 +149,11 @@ export class LeagueEditCreateComponent
             name: this.name,
             description: this.description || '',
             sport: this.sport,
-            adminPlayerIds: this.adminPlayerIds
+            adminPlayerIds: this.adminPlayerIds,
+            playerNames: this.playerNames,
+            pointsToWin: parseInt(this.pointsToWin, 10),
+            minimumDifference: parseInt(this.minimumDifference, 10),
+            halfTimeSwitch: this.halfTimeSwitch
         };
         this.graphQLService.post(LeagueEditCreateComponent.createLeagueMutation, createLeagueParams).then(data => {
             return data && data.createLeague;
@@ -125,12 +164,19 @@ export class LeagueEditCreateComponent
         });
     }
 
+    onCancelClicked() {
+        this.location.back();
+    }
+
     loadAdminPlayerIds(): Promise<void> {
-        return this.graphQLService.post(LeagueEditCreateComponent.getAllPlayerIdsQuery).then(data => {
+        return this.graphQLService.post(LeagueEditCreateComponent.getAllPlayersQuery).then(data => {
             if (!data || !data.players) {
                 return;
             }
             this.allPlayerIds = data.players.map(p => p.id);
+            this.allPlayerNames = data.players.map(p => p.name);
+            this.allPlayerMap = {};
+            data.players.forEach(p => this.allPlayerMap[p.name] = Player.fromJson(p));
             return;
         });
     }
@@ -153,13 +199,20 @@ export class LeagueEditCreateComponent
             this.sport = Sport[sport].toLowerCase();
             this.admins = league.adminPlayers;
             this.adminPlayerIds = this.admins.map((p) => p.id);
+            this.adminPlayerNames = this.admins.map((p) => p.name);
+            // rules
+            this.pointsToWin = league.rules.pointsToWin + '';
+            this.minimumDifference = league.rules.minimumDifference + '';
+            this.halfTimeSwitch = league.rules.halfTimeSwitch;
 
             this.pageTitleService.setTitle(league.name);
 
             this.leagueForm.setValue({
-                name: league.name || '',
-                description: league.description || '',
-                id: league.id || ''
+                name: league.name || '',
+                description: league.description || '',
+                id: league.id || '',
+                pointsToWin: this.pointsToWin || '',
+                minimumDifference: this.minimumDifference || ''
             });
 
             this.leagueForm.removeControl('name');
@@ -167,6 +220,12 @@ export class LeagueEditCreateComponent
                 [Validators.required, Validators.minLength(3), Validators.maxLength(40), CustomValidators.validName()],
                 LeagueValidator.nameInUseValidator(this.graphQLService, league.id)));
 
+            this.leagueForm.removeControl('pointsToWin');
+            this.leagueForm.addControl('pointsToWin',
+                new FormControl(this.pointsToWin, [Validators.required, CustomValidators.integer(2, 100)]));
+            this.leagueForm.removeControl('minimumDifference');
+            this.leagueForm.addControl('minimumDifference',
+                new FormControl(this.minimumDifference, [Validators.required, CustomValidators.integer(1, 10)]));
             return league;
         });
     }
@@ -180,6 +239,10 @@ export class LeagueEditCreateComponent
             let player = Player.fromJson(data.player);
             this.admins = [player];
             this.adminPlayerIds = [player.id];
+            this.adminPlayerNames = [player.id];
+            this.onlyPlayers = [];
+            this.onlyPlayerNames = [];
+            this.playerNames = [player.name];
         });
     }
 
@@ -219,11 +282,27 @@ export class LeagueEditCreateComponent
             return;
         }
         this.admins = this.admins.filter((player) => player.id !== admin.id);
-        this.adminPlayerIds = this.admins.map((p) => p.id);
+        this.adminPlayerIds = this.adminPlayerIds.filter((playerId) => playerId !== admin.id);
+        this.adminPlayerNames = this.adminPlayerNames.filter((playerName) => playerName !== admin.name);
+        this.playerNames = this.playerNames.filter((playerName) => playerName !== admin.name);
+
+    }
+
+    onRemovePlayerClicked(removedPlayer: Player) {
+        if (!removedPlayer) {
+            return;
+        }
+        this.onlyPlayers = this.onlyPlayers.filter((player) => player.name !== removedPlayer.name);
+        this.onlyPlayerNames = this.onlyPlayerNames.filter((playerName) => playerName !== removedPlayer.name);
+        this.playerNames = this.playerNames.filter((playerName) => playerName !== removedPlayer.name);
     }
 
     onAddAdminClicked() {
         this.showSelectAdminModal();
+    }
+
+    onAddPlayerClicked() {
+        this.showSelectPlayerModal();
     }
 
     onAdminSelected(newAdmin: Player) {
@@ -233,32 +312,67 @@ export class LeagueEditCreateComponent
         let existing = this.admins.find((player) => player.id === newAdmin.id);
         if (!existing) {
             this.admins.push(newAdmin);
-            this.adminPlayerIds = this.admins.map((p) => p.id);
+            this.adminPlayerIds.push(newAdmin.id);
+            this.adminPlayerNames.push(newAdmin.name);
+            this.onRemovePlayerClicked(newAdmin);
+            this.playerNames.push(newAdmin.name);
         }
         this.hideSelectAdminModal();
     }
 
+    onPlayersSelected() {
+        this.onlyPlayerNamesToAdd.forEach((playerName) => {
+            if ((this.allPlayerMap[playerName] || playerName.indexOf('@') !== -1) && this.playerNames.indexOf(playerName) === -1) {
+                let player = this.allPlayerMap[playerName] || new Player(undefined, playerName);
+                this.onlyPlayers.push(player);
+                this.onlyPlayerNames.push(playerName);
+                this.playerNames.push(playerName);
+            }
+        });
+        this.hideSelectPlayerModal();
+    }
+
     showSelectAdminModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['open']});
+        this.materializeActionsAdmin.emit({action: "modal", params: ['open']});
+    }
+
+    showSelectPlayerModal(): void {
+        this.onlyPlayerNamesToAdd = [];
+        this.materializeActionsPlayer.emit({action: "modal", params: ['open']});
+        setTimeout(() => this.addPlayerChipsViewChild.focus(), 300); //No possibility to set a callback on display
     }
 
     hideSelectAdminModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['close']});
+        this.materializeActionsAdmin.emit({action: "modal", params: ['close']});
     }
 
-    private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $adminPlayerIds: [ID]) {
-        createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: $adminPlayerIds) {
+    hideSelectPlayerModal(): void {
+        this.materializeActionsPlayer.emit({action: "modal", params: ['close']});
+    }
+
+    private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $adminPlayerIds: [ID], $playerNames: [String], $pointsToWin: Int, $minimumDifference: Int, $halfTimeSwitch: Boolean) {
+        createLeague(name: $name, description: $description, sport: $sport, adminPlayerIds: $adminPlayerIds, playerNames: $playerNames, pointsToWin: $pointsToWin, minimumDifference: $minimumDifference, halfTimeSwitch: $halfTimeSwitch) {
             id
             name
             imageUrl
+            rules {
+                pointsToWin
+                minimumDifference
+                halfTimeSwitch
+            }
         }
     }`;
 
-    private static readonly updateLeagueMutation = `mutation ($leagueId: ID!, $name: String, $description: String, $adminPlayerIds: [ID]) {
-        updateLeague(id: $leagueId, name: $name, description: $description, adminPlayerIds: $adminPlayerIds) {
+    private static readonly updateLeagueMutation = `mutation ($leagueId: ID!, $name: String, $description: String, $adminPlayerIds: [ID], $pointsToWin: Int, $minimumDifference: Int, $halfTimeSwitch: Boolean) {
+        updateLeague(id: $leagueId, name: $name, description: $description, adminPlayerIds: $adminPlayerIds, pointsToWin: $pointsToWin, minimumDifference: $minimumDifference, halfTimeSwitch: $halfTimeSwitch) {
             id
             name
             imageUrl
+            rules {
+                pointsToWin
+                minimumDifference
+                halfTimeSwitch
+            }
         }
     }`;
 
@@ -275,12 +389,19 @@ export class LeagueEditCreateComponent
                 name
                 imageUrl
             }
+            rules {
+                pointsToWin
+                minimumDifference
+                halfTimeSwitch
+            }
         }
     }`;
 
-    private static readonly getAllPlayerIdsQuery = `query{
+    private static readonly getAllPlayersQuery = `query{
         players(first: -1) {
             id
+            name
+            imageUrl
         }
     }`;
 

@@ -16,6 +16,7 @@ import {ImageService} from '../../services/image.service';
 import {CustomValidators} from '../../common/validators';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {UserProfileService} from '../../services/user-profile.service';
+import {OnlineStatusService} from '../../services/online-status.service';
 
 @Component({
     selector: 'player-edit',
@@ -33,12 +34,13 @@ export class PlayerEditComponent
         'fullname': ''
     };
     email: string;
-
     countries: Country[] = [];
+    private online: boolean;
+    private onlineStateCallback = () => this.online = navigator.onLine;
     @ViewChild('fileInput') inputEl: ElementRef;
 
     constructor(private http: Http, route: ActivatedRoute, private pageTitleService: PageTitleService,
-                private graphQLService: GraphQLService,
+                private graphQLService: GraphQLService, private onlineStatusService: OnlineStatusService,
                 private router: Router, private location: Location, private fb: FormBuilder, private sanitizer: DomSanitizer,
                 private userProfileService: UserProfileService) {
         super(route);
@@ -49,7 +51,8 @@ export class PlayerEditComponent
 
         this.playerForm = this.fb.group({
             name: new FormControl(null,
-                [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(40), CustomValidators.validName()],
+                [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(40), CustomValidators.validName(),
+                    CustomValidators.validNoWhitespace()],
                 PlayerValidator.nameInUseValidator(this.graphQLService)),
             fullname: [null, Validators.compose([Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(40)])],
             nationality: null,
@@ -64,6 +67,8 @@ export class PlayerEditComponent
 
         this.playerForm.valueChanges.subscribe(data => updateFormErrors(data));
         this.playerForm.statusChanges.subscribe(data => updateFormErrors(data));
+        this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
+        this.online = navigator.onLine;
 
         updateFormErrors(); // (re)set validation messages now
 
@@ -75,10 +80,14 @@ export class PlayerEditComponent
         this.loadPlayer(name);
     }
 
+    ngOnDestroy(): void {
+        this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
+    }
+
     ngAfterViewInit(): void {
         let inputEl: HTMLInputElement = this.inputEl.nativeElement;
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
-    }
+    }    
 
     public updatePageTitle(title: string) {
         this.pageTitleService.setTitle(title);
@@ -111,7 +120,8 @@ export class PlayerEditComponent
 
         this.playerForm.removeControl('name');
         this.playerForm.addControl('name', new FormControl(player.name,
-            [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(40), CustomValidators.validName()],
+            [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(40), CustomValidators.validName(),
+                CustomValidators.validNoWhitespace()],
             PlayerValidator.nameInUseValidator(this.graphQLService, player.id)));
     }
 
@@ -141,11 +151,12 @@ export class PlayerEditComponent
             return data && data.updatePlayer;
         }).then(updatedPlayer => {
             const player = Player.fromJson(updatedPlayer);
-            this.uploadImage(player.id).then(uploadResp => {
-                this.router.navigate(['players', player.name], {replaceUrl: true});
-            }).then(() => this.graphQLService.post(PlayerEditComponent.getPlayerQuery, {name: player.name})).then((data) => {
+            this.uploadImage(player.id).then(uploadResp =>
+                this.graphQLService.post(PlayerEditComponent.getPlayerQuery, {name: player.name})).then((data) => {
                 const player = Player.fromJson(data.player);
                 this.userProfileService.setPlayer(player);
+            }).then(() => {
+                this.router.navigate([''], {replaceUrl: true});
             });
         });
     }

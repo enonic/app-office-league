@@ -1,7 +1,68 @@
+@import "../app/colors";
+
 .card.edit-form {
   background-color: #2A374E;
   
-  select, .admin-summary {
+  /*select, .admin-summary {
     background-color: #1C2641;
+  }*/
+}
+
+.input-field {
+  margin-bottom: 0.75rem;
+
+  label {
+    transform: translateY(-150%) !important;
   }
+}
+
+
+
+input[type=text],
+input[type=password],
+input[type=email],
+select,
+textarea,
+textarea.materialize-textarea{
+  background-color: #475367;
+  color: #fff;
+  padding: 10px;
+  box-sizing: border-box;
+  box-shadow: none !important;
+  border-bottom-color: #aaa;
+  border-left-color: #475367;
+  border-width: 0 0 1px 2px;
+  border-style: solid;
+  height: auto;
+  outline: none !important;
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+  margin: 0 0 10px 0;
+
+
+  &:focus:not([readonly]) {
+    border-left: 2px solid @focus-color;
+    border-bottom-color: #aaa;
+    box-shadow: none;
+
+    & + label {
+      color: #fff;
+    }
+
+  }
+
+  &.invalid {
+    border-bottom-color: #F44336;
+
+    &:focus:not([readonly]) {
+      border-bottom-color: #F44336;
+    }
+
+  }
+
+  & + label:after {
+    font-size: 0.8rem;
+  }
+
+
 }

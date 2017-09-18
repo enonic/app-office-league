@@ -2,21 +2,19 @@
     <loading></loading>
 </template>
 <template [ngIf]="playerForm.controls.id.value != ''">
-    <div class="card edit-form">
+    <div class="card edit-form player-edit">
         <div class="card-content">
             <span class="card-title">Edit player</span>
             <form [formGroup]="playerForm">
                 <div *ngIf="!!email" class="row">
                     <div class="col s12">
-                        <i class="material-icons prefix">email</i>
                         <label class="player-email__label">Email</label>
 
                         <div class="player-email">{{email}}</div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">fingerprint</i>
+                    <div class="input-field">
                         <input id="name" type="text" formControlName="name"
                                (ngModelChange)="updatePageTitle($event)" [class.invalid]="!!formErrors.name"
                                required="required" aria-required="true" autocomplete="off">
@@ -24,36 +22,35 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">perm_identity</i>
+                    <div class="input-field">
                         <input id="fullname" type="text" formControlName="fullname" [class.invalid]="!!formErrors.fullname"
                                required="required" aria-required="true" autocomplete="off">
                         <label class="active" [attr.data-error]="formErrors.fullname" for="fullname">Full name</label>
                     </div>
                 </div>
                 <div class="row">
-                    <label class="avatar">Avatar</label>
 
-                    <div class="input-field col s12">
+                    <div class="input-field">
+                        <label class="avatar">Avatar image</label>
                         <input type="file" accept="image/*" #fileInput style="display:none;">
 
                         <div class="player-icon-frame">
-                            <img [src]="imageUrl" alt="Player Image" class="player-icon preview"
+                            <img [src]="imageUrl" alt="Player Image" class="player-icon preview player-edit__avatar"
                                  (click)="fileInput.click()">
                         </div>
+
+                        <a class="waves-effect waves-teal btn player-edit__btn--upload" (click)="fileInput.click()">Upload picture</a>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">info_outline</i>
-                        <textarea id="description" class="materialize-textarea" autocomplete="off" spellcheck="false"
+                    <div class="input-field">
+                        <textarea id="description" autocomplete="off" spellcheck="false"
                                   formControlName="description"></textarea>
                         <label class="active" for="description">About</label>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s12">
-                        <i class="material-icons prefix">language</i>
+                    <div class="input-field">
                         <label class="nationality">Nationality</label>
                         <select class="browser-default player-nationality" formControlName="nationality">
                             <option [value]="" disabled>Choose your nationality</option>
@@ -63,9 +60,10 @@
                         </select>
                     </div>
                 </div>
-                <div class="row submit-row">
-                    <a class="waves-effect waves-teal btn light-blue" [attr.disabled]="!playerForm.valid ? true : null"
-                       (click)="onSaveClicked()"><i class="material-icons left">save</i>Save</a>
+                <div class="row submit-row player-edit__submit-row">
+                    <a class="waves-effect waves-teal btn red player-edit__btn player-edit__btn--cancel" (click)="onCancelClicked()">Cancel</a>
+                    <a class="waves-effect waves-teal btn light-blue player-edit__btn--submit" [attr.disabled]="!online||!playerForm.valid ? true : null"
+                       (click)="onSaveClicked()">Save</a>
                 </div>
             </form>
         </div>

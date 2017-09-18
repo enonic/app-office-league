@@ -79,6 +79,9 @@ export class GraphQLService {
 
     private extractData(res: Response) {
         let json = res.json();
+        if (json.errors && json.errors.length > 0) {
+            throw json.errors;
+        }
         return json.data || {};
     }
 
@@ -91,7 +94,7 @@ export class GraphQLService {
             if (this.authService.isAuthenticated()) {
                 this.authService.login();
             }
-            return Observable.empty<Response>();
+            return Observable.throw('Not authenticated');
         }
 
         let errMsg: string;
@@ -99,6 +102,9 @@ export class GraphQLService {
             const body = error.json() || '';
             const err = body.error || JSON.stringify(body);
             errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+        } else if (Array.isArray(error)) {
+            errMsg = error[0].message ? error[0].message : JSON.stringify(error);
+            return Observable.throw(error);
         } else {
             errMsg = error.message ? error.message : error.toString();
         }

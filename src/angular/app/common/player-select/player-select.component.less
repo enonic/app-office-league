@@ -3,25 +3,31 @@
   flex-direction: row;
   flex-wrap: wrap;
   align-items: flex-start;
-  justify-content: space-between;
   align-content: flex-start;
+  justify-content: space-between;
 }
 
 .player-item {
   //flex: 1;
   padding: 2px;
+  max-width: 68px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
 
-  img {
-    width: 10vw;
-    height: 10vw;
-    border-radius: 5px;
-  }
-
   .player-item-details {
-    align-items: center;
+    width: 100%;
+
+    img {
+      width: 64px;
+      height: 64px;
+      border-radius: 32px;
+    }
+
+    .title {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
   }
 }

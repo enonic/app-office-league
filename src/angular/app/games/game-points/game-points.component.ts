@@ -59,7 +59,7 @@ export class GamePointsComponent
             const name = point.player.name;
             const gameTeam = teamMap[name];
             const gamePlayer = playerMap[name];
-            const comment = point.against ? 'Scored against' : null;
+            const text = name + (point.against ? ' scores... in the wrong goal.' : ' scores.');
 
             const side = gamePlayer.side;
             if (side === Side.BLUE) {
@@ -76,7 +76,7 @@ export class GamePointsComponent
                 }
             }
             const score = `${blueScore}-${redScore}`;
-            const timelineEntry = new TimelineEntry(name, gameTeam && gameTeam.team.name, point.time, comment, score, gamePlayer.side);
+            const timelineEntry = new TimelineEntry(name, gameTeam && gameTeam.team.name, point.time, text, score, gamePlayer.side);
             timelineEntry.imageUrl = point.player.imageUrl;
             this.timeline.push(timelineEntry);
         });

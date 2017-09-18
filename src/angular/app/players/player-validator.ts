@@ -7,14 +7,15 @@ export class PlayerValidator {
         'name': {
             'required': 'Name is required.',
             'minlength': 'Name must be at least 3 characters long.',
-            'maxlength': '40 characters is enough for a name.',
+            'maxlength': 'Name must be no longer than 40 characters.',
             'nameinuse': 'This name is already taken, sorry.',
-            'invalidname': 'The name contains invalid characters.'
+            'invalidname': 'The name contains invalid characters.',
+            'invalidwhitespace': 'The name contains space characters.'
         },
         'fullname': {
             'required': 'Full name is required.',
             'minlength': 'Full name must be at least 3 characters long.',
-            'maxlength': '40 characters is enough for a full name.'
+            'maxlength': 'Full name must be no longer than 40 characters.',
         }
     };
 

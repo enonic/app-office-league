@@ -3,9 +3,11 @@ var authLib = require('/lib/xp/auth');
 var mustacheLib = require('/lib/xp/mustache');
 var storeLib = require('/lib/office-league-store');
 var invitationLib = require('/lib/invitation');
+var geoipLib = require('/lib/enonic/geoip');
 var view = resolve('pwa.html');
 
 exports.get = function (req) {
+
     var site = portalLib.getSite();
     var baseHref = portalLib.pageUrl({
         path: site._path
@@ -32,6 +34,16 @@ exports.get = function (req) {
         }
     }
 
+    var user = authLib.getUser();
+    if (!user && hasLoginSuggestParam(req)) {
+        return {
+            redirect: portalLib.loginUrl({
+                type: 'absolute',
+                redirect: req.url
+            })
+        }
+    }
+
     if (isPlayerCreatePage(req, appBaseUrl)) {
         if (req.params.invitation) {
             var player = getPlayer();
@@ -42,8 +54,8 @@ exports.get = function (req) {
                     storeLib.refresh();
                 }
             }
-            
-        } 
+
+        }
     } else {
         if (isLoggedInUserWithoutPlayer()) {
             return {
@@ -53,18 +65,27 @@ exports.get = function (req) {
     }
 
 
-    var user = authLib.getUser();
     var userObj = user && {key: user.key};
     if (user) {
         var player = storeLib.getPlayerByUserKey(user.key);
         userObj.playerId = player && player._id;
         userObj.playerName = (player && player.name) || user.displayName;
         userObj.playerImageUrl = player ? appBaseUrl + player.imageUrl : '';
+        userObj.isAdmin = authLib.hasRole('system.admin');
     }
+
+    var countryIsoCode;
+    if (req.remoteAddress) {
+        var locationData = geoipLib.getLocationData(req.remoteAddress);
+        countryIsoCode = geoipLib.countryISO(locationData);
+    }
+    countryIsoCode = countryIsoCode || 'no';
 
     var params = {
         locale: req.params.locale || 'en',
+        countryIsoCode: countryIsoCode,
         user: userObj && JSON.stringify(userObj),
+        content: req.mode === 'edit' && portalLib.getContent(),
         isLive: (req.mode === 'live'),
         siteUrl: (baseHref === '/') ? '' : baseHref,
         baseHref: appBaseUrl + '/',   // trailing slash for relative urls to be correct
@@ -91,6 +112,10 @@ var isPlayerCreatePage = function (req, appBaseUrl) {
 
 var mustLogIn = function (req) {
     return !authLib.getUser() && (req.path.search(/\/app$/) !== -1 || req.path.search(/\/app\/player-create$/) !== -1);
+};
+
+var hasLoginSuggestParam = function (req) {
+    return req.params.login;
 };
 
 var getPlayer = function () {

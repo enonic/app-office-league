@@ -1,13 +1,19 @@
-<template [ngIf]="game == null">
+<template [ngIf]="game == null && !connectionError">
     <loading></loading>
+</template>
+<template [ngIf]="game == null && connectionError">
+    <connection-error></connection-error>
 </template>
 <div *ngIf="game != null" class="game-profile">
 
     <game [game]="game"></game>
+    <div class="game__date">
+        <small class="center grey-text">{{game.time | amCalendar:{lastDay: '[Yesterday at] HH:mm', sameDay: '[Today at] HH:mm', nextDay : '[Tomorrow at] HH:mm', lastWeek : '[last] dddd [at] HH:mm', nextWeek : 'dddd [at] HH:mm', sameElse : 'll HH:mm'} }}</small>
+    </div>
     <game-flow [game]="game"></game-flow>
     <template [ngIf]="playerId && !deletable">
         <div class="fixed-action-btn">
-            <a class="btn-floating global__btn--comment" (click)="onCommentClicked()"><i class="material-icons">comment</i></a>
+            <a class="btn-floating global__btn--comment green" (click)="onCommentClicked()" [attr.disabled]="online?null:true"><i class="material-icons">comment</i></a>
         </div>
     </template>
 
@@ -19,8 +25,12 @@
             <i class="material-icons">menu</i>
         </a>
         <ul class="game-profile__btn-menu">
-            <li><a class="btn-floating global__btn--comment" (click)="onCommentClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(20px) translateX(0px); opacity: 0;"><i class="material-icons">comment</i></a></li>
-            <li (click)="onDeleteClicked()"><a class="btn-floating red" style="transform: scaleY(0.4) scaleX(0.4) translateY(20px) translateX(0px); opacity: 0;"><i class="material-icons">delete</i></a></li>
+            <li><a class="btn-floating global__btn--comment" (click)="onCommentClicked()"
+                   style="transform: scaleY(0.4) scaleX(0.4) translateY(20px) translateX(0px); opacity: 0;"><i class="material-icons">comment</i></a>
+            </li>
+            <li (click)="onDeleteClicked()"><a class="btn-floating red"
+                                               style="transform: scaleY(0.4) scaleX(0.4) translateY(20px) translateX(0px); opacity: 0;"><i
+                    class="material-icons">delete</i></a></li>
         </ul>
     </div>
 
@@ -30,7 +40,8 @@
     <div class="modal-content">
         <h6 class="center">Game comment</h6>
         <div class="input-field col s12">
-            <textarea id="comment" class="materialize-textarea" name="comment" maxlength="140" [(ngModel)]="comment" #commenttextarea></textarea>
+            <textarea id="comment" class="materialize-textarea" name="comment" autocorrect="off" spellcheck="false" maxlength="140"
+                      [(ngModel)]="comment" #commenttextarea></textarea>
             <label class="active" for="comment">What's happening?</label>
         </div>
     </div>

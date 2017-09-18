@@ -2,7 +2,7 @@
     <loading></loading>
 </template>
 <template [ngIf]="leagueForm != null">
-    <div class="card edit-form">
+    <div class="card edit-form league-edit-create">
         <div class="card-content">
             <template [ngIf]="editMode">
                 <span class="card-title">Edit league</span>
@@ -12,8 +12,7 @@
             </template>
             <form [formGroup]="leagueForm">
                 <div class="row">
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">label_outline</i>
+                    <div class="input-field">
                         <input id="name" type="text" formControlName="name" name="name" [class.invalid]="!!formErrors.name"
                                autocomplete="off"
                                [(ngModel)]="name" (ngModelChange)="updatePageTitle($event)"
@@ -22,63 +21,119 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">info_outline</i>
+                    <div class="input-field">
                         <input id="description" type="text" class="validate" autocomplete="off" name="description" [(ngModel)]="description"
                                formControlName="description">
                         <label [ngClass]="{'active': !!description}" for="description">Description</label>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s12">
+                    <div class="">
                         <input type="file" accept="image/*" #fileInput style="display:none;">
 
                         <div class="league-icon-frame">
-                            <img [src]="leagueImageUrl" alt="League Icon" class="league-icon preview"
+                            <img [src]="leagueImageUrl" alt="League Icon" class="league-icon preview league-edit-create__avatar"
                                  (click)="fileInput.click()">
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s12">
-                        <div class="league__admins-title">
-                            <i class="material-icons prefix league__admins-titleicon">verified_user</i>
-                            <h6 class="league__admins-titletext"> Administrators</h6>
-                        </div>
-                        <admin-list [admins]="admins" [pageCount]="1" hideSearchField="true"
+                    <div class="">
+                        <label>Administrators</label>
+                        <admin-list [admins]="admins" [pageCount]="1" hideSearchField="true" emptyMessage="No administrator selected"
                                     (removeAdmin)="onRemoveAdminClicked($event)"></admin-list>
                         <div class="league__admins-add">
                             <button class="btn global__btn-small waves-effect waves-light light-blue darken-3 right"
-                                    (click)="onAddAdminClicked()">Add
-                                <i class="material-icons right">verified_user</i>
+                                    (click)="onAddAdminClicked()">Add admin
                             </button>
                         </div>
                     </div>
                 </div>
-                <div class="row submit-row">
+                <template [ngIf]="!editMode">
+                    <div class="row">
+                        <div class="">
+                            <label>Players</label>
+                            <admin-list [admins]="onlyPlayers" [pageCount]="1" hideSearchField="true" emptyMessage="No player selected"
+                                        (removeAdmin)="onRemovePlayerClicked($event)"></admin-list>
+                            <div class="league__admins-add">
+                                <button class="btn global__btn-small waves-effect waves-light light-blue darken-3 right"
+                                        (click)="onAddPlayerClicked()">Add player
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <fieldset>
+                    <legend>Rules</legend>
+
+                    <div class="row">
+                        <div class="input-field">
+                            <input id="pointsToWin" class="league-edit-create__rules--number" type="text" name="pointsToWin" autocomplete="off"
+                                   formControlName="pointsToWin" [class.invalid]="!!formErrors.pointsToWin" [(ngModel)]="pointsToWin">
+                            <label [ngClass]="{'active': !!pointsToWin}" for="pointsToWin" [attr.data-error]="formErrors.pointsToWin">Points to win</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-field">
+                            <input id="minimumDifference" class="league-edit-create__rules--number" type="text" name="minimumDifference"
+                                   autocomplete="off"
+                                   formControlName="minimumDifference"
+                                   [class.invalid]="!!formErrors.minimumDifference || leagueForm.hasError('lessthanpoints')"
+                                   [(ngModel)]="minimumDifference">
+                            <label [ngClass]="{'active': !!minimumDifference}" for="minimumDifference"
+                                   [attr.data-error]="formErrors.minimumDifference"
+                                   [attr.data-error]="leagueForm.hasError('lessthanpoints')? 'Minimum point difference must be less than points to win.': null">Minimum
+                                point difference to win</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div>
+                            <input id="halfTimeSwitch" type="checkbox" name="halfTimeSwitch" [(ngModel)]="halfTimeSwitch" [ngModelOptions]="{standalone: true}">
+                            <label for="halfTimeSwitch">Switch player positions at half time</label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="row submit-row league-edit-create__submit-row">
                     <template [ngIf]="!editMode">
-                        <a class="waves-effect waves-teal btn light-blue"
-                           [attr.disabled]="!leagueForm.valid||admins.length===0?true:null"
-                           (click)="onCreateClicked()"><i class="material-icons left">save</i>Create</a>
+                        <a class="waves-effect waves-teal btn red league-edit-create__btn league-edit-create__btn--cancel" (click)="onCancelClicked()">Cancel</a>
+                        <a class="waves-effect waves-teal btn light-blue league-edit-create__btn league-edit-create__btn--submit"
+                           [attr.disabled]="!online||!leagueForm.valid||admins.length===0?true:null"
+                           (click)="onCreateClicked()">Create</a>
                     </template>
                     <template [ngIf]="editMode">
-                        <a class="waves-effect waves-teal btn light-blue"
-                           [attr.disabled]="!leagueForm.valid||admins.length===0?true:null" (click)="onUpdateClicked()"><i
-                                class="material-icons left">save</i>Save</a>
+                        <a class="waves-effect waves-teal btn red league-edit-create__btn league-edit-create__btn--cancel" (click)="onCancelClicked()">Cancel</a>
+                        <a class="waves-effect waves-teal btn light-blue league-edit-create__btn league-edit-create__btn--submit"
+                           [attr.disabled]="!online||!leagueForm.valid||admins.length===0?true:null" (click)="onUpdateClicked()">Save</a>
                     </template>
 
                 </div>
             </form>
         </div>
-    </div>
 
-    <div class="modal center player-select-modal" materialize="modal"
-         [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
-        <div class="modal-content">
-            <h4 class="center">Select an admin to add</h4>
-            <player-select [playerIds]="allPlayerIds" [excludedPlayerIds]="adminPlayerIds" [materializeActions]="materializeActions"
-                           (playerSelected)="onAdminSelected($event)"></player-select>
+        <div class="modal center player-select-modal" materialize="modal"
+             [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActionsAdmin">
+            <div class="modal-content">
+                <h6 class="center">Select an admin to add</h6>
+                <player-select [playerIds]="allPlayerIds" [excludedPlayerIds]="adminPlayerIds" [materializeActions]="materializeActionsAdmin"
+                               (playerSelected)="onAdminSelected($event)"></player-select>
+            </div>
+        </div>
+
+        <div class="modal center player-select-modal" materialize="modal"
+             [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActionsPlayer">
+            <div class="modal-content">
+                <h6 class="center">Select a player to add</h6>
+                <chips #addPlayerChips [availableTags]="allPlayerNames" [excludedTags]="playerNames" [selectedTags]="onlyPlayerNamesToAdd" placeholder="Enter a player name or email"></chips>
+                <div class="row submit-row">
+                    <a class="waves-effect waves-teal btn green" [attr.disabled]="onlyPlayerNamesToAdd.length===0?true:null" (click)="onPlayersSelected()"><i class="material-icons left">add</i>Add</a>
+                </div>
+            </div>
         </div>
     </div>
+
 
 </template>

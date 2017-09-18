@@ -9,7 +9,7 @@
         <div class="player-summary__name">{{player.name}}</div>
         <div class="player-summary__rating" *ngIf="ratingPoints() > 0">{{ratingPoints()}}</div>
         <div class="player-summary__rating" *ngIf="pendingApproval"></div>
-        <a *ngIf="allowRemove && !pendingApproval" class="player-summary__action" [class.hide-remove]="isCurrentPlayer" (click)="onRemoveClicked($event)"><i class="material-icons">highlight_off</i></a>
+        <a *ngIf="allowRemove && !pendingApproval" class="player-summary__action" [class.hide-remove]="isCurrentPlayer" (click)="onRemoveClicked($event)"><i class="material-icons">directions_run</i></a>
         <a *ngIf="pendingApproval" class="player-summary__action" (click)="onApproveClicked($event)"><i class="material-icons">gavel</i></a>
         <!-- <div class="primary">
              <span class="title">{{player.name}}</span>&lt;!&ndash;

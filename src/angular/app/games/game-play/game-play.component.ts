@@ -93,7 +93,17 @@ export class GamePlayComponent
     };
 
     private wsMan: WebSocketManager;
+
     private goalSound: WebAudioSound;
+    private ownGoalSound: WebAudioSound;
+    private gameEndSound: WebAudioSound;
+    private halfTimeSound: WebAudioSound;
+    private firstGoalSound: WebAudioSound;
+    private strike3Sound: WebAudioSound;
+    private strike5Sound: WebAudioSound;
+    private strike7Sound: WebAudioSound;
+    private strike9Sound: WebAudioSound;
+    private visibilityChangeHandler: EventListenerOrEventListenerObject;
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute, private router: Router, private elRef: ElementRef,
                 private offlineService: OfflinePersistenceService, private gameSelection: GameSelection,
@@ -113,7 +123,7 @@ export class GamePlayComponent
                 }
             }
 
-            this.wsMan = new WebSocketManager(this.getWsUrl(this.gameId), true);
+            this.wsMan = new WebSocketManager(this.getWsUrl(this.gameId));
             this.wsMan.onMessage(this.onWsMessage.bind(this));
 
             this.loadGameData()
@@ -122,13 +132,17 @@ export class GamePlayComponent
                 })
                 .then(() => {
                     if (!this.league) {
+                        this.leaveFullScreen();
                         this.router.navigate([''], {replaceUrl: true});
                         return;
                     }
                     this.startGame();
-                })
-            ;
+                });
         });
+        if ('hidden' in document) {
+            this.visibilityChangeHandler = this.visibilityChange.bind(this);
+            document.addEventListener("visibilitychange", this.visibilityChangeHandler);
+        }
     }
 
     ngAfterViewInit() {
@@ -170,6 +184,9 @@ export class GamePlayComponent
         this.nameClassesField['enabled'] = true;
 
         this.nameClassesGamePlay['game-play--player-clicked'] = true;
+        let side = this.getPlayerSide(p);
+        this.nameClassesGamePlay['game-play--player-red-clicked'] = side === Side.RED;
+        this.nameClassesGamePlay['game-play--player-blue-clicked'] = side === Side.BLUE;
     }
 
     private unselectAll() {
@@ -184,6 +201,8 @@ export class GamePlayComponent
         this.nameClassesField['enabled'] = false;
 
         this.nameClassesGamePlay['game-play--player-clicked'] = false;
+        this.nameClassesGamePlay['game-play--player-red-clicked'] = false;
+        this.nameClassesGamePlay['game-play--player-blue-clicked'] = false;
     }
 
     onPauseClicked() {
@@ -236,12 +255,12 @@ export class GamePlayComponent
     onGameTimeClicked() {
         this.unselectAll();
 
-        if (this.gameState === GameState.Paused) {
-            this.resumeGame();
-        }
-        else {
+        if (this.gameState !== GameState.Paused) {
             this.pauseGame();
             this.showMenu = true;
+        }
+        else if (!this.showMenu) {
+            this.resumeGame();
         }
     }
 
@@ -251,6 +270,7 @@ export class GamePlayComponent
     }
 
     private redirectAfterGameDeleted() {
+        this.leaveFullScreen();
         if (this.league) {
             this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
         } else {
@@ -309,11 +329,20 @@ export class GamePlayComponent
 
         if (this.hasGameEnded()) {
             this.gameState = GameState.Finished;
+            this.leaveFullScreen();
             this.router.navigate(['games', this.gameId], {replaceUrl: true});
         } else {
             this.startGameTimer();
 
             if (!this.gameId) {
+                if (!this.bluePlayer1 || !this.redPlayer1) {
+                    if (this.league) {
+                        this.router.navigate(['leagues', this.league.name], {replaceUrl: true});
+                    } else {
+                        this.router.navigate([], {replaceUrl: true});
+                    }
+                    return;
+                }
                 this.createGame().then((gameId) => {
                     console.log('Initial game created: ' + gameId);
                     this.gameId = gameId;
@@ -360,11 +389,24 @@ export class GamePlayComponent
         this.startGameTimer();
     }
 
-    private scoreGoal(team: string) {
-        if (team === 'blue') {
+    private scoreGoal(scorerSide: Side, against: boolean) {
+        let pointWinner: Side;
+        if (scorerSide === Side.RED) {
+            pointWinner = against ? Side.BLUE : Side.RED;
+        } else {
+            pointWinner = against ? Side.RED : Side.BLUE;
+        }
+
+        if (pointWinner === Side.BLUE) {
+            this.blueScore++;
+        }
+        else {
+            this.redScore++;
+        }
+
+        if (scorerSide === Side.BLUE) {
             this.nameClassesGamePlayScoreBlue['game-play__blue-score--goal'] = true;
             this.nameClassesGamePlayCommentator['game-play__commentator--blue'] = true;
-            this.blueScore++;
             setTimeout(() => {
                 this.nameClassesGamePlayScoreBlue['game-play__blue-score--goal'] = false;
                 this.nameClassesGamePlayCommentator['game-play__commentator--blue'] = false;
@@ -373,7 +415,6 @@ export class GamePlayComponent
         else {
             this.nameClassesGamePlayScoreRed['game-play__red-score--goal'] = true;
             this.nameClassesGamePlayCommentator['game-play__commentator--red'] = true;
-            this.redScore++;
             setTimeout(() => {
                 this.nameClassesGamePlayScoreRed['game-play__red-score--goal'] = false;
                 this.nameClassesGamePlayCommentator['game-play__commentator--red'] = false;
@@ -381,18 +422,26 @@ export class GamePlayComponent
         }
 
         this.onScoreChange();
-        this.commentatorMessage = this.halfTime ? 'Half Time!' : 'GOAL!';
+
+        if (this.halfTime) {
+            this.commentatorMessage = 'Half Time!';
+        } else if (against) {
+            this.commentatorMessage = 'OWN GOAL!';
+        } else {
+            this.commentatorMessage = 'GOAL!';
+        }
+        this.nameClassesGamePlayCommentator['game-play__commentator--longtext'] = this.commentatorMessage.length > 6;
+
         this.nameClassesGamePlayCommentator['game-play__commentator--active'] = true;
         setTimeout(() => {
             this.nameClassesGamePlayCommentator['game-play__commentator--active'] = false;
         }, 2000);
 
-
     }
 
     private handlePointScored(p: Player, against: boolean) {
         let now = new Date();
-        let side = this.getPlayerSide(p);
+        let scorerSide = this.getPlayerSide(p);
         let point = new Point();
         point.player = p;
         point.time = this.getElapsedSeconds(now);
@@ -402,41 +451,29 @@ export class GamePlayComponent
         point.against = against;
         this.points.push(point);
 
-        if (side === Side.RED) {
-            if (against) {
-                this.scoreGoal('blue');
-                //this.blueScore++;
-            } else {
-                this.scoreGoal('red');
-                //this.redScore++;
-            }
-        } else {
-            if (against) {
-                this.scoreGoal('red');
-                //this.redScore++;
-            } else {
-                this.scoreGoal('blue');
-                //this.blueScore++;
-            }
-        }
+        this.scoreGoal(scorerSide, against);
 
         if (this.hasGameEnded()) {
+            this.playSound(this.gameEndSound);
+
             this.stopGameTimer();
             this.gameState = GameState.Finished;
             this.saveGame().then((gameId) => {
                 console.log('Game created: ' + gameId);
+                this.leaveFullScreen();
                 this.router.navigate(['games', gameId], {replaceUrl: true});
             }).catch((ex) => {
                 console.warn('Could not save final game. TODO: Save data in local storage');
                 this.onlineMode = false;
                 this.saveGameOffline().then((game) => {
+                    this.leaveFullScreen();
                     this.router.navigate(['games', game.id], {replaceUrl: true});
                 }).catch((ex) => {
                     console.log(ex); // TODO retry?
                 });
             });
         } else {
-            this.playSound(this.goalSound);
+            this.playSoundAfterGoal();
 
             this.saveGame().then((gameId) => {
                 // TODO show point feedback
@@ -448,14 +485,22 @@ export class GamePlayComponent
     }
 
     private onScoreChange() {
-        let wasFirstPeriod: boolean = this.firstPeriod;
-        this.firstPeriod = this.blueScore < 5 && this.redScore < 5;
-        this.halfTime = (wasFirstPeriod && !this.firstPeriod) || (!wasFirstPeriod && this.firstPeriod);
+        if (this.league.rules.halfTimeSwitch) {
+            let wasFirstPeriod: boolean = this.firstPeriod;
+            let halfTimeScore = Math.ceil(this.league.rules.pointsToWin / 2);
+
+            this.firstPeriod = this.blueScore < halfTimeScore && this.redScore < halfTimeScore;
+            this.halfTime = (wasFirstPeriod && !this.firstPeriod) || (!wasFirstPeriod && this.firstPeriod);
+        }
     }
 
     private hasGameEnded(): boolean {
+        const pointsToWin = this.league.rules.pointsToWin;
+        const minimumDifference = this.league.rules.minimumDifference;
+
         return (this.gameState === GameState.Finished) ||
-               ((this.blueScore >= 10 || this.redScore >= 10) && Math.abs(this.blueScore - this.redScore) >= 2);
+               ((this.blueScore >= pointsToWin || this.redScore >= pointsToWin) &&
+                Math.abs(this.blueScore - this.redScore) >= minimumDifference);
     }
 
     private compareGamePlayer(gp1: GamePlayer, gp2: GamePlayer) {
@@ -469,6 +514,11 @@ export class GamePlayComponent
         this.gameId = this.gameSelection.gameId;
         this.league = League.fromJson(data.game.league);
         let playerMap: { [id: string]: Player } = {};
+
+        this.bluePlayer1 = null;
+        this.bluePlayer2 = null;
+        this.redPlayer1 = null;
+        this.redPlayer2 = null;
 
         data.game.gamePlayers.sort(this.compareGamePlayer).forEach((gp) => {
             const p = Player.fromJson(gp.player);
@@ -498,6 +548,7 @@ export class GamePlayComponent
             this.points.push(point);
         });
         this.calculateExpectedScore();
+        this.refreshLayout();
     }
 
     private loadGameData(): Promise<any> {
@@ -542,6 +593,7 @@ export class GamePlayComponent
         this.redPlayer2 = playerMap[this.gameSelection.redPlayer2 && this.gameSelection.redPlayer2.id];
 
         this.calculateExpectedScore();
+        this.refreshLayout();
     }
 
     private calculateExpectedScore() {
@@ -550,7 +602,7 @@ export class GamePlayComponent
         let redPlayer1Rating = this.getPlayerRating(this.redPlayer1);
         let redPlayer2Rating = this.getPlayerRating(this.redPlayer2);
         let expectedScore = this.rankingService.getExpectedScore([bluePlayer1Rating, bluePlayer2Rating],
-            [redPlayer1Rating, redPlayer2Rating]);
+            [redPlayer1Rating, redPlayer2Rating], this.league.rules);
         this.expectedBlueScore = expectedScore[0];
         this.expectedRedScore = expectedScore[1];
     }
@@ -640,6 +692,9 @@ export class GamePlayComponent
             createGameParams
         ).then(
             data => {
+                if (!data) {
+                    throw 'Could not create Game';
+                }
                 console.log('Game created', data);
                 return data.createGame.id;
             }
@@ -654,6 +709,9 @@ export class GamePlayComponent
             updateGameParams
         ).then(
             data => {
+                if (!data) {
+                    throw 'Could not update Game';
+                }
                 console.log('Game updated', data);
                 return data.updateGame.id;
             }
@@ -800,6 +858,10 @@ export class GamePlayComponent
         });
     }
 
+    private refreshLayout() {
+        setTimeout(() => this.handleResize(), 0);
+    }
+
     private showMessage(player: Player, message: string) {
         this.messagePlayer = player;
         this.message = message.replace(/[\r\n]+/g, " ");
@@ -817,8 +879,9 @@ export class GamePlayComponent
     }
 
     ngOnDestroy() {
-        this.wsMan.disconnect();
-        this.stopAllSounds();
+        this.wsMan && this.wsMan.disconnect();
+        document.removeEventListener("visibilitychange", this.visibilityChangeHandler);
+        setTimeout(() => this.stopAllSounds(), 3000);
     }
 
     onWsMessage(event: RemoteEvent) {
@@ -835,11 +898,64 @@ export class GamePlayComponent
         return XPCONFIG.liveGameUrl + '?gameId=' + gameId + '&scope=game-play';
     }
 
+    private getCurrentStreak(): number {
+        let point: Point, streak = 0;
+        let side: Side, previousSide: Side;
+        let i, l = this.points.length;
+
+        for (i = l - 1; i >= 0; i--) {
+            point = this.points[i];
+            side = this.getPlayerSide(point.player);
+            if (point.against || (previousSide !== undefined && side != previousSide)) {
+                break;
+            }
+            previousSide = side;
+            streak++;
+        }
+        return streak;
+    }
+
+    private playSoundAfterGoal() {
+        if (this.halfTime) {
+            this.playSound(this.halfTimeSound);
+            return;
+        }
+
+        if (this.points.length === 1) {
+            this.playSound(this.firstGoalSound);
+            return;
+        }
+
+        if (this.points[this.points.length - 1].against) {
+            this.playSound(this.ownGoalSound);
+            return;
+        }
+
+        const streak = this.getCurrentStreak();
+        console.log('Current streak: ' + streak);
+        if (streak === 9) {
+            this.playSound(this.strike9Sound);
+
+        } else if (streak === 7) {
+            this.playSound(this.strike7Sound);
+
+        } else if (streak === 5) {
+            this.playSound(this.strike5Sound);
+
+        } else if (streak === 3) {
+            this.playSound(this.strike3Sound);
+
+        } else {
+            this.playSound(this.goalSound);
+        }
+    }
+
     private playSound(sound: WebAudioSound) {
         if (!sound) {
             return;
         }
         try {
+            console.log('Playing sound: ' + sound.getUrl()); // TODO remove logging
             sound.play();
         } catch (e) {
             console.warn('Unable to play sound: ', sound);
@@ -848,14 +964,62 @@ export class GamePlayComponent
 
     private loadSounds() {
         try {
-            this.goalSound = this.audioService.newSound('goal6.mp3');
+            this.goalSound = this.audioService.newSound(AudioService.GOAL_SOUND_FILE);
+            this.halfTimeSound = this.audioService.newSound(AudioService.WHISTLE_SOUND_FILE);
+
+            this.ownGoalSound = this.goalSound;
+            this.gameEndSound = this.halfTimeSound;
+            this.firstGoalSound = this.goalSound;
+            this.strike3Sound = this.goalSound;
+            this.strike5Sound = this.goalSound;
+            this.strike7Sound = this.goalSound;
+            this.strike9Sound = this.goalSound;
+            // this.ownGoalSound = this.audioService.newSound('own-goal.wav');
+            // this.gameEndSound = this.audioService.newSound('game-over.wav');
+            // this.firstGoalSound = this.audioService.newSound('first-blood.wav');
+            // this.strike3Sound = this.audioService.newSound('dominating.wav');
+            // this.strike5Sound = this.audioService.newSound('ownage.wav');
+            // this.strike7Sound = this.audioService.newSound('wicked-sick.wav');
+            // this.strike9Sound = this.audioService.newSound('godlike.wav');
         } catch (e) {
             console.warn('Unable to load sounds: ' + e)
         }
     }
 
     private stopAllSounds() {
-        [this.goalSound].forEach((sound) => sound.stop());
+        this.audioService.stopSound(AudioService.BACKGROUND_SOUND_FILE);
+        [this.goalSound, this.ownGoalSound, this.gameEndSound, this.halfTimeSound, this.firstGoalSound,
+            this.strike3Sound, this.strike5Sound, this.strike7Sound, this.strike9Sound].forEach((sound) => sound.stop());
+    }
+
+    private leaveFullScreen() {
+        const doc = <any> document;
+        if (doc.exitFullscreen) {
+            doc.exitFullscreen();
+        } else if (doc.mozCancelFullScreen) {
+            doc.mozCancelFullScreen();
+        } else if (doc.webkitExitFullscreen) {
+            doc.webkitExitFullscreen();
+        } else if (doc.msExitFullscreen) {
+            doc.msExitFullscreen();
+        }
+    }
+
+    private visibilityChange() {
+        const pageVisible = !document.hidden;
+        if (pageVisible) {
+            this.resumeBackgroundSound();
+        } else {
+            this.pauseBackgroundSound();
+        }
+    }
+
+    private pauseBackgroundSound() {
+        this.audioService.pauseSound(AudioService.BACKGROUND_SOUND_FILE);
+    }
+
+    private resumeBackgroundSound() {
+        this.audioService.resumeSound(AudioService.BACKGROUND_SOUND_FILE);
     }
 
     private static readonly getPlayersLeagueQuery = `query ($leagueId: ID!, $playerIds: [ID]!) {
@@ -864,6 +1028,11 @@ export class GamePlayComponent
             name
             imageUrl
             description
+            rules {
+                pointsToWin
+                minimumDifference
+                halfTimeSwitch
+            }
         }
         
         players(ids: $playerIds) {
@@ -921,6 +1090,11 @@ export class GamePlayComponent
           name
           imageUrl
           description
+          rules {
+            pointsToWin
+            minimumDifference
+            halfTimeSwitch
+          }
         }
       }
     }`;

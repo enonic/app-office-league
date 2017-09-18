@@ -4,6 +4,7 @@ var ratingLib = require('/lib/office-league-rating');
 var eventLib = require('/lib/xp/event');
 var randomLib = require('/lib/random-names');
 var imageLib = require('/lib/image');
+var userProfileLib = require('/lib/user-profile');
 
 var REPO_NAME = 'office-league';
 var LEAGUES_PATH = '/leagues';
@@ -15,6 +16,7 @@ var LEAGUE_PLAYERS_REL_PATH = '/players';
 var LEAGUE_TEAMS_REL_PATH = '/teams';
 var OFFICE_LEAGUE_GAME_EVENT_ID = 'office-league-game';
 var OFFICE_LEAGUE_COMMENT_EVENT_ID = 'office-league-comment';
+var OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID = 'office-league-join-league';
 
 var NAME_MAX_LENGTH = 40;
 var NAME_MIN_LENGTH = 3;
@@ -84,11 +86,20 @@ var ROOT_PERMISSIONS = [ //TODO Remove after XP issue 4801 resolution
     }
 ];
 
+var DEFAULT_POINTS_TO_WIN = 10;
+var DEFAULT_MINIMUM_DIFFERENCE = 2;
+var DEFAULT_HALF_TIME_SWITCH = true;
+
+exports.DEFAULT_POINTS_TO_WIN = DEFAULT_POINTS_TO_WIN;
+exports.DEFAULT_MINIMUM_DIFFERENCE = DEFAULT_MINIMUM_DIFFERENCE;
+exports.DEFAULT_HALF_TIME_SWITCH = DEFAULT_HALF_TIME_SWITCH;
+
 exports.REPO_NAME = REPO_NAME;
 exports.TYPE = TYPE;
 exports.ROOT_PERMISSIONS = ROOT_PERMISSIONS;
 exports.OFFICE_LEAGUE_GAME_EVENT_ID = OFFICE_LEAGUE_GAME_EVENT_ID;
 exports.OFFICE_LEAGUE_COMMENT_EVENT_ID = OFFICE_LEAGUE_COMMENT_EVENT_ID;
+exports.OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID = OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID;
 
 /**
  * @typedef {Object} Attachment
@@ -97,6 +108,13 @@ exports.OFFICE_LEAGUE_COMMENT_EVENT_ID = OFFICE_LEAGUE_COMMENT_EVENT_ID;
  * @property {binary} binary Binary stream.
  * @property {string} mimeType Mime type of the attachment.
  * @property {number} size Size of the attachment in bytes.
+ */
+
+/**
+ * @typedef {Object} LeagueRules
+ * @property {number} pointsToWin Number of points required to win a game.
+ * @property {boolean} halfTimeSwitch Switch team player positions at half time.
+ * @property {number} minimumDifference Point difference from the opponent required to win a game.
  */
 
 /**
@@ -110,6 +128,8 @@ exports.OFFICE_LEAGUE_COMMENT_EVENT_ID = OFFICE_LEAGUE_COMMENT_EVENT_ID;
  * @property {Object} config League config.
  * @property {string[]} adminPlayerIds Array with ids of the admin players.
  * @property {Attachment|Attachment[]} [attachment] League attachments.
+ * @property {LeagueRules} [rules] League rules.
+ * @property {string} [rankingUpdateStart] Date and time when the ranking update was started. An ISO-8601-formatted instant (e.g '2011-12-03T10:15:30Z').
  */
 
 /**
@@ -422,7 +442,7 @@ exports.getLeaguePlayersByLeagueIdAndPlayerIds = function (leagueId, playerIds) 
     return query({
         start: 0,
         count: playerIds.length,
-        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND (" + playersCondition + ")"
+        query: "type = '" + TYPE.LEAGUE_PLAYER + "' AND leagueId='" + leagueId + "' AND (" + playersCondition + ")"
     });
 };
 
@@ -451,7 +471,7 @@ exports.getLeagueTeamsByLeagueIdAndTeamIds = function (leagueId, teamIds) {
     return query({
         start: 0,
         count: teamIds.length,
-        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND (" + teamsCondition + ")"
+        query: "type = '" + TYPE.LEAGUE_TEAM + "' AND leagueId='" + leagueId + "' AND (" + teamsCondition + ")"
     });
 };
 
@@ -547,7 +567,7 @@ exports.findPlayers = function (searchText, start, count) {
     return query({
         start: start,
         count: count,
-        query: "type = '" + TYPE.PLAYER + "' AND ngram('name^5,description^3', '" + searchText + "', 'AND')"
+        query: "type = '" + TYPE.PLAYER + "' AND ngram('name^5,fullname^3,description^1', '" + searchText + "', 'AND')"
     });
 };
 
@@ -775,9 +795,10 @@ exports.getGamesByLeagueId = function (leagueId, start, count, finished, sort) {
     }
 
     return {
-        "total": result.total,
-        "count": result.count,
-        "hits": games
+        total: result.total,
+        start: start,
+        count: result.count,
+        hits: games
     };
 };
 
@@ -790,28 +811,13 @@ exports.getGamesByLeagueId = function (leagueId, start, count, finished, sort) {
  */
 exports.getActiveGamesByLeagueId = function (leagueId, start, count) {
     var repoConn = newConnection();
-
-    var now = new Date();
-    var lastModifiedPlaying = now;
-    var finishedRecently = new Date(now.getTime());
-    var startedWithinTwoHoursAgo = new Date(now.getTime());
-
-    lastModifiedPlaying.setSeconds(lastModifiedPlaying.getSeconds() - (60 * 30)); // 30 minutes ago
-    finishedRecently.setSeconds(finishedRecently.getSeconds() - (60)); // 1 minute ago
-    startedWithinTwoHoursAgo.setSeconds(startedWithinTwoHoursAgo.getSeconds() - (60 * 60 * 2)); // 2h ago
-
-    var query = "type = '" + TYPE.GAME + "' AND leagueId = '" + leagueId + "' " +
-                "AND (" +
-                "(finished = 'false' AND _timestamp >= instant('" + lastModifiedPlaying.toISOString() + "')) " +
-                "OR ((time >= instant('" + startedWithinTwoHoursAgo.toISOString() + "')) "
-                + "AND (_timestamp >= instant('" + finishedRecently.toISOString() + "')) )" +
-                ")";
+    var query = "type = '" + TYPE.GAME + "' AND leagueId = '" + leagueId + "' AND finished = 'false'";
 
     var result = repoConn.query({
         start: start,
         count: count,
         query: query,
-        sort: "finished, time DESC"
+        sort: "time DESC"
     });
 
     var games = [];
@@ -910,7 +916,6 @@ exports.getTeamsByPlayerId = function (playerId, start, count) {
     });
 };
 
-
 /**
  * Retrieve a list of games for a player.
  * @param  {string} playerId Player id.
@@ -924,6 +929,43 @@ exports.getGamePlayersByPlayerId = function (playerId, start, count) {
         count: count,
         query: "type = '" + TYPE.GAME_PLAYER + "' AND playerId = '" + playerId + "'",
         sort: "time DESC"
+    });
+};
+
+/**
+ * Retrieve a list of games in a league for a player.
+ * @param {object} params JSON parameters.
+ * @param {string} params.leagueId League id.
+ * @param {string} params.playerId Player id.
+ * @param {number} [params.start=0] First index of the league games.
+ * @param {number} [params.count=10] Number of games to fetch.
+ * @param {Date} [params.since] Initial date and time of the games to be retrieved.
+ * @param {string} [params.sort] Sort expression.
+ * @return {GamePlayersResponse} Player games.
+ */
+exports.getGamePlayersByLeagueIdAndPlayerId = function (params) {
+    var league = exports.getLeagueById(params.leagueId);
+    var leaguePath = league && league._path;
+    if (!leaguePath) {
+        return {
+            total: 0,
+            start: 0,
+            count: 0,
+            hits: []
+        };
+    }
+
+    var queryStr = "type = '" + TYPE.GAME_PLAYER + "' AND playerId = '" + params.playerId + "' AND _path LIKE '" + leaguePath + "/*'";
+    if (params.since != null) {
+        var time = params.since.toISOString();
+        queryStr += " AND (time > instant('" + time + "') )";
+    }
+
+    return query({
+        start: params.start,
+        count: params.count,
+        query: queryStr,
+        sort: params.sort || "time DESC"
     });
 };
 
@@ -967,6 +1009,35 @@ exports.getLeaguesByTeamId = function (teamId, start, count) {
 };
 
 /**
+ * Retrieve a list of players.
+ * @param  {number} [start=0] First index of the players.
+ * @param  {number} [count=10] Number of players to fetch.
+ * @return {PlayerResponse} Players.
+ */
+exports.getGames = function (start, count) {
+    var repoConn = newConnection();
+
+    start = start || 0;
+    count = count || 10;
+    var result = repoConn.query({
+        start: start,
+        count: count,
+        query: "type = '" + TYPE.GAME + "'",
+        sort: "time DESC"
+    });
+    var games = result.hits.map(function (gameHit) {
+        return exports.getGameById(gameHit.id);
+    });
+
+    return {
+        total: result.total,
+        start: start,
+        count: result.count,
+        hits: games
+    };
+};
+
+/**
  * Retrieve a list of games for a team.
  * @param  {string} teamId Team id.
  * @param  {number} [start=0] First index of the league games.
@@ -1000,9 +1071,10 @@ exports.getGamesByTeamId = function (teamId, start, count) {
     });
 
     return {
-        "total": result.total,
-        "count": result.count,
-        "hits": games
+        total: result.total,
+        start: start,
+        count: result.count,
+        hits: games
     };
 };
 
@@ -1040,9 +1112,10 @@ exports.getGamesByPlayerId = function (playerId, start, count) {
     });
 
     return {
-        "total": result.total,
-        "count": result.count,
-        "hits": games
+        total: result.total,
+        start: start,
+        count: result.count,
+        hits: games
     };
 };
 
@@ -1107,10 +1180,13 @@ exports.getRankingForPlayerLeague = function (playerId, leagueId) {
         return -1;
     }
 
-    var ranking = 0, prevRating = 0;
+    var ranking = 0, prevRating = 0, incrementValue = 1;
     for (var i = 0; i < result.hits.length; i++) {
         if (prevRating != result.hits[i].rating) {
-            ranking++;
+            ranking += incrementValue;
+            incrementValue = 1;
+        } else {
+            incrementValue++;
         }
         if (result.hits[i].playerId === playerId) {
             return ranking;
@@ -1139,10 +1215,13 @@ exports.getRankingForTeamLeague = function (teamId, leagueId) {
         return -1;
     }
 
-    var ranking = 0, prevRating = 0;
+    var ranking = 0, prevRating = 0, incrementValue = 1;
     for (var i = 0; i < result.hits.length; i++) {
         if (prevRating != result.hits[i].rating) {
-            ranking++;
+            ranking += incrementValue;
+            incrementValue = 1;
+        } else {
+            incrementValue++;
         }
         if (result.hits[i].teamId === teamId) {
             return ranking;
@@ -1372,6 +1451,9 @@ function queryExists(query, repoConn) {
  * @param {string} [params.imageType] Mime type of the league's image.
  * @param {Object} [params.config] League config.
  * @param {string[]} [params.adminPlayerIds] Array with ids of the admin players.
+ * @param {number} [params.pointsToWin=10] Number of points required to win a game.
+ * @param {number} [params.minimumDifference=2] Point difference from the opponent required to win a game.
+ * @param {boolean} [params.halfTimeSwitch=true] Switch team player positions at half time.
  * @return {string} League id.
  */
 exports.createLeague = function (params) {
@@ -1381,6 +1463,16 @@ exports.createLeague = function (params) {
     params.sport = params.sport || 'foos';
     required(params, 'name');
     params.name = validateName(params.name);
+    params.pointsToWin = params.pointsToWin || DEFAULT_POINTS_TO_WIN;
+    params.pointsToWin = params.pointsToWin < 2 || params.pointsToWin > 100 ? DEFAULT_POINTS_TO_WIN : params.pointsToWin;
+    params.minimumDifference = params.minimumDifference || DEFAULT_MINIMUM_DIFFERENCE;
+    params.minimumDifference =
+        params.minimumDifference < 1 || params.minimumDifference > 10 ? DEFAULT_MINIMUM_DIFFERENCE : params.minimumDifference;
+    params.halfTimeSwitch = params.halfTimeSwitch == null ? DEFAULT_HALF_TIME_SWITCH : params.halfTimeSwitch;
+
+    if (params.minimumDifference >= params.pointsToWin) {
+        throw "Minimum difference cannot be higher than points to win (" + params.minimumDifference + ' , ' + params.pointsToWin + ')';
+    }
 
     var imageAttachment = null;
     if (params.imageStream && required(params, 'imageType')) {
@@ -1399,7 +1491,12 @@ exports.createLeague = function (params) {
         description: params.description,
         config: params.config,
         adminPlayerIds: params.adminPlayerIds || [],
-        attachment: imageAttachment
+        attachment: imageAttachment,
+        rules: {
+            pointsToWin: toInt(params.pointsToWin),
+            minimumDifference: toInt(params.minimumDifference),
+            halfTimeSwitch: !!params.halfTimeSwitch
+        }
     });
 
     var playersNode = repoConn.create({
@@ -1447,10 +1544,18 @@ exports.createPlayer = function (params) {
     required(params, 'name');
     params.name = validateName(params.name);
 
-    var imageAttachment = null;
+    var imageAttachment = null, ext;
     if (params.imageStream && required(params, 'imageType')) {
-        var ext = extensionFromMimeType(params.imageType);
+        ext = extensionFromMimeType(params.imageType);
         imageAttachment = newAttachment('player' + ext, params.imageStream, params.imageType);
+    } else {
+        log.info('Get profile image for new user');
+        var profileImage = userProfileLib.getUserProfileImage(params.userKey);
+        if (profileImage) {
+            log.info('Profile image: ' + JSON.stringify(profileImage, null, 4));
+            ext = extensionFromMimeType(profileImage.contentType);
+            imageAttachment = newAttachment('player' + ext, profileImage.body, profileImage.contentType);
+        }
     }
 
     var playerNode = repoConn.create({
@@ -1564,6 +1669,9 @@ var createDefaultTeamForPlayers = function (playerId1, playerId2) {
 exports.generateCreateGameParams = function (params) {
     params.points = params.points || [];
 
+    if (params.gamePlayers.length < 2) {
+        throw 'Not enough players to create game: ' + params.gamePlayers.length;
+    }
     var singlesGame = params.gamePlayers.length === 2;
     var time = new Date().toISOString();
     var blueScore = 0, redScore = 0;
@@ -1650,7 +1758,13 @@ exports.generateCreateGameParams = function (params) {
             }
         }
     }
-    var finished = (blueScore >= 10 || redScore >= 10) && Math.abs(blueScore - redScore) >= 2;
+
+    var league = exports.getLeagueById(params.leagueId);
+    var leagueRules = (league && league.rules) || {};
+    var pointsToWin = leagueRules.pointsToWin || DEFAULT_POINTS_TO_WIN;
+    var minimumDifference = leagueRules.minimumDifference || DEFAULT_MINIMUM_DIFFERENCE;
+
+    var finished = (blueScore >= pointsToWin || redScore >= pointsToWin) && Math.abs(blueScore - redScore) >= minimumDifference;
     var winnerSide = blueScore > redScore ? 'blue' : 'red';
     var gamePlayers = [];
     for (p = 0; p < params.gamePlayers.length; p++) {
@@ -1752,9 +1866,11 @@ exports.createGame = function (params) {
             ratingDelta: toInt(gameTeam.ratingDelta)
         });
         gameNode.gameTeams.push(gameTeamNode);
+
+        exports.joinTeamLeague(params.leagueId, gameTeam.teamId);
     }
 
-    notifyGameUpdate(gameNode._id);
+    notifyGameUpdate(gameNode._id, params.leagueId);
 
     return gameNode;
 };
@@ -1872,6 +1988,9 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
         // set player teams in league as active
         setLeagueTeamsFromPlayerInactive(leagueId, playerId, false);
         repoConn.refresh('SEARCH');
+
+        notifyJoinedLeague(leagueId, playerId);
+
         return updatedLeaguePlayer;
     }
 
@@ -1888,6 +2007,8 @@ exports.joinPlayerLeague = function (leagueId, playerId, rating) {
     // set player teams in league as active
     setLeagueTeamsFromPlayerInactive(leagueId, playerId, false);
     repoConn.refresh('SEARCH');
+
+    notifyJoinedLeague(leagueId, playerId);
 
     return leaguePlayer;
 };
@@ -2194,6 +2315,9 @@ exports.updateTeam = function (params) {
  * @param {string} [params.description] New description text.
  * @param {object} [params.config] New league config.
  * @param {string[]} [params.adminPlayerIds] New array with ids of the admin players.
+ * @param {number} [params.pointsToWin=10] Number of points required to win a game.
+ * @param {number} [params.minimumDifference=2] Point difference from the opponent required to win a game.
+ * @param {boolean} [params.halfTimeSwitch=true] Switch team player positions at half time.
  * @return {League} Updated league or null if the league could not be updated.
  */
 exports.updateLeague = function (params) {
@@ -2243,7 +2367,37 @@ exports.updateLeague = function (params) {
             if (params.adminPlayerIds != null) {
                 node.adminPlayerIds = params.adminPlayerIds;
             }
-            node._timestamp = valueLib.instant(new Date().toISOString())
+            node._timestamp = valueLib.instant(new Date().toISOString());
+
+            if (!node.rules) {
+                node.rules = {
+                    pointsToWin: toInt(DEFAULT_POINTS_TO_WIN),
+                    minimumDifference: toInt(DEFAULT_MINIMUM_DIFFERENCE),
+                    halfTimeSwitch: DEFAULT_HALF_TIME_SWITCH
+                };
+            }
+
+            if (params.pointsToWin != null) {
+                params.pointsToWin = params.pointsToWin < 2 || params.pointsToWin > 100 ? DEFAULT_POINTS_TO_WIN : params.pointsToWin;
+                node.rules.pointsToWin = toInt(params.pointsToWin);
+            }
+            if (params.minimumDifference != null) {
+                params.minimumDifference =
+                    params.minimumDifference < 1 || params.minimumDifference > 10
+                        ? DEFAULT_MINIMUM_DIFFERENCE
+                        : params.minimumDifference;
+                node.rules.minimumDifference = toInt(params.minimumDifference);
+            }
+            if (params.halfTimeSwitch != null) {
+                node.rules.halfTimeSwitch = params.halfTimeSwitch;
+            }
+
+            if (node.rules.minimumDifference >= node.rules.pointsToWin) {
+                throw "Minimum difference cannot be higher than points to win (" + node.rules.minimumDifference + ' , ' +
+                      node.rules.pointsToWin +
+                      ')';
+            }
+
             return node;
         }
     });
@@ -2456,6 +2610,7 @@ exports.updateGame = function (params) {
         query: "type = '" + TYPE.GAME + "' AND _id='" + params.gameId + "'"
     });
 
+    var leagueId = '';
     if (result.count > 0) {
         repoConn.modify({
             key: result.hits[0].id,
@@ -2467,6 +2622,7 @@ exports.updateGame = function (params) {
                     node.points = params.points;
                 }
                 node._timestamp = valueLib.instant(new Date().toISOString());
+                leagueId = node.leagueId;
                 return node;
             }
         });
@@ -2543,15 +2699,16 @@ exports.updateGame = function (params) {
         }
     }
 
-    notifyGameUpdate(params.gameId);
+    notifyGameUpdate(params.gameId, leagueId);
 };
 
-var notifyGameUpdate = function (gameId) {
+var notifyGameUpdate = function (gameId, leagueId) {
     eventLib.send({
         type: OFFICE_LEAGUE_GAME_EVENT_ID,
         distributed: true,
         data: {
-            gameId: gameId
+            gameId: gameId,
+            leagueId: leagueId
         }
     });
 };
@@ -2563,6 +2720,18 @@ var notifyGameComment = function (gameId, commentId) {
         data: {
             gameId: gameId,
             commentId: commentId
+        }
+    });
+};
+
+
+var notifyJoinedLeague = function (leagueId, playerId) {
+    eventLib.send({
+        type: OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID,
+        distributed: true,
+        data: {
+            leagueId: leagueId,
+            playerId: playerId
         }
     });
 };
@@ -2624,11 +2793,13 @@ exports.deleteLeagueByName = function (name) {
  */
 exports.deleteGameById = function (id) {
     var game = exports.getGameById(id);
+    var result = null;
     if (game) {
         var repoConn = newConnection();
-        return repoConn.delete(game._id) ? game._id : null;
+        result = repoConn.delete(game._id) ? game._id : null;
+        notifyGameUpdate(game._id, game.leagueId);
     }
-    return null;
+    return result;
 };
 
 /**
@@ -2784,6 +2955,215 @@ var newAttachment = function (attachmentName, attachmentBinary, mimeType, label)
     };
 };
 
+/**
+ * Get attachment from a player.
+ *
+ * @param {Player} player Player object.
+ * @param {string} attachmentName Attachment name.
+ * @return {Attachment|null} Attachment object.
+ */
+exports.getAttachment = function (player, attachmentName) {
+    if (!player || !player.attachment || !attachmentName) {
+        return null;
+    }
+    if (player.attachment.name === attachmentName) {
+        return player.attachment;
+    }
+
+    var i, att;
+    if (player.attachment.length > 0) {
+        for (i = 0; i < player.attachment.length; i++) {
+            att = player.attachment[i];
+            if (att.name === attachmentName) {
+                retunr
+                att;
+            }
+        }
+    }
+    return null;
+};
+
+/**
+ * Re-calculates the player and team rankings for a given league.
+ *
+ * @param {League} league League object.
+ */
+exports.regenerateLeagueRanking = function (league) {
+    var updatedLeague = setRankingUpdateStart(league._id);
+    if (!updatedLeague) {
+        log.info('Regenerate ranking for league already in progress: "' + league.name + '" (' + league._id + ')');
+        return;
+    }
+
+    try {
+
+        log.info('======================================================================');
+        log.info('Regenerate league ranking for league: "' + league.name + '" (' + league._id + ')');
+        log.info('======================================================================');
+        var t0 = new Date();
+
+        log.info('Reset players ratings');
+        resetPlayerRatings(league);
+        log.info('Reset teams ratings');
+        resetTeamRatings(league);
+        exports.refresh();
+
+        var start = 0, gamesResp, games, game, i;
+        gamesResp = exports.getGamesByLeagueId(league._id, 0, 0);
+        var total = gamesResp.total;
+        log.info('Calculate games ratings. There are ' + total + ' games in the league.');
+
+        do {
+            gamesResp = exports.getGamesByLeagueId(league._id, start, 10, null, 'time ASC');
+            games = gamesResp.hits;
+            for (i = 0; i < games.length; i++) {
+                game = games[i];
+                exports.updateGameRanking(game);
+                exports.refresh();
+                game = exports.getGameById(game._id);
+                exports.logGameRanking(game);
+            }
+
+            start += gamesResp.count;
+            log.info('Calculating game ratings [' + start + ' / ' + total + '] games in the league.');
+
+        } while (gamesResp.count > 0);
+
+        var totalSec = secondsBetween(new Date(), t0);
+        log.info('Total time: ' + formatTimeDiff(totalSec));
+        log.info('===================== League ranking regenerated =====================');
+
+        clearRankingUpdateStart(league._id);
+    } catch (e) {
+        log.info('==================== League ranking update failed ====================');
+        try {
+            clearRankingUpdateStart(league._id);
+        } catch (e2) {
+        }
+        throw e;
+    }
+};
+
+var resetPlayerRatings = function (league) {
+    var start = 0, leaguePlayerResp, leaguePlayers, leaguePlayer, i;
+    do {
+        leaguePlayerResp = exports.getLeaguePlayersByLeagueId(league._id, start, 10, 'name ASC');
+        leaguePlayers = leaguePlayerResp.hits;
+        for (i = 0; i < leaguePlayers.length; i++) {
+            leaguePlayer = leaguePlayers[i];
+            exports.setPlayerLeagueRating(leaguePlayer.leagueId, leaguePlayer.playerId, ratingLib.INITIAL_RATING);
+            var p = exports.getPlayerById(leaguePlayer.playerId);
+            var lp = exports.getLeaguePlayerByLeagueIdAndPlayerId(leaguePlayer.leagueId, leaguePlayer.playerId);
+            log.info('Reset player ' + p.name + ': new rating=' + lp.rating);
+        }
+
+        start += leaguePlayerResp.count;
+    } while (leaguePlayerResp.count === 10);
+};
+
+var resetTeamRatings = function (league) {
+    var start = 0, leagueTeamResp, leagueTeams, leagueTeam, i;
+    do {
+        leagueTeamResp = exports.getLeagueTeamsByLeagueId(league._id, start, 10, 'name ASC');
+        leagueTeams = leagueTeamResp.hits;
+        for (i = 0; i < leagueTeams.length; i++) {
+            leagueTeam = leagueTeams[i];
+            exports.setTeamLeagueRating(leagueTeam.leagueId, leagueTeam.teamId, ratingLib.INITIAL_RATING);
+            var t = exports.getTeamById(leagueTeam.teamId);
+            var lt = exports.getLeagueTeamByLeagueIdAndTeamId(leagueTeam.leagueId, leagueTeam.teamId);
+            log.info('Reset team ' + t.name + ': new rating=' + lt.rating);
+        }
+
+        start += leagueTeamResp.count;
+    } while (leagueTeamResp.count === 10);
+};
+
+
+/**
+ * Set ranking update timestamp mark.
+ *
+ * @param {string} leagueId Id of the league.
+ * @return {League|null} Updated league, or null if the ranking was already in progress.
+ */
+var setRankingUpdateStart = function (leagueId) {
+    var repoConn = newConnection();
+
+    var updated = false;
+
+    var now = new Date();
+    var leagueNode = repoConn.modify({
+        key: leagueId,
+        editor: function (node) {
+            var prevRankingUpdateStart = node.rankingUpdateStart;
+            log.info(JSON.stringify(node, null, 2));
+            log.info(node.rankingUpdateStart);
+
+            if (prevRankingUpdateStart) {
+                try {
+                    prevRankingUpdateStart = new Date(prevRankingUpdateStart.toString());
+                } catch (e) {
+                    log.info("Error parsing instant: " + prevRankingUpdateStart);
+                }
+            }
+
+            if (prevRankingUpdateStart && secondsBetween(prevRankingUpdateStart, now) < 3600) {
+                log.info(secondsBetween(prevRankingUpdateStart, now));
+                return node;
+            }
+
+            var t = valueLib.instant(now.toISOString());
+            node.rankingUpdateStart = t;
+            node._timestamp = t;
+            updated = true;
+            return node;
+        }
+    });
+    log.info(JSON.stringify(leagueNode, null, 2));
+
+    if (updated) {
+        setImageUrl(leagueNode);
+        return leagueNode;
+    } else {
+        return null;
+    }
+};
+
+/**
+ * Clear ranking update timestamp mark.
+ *
+ * @param {string} leagueId Id of the league.
+ */
+var clearRankingUpdateStart = function (leagueId) {
+    var repoConn = newConnection();
+
+    repoConn.modify({
+        key: leagueId,
+        editor: function (node) {
+            delete node.rankingUpdateStart;
+            return node;
+        }
+    });
+};
+
+var secondsBetween = function (t1, t2) {
+    return Math.floor(Math.abs(t2.getTime() - t1.getTime()) / 1000);
+};
+
+var formatTimeDiff = function (totalSeconds) {
+    var days = Math.floor(totalSeconds / 86400);
+    totalSeconds -= days * 86400;
+    var hours = Math.floor(totalSeconds / 3600) % 24;
+    totalSeconds -= hours * 3600;
+    var minutes = Math.floor(totalSeconds / 60) % 60;
+    totalSeconds -= minutes * 60;
+    var seconds = Math.floor(totalSeconds % 60);
+
+    var hoursStr = (hours < 10) ? "0" + String(hours) : String(hours);
+    var minutesStr = (minutes < 10) ? "0" + String(minutes) : String(minutes);
+    var secondsStr = (seconds < 10) ? "0" + String(seconds) : String(seconds);
+    return (hoursStr === '00') ? minutesStr + ':' + secondsStr : hoursStr + ':' + minutesStr + ':' + secondsStr;
+};
+
 var required = function (params, name) {
     var value = params[name];
     if (value === undefined) {
@@ -2794,7 +3174,7 @@ var required = function (params, name) {
 };
 
 var notNull = function (value, paramName) {
-    if (notNull == null) {
+    if (paramName == null) {
         throw "Parameter '" + paramName + "' is required";
     }
     return value;
@@ -2882,6 +3262,7 @@ var getImageUrl = function (node) {
     var version = node._versionKey;
     return '/' + type + '/image/' + version + '/' + encodeURIComponent(node.name);
 };
+exports.getImageUrl = getImageUrl;
 
 var setImageUrl = function (node) {
     if (node && (node.type === TYPE.LEAGUE || node.type === TYPE.PLAYER || node.type === TYPE.TEAM)) {

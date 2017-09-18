@@ -52,7 +52,9 @@ dependencies {
     include "com.enonic.xp:lib-http-client:${xpVersion}"
     include "com.enonic.xp:lib-mail:${xpVersion}"
     include "com.enonic.lib:util:1.1.1"
-    include "com.enonic.lib:graphql:0.1.0"
+    include "com.enonic.lib:graphql:0.5.2"
+    include 'com.enonic.lib:geoip:1.0.0'
+    include 'com.enonic.lib:text-encoding:1.1.0'
     include( "nl.martijndwars:web-push:3.0.0" ) {
         exclude group: 'com.google.guava', module: 'guava'
     }
@@ -67,7 +69,7 @@ repositories {
 }
 
 task webpackBuild( type: NpmTask ) {
-    args = ['run', 'build']
+    args = ['run', 'build:aot']
 }
 
 webpackBuild.dependsOn 'npmInstall'

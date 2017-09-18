@@ -8,14 +8,17 @@ import {GraphQLService} from './services/graphql.service';
 import {GamesModule} from './games/games.module';
 import {TeamsModule} from './teams/team.module';
 import {LeaguesModule} from './leagues/league.module';
+import {InfoPageModule} from './info-page/info-page.module';
 import {AuthenticatedRouteGuard} from './guards/authenticated.route.guard';
 import {PlayerRouteGuard} from './guards/player.route.guard';
+import {EditRouteGuard} from './guards/edit.route.guard';
 import {AuthService} from './services/auth.service';
 import {CryptoService} from './services/crypto.service';
 import {CommonModule} from './common/common.module';
 import {MaterializeModule} from 'angular2-materialize';
 import {PageTitleService} from './services/page-title.service';
 import {OfflinePersistenceService} from './services/offline-persistence.service';
+import {OnlineStatusService} from './services/online-status.service';
 import {RankingService} from './services/ranking.service';
 import {GlobalErrorHandler} from './common/global.errorhandler';
 import {UserProfileService} from './services/user-profile.service';
@@ -39,10 +42,11 @@ const appRoutes: Routes = [
         PlayersModule,
         GamesModule,
         TeamsModule,
-        LeaguesModule
+        LeaguesModule,
+        InfoPageModule
     ],
-    providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard,
-        OfflinePersistenceService, RankingService, UserProfileService, WindowRefService, AudioService,
+    providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard, EditRouteGuard,
+        OfflinePersistenceService, OnlineStatusService, RankingService, UserProfileService, WindowRefService, AudioService,
         {
             provide: ErrorHandler,
             useClass: GlobalErrorHandler

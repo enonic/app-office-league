@@ -11,9 +11,10 @@ var authLib = require('/lib/xp/auth');
 var entityType = graphQlLib.createInterfaceType({
     name: 'Entity',
     description: 'Data entity. Contains a field id with a unique value',
+    typeResolver: function() { return null;},
     fields: {
         id: {
-            type: graphQlLib.nonNull(graphQlLib.GraphQLID),
+            type: graphQlLib.nonNull(graphQlLib.GraphQLID)
         }
     }
 });
@@ -68,10 +69,7 @@ exports.playerType = graphQlLib.createObjectType({
             }
         },
         name: {
-            type: graphQlLib.nonNull(graphQlLib.GraphQLString),
-            resolve: function (env) {
-                return env.source.name;
-            }
+            type: graphQlLib.nonNull(graphQlLib.GraphQLString)
         },
         fullname: {
             type: graphQlLib.GraphQLString,
@@ -88,36 +86,25 @@ exports.playerType = graphQlLib.createObjectType({
             type: graphQlLib.GraphQLString,
             resolve: function (env) {
                 var user = authLib.getUser();
-                if (user && user.key === env.source.userKey) {
-                    return user.email;
+                if (env.source.userKey && (isAdmin() || ( user && user.key === env.source.userKey))) {
+                    user = authLib.getPrincipal(env.source.userKey);
+                    return user && user.email;
                 } else {
                     return null;
                 }
             }
         },
         nationality: {
-            type: graphQlLib.GraphQLString, //TODO Change to enum
-            resolve: function (env) {
-                return env.source.nationality;
-            }
+            type: graphQlLib.GraphQLString //TODO Change to enum
         },
         handedness: {
-            type: graphQlEnumsLib.handednessEnumType,
-            resolve: function (env) {
-                return env.source.handedness;
-            }
+            type: graphQlEnumsLib.handednessEnumType
         },
         description: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.description;
-            }
+            type: graphQlLib.GraphQLString
         },
         imageUrl: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.imageUrl;
-            }
+            type: graphQlLib.GraphQLString
         },
         teams: {
             type: graphQlLib.list(graphQlLib.reference('Team')),
@@ -132,11 +119,12 @@ exports.playerType = graphQlLib.createObjectType({
         teamsConnection: {
             type: graphQlLib.reference('TeamConnection'),
             args: {
-                after: graphQlLib.GraphQLInt, //TODO Change for base64
+                after: graphQlLib.GraphQLString,
                 first: graphQlLib.GraphQLInt
             },
             resolve: function (env) {
-                return storeLib.getTeamsByPlayerId(env.source._id, env.args.after ? (env.args.after + 1) : 0, env.args.first);
+                var start = env.args.after ? parseInt(graphQlConnectionLib.decodeCursor(env.args.after)) + 1 : 0;
+                return storeLib.getTeamsByPlayerId(env.source._id, start, env.args.first);
             }
         },
         leaguePlayers: {
@@ -176,7 +164,8 @@ exports.playerType = graphQlLib.createObjectType({
         }
     }
 });
-exports.playerConnectionType = graphQlConnectionLib.createConnectionType('Player', exports.playerType);
+
+exports.playerConnectionType = graphQlConnectionLib.createConnectionType(exports.playerType);
 
 exports.teamStatsType = graphQlLib.createObjectType({
     name: 'TeamStats',
@@ -218,22 +207,13 @@ exports.teamType = graphQlLib.createObjectType({
             }
         },
         name: {
-            type: graphQlLib.nonNull(graphQlLib.GraphQLString),
-            resolve: function (env) {
-                return env.source.name;
-            }
+            type: graphQlLib.nonNull(graphQlLib.GraphQLString)
         },
         description: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.description;
-            }
+            type: graphQlLib.GraphQLString
         },
         imageUrl: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.imageUrl;
-            }
+            type: graphQlLib.GraphQLString
         },
         players: {
             type: graphQlLib.list(exports.playerType),
@@ -271,7 +251,7 @@ exports.teamType = graphQlLib.createObjectType({
         }
     }
 });
-exports.teamConnectionType = graphQlConnectionLib.createConnectionType('Team', exports.teamType);
+exports.teamConnectionType = graphQlConnectionLib.createConnectionType(exports.teamType);
 
 exports.gamePlayerType = graphQlLib.createObjectType({
     name: 'GamePlayer',
@@ -286,10 +266,7 @@ exports.gamePlayerType = graphQlLib.createObjectType({
             }
         },
         time: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.time;
-            }
+            type: graphQlLib.GraphQLString
         },
         score: {
             type: graphQlLib.GraphQLInt,
@@ -304,10 +281,7 @@ exports.gamePlayerType = graphQlLib.createObjectType({
             }
         },
         side: {
-            type: graphQlEnumsLib.sideEnumType,
-            resolve: function (env) {
-                return env.source.side;
-            }
+            type: graphQlEnumsLib.sideEnumType
         },
         position: {
             type: graphQlLib.GraphQLInt,
@@ -316,10 +290,7 @@ exports.gamePlayerType = graphQlLib.createObjectType({
             }
         },
         winner: {
-            type: graphQlLib.GraphQLBoolean,
-            resolve: function (env) {
-                return env.source.winner;
-            }
+            type: graphQlLib.GraphQLBoolean
         },
         ratingDelta: {
             type: graphQlLib.GraphQLInt,
@@ -355,10 +326,7 @@ exports.gameTeamType = graphQlLib.createObjectType({
             }
         },
         time: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.time;
-            }
+            type: graphQlLib.GraphQLString
         },
         score: {
             type: graphQlLib.GraphQLInt,
@@ -373,16 +341,10 @@ exports.gameTeamType = graphQlLib.createObjectType({
             }
         },
         side: {
-            type: graphQlEnumsLib.sideEnumType,
-            resolve: function (env) {
-                return env.source.side;
-            }
+            type: graphQlEnumsLib.sideEnumType
         },
         winner: {
-            type: graphQlLib.GraphQLBoolean,
-            resolve: function (env) {
-                return env.source.winner;
-            }
+            type: graphQlLib.GraphQLBoolean
         },
         ratingDelta: {
             type: graphQlLib.GraphQLInt,
@@ -416,10 +378,7 @@ exports.pointType = graphQlLib.createObjectType({
             }
         },
         against: {
-            type: graphQlLib.nonNull(graphQlLib.GraphQLBoolean),
-            resolve: function (env) {
-                return env.source.against;
-            }
+            type: graphQlLib.nonNull(graphQlLib.GraphQLBoolean)
         },
         player: {
             type: graphQlLib.nonNull(exports.playerType),
@@ -442,10 +401,7 @@ exports.commentType = graphQlLib.createObjectType({
             }
         },
         text: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.text;
-            }
+            type: graphQlLib.GraphQLString
         },
         author: {
             type: exports.playerType,
@@ -454,10 +410,7 @@ exports.commentType = graphQlLib.createObjectType({
             }
         },
         time: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.time;
-            }
+            type: graphQlLib.GraphQLString
         },
         likes: {
             type: graphQlLib.list(exports.playerType),
@@ -482,16 +435,10 @@ exports.gameType = graphQlLib.createObjectType({
             }
         },
         time: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.time;
-            }
+            type: graphQlLib.GraphQLString
         },
         finished: {
-            type: graphQlLib.GraphQLBoolean,
-            resolve: function (env) {
-                return env.source.finished;
-            }
+            type: graphQlLib.GraphQLBoolean
         },
         points: {
             type: graphQlLib.list(exports.pointType),
@@ -510,16 +457,10 @@ exports.gameType = graphQlLib.createObjectType({
             }
         },
         gamePlayers: {
-            type: graphQlLib.list(exports.gamePlayerType),
-            resolve: function (env) {
-                return env.source.gamePlayers;
-            }
+            type: graphQlLib.list(exports.gamePlayerType)
         },
         gameTeams: {
-            type: graphQlLib.list(exports.gameTeamType),
-            resolve: function (env) {
-                return env.source.gameTeams;
-            }
+            type: graphQlLib.list(exports.gameTeamType)
         },
         league: {
             type: graphQlLib.reference('League'),
@@ -529,7 +470,7 @@ exports.gameType = graphQlLib.createObjectType({
         }
     }
 });
-exports.gameConnectionType = graphQlConnectionLib.createConnectionType('Game', exports.gameType);
+exports.gameConnectionType = graphQlConnectionLib.createConnectionType(exports.gameType);
 
 exports.leaguePlayerType = graphQlLib.createObjectType({
     name: 'LeaguePlayer',
@@ -572,10 +513,30 @@ exports.leaguePlayerType = graphQlLib.createObjectType({
             resolve: function (env) {
                 return storeLib.getLeagueById(env.source.leagueId);
             }
+        },
+        gamePlayers: {
+            type: graphQlLib.list(exports.gamePlayerType),
+            args: {
+                offset: graphQlLib.GraphQLInt,
+                first: graphQlLib.GraphQLInt,
+                sort: graphQlLib.GraphQLString,
+                since: graphQlLib.GraphQLString
+            },
+            resolve: function (env) {
+                var since = env.args.since ? new Date(env.args.since) : undefined;
+                return storeLib.getGamePlayersByLeagueIdAndPlayerId({
+                    leagueId: env.source.leagueId,
+                    playerId: env.source.playerId,
+                    count: env.args.first,
+                    start: env.args.offset,
+                    sort: env.args.sort,
+                    since: since
+                }).hits;
+            }
         }
     }
 });
-exports.leaguePlayerConnectionType = graphQlConnectionLib.createConnectionType('LeaguePlayer', exports.leaguePlayerType);
+exports.leaguePlayerConnectionType = graphQlConnectionLib.createConnectionType(exports.leaguePlayerType);
 
 exports.leagueTeamType = graphQlLib.createObjectType({
     name: 'LeagueTeam',
@@ -615,7 +576,7 @@ exports.leagueTeamType = graphQlLib.createObjectType({
         }
     }
 });
-exports.leagueTeamConnectionType = graphQlConnectionLib.createConnectionType('LeagueTeam', exports.leagueTeamType);
+exports.leagueTeamConnectionType = graphQlConnectionLib.createConnectionType(exports.leagueTeamType);
 
 exports.leagueStatsType = graphQlLib.createObjectType({
     name: 'LeagueStats',
@@ -645,6 +606,35 @@ exports.leagueStatsType = graphQlLib.createObjectType({
     }
 });
 
+exports.rulesType = graphQlLib.createObjectType({
+    name: 'Rules',
+    description: 'Domain representation of rules for a league.',
+    fields: {
+        pointsToWin: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
+            resolve: function (env) {
+                return env.source.pointsToWin
+                    ? graphQlUtilLib.toInt(env.source.pointsToWin, storeLib.DEFAULT_POINTS_TO_WIN)
+                    : storeLib.DEFAULT_POINTS_TO_WIN;
+            }
+        },
+        minimumDifference: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLInt),
+            resolve: function (env) {
+                return env.source.minimumDifference
+                    ? graphQlUtilLib.toInt(env.source.minimumDifference, storeLib.DEFAULT_MINIMUM_DIFFERENCE)
+                    : storeLib.DEFAULT_MINIMUM_DIFFERENCE;
+            }
+        },
+        halfTimeSwitch: {
+            type: graphQlLib.nonNull(graphQlLib.GraphQLBoolean),
+            resolve: function (env) {
+                return env.source.halfTimeSwitch == null ? storeLib.DEFAULT_HALF_TIME_SWITCH : env.source.halfTimeSwitch;
+            }
+        }
+    }
+});
+
 exports.leagueType = graphQlLib.createObjectType({
     name: 'League',
     description: 'Domain representation of a league. A league contains games. Players can join 0..* leagues and indirectly their teams.',
@@ -657,28 +647,16 @@ exports.leagueType = graphQlLib.createObjectType({
             }
         },
         name: {
-            type: graphQlLib.nonNull(graphQlLib.GraphQLString),
-            resolve: function (env) {
-                return env.source.name;
-            }
+            type: graphQlLib.nonNull(graphQlLib.GraphQLString)
         },
         imageUrl: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.imageUrl;
-            }
+            type: graphQlLib.GraphQLString
         },
         sport: {
-            type: graphQlLib.nonNull(graphQlEnumsLib.sportEnumType),
-            resolve: function (env) {
-                return env.source.sport;
-            }
+            type: graphQlLib.nonNull(graphQlEnumsLib.sportEnumType)
         },
         description: {
-            type: graphQlLib.GraphQLString,
-            resolve: function (env) {
-                return env.source.description;
-            }
+            type: graphQlLib.GraphQLString
         },
         config: {
             type: graphQlLib.GraphQLString, //TODO Is it? Is there a unstructured type?
@@ -733,14 +711,15 @@ exports.leagueType = graphQlLib.createObjectType({
         leaguePlayersConnection: {
             type: exports.leaguePlayerConnectionType,
             args: {
-                after: graphQlLib.GraphQLInt,
+                after: graphQlLib.GraphQLString,
                 first: graphQlLib.GraphQLInt,
                 sort: graphQlLib.GraphQLString
             },
             resolve: function (env) {
+                var start = env.args.after ? parseInt(graphQlConnectionLib.decodeCursor(env.args.after)) + 1 : 0;
                 var currentPlayerId = getCurrentPlayerId();
                 var playerIsLeagueAdmin = graphQlUtilLib.toArray(env.source.adminPlayerIds).indexOf(currentPlayerId) > -1;
-                return storeLib.getLeaguePlayersByLeagueId(env.source._id, env.args.after ? (env.args.after + 1) : 0, env.args.first,
+                return storeLib.getLeaguePlayersByLeagueId(env.source._id, start, env.args.first,
                     env.args.sort, playerIsLeagueAdmin);
             }
         },
@@ -758,12 +737,13 @@ exports.leagueType = graphQlLib.createObjectType({
         leagueTeamsConnection: {
             type: exports.leagueTeamConnectionType,
             args: {
-                after: graphQlLib.GraphQLInt,
+                after: graphQlLib.GraphQLString,
                 first: graphQlLib.GraphQLInt,
                 sort: graphQlLib.GraphQLString
             },
             resolve: function (env) {
-                return storeLib.getLeagueTeamsByLeagueId(env.source._id, env.args.after ? (env.args.after + 1) : 0, env.args.first,
+                var start = env.args.after ? parseInt(graphQlConnectionLib.decodeCursor(env.args.after)) + 1 : 0;
+                return storeLib.getLeagueTeamsByLeagueId(env.source._id, start, env.args.first,
                     env.args.sort);
             }
         },
@@ -807,6 +787,12 @@ exports.leagueType = graphQlLib.createObjectType({
             resolve: function (env) {
                 return env.source;
             }
+        },
+        rules: {
+            type: exports.rulesType,
+            resolve: function (env) {
+                return env.source.rules || {};
+            }
         }
     }
 });
@@ -818,4 +804,8 @@ var getCurrentPlayerId = function () {
     }
     var player = storeLib.getPlayerByUserKey(user.key);
     return player && player._id;
+};
+
+var isAdmin = function () {
+    return authLib.hasRole('system.admin');
 };

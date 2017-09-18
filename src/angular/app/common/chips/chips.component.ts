@@ -1,4 +1,4 @@
-import {Component, Input, Output, OnChanges, SimpleChanges, SimpleChange, EventEmitter, ElementRef, ViewChild} from '@angular/core';
+import {Component, Input, Output, OnChanges, AfterViewInit, SimpleChanges, SimpleChange, EventEmitter, ElementRef, ViewChild} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {MaterializeAction, MaterializeDirective} from 'angular2-materialize';
 import {BaseComponent} from '../base.component';
@@ -9,22 +9,13 @@ declare var $: any;
     templateUrl: 'chips.component.html',
     styleUrls: ['chips.component.less']
 })
-export class ChipsComponent extends BaseComponent {
+export class ChipsComponent extends BaseComponent implements AfterViewInit {
 
     @Input() availableTags: string[];
-    @Input() selectedTags: string[];
+    @Input() excludedTags: string[] = [];
+    @Input() selectedTags: string[] = [];
     @Input() placeholder: string;
     @ViewChild ('div') div;
-    public autocompleteInit: any = {
-        autocompleteOptions: {
-            data: {
-            },
-            limit: Infinity,
-            minLength: 1
-        },
-        placeholder: this.placeholder,
-        secondaryPlaceholder: this.placeholder
-    };
     
     constructor(route: ActivatedRoute) {
         super(route);
@@ -32,15 +23,16 @@ export class ChipsComponent extends BaseComponent {
     
     ngOnInit() : void {
         super.ngOnInit();
-        this.refreshAvailableTags();
+    }
+
+    ngAfterViewInit(): void {        
+        this.refreshChips();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         super.ngOnChanges(changes);
-
-        let availableTagsChange = changes['availableTags'];
-        if (availableTagsChange) {
-            this.refreshAvailableTags();
+        if (changes['availableTags'] || changes['selectedTags']) {
+            this.refreshChips();
         }
     }
 
@@ -50,18 +42,20 @@ export class ChipsComponent extends BaseComponent {
         }
     }
     
-    refreshAvailableTags(): void {
-        let data = {};
-        this.availableTags.forEach((tag) => data[tag] = null);
-        this.autocompleteInit = {
+    refreshChips(): void {
+        let autocompleteData = {};
+        this.availableTags.filter((tag) => this.excludedTags.indexOf(tag) == -1 ).
+            forEach((tag) => autocompleteData[tag] = null);
+        $('.chips').material_chip({
             autocompleteOptions: {
-                data: data,
+                data: autocompleteData,
                 limit: Infinity,
                 minLength: 1
             },
             placeholder: this.placeholder,
             secondaryPlaceholder: this.placeholder
-        };
+        });
+        
     }
 
     add(chip) {

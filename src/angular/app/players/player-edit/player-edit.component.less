@@ -1,48 +1,40 @@
-img.player-icon {
-  width: 128px;
-  height: 128px;
-}
+@import "../../colors";
 
-.player-icon-frame {
-  display: flex;
-  padding: 6px 6px 6px 0;
-  border: 1px solid rgba(58, 58, 58, 0.57);
-  margin-left: 3rem;
-  float: left;
-}
+.player-edit {
 
-.prefix ~ label.handedness {
-  margin-left: 1rem;
-}
+  form {
+    margin-top: 2rem;
+  }
 
-.prefix ~ label.nationality {
-  margin-left: 1rem;
-}
+  label {
+    font-size: 1rem;
+    color: #fff;
+    width: 100%;
+    display: block;
+  }
 
-.player-email {
-  width: calc(100% - 3rem - 1.5rem);
-  margin-left: 3rem;
-}
+  &__avatar {
+    max-width: 200px;
+  }
 
-.player-email__label {
-  font-size: 0.8rem;
-  margin-left: 1rem;
-}
+  &__submit-row {
+    display: flex;
+    justify-content: flex-end;
+  }
 
-.player-nationality {
-  width: calc(~'100% - 3rem');
-  margin-left: 2.8rem;
-}
+  &__btn {
+    &--submit {
+      margin-left: 10px;
+    }
 
-.avatar {
-  margin-left: 3.8rem;
-}
+    &--upload {
+      background-color: #DFDFDF;
+      color: @main-theme-color;
+      margin-top: 4px;
+    }
+  }
 
-.submit-row {
-  display: flex;
-  justify-content: flex-end;
-}
-
-input, select, textarea {
-  font-size: 16px;
+  input, select, textarea {
+    font-size: 16px;
+  }
 }

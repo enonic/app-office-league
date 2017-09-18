@@ -58,4 +58,35 @@ export class CustomValidators {
         };
     }
 
+    static validNoWhitespace(): ValidatorFn {
+        return (control: AbstractControl) => {
+            const value: string = (control.value || '');
+            const hasWhitespace = /\s/.test(value);
+            if (hasWhitespace) {
+                return {'invalidwhitespace': true};
+            }
+            return null;
+        };
+    }
+
+    static integer(min: number, max: number): ValidatorFn {
+        return (control: AbstractControl) => {
+            if (control.value === '') {
+                return null;
+            }
+
+            let value = parseInt(control.value, 10);
+            if (isNaN(control.value) || isNaN(value)) {
+                return {'integer': true}
+            }
+
+            if (value < min) {
+                return {'integerlow': true};
+            } else if (value > max) {
+                return {'integerhigh': true};
+            } else {
+                return null;
+            }
+        };
+    }
 }

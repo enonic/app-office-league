@@ -7,9 +7,21 @@ export class LeagueValidator {
         'name': {
             'required': 'Name is required.',
             'minlength': 'Name must be at least 3 characters long.',
-            'maxlength': '40 characters is enough for a name.',
+            'maxlength': 'Name must be no longer than 40 characters.',
             'nameinuse': 'This name is already taken, sorry.',
             'invalidname': 'The name contains invalid characters.'
+        },
+        'pointsToWin': {
+            'required': 'Points to win is required.',
+            'integer': 'The value should be an integer number.',
+            'integerlow': 'The value is too low.',
+            'integerhigh': 'The value is too high.'
+        },
+        'minimumDifference': {
+            'required': 'Minimum point difference to win is required.',
+            'integer': 'The value should be an integer number.',
+            'integerlow': 'The value is too low.',
+            'integerhigh': 'The value is too high.'
         }
     };
 
@@ -37,6 +49,23 @@ export class LeagueValidator {
             return graphQLService.post(LeagueValidator.leagueNameInUseQuery, {name: name}).then(data => {
                 return data && data.league && (data.league.id !== id) ? {'nameinuse': true} : null;
             });
+        };
+    }
+
+    static minimumDifference(): ValidatorFn {
+        return (group: FormGroup): { [key: string]: any } => {
+            let minDiffControl = group.controls['minimumDifference'];
+            let pointsToWinControl = group.controls['pointsToWin'];
+            if (!minDiffControl || !pointsToWinControl) {
+                return null;
+            }
+
+            let minDiff = parseInt(minDiffControl.value, 10);
+            let pointsToWin = parseInt(pointsToWinControl.value, 10);
+            if (!isNaN(minDiff) && !isNaN(pointsToWin) && pointsToWin <= minDiff) {
+                return {'lessthanpoints': true}
+            }
+            return null;
         };
     }
 

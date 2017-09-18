@@ -55,3 +55,15 @@ Creative Commons - Attribution-NonCommercial-NoDerivs 2.0 Generic
     DC Comics LEGO variant covers 
         Origin: https://www.flickr.com/photos/toomuchdew/albums/72157645848803730/with/14667325240
         License: https://creativecommons.org/licenses/by-nc-nd/2.0/
+
+========================================================================
+CC0 1.0 Universal License
+========================================================================
+
+The following sound effects obtained from Zapsplat.com
+
+    sport_soccer_match_stadium_crowd_chant_cheer_001.mp3 (https://www.zapsplat.com/music/stadium-crowd-at-soccer-match-ambience-with-cheering-and-chanting-1/)
+    Blastwave_FX_WhistleBlowLong_BWU.693.mp3 (https://www.zapsplat.com/music/sports-referee-whistle-blow-long/)
+
+The following sound effects obtained from freesoundeffects.com
+    cheer_8k.mp3 (https://www.freesoundeffects.com/free-sounds/applause-10033/)

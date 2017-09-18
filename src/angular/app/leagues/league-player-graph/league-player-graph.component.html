@@ -1,0 +1,10 @@
+<template [ngIf]="leaguePlayers != null">
+    <div class="chart-container" style="position: relative; width: 100%;">
+        <canvas baseChart height="400" width="600"
+                [datasets]="chartDatasets"
+                [options]="lineChartOptions"
+                [colors]="lineChartColors"
+                [legend]="lineChartLegend"
+                [chartType]="lineChartType"></canvas>
+    </div>
+</template>

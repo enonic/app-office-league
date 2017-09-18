@@ -55,9 +55,10 @@
 
                     </div>
                 </div>
-                <div class="row submit-row">
-                    <a class="waves-effect waves-teal btn light-blue" [attr.disabled]="!teamForm.valid ? true : null" (click)="onSaveClicked()">
-                        <i class="material-icons left">save</i>Save</a>
+                <div class="row submit-row team-edit__submit-row">
+                    <a class="waves-effect waves-teal btn red team-edit__btn team-edit__btn--cancel" (click)="onCancelClicked()">Cancel</a>
+                    <a class="waves-effect waves-teal btn light-blue team-edit__btn--submit" [attr.disabled]="!online || !teamForm.valid ? true : null" (click)="onSaveClicked()">
+                        Save</a>
                 </div>
             </form>
         </div>

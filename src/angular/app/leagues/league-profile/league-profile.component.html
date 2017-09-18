@@ -1,14 +1,10 @@
-<template [ngIf]="league == null">
+<template [ngIf]="league == null && !connectionError">
     <loading></loading>
 </template>
+<template [ngIf]="league == null && connectionError">
+    <connection-error></connection-error>
+</template>
 <template [ngIf]="league != null">
-
- <!--   <div class="row league-profile">
-        <div class="col s12 m12 l12">
-            <league-summary [league]="league"></league-summary>
-        </div>
-    </div>-->
-
 
     <div class="row league-profile__details">
 
@@ -25,48 +21,35 @@
             </div>
 
         </div>
-      <!--
-        <img src="{{league.imageUrl}}" class="league-profile__avatar" alt="{{league.name}}">
-        <div class="primary">
-            <span class="title">{{league.name}}</span>
-            <p class="grey-text darken-3">{{league.description}}</p>
-        </div>
-        <div class="secondary" *ngIf="ranking > 0">
-            <div class="badges-container">
-                <span class="badge light-blue darken-4 white-text">{{ranking}}<small>{{rankingText()}}</small></span>
-                <span class="badge grey darken-1 white-text"><small class="rating-points">{{ratingPoints()}}</small></span>
-            </div>
-            <a class="waves-effect waves-light btn green" *ngIf="displayPlayBtn" (click)="onPlayClicked()"><i class="material-icons center">play_arrow</i>Play</a>
-        </div>-->
     </div>
 
     <div class="row league-profile__play">
-        <div *ngIf="playerInLeague" class="center" (click)="onPlayClicked()">
-            <a class="waves-effect waves-light btn global__btn global__btn--play"><i class="material-icons left">play_arrow</i>Play Game</a>
+        <div *ngIf="playerInLeague" class="center">
+            <a class="waves-effect waves-light btn global__btn global__btn--play" (click)="onPlayClicked()"><i class="material-icons left">play_arrow</i>Play Game</a>
         </div>
-        <div *ngIf="userAuthenticated && !playerInLeague && !joinLeagueRequested" class="center" (click)="onJoinClicked()">
-            <a class="waves-effect waves-light btn global__btn global__btn--play"><i class="material-icons left">stars</i>Join this league</a>
+        <div *ngIf="userAuthenticated && !playerInLeague && !joinLeagueRequested" class="center">
+            <a class="waves-effect waves-light btn global__btn global__btn--play" (click)="onJoinClicked()" [attr.disabled]="online?null:true"><i class="material-icons left">stars</i>Join this league</a>
         </div>
-        <div *ngIf="!playerInLeague && joinLeagueRequested" class="center" (click)="showModalPending()">
-            <a class="waves-effect waves-light btn global__btn global__btn--pending"><i class="material-icons left">more_horiz</i>Waiting for approval</a>
+        <div *ngIf="!playerInLeague && joinLeagueRequested" class="center">
+            <a class="waves-effect waves-light btn global__btn global__btn--pending" (click)="showModalPending()"><i class="material-icons left">more_horiz</i>Waiting for approval</a>
         </div>
     </div>
 
-    <div *ngIf="adminInLeague" class="fixed-action-btn click-to-toggle">
+    <div *ngIf="adminInLeague || playerSystemAdmin" class="fixed-action-btn click-to-toggle">
         <a class="btn-floating btn-large light-blue lighten-2">
             <i class="material-icons">more_vert</i>
         </a>
         <ul>
-            <li (click)="onAddPlayerClicked()"><a class="btn-floating green" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="material-icons">person_add</i></a></li>
-            <li (click)="onEditClicked()"><a class="btn-floating blue" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="material-icons">mode_edit</i></a></li>
-            <li *ngIf="playerInLeague || joinLeagueRequested" (click)="onLeaveClicked()"><a class="btn-floating red" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="material-icons">directions_run</i></a></li>
-            <li (click)="onDeleteClicked()"><a class="btn-floating red" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;"><i class="material-icons">delete</i></a></li>
+            <li *ngIf="playerSystemAdmin"><a class="btn-floating purple" (click)="onRankingRefreshClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">poll</i></a></li>
+            <li><a class="btn-floating green" (click)="onAddPlayerClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">person_add</i></a></li>
+            <li><a class="btn-floating blue" (click)="onEditClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">mode_edit</i></a></li>
+            <li *ngIf="playerInLeague || joinLeagueRequested"><a class="btn-floating red" (click)="onLeaveClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">directions_run</i></a></li>
+            <li><a class="btn-floating red" (click)="onDeleteClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">delete</i></a></li>
         </ul>
     </div>
     <div *ngIf="!adminInLeague && (playerInLeague || joinLeagueRequested)" class="fixed-action-btn">
-        <a (click)="onLeaveClicked()" class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">directions_run</i></a>
+        <a (click)="onLeaveClicked()" class="btn-floating btn-large waves-effect waves-light red" [attr.disabled]="online?null:true"><i class="material-icons">directions_run</i></a>
     </div>
-
 
     <div class="row">
         <div class="col s12">
@@ -84,7 +67,7 @@
                             [leaguePlayers]="league.leaguePlayers"
                             [detailsPath]="['leagues', league.name.toLowerCase(), 'players']"
                             [seeMoreText]="'See full player ranking'"
-                            [allowRemove]="adminInLeague" (removePlayer)="onRemovePlayer($event)"
+                            [allowRemove]="adminInLeague && online" (removePlayer)="onRemovePlayer($event)"
                             (approvePlayer)="onApprovePlayerJoin($event)"></league-player-list>
     </div>
 
@@ -104,7 +87,7 @@
     <div class="modal center player-select-modal" materialize="modal"
          [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
         <div class="modal-content">
-            <h6 class="center">Select players to add</h6>
+            <h6 class="center">Add players to league</h6>
             <chips #addPlayerChips [availableTags]="nonMembersPlayerNames" [selectedTags]="playerNamesToAdd" placeholder="Enter a player name or email"></chips>
             <div class="row submit-row">
                 <a class="waves-effect waves-teal btn green" [attr.disabled]="playerNamesToAdd.length===0?true:null" (click)="onPlayersAdded()"><i class="material-icons left">add</i>Add</a>
@@ -165,6 +148,17 @@
         <div class="modal-footer">
             <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
             <a (click)="onConfirmLeaveClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Leave</a>
+        </div>
+    </div>
+    <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
+         [materializeActions]="materializeActionsRegenerateRanking">
+        <div class="modal-content">
+            <h5 class="center">Regenerate league ranking</h5>
+            <p>Are you sure you want to regenerate '<strong>{{league.name}}</strong>' league's ranking?</p>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">No</a>
+            <a (click)="onConfirmRegenerateClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Yes</a>
         </div>
     </div>
 

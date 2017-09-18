@@ -1,4 +1,4 @@
-import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
@@ -9,13 +9,18 @@ import {PageTitleService} from '../../services/page-title.service';
 import {NewGamePlayerComponent} from '../new-game-player/new-game-player.component';
 import {GameSelection} from '../GameSelection';
 import {RankingService} from '../../services/ranking.service';
+import {AudioService, WebAudioSound} from '../../services/audio.service';
+import {WebSocketManager} from '../../services/websocket.manager';
+import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
+import {LeagueRules} from '../../../graphql/schemas/LeagueRules';
 
 @Component({
     selector: 'new-game',
     templateUrl: 'new-game.component.html',
     styleUrls: ['new-game.component.less']
 })
-export class NewGameComponent implements OnInit {
+export class NewGameComponent
+    implements OnInit, OnDestroy {
 
     leagueId: string;
 
@@ -27,25 +32,35 @@ export class NewGameComponent implements OnInit {
     selectedPlayerIds: string[] = [];
 
     @ViewChildren(NewGamePlayerComponent)
-        playerCmps: QueryList<NewGamePlayerComponent>;
+    playerCmps: QueryList<NewGamePlayerComponent>;
 
     league: League;
     title: string;
     expectedScoreRed: string;
     expectedScoreBlue: string;
     playerSelectionReady: boolean;
+    toggleButtonText: string = 'Team Game';
     shuffleDisabled: boolean;
     shuffleInProgress: boolean;
     teamMode: boolean = false;
     shuffleCount: number = 0;
+    halfTimeScore: number;
+    halfTimeSwitch: boolean;
+    pointsToWin: number;
+    minimumDifference: number;
     private playerRatings: { [playerId: string]: number } = {};
+    private startGameSound: WebAudioSound;
+    private backgroundSound: WebAudioSound;
+
+    private wsMan: WebSocketManager;
 
     constructor(private graphQLService: GraphQLService, private route: ActivatedRoute,
                 private pageTitleService: PageTitleService, private router: Router, private gameSelection: GameSelection,
-                private rankingService: RankingService) {
+                private rankingService: RankingService, private audioService: AudioService) {
     }
 
     ngOnInit(): void {
+        this.loadSounds();
         this.leagueId = this.route.snapshot.params['leagueId'];
 
         if (!this.leagueId) {
@@ -57,9 +72,12 @@ export class NewGameComponent implements OnInit {
             this.graphQLService.post(
                 NewGameComponent.getPlayerLeagueQuery,
                 {playerId: playerId, leagueId: this.leagueId},
-                    data => this.handlePlayerLeagueQueryResponse(data)
+                data => this.handlePlayerLeagueQueryResponse(data)
             );
         }
+        this.wsMan = new WebSocketManager(this.getWsUrl(this.leagueId));
+        this.wsMan.onMessage(this.onWsMessage.bind(this));
+        this.wsMan.connect();
     }
 
     private handlePlayerLeagueQueryResponse(data) {
@@ -76,6 +94,7 @@ export class NewGameComponent implements OnInit {
 
         this.pageTitleService.setTitle(this.league.name);
         this.updatePlayerSelectionState();
+        this.setRulesDescription(this.league.rules);
     }
 
     onPlayClicked() {
@@ -88,6 +107,10 @@ export class NewGameComponent implements OnInit {
         this.gameSelection.redPlayer2 = this.redPlayer2;
         this.gameSelection.league = this.league;
 
+        this.playSound(this.startGameSound);
+        this.playSound(this.backgroundSound);
+        this.enterFullScreen();
+
         this.createGame().then((gameId) => {
             console.log('Initial game created: ' + gameId);
             this.gameSelection.gameId = gameId;
@@ -99,11 +122,38 @@ export class NewGameComponent implements OnInit {
         });
     }
 
-    onToggleClicked() {
+    private requestFullScreen(element) {
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullScreen) {
+            element.webkitRequestFullScreen();
+        } else if (element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        }
+    }
+
+    private enterFullScreen() {
+        if (this.isMobileDevice()) {
+            this.requestFullScreen(document.documentElement);
+        }
+    }
+
+    private isMobileDevice(): boolean {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    onToggleClicked(event) {
+        event.target.blur();
         this.bluePlayer2 = null;
         this.redPlayer2 = null;
         this.updatePlayerSelectionState();
         this.teamMode = !this.teamMode;
+
+        this.toggleButtonText = this.teamMode ? 'One vs One' : 'Team Game';
     }
 
     private shuffleActions: { [id: string]: { from: NewGamePlayerComponent, to: NewGamePlayerComponent, player: Player, side: string, done: boolean } };
@@ -176,7 +226,7 @@ export class NewGameComponent implements OnInit {
             GamePlayComponent.createGameMutation,
             createGameParams
         ).then(
-                data => {
+            data => {
                 console.log('Game created', data);
                 return data.createGame.id;
             });
@@ -200,7 +250,7 @@ export class NewGameComponent implements OnInit {
             let redPlayer1Rating = this.getPlayerRating(this.redPlayer1 && this.redPlayer1.id);
             let redPlayer2Rating = this.getPlayerRating(this.redPlayer2 && this.redPlayer2.id);
             let expectedScore = this.rankingService.getExpectedScore([bluePlayer1Rating, bluePlayer2Rating],
-                [redPlayer1Rating, redPlayer2Rating]);
+                [redPlayer1Rating, redPlayer2Rating], this.league.rules);
 
             this.expectedScoreBlue = `${expectedScore[0]}`;
             this.expectedScoreRed = `${expectedScore[1]}`;
@@ -215,6 +265,71 @@ export class NewGameComponent implements OnInit {
             return undefined;
         }
         return this.playerRatings[playerId] || this.rankingService.defaultRating();
+    }
+
+    private playSound(sound: WebAudioSound) {
+        if (!sound) {
+            return;
+        }
+        try {
+            console.log('Playing sound: ' + sound.getUrl()); // TODO remove logging
+            sound.play();
+        } catch (e) {
+            console.warn('Unable to play sound: ', sound);
+        }
+    }
+
+    private loadSounds() {
+        try {
+            this.startGameSound = this.audioService.newSound(AudioService.WHISTLE_SOUND_FILE);
+            this.backgroundSound = this.audioService.newSound(AudioService.BACKGROUND_SOUND_FILE, true);
+        } catch (e) {
+            console.warn('Unable to load sounds: ' + e)
+        }
+    }
+
+    ngOnDestroy() {
+        this.wsMan && this.wsMan.disconnect();
+    }
+
+    onWsMessage(event: RemoteEvent) {
+        if ((event.type === EventType.JOIN_LEAGUE) && event.leagueId === this.leagueId) {
+            this.reloadLeaguePlayers();
+        }
+    }
+
+    private getWsUrl(leagueId: string): string {
+        return XPCONFIG.liveGameUrl + '?leagueId=' + leagueId + '&scope=new-game';
+    }
+
+    reloadLeaguePlayers(): void {
+        if (!this.leagueId) {
+            return;
+        }
+        this.graphQLService.post(
+            NewGameComponent.getLeaguePlayersQuery,
+            {leagueId: this.leagueId},
+            data => this.handleLeaguePlayersQueryResponse(data)
+        );
+    }
+
+    private handleLeaguePlayersQueryResponse(data) {
+        const league = League.fromJson(data.league);
+        this.leaguePlayerIds = league.leaguePlayers.map((leaguePlayer) => {
+            if (!leaguePlayer.player) {
+                return null;
+            }
+            this.playerRatings[leaguePlayer.player.id] = leaguePlayer.rating;
+            return leaguePlayer.player.id;
+        }).filter((id) => !!id);
+        this.setRulesDescription(league.rules);
+    }
+
+    private setRulesDescription(rules: LeagueRules) {
+        this.halfTimeScore = Math.ceil(rules.pointsToWin / 2);
+        this.halfTimeSwitch = rules.halfTimeSwitch;
+        this.pointsToWin = rules.pointsToWin;
+        this.minimumDifference = rules.minimumDifference;
     }
 
     static readonly getPlayerLeagueQuery = `query ($playerId: ID!, $leagueId: ID!) {
@@ -232,7 +347,12 @@ export class NewGameComponent implements OnInit {
             name
             imageUrl
             description
-            leaguePlayers(first:-1) {
+            rules {
+                pointsToWin
+                minimumDifference
+                halfTimeSwitch
+            }
+            leaguePlayers(first:-1, sort:"_timestamp DESC") {
                 rating
                 player {
                     id
@@ -242,4 +362,24 @@ export class NewGameComponent implements OnInit {
         }
     }`;
 
+    static readonly getLeaguePlayersQuery = `query ($leagueId: ID!) {
+        league(id: $leagueId) {
+            id
+            name
+            imageUrl
+            description
+            rules {
+                pointsToWin
+                minimumDifference
+                halfTimeSwitch
+            }
+            leaguePlayers(first:-1, sort:"_timestamp DESC") {
+                rating
+                player {
+                    id
+                    imageUrl
+                }
+            }
+        }
+    }`;
 }

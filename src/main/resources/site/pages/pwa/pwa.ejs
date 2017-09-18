@@ -5,6 +5,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1C2641">
     <title>Office League</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="{{assetsUrl}}/icons/apple-touch-icon.png">
@@ -51,7 +52,12 @@
 <script type="text/javascript">
     var XPCONFIG = {
         locale: '{{{locale}}}',
-        {{#user}}user: {{{.}}},{{/user}}
+        countryIsoCode: '{{{countryIsoCode}}}',
+        {{#user}}user: {{{.}}},{{/user}}        
+        {{#content}}content: {
+            name: '{{_name}}',
+            type: '{{type}}'
+        },{{/content}}
         baseHref: '{{{baseHref}}}',
         assetsUrl: '{{{assetsUrl}}}',
         audioUrl: '{{{audioUrl}}}',

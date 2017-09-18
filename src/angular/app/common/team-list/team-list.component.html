@@ -20,9 +20,7 @@
     <p *ngIf="teams?.length == 0" class="team-list__item team-list__item--empty">
         No teams
     </p>
-    <a href="#!" *ngIf="teams?.length > 0 && this.detailsPath" class="collection-item empty" (click)="onDetailsClicked($event)">
-        <h5>See more</h5>
-    </a>
+    <a href="#!" *ngIf="teams?.length > 0 && this.detailsPath" class="team-list__more" (click)="onDetailsClicked($event)">See all teams</a>
 
     <ul class="pagination center" *ngIf="pages?.length > 1">
         <li [class.disabled]="currentPage === 1" class="waves-effect"><a (click)="setCurrentPage(currentPage - 1)"><i

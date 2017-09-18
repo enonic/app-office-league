@@ -1,47 +1,56 @@
-img.league-icon {
-  width: 64px;
-  height: 64px;
-}
+@import "../../colors";
 
-.league-icon-frame {
-  display: flex;
-  padding: 6px 6px 6px 0;
-  border: 1px solid rgba(58, 58, 58, 0.57);
-  margin-left: 3rem;
-  float: left;
-}
+.league-edit-create {
 
-.league {
-  &__admins {
+  form {
+    margin-top: 2rem;
+  }
 
-    &-title {
-      display: flex;
-      align-items: center;
-      padding-bottom: 10px;
+  label {
+    font-size: 1rem;
+    color: #fff;
+    width: 100%;
+    display: block;
+  }
+
+  &__avatar {
+    max-width: 200px;
+  }
+
+  &__submit-row {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__btn {
+    &--submit {
+      margin-left: 10px;
     }
 
-    &-titleicon {
-      font-size: 2rem;
-    }
-    &-titletext {
-      display: inline;
-    }
-
-    &-add {
-      padding-top: 10px;
+    &--upload {
+      background-color: #DFDFDF;
+      color: @main-theme-color;
+      margin-top: 4px;
     }
   }
-}
 
-admin-list /deep/ .admin-list__item--empty {
-    color: #F44336;
-}
+  .modal.player-select-modal.open {
+    max-height: 80%;
+    width: 90%;
+  }
 
-.submit-row {
-  display: flex;
-  justify-content: flex-end;
-}
+  &__rules {
+    &--number {
+      text-align: right;
+    }
+  }
 
-input, select, textarea {
-  font-size: 16px;
+  input, select, textarea {
+    font-size: 16px;
+  }
+
+  fieldset {
+    padding-top: 20px;
+    margin-bottom: 20px;
+  }
 }

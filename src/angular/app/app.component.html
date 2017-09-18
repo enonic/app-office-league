@@ -1,20 +1,30 @@
 <div class="navbar-fixed" [hidden]="isPlayingGame">
     <nav class="app__navbar">
-
-        <a *ngIf="displayMenu" href="#" materialize="sideNav" [materializeParams]="[{closeOnClick: true}]"
+        <a href="#" materialize="sideNav" [materializeParams]="[{closeOnClick: true, edge: 'right'}]"
            data-activates="mobile-side-nav" class="app__navbar-menu-btn button-collapse">
             <i class="material-icons">menu</i>
         </a>
+
+        <a href="#" class="app__navbar-offline" [hidden]="!isOffline">
+            <i class="material-icons">signal_wifi_off</i>
+        </a>
+
+        <span class="app__navbar-title">{{pageTitle}}</span>
+
         <a *ngIf="!displayMenu" href="#" (click)="back()" class="app__navbar-back button-collapse">
             <i class="material-icons">arrow_back</i>
         </a>
 
-        <span class="app__navbar-title">{{pageTitle}}</span>
+        <a *ngIf="displayMenu" href="#!" (click)="home()" class="app__navbar-home">
+            <img src="{{logoUrl}}"/>
+        </a>
 
         <ul *ngIf="!isNewUser" class="app__navbar-menu right hide-on-med-and-down">
             <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>
             <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
             <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
+            <li routerLinkActive="active"><a routerLink="/games" href="#">Games</a></li>
+            <li *ngFor="let infoPage of infoPages" routerLinkActive="active"><a routerLink="/{{infoPage.name}}" href="#">{{infoPage.title}}</a></li>
             <li *ngIf="isAuthenticated">
                 <ul id="user-dropdown" class="dropdown-content">
                     <li><a href="#" routerLink="/">{{playerName}}</a></li>
@@ -31,7 +41,7 @@
     </nav>
 </div>
 
-<div class="container" id="page">
+<div class="container" id="page" [class.game-play]="isPlayingGame">
     <div class="row">
         <router-outlet></router-outlet>
     </div>
@@ -40,6 +50,7 @@
 <ul *ngIf="!isNewUser" class="side-nav" id="mobile-side-nav">
     <template [ngIf]="isAuthenticated">
         <li class="user-profile">
+            <a href="#" class="side-nav-close right" (click)="closeNav()"><i class="material-icons right">close</i></a>
             <a href="#" routerLink="/">
                 <img [src]="playerImage" alt="{{playerName}}" class="circle">
                 <span>{{playerName}}</span>
@@ -50,6 +61,9 @@
     <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>
     <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
     <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
+    <li routerLinkActive="active"><a routerLink="/games" href="#">Games</a></li>
+    <li *ngIf="infoPages?.length > 0" class="divider"></li>
+    <li *ngFor="let infoPage of infoPages" routerLinkActive="active"><a routerLink="/{{infoPage.name}}" href="#">{{infoPage.title}}</a></li>
     <li class="divider"></li>
     <template [ngIf]="!isAuthenticated" class="nav navbar-nav pull-right">
         <li><a href="#!" (click)="auth.login()">Login</a></li>

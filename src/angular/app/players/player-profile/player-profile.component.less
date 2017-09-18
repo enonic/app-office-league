@@ -10,10 +10,12 @@
     height: 100px;
     margin-right: 20px;
     flex-grow: 0;
+    border-radius: 50%;
   }
 
   &__info {
     flex-grow: 1;
+    max-width: 60%;
   }
 
   &__name-wrapper {
@@ -24,6 +26,29 @@
 
   &__name {
     margin-right: 1rem;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__fullname {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__email {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    font-style: italic;
   }
 
   &__flag {

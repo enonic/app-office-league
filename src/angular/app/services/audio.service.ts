@@ -8,15 +8,23 @@ export interface WebAudioSound {
     stop(): void;
     getVolume(): number;
     setVolume(volume: number);
+    getUrl(): string;
 }
 
 @Injectable()
 export class AudioService {
+    public static readonly BACKGROUND_SOUND_FILE = 'sport_soccer_match_stadium_crowd_chant_cheer_001.mp3';
+    public static readonly WHISTLE_SOUND_FILE = 'Blastwave_FX_WhistleBlowLong_BWU.693.mp3';
+    public static readonly GOAL_SOUND_FILE = 'cheer_8k.mp3';
+
     private _window: Window;
     private initialized: boolean;
+    private webAudioAPISoundManager: WebAudioAPISoundManager;
+    private sounds: { [key: string]: WebAudioAPISound };
 
     constructor(windowRef: WindowRefService) {
         this._window = windowRef.nativeWindow;
+        this.sounds = {};
     }
 
     public initialize(): void {
@@ -24,6 +32,7 @@ export class AudioService {
             let window = <any>this._window;
             window.AudioContext = window.AudioContext || window.webkitAudioContext;
             window.audioContext = new window.AudioContext();
+            this.webAudioAPISoundManager = this.webAudioAPISoundManager || new WebAudioAPISoundManager(window.audioContext);
         } catch (e) {
             console.log("No Web Audio API support");
         }
@@ -35,7 +44,30 @@ export class AudioService {
             this.initialized = true;
         }
         let url = XPCONFIG.audioUrl + soundFile;
-        return new WebAudioAPISound(url, loop, this._window);
+        let sound = new WebAudioAPISound(url, loop, this.webAudioAPISoundManager);
+        this.sounds[url] = sound;
+        return sound;
+    }
+
+    public stopSound(soundFile: string) {
+        let url = XPCONFIG.audioUrl + soundFile;
+        this.webAudioAPISoundManager.stopSoundWithUrl(url);
+    }
+
+    public pauseSound(soundFile: string) {
+        let url = XPCONFIG.audioUrl + soundFile;
+        let sound = this.sounds[url];
+        if (sound) {
+            sound.suspend();
+        }
+    }
+
+    public resumeSound(soundFile: string) {
+        let url = XPCONFIG.audioUrl + soundFile;
+        let sound = this.sounds[url];
+        if (sound) {
+            sound.resume();
+        }
     }
 }
 
@@ -79,7 +111,11 @@ class WebAudioAPISoundManager {
         if (this.playingSounds.hasOwnProperty(url)) {
             for (let i in this.playingSounds[url]) {
                 if (this.playingSounds[url].hasOwnProperty(i)) {
-                    this.playingSounds[url][i].stop(0);
+                    try {
+                        this.playingSounds[url][i].stop(0);
+                    } catch (e) {
+                        console && console.warn('Could not stop sound: ' + url, e);
+                    }
                 }
             }
         }
@@ -91,10 +127,9 @@ class WebAudioAPISound {
     private manager: WebAudioAPISoundManager;
     private volume: number;
 
-    constructor(private url: string, private loop: boolean = false, _window: any) {
+    constructor(private url: string, private loop: boolean = false, soundManager: WebAudioAPISoundManager) {
         this.url = url;
-        _window.webAudioAPISoundManager = _window.webAudioAPISoundManager || new WebAudioAPISoundManager(_window.audioContext);
-        this.manager = _window.webAudioAPISoundManager;
+        this.manager = soundManager;
         this.manager.addSound(this.url);
     }
 
@@ -119,6 +154,26 @@ class WebAudioAPISound {
         this.manager.stopSoundWithUrl(this.url);
     }
 
+    resume() {
+        if (this.manager.context.resume) {
+            try {
+                this.manager.context.resume();
+            } catch (e) {
+                console.log('Could not resume audio context', e);
+            }
+        }
+    }
+
+    suspend() {
+        if (this.manager.context.suspend) {
+            try {
+                this.manager.context.suspend();
+            } catch (e) {
+                console.log('Could not suspend audio context', e);
+            }
+        }
+    }
+
     getVolume(): number {
         return this.translateVolume(this.volume, true);
     }
@@ -140,5 +195,9 @@ class WebAudioAPISound {
         source.connect(gainNode);
         gainNode.connect(this.manager.context.destination);
         return source;
+    }
+
+    getUrl(): string {
+        return this.url;
     }
 }

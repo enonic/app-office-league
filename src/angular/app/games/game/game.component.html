@@ -2,16 +2,12 @@
     <loading></loading>
 </template>
 <template [ngIf]="game != null">
-    <template [ngIf]="game.live">
+    <template [ngIf]="!game.finished">
         <span class="game__live">Live</span>
     </template>
     <div class="game">
-        <div class="game__date">
-            <small class="center grey-text">{{game.time | amCalendar:{lastDay: '[Yesterday at] HH:mm', sameDay: '[Today at] HH:mm', nextDay : '[Tomorrow at] HH:mm', lastWeek : '[last] dddd [at] HH:mm', nextWeek : 'dddd [at] HH:mm', sameElse : 'll HH:mm'} }}</small>
-        </div>
-
-        <div class="game__summary">
-            <div class="game__side game__side--1">
+        <div class="game__summary game__header">
+            <div class="game__side game__side--header game__side--1">
 
                 <div class="game__side-intro">
                     <div class="game__side-avatar-wrapper">
@@ -28,7 +24,7 @@
                     </div>
                 </div>
             </div>
-            <div class="game__side game__side--2">
+            <div class="game__side game__side--header game__side--2">
 
                 <div class="game__side-intro game__side-intro--2">
                     <div class="game__side-avatar-wrapper">
@@ -87,7 +83,7 @@
                         <ul class="game__players">
                             <li *ngFor="let bluePlayer of bluePlayers" class="game__player">
                                 <img src="{{bluePlayer.player.imageUrl}}?size=200" alt="{{bluePlayer.player.name}}"
-                                     class="game__player-avatar">
+                                     class="game__player-avatar game__player-avatar--1">
                                 <div class="game__player-name">{{bluePlayer.player.name}}</div>
                                 <rating-points [points]="bluePlayer.ratingDelta" class="game__player-points"></rating-points>
                             </li>
@@ -111,62 +107,6 @@
                 </div>
             </div>
         </div>
-        <!--<div class="game__summary">
-            <div class="game__side game__side&#45;&#45;1">
-                <template [ngIf]="blueTeam">
-                    <img src="{{blueTeam?.team.imageUrl}}?size=200" alt="{{blueTeam?.team.name}}" class="game__side-logo logo circle">
-                    <div class="game__team-name">{{blueTeam.team.name}}
-                        <rating-points [points]="blueTeam.ratingDelta"></rating-points>
-                    </div>
-                    <ul class="game__players">
-                        <li *ngFor="let bluePlayer of bluePlayers">
-                            <img src="{{bluePlayer.player.imageUrl}}?size=200" alt="{{bluePlayer.player.name}}"
-                                 class="game__team__player logo circle">
-                            {{bluePlayer.player.name}}
-                            <rating-points [points]="bluePlayer.ratingDelta"></rating-points>
-                        </li>
-                    </ul>
-                </template>
-                <template [ngIf]="!blueTeam">
-                    <img src="{{bluePlayers[0]?.player.imageUrl}}?size=200" alt="{{bluePlayers[0]?.player.name}}"
-                         class="game__side-logo logo circle">
-                    <div class="team">{{bluePlayers[0]?.player.name}}
-                        <rating-points [points]="bluePlayers[0]?.ratingDelta"></rating-points>
-                    </div>
-                </template>
-            </div>
-            <div class="game__result" [class.game__double]="bluePlayers.length > 1">
-                <div class="game__result__score">
-                    <span class="">{{blueScore}}</span>
-                    <span>-</span>
-                    <span class="">{{redScore}}</span>
-                </div>
-                <small class="center grey-text game__date">{{game.time | amCalendar:{lastDay: '[Yesterday at] HH:mm', sameDay: '[Today at] HH:mm', nextDay : '[Tomorrow at] HH:mm', lastWeek : '[last] dddd [at] HH:mm', nextWeek : 'dddd [at] HH:mm', sameElse : 'YYYY-MM-DD HH:mm'} }}</small>
-            </div>
-            <div class="game__side game__side&#45;&#45;2">
-                <template [ngIf]="redTeam">
-                    <img src="{{redTeam?.team.imageUrl}}?size=200" alt="{{redTeam?.team.name}}" class="game__side-logo logo circle">
-                    <div class="game__team-name">{{redTeam.team.name}}
-                        <rating-points [points]="redTeam.ratingDelta"></rating-points>
-                    </div>
-                    <ul class="game__players">
-                        <li *ngFor="let redPlayer of redPlayers">
-                            <img src="{{redPlayer.player.imageUrl}}?size=200" alt="{{redPlayer.player.name}}"
-                                 class="game__team__player logo circle">
-                            {{redPlayer.player.name}}
-                            <rating-points [points]="redPlayer.ratingDelta"></rating-points>
-                        </li>
-                    </ul>
-                </template>
-                <template [ngIf]="!redTeam">
-                    <img src="{{redPlayers[0]?.player.imageUrl}}?size=200" alt="{{redPlayers[0]?.player.name}}"
-                         class="game__side-logo logo circle">
-                    <div class="team">{{redPlayers[0]?.player.name}}
-                        <rating-points [points]="redPlayers[0]?.ratingDelta"></rating-points>
-                    </div>
-                </template>
-            </div>
-        </div>-->
     </div>
 
 </template>

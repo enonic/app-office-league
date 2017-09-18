@@ -6,8 +6,12 @@ import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
 import {Game} from '../../../graphql/schemas/Game';
 import {PageTitleService} from '../../services/page-title.service';
+import {OnlineStatusService} from '../../services/online-status.service';
 import {Player} from '../../../graphql/schemas/Player';
 import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
+import {WebSocketManager} from '../../services/websocket.manager';
+import {XPCONFIG} from '../../app.config';
+import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 
 @Component({
     selector: 'league-profile',
@@ -20,10 +24,12 @@ export class LeagueProfileComponent
 
     @Input() league: League;
     @ViewChild('addPlayerChips') addPlayerChipsViewChild;
+    connectionError: boolean;
     playerInLeague: boolean;
     userAuthenticated: boolean;
     adminInLeague: boolean;
     joinLeagueRequested: boolean;
+    playerSystemAdmin: boolean;
     activeGames: Game[] = [];
     nonMembersPlayerNames: string[] = [];
     playerNamesToAdd: string[] = [];
@@ -36,9 +42,13 @@ export class LeagueProfileComponent
     materializeActionsPending = new EventEmitter<string | MaterializeAction>();
     materializeActionsDelete = new EventEmitter<string | MaterializeAction>();
     materializeActionsLeave = new EventEmitter<string | MaterializeAction>();
+    materializeActionsRegenerateRanking = new EventEmitter<string | MaterializeAction>();
+    online: boolean;
+    onlineStateCallback = () => this.online = navigator.onLine;
+    private wsMan: WebSocketManager;
 
     constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
-                private pageTitleService: PageTitleService, private router: Router) {
+                private pageTitleService: PageTitleService, private onlineStatusService: OnlineStatusService, private router: Router) {
         super(route);
     }
 
@@ -46,16 +56,30 @@ export class LeagueProfileComponent
         super.ngOnInit();
 
         this.userAuthenticated = this.authService.isAuthenticated();
+        this.playerSystemAdmin = this.authService.isSystemAdmin();
         let name = this.route.snapshot.params['name'];
 
         if (!this.league && name) {
-            this.refreshData(name);
+            this.refreshData(name).then(() => {
+                if (this.league) {
+                    this.wsMan = new WebSocketManager(this.getWsUrl(this.league.id), true);
+                    this.wsMan.onMessage(this.onWsMessage.bind(this));
+                    this.wsMan.connect();
+                }
+            }).catch(error => {
+                this.handleQueryError();
+            });
         }
+
+        this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
+        this.online = navigator.onLine;
     }
 
     ngOnDestroy() {
         clearTimeout(this.approvePollingTimerId);
         this.approvePollingTimerId = undefined;
+        this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
+        this.wsMan && this.wsMan.disconnect();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -89,25 +113,27 @@ export class LeagueProfileComponent
     }
 
     private handleLeagueQueryResponse(data) {
-        if (!data.league) {
-            this.router.navigate(['leagues']);
-            return null;
+        if (!data || !data.league) {
+            this.handleQueryError();
+            return;
         }
+
         this.league = League.fromJson(data.league);
         this.joinLeagueRequested = !!(data.league.myLeaguePlayer && data.league.myLeaguePlayer.pending);
         this.playerInLeague = !!data.league.myLeaguePlayer && !this.joinLeagueRequested;
         this.adminInLeague = data.league.isAdmin;
-        this.activeGames = data.league.activeGames.map((gameJson) => {
-            let game = Game.fromJson(gameJson);
-            game.live = true;
-            return game;
-        });
+        this.activeGames = data.league.activeGames.map((gameJson) => Game.fromJson(gameJson));
         this.nonMembersPlayerNames = data.league.nonMemberPlayers.map((player) => player.name);
 
         this.pageTitleService.setTitle(this.league.name);
         if (this.joinLeagueRequested && !this.playerInLeague) {
             this.pollJoinApproved();
         }
+        this.connectionError = false;
+    }
+
+    private handleQueryError() {
+        this.connectionError = true;
     }
 
     private pollJoinApproved() {
@@ -132,7 +158,7 @@ export class LeagueProfileComponent
                 }
             );
 
-        }, 15000);
+        }, 3000);
     }
 
     format(value: number, none: string, one: string, multiple: string): string {
@@ -181,7 +207,6 @@ export class LeagueProfileComponent
             data => {
                 this.refreshData(this.league.name);
             });
-        this.playerNamesToAdd = [];
         this.hideModal();
     }
 
@@ -240,9 +265,22 @@ export class LeagueProfileComponent
             });
     }
 
+    onRankingRefreshClicked() {
+        this.showModalRanking();
+    }
+
+    onConfirmRegenerateClicked() {
+        this.graphQLService.post(LeagueProfileComponent.regenerateLeagueRanking,
+            {leagueId: this.league.id}).then(
+            data => {
+                this.hideModalRanking();
+            });
+    }
+
     showModal(): void {
+        this.playerNamesToAdd = [];
         this.materializeActions.emit({action: "modal", params: ['open']});
-        this.addPlayerChipsViewChild.focus();
+        setTimeout(() => this.addPlayerChipsViewChild.focus(), 300); //No possibility to set a callback on display
     }
 
     hideModal(): void {
@@ -292,6 +330,24 @@ export class LeagueProfileComponent
 
     public hideModalLeave(): void {
         this.materializeActionsLeave.emit({action: "modal", params: ['close']});
+    }
+
+    public showModalRanking(): void {
+        this.materializeActionsRegenerateRanking.emit({action: "modal", params: ['open']});
+    }
+
+    public hideModalRanking(): void {
+        this.materializeActionsRegenerateRanking.emit({action: "modal", params: ['close']});
+    }
+
+    onWsMessage(event: RemoteEvent) {
+        if ((event.type === EventType.GAME_UPDATE) && event.leagueId === this.league.id) {
+            this.refreshData(this.league.name);
+        }
+    }
+
+    private getWsUrl(leagueId: string): string {
+        return XPCONFIG.liveGameUrl + '?leagueId=' + leagueId + '&scope=league-profile';
     }
 
     private static readonly getLeagueQuery = `query ($name: String, $first:Int, $sort: String, $playerId: ID!, $activeGameCount:Int, $gameCount:Int) {
@@ -484,4 +540,9 @@ export class LeagueProfileComponent
         }
     }`;
 
+    private static readonly regenerateLeagueRanking = `mutation ($leagueId: ID) {
+        regenerateLeagueRanking(leagueId: $leagueId) {
+            id
+        }
+    }`;
 }

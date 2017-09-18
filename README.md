@@ -1,11 +1,13 @@
-<img align="right" src="https://raw.githubusercontent.com/enonic/app-office-league/master/misc/logo.jpg">
+<a href="https://officeleague.rocks">
+<img align="right" style="margin-top:10px;" alt="Office League" src="https://raw.githubusercontent.com/enonic/app-office-league/master/src/main/resources/assets/img/office-league-logo.png" width="200">
+</a>
 
 # Office League App
 
 [![Build Status](https://travis-ci.org/enonic/app-office-league.svg?branch=master)](https://travis-ci.org/enonic/app-office-league)
 [![License](https://img.shields.io/github/license/enonic/lib-sql.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-Office League application for [Enonic XP](https://enonic.com/developer-tour).
+[Office League](https://officeleague.rocks) application for [Enonic XP](https://enonic.com/developer-tour).
 
 Take foosball to the next level!
 
@@ -19,7 +21,8 @@ Take foosball to the next level!
 
 | Version | XP Version  | Download                       |
 |---------|-------------|----------------------------------|
-| 0.2.0   | 6.10.x      | [Download](http://repo.enonic.com/public/com/enonic/app/officeleague/0.2.0/officeleague-0.2.0.jar) |
+| 1.0.0   | 6.10.x      | [Download](http://repo.enonic.com/public/com/enonic/app/officeleague/1.0.0/officeleague-1.0.0.jar) |
+| 1.2.0   | 6.10.x      | [Download](http://repo.enonic.com/public/com/enonic/app/officeleague/1.2.0/officeleague-1.2.0.jar) |
 
 ## Configuration
 

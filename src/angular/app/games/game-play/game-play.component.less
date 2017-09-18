@@ -16,6 +16,9 @@
 
   &__red-score {
     background-color: @red-team-color;
+    &_paused {
+      background-color: @red-team-color-shade;
+    }
 
     &--goal {
       background-color: #fff;
@@ -27,6 +30,9 @@
 
   &__blue-score {
     background-color: @blue-team-color;
+    &_paused {
+      background-color: @blue-team-color-shade;
+    }
 
     &--goal {
       background-color: #fff;
@@ -37,7 +43,7 @@
   }
 
   &__time {
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.91);
     color: #000;
     padding: 0 1em;
     flex: none;
@@ -52,11 +58,19 @@
     margin-left: 0.5rem;
   }
 
-  &__field {
-    height: ~"calc(100vh - 50px)";
-    position: relative;
+  &__paused {
+    animation: blinker 2s linear infinite;
+    @keyframes blinker {
+      50% {
+        opacity: 0.3;
+      }
+    }
   }
 
+  &__field {
+    height: ~"calc(100vh - 40px)";
+    position: relative;
+  }
 
   &__commentator {
     display: none;
@@ -69,6 +83,10 @@
     width: 100%;
     top: 50%;
     transform: translateY(-50%);
+
+    &--longtext {
+      font-size: 70px;
+    }
 
     &--red {
       background-color: @red-team-color;
@@ -105,7 +123,7 @@
 
   &__players.secondPeriod {
     @media @landscape {
-      flex-direction: row-reverse;      
+      flex-direction: row-reverse;
     }
     @media @mobile-portrait {
       flex-direction: column-reverse;
@@ -135,7 +153,6 @@
     &--unselected {
       opacity: 0;
     }
-
 
     /*&-container {
       position: relative;
@@ -171,8 +188,7 @@
       background: #fff;
       box-sizing: border-box;
       position: relative;
-
-
+      max-width: none;
 
       &-placeholder {
         position: absolute;
@@ -189,12 +205,12 @@
         }
       }
 
-
     }
 
     &-name {
       position: absolute;
       left: 50%;
+      border-color: inherit;
 
       @media @mobile-portrait {
         bottom: 10%;
@@ -218,16 +234,17 @@
 
     }
 
-
   }
 
   &__menu {
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.85);
     position: absolute;
     z-index: 999;
     width: 100%;
-    height: 100%;
-    top:0;
+    //height: 100%;
+    height: ~"calc(100% - 76px)";
+    margin-top: 40px;
+    top: 0;
     left: 0;
     display: none;
     align-items: center;
@@ -246,36 +263,48 @@
     }
 
     &-btn {
-
-      width: 150px;
-      height: 150px;
       margin: 20px;
-      border-radius: 50%;
-      border-width: 0;
+
+      border: none;
+      border-radius: 2px;
+      display: inline-block;
+      height: 36px;
+      line-height: 36px;
+      padding: 0 2rem;
+      text-transform: uppercase;
+      vertical-align: middle;
+      -webkit-tap-highlight-color: transparent;
+
+      text-decoration: none;
+      color: #fff;
+      text-align: center;
+      letter-spacing: .5px;
+      font-size: 1rem;
+      outline: 0;
 
       &--continue {
-        background-color: #fff;
-        color: #000;
+        background-color: #429E69;
       }
 
       &--undo {
-        background-color: #000;
-        color: #fff;
+        background-color: #2196F3;
       }
 
       &--end {
-        background-color: @red-team-color;
-        color: #fff;
+        background-color: #F44336;
       }
     }
   }
 
+  &.row {
+    margin-bottom: 0;
+  }
 }
 
 @keyframes blink {
   0% { color: #fff; }
   100% { color: #000; }
-}
+  }
 @-webkit-keyframes blink {
   0% { color: #fff; }
   100% { color: #000; }
@@ -313,12 +342,6 @@
   }
 }
 
-
-
-
-
-
-
 .sides {
   display: flex;
   flex-direction: row;
@@ -351,30 +374,82 @@
 
   .players {
 
-
   }
 
 }
 
-.add-goal {
-  display: flex;
+.add-own-goal  {
+  display: none;
   opacity: 0;
 
   @media @landscape {
-    width: 25%;
+    width: 35%;
     height: 100%;
   }
 
   @media @mobile-portrait {
-    height: 25%;
+    height: 35%;
     width: 100%;
   }
 
-  .game-play--player-clicked & {
-    opacity: 1;
+  &--red {
+    .game-play--player-red-clicked & {
+      opacity: 1;
+      display: flex;
+    }
+    .game-play--player-blue-clicked & {
+      opacity: 0;
+      display: none;
+    }
+  }
+
+  &--blue {
+    .game-play--player-blue-clicked & {
+      opacity: 1;
+      display: flex;
+    }
+    .game-play--player-red-clicked & {
+      opacity: 0;
+      display: none;
+    }
   }
 }
 
+.add-goal {
+  opacity: 0;
+
+  @media @landscape {
+    width: 35%;
+    height: 100%;
+  }
+
+  @media @mobile-portrait {
+    height: 35%;
+    width: 100%;
+  }
+
+  &--red {
+    .game-play--player-red-clicked & {
+      opacity: 1;
+      display: flex;
+    }
+    .game-play--player-blue-clicked & {
+      opacity: 0;
+      display: none;
+    }
+  }
+
+  &--blue {
+    .game-play--player-blue-clicked & {
+      opacity: 1;
+      display: flex;
+    }
+    .game-play--player-red-clicked & {
+      opacity: 0;
+      display: none;
+    }
+  }
+}
 
 /*
 .side-blue {
@@ -390,8 +465,6 @@
     box-shadow: 0 0 3px @red-team-color;
   }
 }*/
-
-
 
 .game-top-bar {
   //position: absolute;
@@ -412,6 +485,7 @@
     justify-content: space-between;
     align-items: center;
     font-size: 24px;
+    line-height: 40px;
 
     &__hide {
       display: none;
@@ -462,13 +536,13 @@
 
       img {
         height: 40px;
-        padding-right:5px;
+        padding-right: 5px;
       }
 
       &__name {
         color: #aaa;
         font-size: 18px;
-        padding-right:5px;
+        padding-right: 5px;
         vertical-align: bottom;
         line-height: 40px;
       }
@@ -489,7 +563,7 @@
   }
 }
 
-@-webkit-keyframes floatText{
+@-webkit-keyframes floatText {
   0% {
     left: 00%;
   }
@@ -503,7 +577,7 @@
   }
 }
 
-@keyframes floatText{
+@keyframes floatText {
   0% {
     left: 00%;
   }
@@ -534,8 +608,6 @@
   align-items: center;
   color: #fff;
 }
-
-
 
 .game-play {
   position: relative;

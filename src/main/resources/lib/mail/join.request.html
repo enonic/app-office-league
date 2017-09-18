@@ -1,10 +1,50 @@
-<p>Hello {{{recipientName}}},</p>
-<p>Player '{{{requesterName}}}' has requested to join '{{{leagueName}}}' in Office League.<br/>
-    You can see the player's profile here: <a href="{{{requesterProfileUrl}}}">{{{requesterName}}}</a><br/>
-    You can allow or deny the player in the league from the League's page: {{{leaguePlayersUrl}}}</p>
-<p>Sincerely yours,<br/>
-    Office League</p>
+<div style="font-family: 'Open Sans', sans-serif;font-size:14px">
+    <p>Hello {{{recipientFullName}}},</p>
 
-—
-<p>You are receiving this because you are an administrator of '{{{leagueName}}}' in Office League.<br/>
-    Do not reply to this email directly.</p>
+    <div style="background-color: #eee; padding-left: 20px; line-height: 40px;">
+        Player <b>{{{requesterName}}}</b> has requested to join <b>{{{leagueName}}}</b> in Office League.
+    </div>
+    <br/>
+
+    <table cellspacing="0" cellpadding="0" border="0">
+        <tr>
+            <td style="vertical-align:top;width:64px;">
+                <a href="{{{requesterProfileUrl}}}"><img src="{{{requesterImageUrl}}}" title="{{{requesterName}}}" width="64"
+                                                         height="64"></a>
+            </td>
+            <td>
+                <a style="padding-left: 20px; text-decoration: none; color:#222" href="{{{requesterProfileUrl}}}"><b>{{{requesterName}}}</b></a><br/>
+                <a style="padding-left: 20px; text-decoration: none; color:#222"
+                   href="{{{requesterProfileUrl}}}">{{{requesterFullName}}}</a>
+            </td>
+        </tr>
+    </table>
+
+    <br/>
+    <br/>
+
+    <div>
+        <a href="{{{leaguePlayersUrl}}}" style="padding: 8px 10px; background-color: #142663; color: #fff; text-decoration: none;">Review
+            Request</a>
+    </div>
+    <br/>
+
+    <hr style="background-color: #ddd; height: 1px; border: 1px;">
+
+    <br/>
+    <table cellspacing="0" cellpadding="0" border="0">
+        <tr>
+            <td style="vertical-align:top;width:64px;">
+                <img src="{{{logoUrl}}}" title="Office League" width="64" height="64">
+            </td>
+            <td>
+                Sincerely yours,<br/>
+                Office League
+            </td>
+        </tr>
+    </table>
+
+    <p style="font-size: small; color: #888;">&mdash;<br/>You are receiving this because you are an administrator of <b>{{{leagueName}}}</b>
+        in Office League.<br/>
+        Do not reply to this email directly.</p>
+</div>

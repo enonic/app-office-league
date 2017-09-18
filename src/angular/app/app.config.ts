@@ -3,10 +3,17 @@ export interface ConfigUser {
     playerId: string;
     playerName: string;
     playerImageUrl: string;
+    isAdmin: boolean;
+}
+
+export interface Content {
+    name: string;
+    type: string;
 }
 
 export interface Config {
     locale: string;
+    countryIsoCode: string;
     baseHref: string;
     idProvider: string;
     assetsUrl: string;
@@ -17,7 +24,8 @@ export interface Config {
     graphQlUrl: string;
     setImageUrl: string;
     liveGameUrl: string;
-    user: ConfigUser
+    user: ConfigUser;
+    content: Content;
 }
 
 declare var XPCONFIG: Config;

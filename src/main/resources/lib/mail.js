@@ -3,6 +3,7 @@ var taskLib = require('/lib/xp/task');
 var mustache = require('/lib/xp/mustache');
 var storeLib = require('office-league-store');
 var authLib = require('/lib/xp/auth');
+var ioLib = require('/lib/xp/io');
 
 exports.sendJoinRequestNotification = function (playerId, leagueId) {
     log.info('Join request notification email will be sent in the background.');
@@ -104,7 +105,7 @@ var doSendAllowJoinRequestNotification = function (playerId, leagueId) {
         return;
     }
 
-    var baseUrl = app.config['officeleague.baseUrl'] || 'http://localhost:8080/portal/draft/office-league/app';
+    var baseUrl = getBaseUrl();
     var recipient = authLib.getPrincipal(player.userKey);
     var email = recipient.email;
     if (!email) {
@@ -116,7 +117,8 @@ var doSendAllowJoinRequestNotification = function (playerId, leagueId) {
         leagueName: league.name,
         requesterName: player.name,
         requesterFullName: player.fullname,
-        leagueUrl: leagueUrl(baseUrl, league)
+        leagueUrl: leagueUrl(baseUrl, league),
+        logoUrl: getLogoUrl(baseUrl)
     };
     var body = mustache.render(resolve('mail/allow.join.request.html'), params);
 
@@ -146,7 +148,7 @@ var doSendDenyJoinRequestNotification = function (playerId, leagueId) {
         return;
     }
 
-    var baseUrl = app.config['officeleague.baseUrl'] || 'http://localhost:8080/portal/draft/office-league/app';
+    var baseUrl = getBaseUrl();
     var recipient = authLib.getPrincipal(player.userKey);
     var email = recipient.email;
     if (!email) {
@@ -157,7 +159,8 @@ var doSendDenyJoinRequestNotification = function (playerId, leagueId) {
     var params = {
         leagueName: league.name,
         requesterName: player.name,
-        requesterFullName: player.fullname
+        requesterFullName: player.fullname,
+        logoUrl: getLogoUrl(baseUrl)
     };
     var body = mustache.render(resolve('mail/deny.join.request.html'), params);
 
@@ -193,7 +196,7 @@ var doSendJoinRequestNotification = function (playerId, leagueId) {
     }
     var adminPlayers = storeLib.getPlayersById(adminIds);
 
-    var baseUrl = app.config['officeleague.baseUrl'] || 'http://localhost:8080/portal/draft/office-league/app';
+    var baseUrl = getBaseUrl();
     var a, admin;
     for (a = 0; a < adminPlayers.length; a++) {
         admin = adminPlayers[a];
@@ -211,7 +214,9 @@ var doSendJoinRequestNotification = function (playerId, leagueId) {
             requesterName: player.name,
             requesterFullName: player.fullname,
             requesterProfileUrl: playerUrl(baseUrl, player),
-            leaguePlayersUrl: leaguePlayersUrl(baseUrl, league)
+            requesterImageUrl: playerImageUrl(baseUrl, player),
+            leaguePlayersUrl: leaguePlayersUrl(baseUrl, league, true),
+            logoUrl: getLogoUrl(baseUrl)
         };
         var body = mustache.render(resolve('mail/join.request.html'), params);
 
@@ -220,6 +225,11 @@ var doSendJoinRequestNotification = function (playerId, leagueId) {
             to: admin.fullname ? admin.fullname + ' <' + email + '>' : email,
             body: body,
             subject: 'Office League - Join League Request from \'' + player.name + '\''
+            // attachments: [{
+            //     fileName: 'logo.png',
+            //     mimeType: 'image/png',
+            //     data: getLogoImage()
+            // }]
         });
 
     }
@@ -234,22 +244,30 @@ var doSendInvitation = function (email, leagueId, adminId, token) {
 
     var league = storeLib.getLeagueById(leagueId);
     if (!league) {
-        throw 'Could not send invitiation. League not found: ' + leagueId;
+        throw 'Could not send invitation. League not found: ' + leagueId;
         return;
     }
 
     var admin = storeLib.getPlayerById(adminId);
     if (!admin) {
-        throw 'Could not send invitiation. Admin not found: ' + adminId;
+        throw 'Could not send invitation. Admin not found: ' + adminId;
         return;
     }
 
-    var callbackUrl = app.config['officeleague.baseUrl'] ? app.config['officeleague.baseUrl'] + '/player-create?invitation=' + token :
-                      'http://localhost:8080/portal/draft/office-league/app/player-create?invitation=' + token;
+    var callbackUrl = app.config['officeleague.baseUrl']
+        ? app.config['officeleague.baseUrl'] + '/player-create?invitation=' + token
+        : 'http://localhost:8080/portal/draft/office-league/app/player-create?invitation=' + token;
+
+    var baseUrl = getBaseUrl();
 
     var params = {
+        logoUrl: getLogoUrl(baseUrl),
         leagueName: league.name,
+        leagueImageUrl: leagueImageUrl(baseUrl, league),
+        leagueUrl: leagueUrl(baseUrl, league),
         requesterName: admin.name,
+        requesterProfileUrl: playerUrl(baseUrl, admin),
+        requesterImageUrl: playerImageUrl(baseUrl, admin),
         callbackUrl: callbackUrl
     };
     var body = mustache.render(resolve('mail/invitation.request.html'), params);
@@ -267,13 +285,15 @@ var sendEmail = function (params) {
     var from = params.from;
     var to = params.to;
     var body = params.body;
+    var attachments = params.attachments;
 
     mail.send({
         subject: subject,
         from: from,
         to: to,
         body: body,
-        contentType: 'text/html; charset="UTF-8"'
+        contentType: 'text/html; charset="UTF-8"',
+        attachments: attachments
     });
 };
 
@@ -281,10 +301,41 @@ var leagueUrl = function (baseUrl, league) {
     return baseUrl + '/leagues/' + encodeURIComponent(league.name)
 };
 
-var leaguePlayersUrl = function (baseUrl, league) {
-    return baseUrl + '/leagues/' + encodeURIComponent(league.name) + '/players'
+var leaguePlayersUrl = function (baseUrl, league, requireLogin) {
+    var url = baseUrl + '/leagues/' + encodeURIComponent(league.name) + '/players';
+    if (requireLogin) {
+        url = url + '?login=yes';
+    }
+    return url;
 };
 
 var playerUrl = function (baseUrl, player) {
     return baseUrl + '/players/' + encodeURIComponent(player.name)
+};
+
+var playerImageUrl = function (baseUrl, player) {
+    var attachmentImg = storeLib.getAttachment(player, player.image);
+    log.info(JSON.stringify(attachmentImg,null,4));
+    if (!attachmentImg || attachmentImg.mimeType.indexOf('image/svg+xml') === 0) {
+        return baseUrl + '/assets/icons/default-player.png';
+    } else {
+        return baseUrl + storeLib.getImageUrl(player);
+    }
+};
+
+var leagueImageUrl = function (baseUrl, league) {
+    return baseUrl + storeLib.getImageUrl(league);
+};
+
+var getLogoUrl = function (baseUrl) {
+    return baseUrl + '/assets/icons/office-league-logo.png';
+};
+
+var getLogoImage = function () {
+    var logoRes = ioLib.getResource('/assets/icons/office-league-logo.png');
+    return logoRes.getStream();
+};
+
+var getBaseUrl = function () {
+    return app.config['officeleague.baseUrl'] || 'http://localhost:8080/portal/draft/office-league/app';
 };

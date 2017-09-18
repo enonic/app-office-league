@@ -4,6 +4,9 @@
   &__navbar {
     background-color: @main-theme-color;
     display: flex;
+    @media (max-width: 992px) {
+      flex-direction: row-reverse;
+    }
     box-shadow: none !important;
 
     &-title {
@@ -17,11 +20,30 @@
         padding-left: 2rem;
       }
     }
+
+    &-home {
+      @media (min-width: 993px) {
+        display: none;
+      }
+
+      margin: 0 18px;
+      padding-top: 4px;
+
+      img {
+        width: 24px;
+      }
+    }
+
+    &-offline {
+      @media (min-width: 993px) {
+        display: none;
+      }
+    }
+
   }
 }
 
 .navbar-fixed {
-  //margin-bottom: 20px; TODO: maybe?
   margin-bottom: 2px;
 
   .nav-wrapper {
@@ -30,21 +52,29 @@
   }
 
   .nav-title {
-
-    /*img {
-      vertical-align: middle;
-      margin-right: 10px;
-      max-height: 44px;
-      margin-top: -5px;
-    }*/
   }
 }
 
 .container {
   max-width: 1024px;
+
+  &.game-play {
+    padding-left: 0;
+    padding-right: 0;
+
+    > .row {
+      margin-bottom: 0;
+    }
+  }
 }
 
 .side-nav {
+  background-color: rgba(42, 55, 78, 0.95);
+  
+  a {
+    color: #fff;
+  }
+
   .user-profile {
     a {
       height: auto;
@@ -57,5 +87,22 @@
         margin-right: 16px;
       }
     }
+
+    .side-nav-close {
+      padding-left: 50px;
+      padding-right: 0;
+      padding-top: 0;
+      i {
+        color: #fff;
+        margin-right: 18px;
+        line-height: 56px;
+      }
+
+      &:hover {
+        background-color: inherit;
+      }
+
+    }
+
   }
 }

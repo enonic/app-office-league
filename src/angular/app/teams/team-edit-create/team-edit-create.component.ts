@@ -1,27 +1,31 @@
-import {Component, ElementRef, ViewChild, AfterViewInit, EventEmitter} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Location} from '@angular/common';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
 import {MaterializeAction} from 'angular2-materialize/dist/index';
-import {Http, Headers, RequestOptions} from '@angular/http';
+import {Headers, Http, RequestOptions} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
 import {Team} from '../../../graphql/schemas/Team';
 import {PageTitleService} from '../../services/page-title.service';
 import {Player} from '../../../graphql/schemas/Player';
 import {ImageService} from '../../services/image.service';
 import {AuthService} from '../../services/auth.service';
+import {OnlineStatusService} from '../../services/online-status.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {TeamValidator} from '../team-validator';
 import {CustomValidators} from '../../common/validators';
-import {SafeUrl, DomSanitizer} from '@angular/platform-browser';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 
 @Component({
     selector: 'team-edit-create',
     templateUrl: 'team-edit-create.component.html',
     styleUrls: ['team-edit-create.component.less']
 })
-export class TeamEditCreateComponent extends BaseComponent implements AfterViewInit {
-    materializeActions = new EventEmitter<string|MaterializeAction>();
+export class TeamEditCreateComponent
+    extends BaseComponent
+    implements AfterViewInit {
+    materializeActions = new EventEmitter<string | MaterializeAction>();
 
     name: string;
     id: string;
@@ -29,7 +33,7 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
     imageUrl: SafeUrl;
     players: Player[] = [];
     createMode: boolean;
-    excludePlayerIds: {[id: string]: boolean} = {};
+    excludePlayerIds: { [id: string]: boolean } = {};
     possibleTeamMateIds: string[] = [];
     leagueIds: string[] = [];
     teamForm: FormGroup;
@@ -38,12 +42,14 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
         'description': ''
     };
     private currentPlayer: Player;
-
+    private online: boolean;
+    private onlineStateCallback = () => this.online = navigator.onLine;
     @ViewChild('fileInput') inputEl: ElementRef;
 
     constructor(private http: Http, route: ActivatedRoute, private graphQLService: GraphQLService,
-                private pageTitleService: PageTitleService, private router: Router,
-                private authService: AuthService, private fb: FormBuilder, private sanitizer: DomSanitizer) {
+                private pageTitleService: PageTitleService, private router: Router, private location: Location,
+                private authService: AuthService, private onlineStatusService: OnlineStatusService, 
+                private fb: FormBuilder, private sanitizer: DomSanitizer) {
         super(route);
     }
 
@@ -62,6 +68,8 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
         };
         this.teamForm.valueChanges.subscribe(data => updateFormErrors(data));
         this.teamForm.statusChanges.subscribe(data => updateFormErrors(data));
+        this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
+        this.online = navigator.onLine;
 
         updateFormErrors(); // (re)set validation messages now
 
@@ -71,6 +79,10 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
         } else {
             this.setupCreate();
         }
+    }
+
+    ngOnDestroy(): void {
+        this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
     }
 
     ngAfterViewInit(): void {
@@ -105,9 +117,9 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
             TeamValidator.nameInUseValidator(this.graphQLService, team.id)));
 
         this.teamForm.setValue({
-            name: team.name || '',
-            description: team.description || '',
-            id: team.id || ''
+            name: team.name || '',
+            description: team.description || '',
+            id: team.id || ''
         });
     }
 
@@ -165,6 +177,10 @@ export class TeamEditCreateComponent extends BaseComponent implements AfterViewI
                 this.saveTeam();
             }
         });
+    }
+
+    onCancelClicked() {
+        this.location.back();
     }
 
     onSelectPlayerClicked() {

@@ -194,7 +194,7 @@ var createSite = function () {
             branch: 'draft',
             contentType: 'portal:page-template',
             data: {
-                supports: app.name + ':app'
+                supports: [app.name + ':app', app.name + ':info-page']
             }
         });
         // add page to template

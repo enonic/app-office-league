@@ -6,9 +6,9 @@ var view = resolve('./marketing-page.html');
 
 exports.get = function (req) {
     
-    //If the user is authenticated, redirect him to the app
+    //In live mode, if the user is authenticated, redirect him to the app
     var site = portal.getSite();
-    if (authLib.getUser()) {
+    if (req.mode === 'live' && authLib.getUser()) {
         return {
             redirect: portal.pageUrl({
                 path: site._path + '/app',
