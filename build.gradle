@@ -55,9 +55,7 @@ dependencies {
     include "com.enonic.lib:graphql:0.5.2"
     include 'com.enonic.lib:geoip:1.0.0'
     include 'com.enonic.lib:text-encoding:1.1.0'
-    include( "nl.martijndwars:web-push:3.0.0" ) {
-        exclude group: 'com.google.guava', module: 'guava'
-    }
+    include 'com.enonic.lib:notifications:1.0.0'
 }
 
 repositories {

@@ -3,6 +3,7 @@ var authLib = require('/lib/xp/auth');
 var mustacheLib = require('/lib/xp/mustache');
 var storeLib = require('/lib/office-league-store');
 var invitationLib = require('/lib/invitation');
+var pushLib = require('/lib/push');
 var geoipLib = require('/lib/enonic/geoip');
 var view = resolve('pwa.html');
 
@@ -81,6 +82,8 @@ exports.get = function (req) {
     }
     countryIsoCode = countryIsoCode || 'no';
 
+    var keyPair = pushLib.getKeyPair();
+
     var params = {
         locale: req.params.locale || 'en',
         countryIsoCode: countryIsoCode,
@@ -96,7 +99,8 @@ exports.get = function (req) {
         logoutMarketingUrl: portalLib.logoutUrl({redirect: baseAbsoluteUrl}),
         idProvider: portalLib.idProviderUrl(),
         setImageUrl: portalLib.serviceUrl({service: "set-image"}),
-        liveGameUrl: getWebSocketUrl(portalLib.serviceUrl({service: "live-game", type: "absolute"}))
+        liveGameUrl: getWebSocketUrl(portalLib.serviceUrl({service: "live-game", type: "absolute"})),
+        publicKey: keyPair.publicKey
     };
     var body = mustacheLib.render(view, params);
 

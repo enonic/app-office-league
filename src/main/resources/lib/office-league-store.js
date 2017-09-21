@@ -5,15 +5,17 @@ var eventLib = require('/lib/xp/event');
 var randomLib = require('/lib/random-names');
 var imageLib = require('/lib/image');
 var userProfileLib = require('/lib/user-profile');
+var pushLib = require('/lib/push');
 
 var REPO_NAME = 'office-league';
 var LEAGUES_PATH = '/leagues';
 var PLAYERS_PATH = '/players';
 var TEAMS_PATH = '/teams';
-var PUSH_SUBSCRIPTIONS_PATH = '/push-subscriptions';
 var LEAGUE_GAMES_REL_PATH = '/games';
 var LEAGUE_PLAYERS_REL_PATH = '/players';
 var LEAGUE_TEAMS_REL_PATH = '/teams';
+var PUSH_SUBSCRIPTIONS_NAME = 'push-subscriptions';
+
 var OFFICE_LEAGUE_GAME_EVENT_ID = 'office-league-game';
 var OFFICE_LEAGUE_COMMENT_EVENT_ID = 'office-league-comment';
 var OFFICE_LEAGUE_JOIN_LEAGUE_EVENT_ID = 'office-league-join-league';
@@ -2803,47 +2805,183 @@ exports.deleteGameById = function (id) {
 };
 
 /**
- * Adds a push subscription.
+ * Adds a push subscription for a player.
  *
  * @param {object} params JSON with the push subscription parameters.
+ * @param {string} params.playerId Player id.
  * @param {string} params.endpoint Push subscription endpoint.
  * @param {string} params.key Push subscription endpoint.
  * @param {string} params.auth Push subscription endpoint.
- * @return {string} Added push subscription.
+ * @return {boolean} True if the subscription was successfully added.
  */
 exports.addPushSubscription = function (params) {
+    required(params, 'endpoint');
+    required(params, 'key');
+    required(params, 'auth');
+    required(params, 'playerId');
+
     var repoConn = newConnection();
 
-    var createdNode = repoConn.create({
-        _parentPath: PUSH_SUBSCRIPTIONS_PATH,
-        _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
-        type: TYPE.PUSH_SUBSCRIPTION,
-        endpoint: required(params, 'endpoint'),
-        key: required(params, 'key'),
-        auth: required(params, 'auth'),
-        timestamp: valueLib.instant(new Date().toISOString())
+    var player = exports.getPlayerById(params.playerId);
+    if (!player) {
+        return false;
+    }
+
+    var nodePath = player._path + '/' + PUSH_SUBSCRIPTIONS_NAME;
+    var query = "_path = '" + nodePath + "'";
+    var pushSubNodeExists = queryExists(query, repoConn);
+
+    if (!pushSubNodeExists) {
+        var createdNode = repoConn.create({
+            _parentPath: player._path,
+            _name: PUSH_SUBSCRIPTIONS_NAME,
+            _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
+            type: TYPE.PUSH_SUBSCRIPTION,
+            playerId: required(params, 'playerId'),
+            subscriptions: []
+        });
+        if (!createdNode) {
+            return false;
+        }
+    }
+
+    var pushSubNode = repoConn.modify({
+        key: nodePath,
+        editor: function (node) {
+            node.subscriptions = [{
+                endpoint: params.endpoint,
+                key: params.key,
+                auth: params.auth,
+                timestamp: valueLib.instant(new Date().toISOString())
+            }].concat(node.subscriptions || []);
+            return node;
+        }
     });
 
-    return !!createdNode;
+    return !!pushSubNode;
 };
 
 /**
- * Executes the callback for each push notification.
+ * Removes a push subscription from a player.
+ *
+ * @param {object} params JSON with the push subscription parameters.
+ * @param {string} params.playerId Player id.
+ * @param {string} params.endpoint Push subscription endpoint.
+ * @param {string} params.key Push subscription endpoint.
+ * @param {string} params.auth Push subscription endpoint.
  */
-exports.forEachPushSubscription = function (callback) {
+exports.removePushSubscription = function (params) {
+    required(params, 'endpoint');
+    required(params, 'key');
+    required(params, 'auth');
+    required(params, 'playerId');
+
     var repoConn = newConnection();
 
+    var player = exports.getPlayerById(params.playerId);
+    if (!player) {
+        return;
+    }
+
+    var nodePath = player._path + '/' + PUSH_SUBSCRIPTIONS_NAME;
+    var query = "_path = '" + nodePath + "'";
+    var pushSubNodeExists = queryExists(query, repoConn);
+
+    if (!pushSubNodeExists) {
+        return;
+    }
+
+    repoConn.modify({
+        key: nodePath,
+        editor: function (node) {
+            if (!node.subscriptions) {
+                return node;
+            }
+            node.subscriptions = [].concat(node.subscriptions);
+
+            var sub;
+            for (var s = node.subscriptions.length - 1; s >= 0; s--) {
+                sub = node.subscriptions[s];
+                if (sub.endpoint === params.endpoint && sub.key === params.key && sub.auth === params.auth) {
+                    node.subscriptions.splice(s, 1);
+                }
+            }
+
+            return node;
+        }
+    });
+};
+
+/**
+ * Sends a push notification to a list of players.
+ *
+ * @param {object} params JSON with the push notification parameters.
+ * @param {string[]} params.playerIds Player ids.
+ * @param {string} params.text Text message.
+ * @param {string} params.url Url to load on notification click.
+ */
+exports.sendPushNotification = function (params) {
+    var repoConn = newConnection();
+
+    var playerIdsStr = params.playerIds.map(function (id) {
+        return "'" + id + "'";
+    }).join(',');
+
     var queryResult = repoConn.query({
-        count: -1, //TODO Batch
-        query: "type = '" + TYPE.PUSH_SUBSCRIPTION + "'"
+        start: 0,
+        count: -1,
+        query: "type = '" + TYPE.PUSH_SUBSCRIPTION + "' AND playerId IN (" + playerIdsStr + ")"
     });
 
-    queryResult.hits.forEach(function (pushSubscriptionHit) {
-        var pushSubscription = repoConn.get(pushSubscriptionHit.id);
-        callback(pushSubscription);
-    });
+    var playerSubscriptions = [];
+    if (queryResult.count > 0) {
+        var ids = queryResult.hits.map(function (hit) {
+            return hit.id;
+        });
+        playerSubscriptions = [].concat(repoConn.get(ids));
+    }
 
-    return !!createdNode;
+    playerSubscriptions.forEach(function (playerSub) {
+        if (!playerSub.subscriptions) {
+            return;
+        }
+        var subs = [].concat(playerSub.subscriptions);
+
+        subs.forEach(function (sub) {
+            sendPushNotification({
+                endpoint: sub.endpoint,
+                key: sub.key,
+                auth: sub.auth,
+                text: params.text,
+                url: params.url
+            });
+        });
+    });
+};
+
+/**
+ * Sends a push notification message.
+ *
+ * @param {object} params JSON with parameters.
+ * @param {string} params.text Text message.
+ * @param {string} params.url Url to load on notification click.
+ * @param {string} params.endpoint Push subscription endpoint.
+ * @param {string} params.key Push subscription endpoint.
+ * @param {string} params.auth Push subscription endpoint.
+ */
+var sendPushNotification = function (params) {
+    try {
+        var message = {
+            text: params.text,
+            url: params.url
+        };
+        var status = pushLib.sendPushNotification(params.endpoint, params.auth, params.key, message);
+        if (status >= 200 && status < 300) {
+            log.warn('Could not send push notification, response status: ' + status);
+        }
+    } catch (e) {
+        log.warn('Could not send push notification: %s', e)
+    }
 };
 
 /**

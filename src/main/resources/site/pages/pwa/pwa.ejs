@@ -66,7 +66,8 @@
         logoutMarketingUrl: '{{{logoutMarketingUrl}}}',
         graphQlUrl: '{{baseHref}}api/graphql',
         setImageUrl: '{{setImageUrl}}',
-        liveGameUrl: '{{liveGameUrl}}'
+        liveGameUrl: '{{liveGameUrl}}',
+        publicKey: '{{publicKey}}'
     }
     {{#isLive}}
     var serviceWorker;
@@ -74,10 +75,7 @@
         navigator.serviceWorker
             .getRegistration()
             .then(registerServiceWorker)
-            .then(postAssets)
-            .then(requestNotificationPermission)
-            .then(subscribeToPushManager)
-            .then(sendSubscriptionToServer);
+            .then(postAssets);
     }
     
     function registerServiceWorker(registration) {
@@ -118,71 +116,7 @@
         }
         return registration;     
     }
-    
-    function requestNotificationPermission(registration) {
-        return new Promise(function(resolve, reject) {
-            const permissionRequestResult = Notification.requestPermission(function(result) {
-              resolve(result);
-            });
-        
-            if (permissionRequestResult) {
-              permissionRequestResult.then(resolve, reject);
-            }
-        })
-        .then(function(permissionRequestResult) {
-            console.log('Notification permission request ', permissionRequestResult);
-            if (permissionRequestResult !== 'granted') {
-              throw new Error('Notification permission not granted.');
-            }
-            return registration;
-        });   
-    }
-    
-    function subscribeToPushManager(registration) {
-        const subscribeOptions = {
-            userVisibleOnly: true,
-            applicationServerKey: base64StringToUint8Array(
-              'BJCTKN2sEl2USb7aBHzPmZQZXtii1oSK35h0qtidgoXvovvXWIZIi9F31gkwHg93dNIzQ1yYGE1PVrQopW2fT9E'
-            )
-        };
-        return registration.pushManager.subscribe(subscribeOptions); 
-    }
-    
-    function base64StringToUint8Array(base64String) {
-        const padding = '='.repeat((4 - base64String.length % 4) % 4);
-        const paddedBase64String = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
-        const rawData = window.atob(paddedBase64String);
-        const uint8Array = new Uint8Array(rawData.length);
-        for (let i = 0; i < rawData.length; ++i) {
-            uint8Array[i] = rawData.charCodeAt(i);
-        }
-        return uint8Array;
-    }
-    
-    function sendSubscriptionToServer(subscription) {
-        var key = subscription.getKey('p256dh');
-        var auth = subscription.getKey('auth');
-        fetch(XPCONFIG.graphQlUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                query: "mutation($endpoint:String!,$key:String!,$auth:String!){addPushSubscription(endpoint:$endpoint, key:$key, auth:$auth)}", 
-                variables: {
-                    endpoint: subscription.endpoint, 
-                    key: btoa(String.fromCharCode.apply(null, new Uint8Array(key))), 
-                    auth: btoa(String.fromCharCode.apply(null, new Uint8Array(auth)))
-                }
-            }),
-            credentials: 'include'  
-        })
-        .then(function(response) {
-            if (!response.ok) {
-                throw new Error('Bad status code from server.');
-            }
-        });
-    }
+
     {{/isLive}}
 </script>
 

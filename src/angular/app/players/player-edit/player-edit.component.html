@@ -60,6 +60,23 @@
                         </select>
                     </div>
                 </div>
+                <div class="row" *ngIf="pushSupported">
+                    <div class="switch player-edit__notifications">
+                        <span class="white-text">Notifications are <span [class.orange-text]="!pushEnabled" [class.green-text]="pushEnabled">{{notificationsStatusText}}</span> on this device.</span>
+                    </div>
+                </div>
+                <div class="row" *ngIf="pushSupported">
+                    <div class="switch player-edit__notifications">
+                        <a class="waves-effect waves-teal btn green player-edit__btn player-edit__btn--notifications"
+                           [class.darken-4]="pushEnabled" (click)="onNotificationsToggleClick($event)" [class.disabled]="updatingPush">{{enableNotificationsText}}</a>
+                    </div>
+                </div>
+                <div class="row" *ngIf="!pushSupported">
+                    <div class="switch player-edit__notifications grey-text">
+                        <span>Notifications not supported on this device.</span>
+                    </div>
+                </div>
+
                 <div class="row submit-row player-edit__submit-row">
                     <a class="waves-effect waves-teal btn red player-edit__btn player-edit__btn--cancel" (click)="onCancelClicked()">Cancel</a>
                     <a class="waves-effect waves-teal btn light-blue player-edit__btn--submit" [attr.disabled]="!online||!playerForm.valid ? true : null"

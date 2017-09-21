@@ -282,7 +282,7 @@ self.addEventListener('fetch', function (e) {
                                    caches.open(cacheName).then(function (cache) {
                                        cache.put(requestUrl, clonedResponse);
                                    });
-                                   
+
                                }
                                return response;
                            }).catch(function (err) {
@@ -329,12 +329,29 @@ self.addEventListener("message", function (e) {
 
 self.addEventListener('push', function (event) {
     if (event.data) {
-        const promiseChain = self.registration.showNotification('Office League', {
-            icon: '{{assetUrl}}/img/office-league-logo.svg',
-            body: event.data.text()
-        });
-        event.waitUntil(promiseChain);
+        const notification = JSON.parse(event.data.text());
+
+        const title = 'Office League';
+        const options = {
+            body: notification.text,
+            icon: '{{assetUrl}}/img/office-league-notification.png',
+            // badge: notification.badge,
+            data: notification
+        };
+
+        event.waitUntil(self.registration.showNotification(title, options));
+
     } else {
         console.log('This push event has no data.');
+    }
+});
+
+self.addEventListener('notificationclick', function (event) {
+    event.notification.close();
+
+    if (event.notification.data.url) {
+        event.waitUntil(
+            clients.openWindow(event.notification.data.url)
+        );
     }
 });

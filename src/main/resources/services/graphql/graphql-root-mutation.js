@@ -478,13 +478,42 @@ exports.rootMutationType = graphQlLib.createObjectType({
                 auth: graphQlLib.nonNull(graphQlLib.GraphQLString)
             },
             resolve: function (env) {
+                var currentPlayerId = getCurrentPlayerId();
+
                 var addedPushSubscription = storeLib.addPushSubscription({
+                    playerId: currentPlayerId,
                     endpoint: env.args.endpoint,
                     key: env.args.key,
                     auth: env.args.auth
                 });
                 storeLib.refresh();
+
+                storeLib.sendPushNotification({
+                    playerIds: [currentPlayerId],
+                    text: "Office League notifications enabled."
+                });
+
                 return !!addedPushSubscription;
+            }
+        },
+        removePushSubscription: {
+            type: graphQlLib.GraphQLBoolean,
+            args: {
+                endpoint: graphQlLib.nonNull(graphQlLib.GraphQLString),
+                key: graphQlLib.nonNull(graphQlLib.GraphQLString),
+                auth: graphQlLib.nonNull(graphQlLib.GraphQLString)
+            },
+            resolve: function (env) {
+                var currentPlayerId = getCurrentPlayerId();
+
+                storeLib.removePushSubscription({
+                    playerId: currentPlayerId,
+                    endpoint: env.args.endpoint,
+                    key: env.args.key,
+                    auth: env.args.auth
+                });
+                storeLib.refresh();
+                return true;
             }
         }
     }
