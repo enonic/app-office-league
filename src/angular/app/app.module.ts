@@ -24,6 +24,7 @@ import {GlobalErrorHandler} from './common/global.errorhandler';
 import {UserProfileService} from './services/user-profile.service';
 import {WindowRefService} from './services/window-ref.service';
 import {AudioService} from './services/audio.service';
+import {PushNotificationService} from './services/push-notification.sevice';
 
 const appRoutes: Routes = [
     {path: '**', redirectTo: '', pathMatch: 'full'}
@@ -47,6 +48,7 @@ const appRoutes: Routes = [
     ],
     providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard, EditRouteGuard,
         OfflinePersistenceService, OnlineStatusService, RankingService, UserProfileService, WindowRefService, AudioService,
+        PushNotificationService,
         {
             provide: ErrorHandler,
             useClass: GlobalErrorHandler

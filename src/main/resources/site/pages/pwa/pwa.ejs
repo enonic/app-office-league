@@ -66,50 +66,57 @@
         logoutMarketingUrl: '{{{logoutMarketingUrl}}}',
         graphQlUrl: '{{baseHref}}api/graphql',
         setImageUrl: '{{setImageUrl}}',
-        liveGameUrl: '{{liveGameUrl}}'
+        liveGameUrl: '{{liveGameUrl}}',
+        publicKey: '{{publicKey}}'
     }
     {{#isLive}}
     var serviceWorker;
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker
             .getRegistration()
-            .then(function (registration) {
-                if (!!registration && registration.active) {
-                    console.log('Detected active Service Worker with scope ' + registration.scope);
-                    return registration.active;
-                }
-                else {
-                    return navigator.serviceWorker
-                        .register('../service-worker.js', {scope: '{{siteUrl}}/app'})
-                        .then(function (registration) {
-                            console.log('Service Worker registered with scope ' + registration.scope);
-                            return registration.installing;
-                        }, function () {
-                            console.log('Service Worker registration failure.');
-                        })
-                }
-            })
-            .then(function (serviceWorker) {
-                if (!serviceWorker) {
-                    return;
-                }
-                let assets = [];
-                <% for (key in htmlWebpackPlugin.files.chunks) { %>
-                <%      item = htmlWebpackPlugin.files.chunks[key].entry; %>
-                assets.push('<%= '{{baseHref}}' + item %>');
-                <% }; %>
-                <% for (key in htmlWebpackPlugin.files.css) { %>
-                <%      item = htmlWebpackPlugin.files.css[key]; %>
-                assets.push('<%= '{{baseHref}}' + item %>');
-                <% }; %>
-
-                if (assets.length > 0) {
-                    serviceWorker.postMessage({
-                        assets: assets
-                    });
-                }
-            });
+            .then(registerServiceWorker)
+            .then(postAssets);
     }
+    
+    function registerServiceWorker(registration) {
+        if (!!registration && registration.active) {
+            console.log('Detected active Service Worker with scope ' + registration.scope);
+            return registration;
+        }
+        else {
+            return navigator.serviceWorker
+                .register('../service-worker.js', {scope: '{{siteUrl}}/app'})
+                .then(function (registration) {
+                    console.log('Service Worker registered with scope ' + registration.scope);
+                    return registration;
+                }, function () {
+                    console.log('Service Worker registration failure.');
+                })
+        }    
+    }
+    
+    function postAssets(registration) {
+        let serviceWorker = registration.installing || registration.active;
+        if (serviceWorker) {
+            let assets = [];
+            <% for (key in htmlWebpackPlugin.files.chunks) { %>
+            <%      item = htmlWebpackPlugin.files.chunks[key].entry; %>
+            assets.push('<%= '{{baseHref}}' + item %>');
+            <% }; %>
+            <% for (key in htmlWebpackPlugin.files.css) { %>
+            <%      item = htmlWebpackPlugin.files.css[key]; %>
+            assets.push('<%= '{{baseHref}}' + item %>');
+            <% }; %>
+
+            if (assets.length > 0) {
+                serviceWorker.postMessage({
+                    assets: assets
+                });
+            }
+        }
+        return registration;     
+    }
+
     {{/isLive}}
 </script>
 

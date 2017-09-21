@@ -26,6 +26,7 @@ export interface Config {
     liveGameUrl: string;
     user: ConfigUser;
     content: Content;
+    publicKey: string;
 }
 
 declare var XPCONFIG: Config;
