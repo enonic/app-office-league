@@ -14,9 +14,13 @@ exports.get = function (req) {
     if (!player || req.path.endsWith('/-/default')) {
         return defaultImageHandler();
     }
-
-    return attachmentLib.serveAttachment(req, storeLib.getRepoConnection(), player, player.image, defaultImageHandler,
-        imageHelper.processImage);
+    try {
+        return attachmentLib.serveAttachment(req, storeLib.getRepoConnection(), player, player.image, defaultImageHandler,
+            imageHelper.processImage);
+    } catch (e) {
+        log.warning('Unable to process player image ("' + playerName + '"): ' + e);
+        return defaultImageHandler();
+    }
 };
 
 var defaultImageHandler = function () {

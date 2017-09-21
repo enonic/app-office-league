@@ -1,6 +1,7 @@
 var portalLib = require('/lib/xp/portal');
 var storeLib = require('/lib/office-league-store');
 var authLib = require('/lib/xp/auth');
+var imageHelper = require('/site/controllers/image-helper.js');
 
 exports.post = function (req) {
     var entityType = portalLib.getMultipartText('type');
@@ -12,31 +13,32 @@ exports.post = function (req) {
         return handleError(400, 'Invalid type: [' + (entityType || '') + ']');
     }
 
+    var created = false;
     switch (entityType) {
     case 'league':
         if (!hasLeaguePermissions(id)) {
             return handleError(403, 'Not enough permissions');
         }
-        setImageLeague(id);
+        created = setImageLeague(id);
         break;
     case 'player':
         if (!hasPlayerPermissions(id)) {
             return handleError(403, 'Not enough permissions');
         }
-        setImagePlayer(id);
+        created = setImagePlayer(id);
         break;
     case 'team':
         if (!hasTeamPermissions(id)) {
             return handleError(403, 'Not enough permissions');
         }
-        setImageTeam(id);
+        created = setImageTeam(id);
         break;
     }
 
     return {
         contentType: 'application/json',
         body: {
-            success: true,
+            success: created,
             id: id
         }
     };
@@ -61,12 +63,17 @@ var setImageLeague = function (id) {
     var part = portalLib.getMultipartItem('image');
     var contentType = part && part.contentType;
 
+    if (!imageHelper.isValidImage(stream, contentType)) {
+        return false;
+    }
+
     storeLib.updateLeague({
         leagueId: id,
         imageStream: stream,
         imageType: contentType
     });
     storeLib.refresh();
+    return true;
 };
 
 var setImagePlayer = function (id) {
@@ -74,12 +81,17 @@ var setImagePlayer = function (id) {
     var part = portalLib.getMultipartItem('image');
     var contentType = part && part.contentType;
 
+    if (!imageHelper.isValidImage(stream, contentType)) {
+        return false;
+    }
+
     storeLib.updatePlayer({
         playerId: id,
         imageStream: stream,
         imageType: contentType
     });
     storeLib.refresh();
+    return true;
 };
 
 var setImageTeam = function (id) {
@@ -87,12 +99,17 @@ var setImageTeam = function (id) {
     var part = portalLib.getMultipartItem('image');
     var contentType = part && part.contentType;
 
+    if (!imageHelper.isValidImage(stream, contentType)) {
+        return false;
+    }
+
     storeLib.updateTeam({
         teamId: id,
         imageStream: stream,
         imageType: contentType
     });
     storeLib.refresh();
+    return true;
 };
 
 var hasLeaguePermissions = function (leagueId) {

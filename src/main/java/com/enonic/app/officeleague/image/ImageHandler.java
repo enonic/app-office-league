@@ -1,7 +1,11 @@
 package com.enonic.app.officeleague.image;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.function.Supplier;
+
+import javax.imageio.ImageIO;
 
 import com.google.common.base.Strings;
 import com.google.common.io.ByteSource;
@@ -60,6 +64,30 @@ public final class ImageHandler
         ImageOrientation orientation = this.mediaInfoService.get().getImageOrientation( (ByteSource) imageSource );
         orientation = orientation == null ? ImageOrientation.TopLeft : orientation;
         return orientation.getValue();
+    }
+
+    public boolean isValidImage( final Object imageSource )
+        throws IOException
+    {
+        if ( !( imageSource instanceof ByteSource ) )
+        {
+            return false;
+        }
+
+        final BufferedImage image = toBufferedImage( ( (ByteSource) imageSource ).openStream() );
+        return image != null;
+    }
+
+    private BufferedImage toBufferedImage( final InputStream inputStream )
+    {
+        try
+        {
+            return ImageIO.read( inputStream );
+        }
+        catch ( IOException e )
+        {
+            return null;
+        }
     }
 
     private ReadImageParams getImageParams()

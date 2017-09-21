@@ -53,6 +53,18 @@ exports.getImageOrientation = function (imageStream) {
     return __.toNativeObject(bean.getImageOrientation(imageStream));
 };
 
+/**
+ * Checks if the stream is a valid image.
+ *
+ * @param {object} imageStream ByteSource object with the image stream.
+ *
+ * @returns {boolean} True if it is a valid image.
+ */
+exports.isValidImage = function (imageStream) {
+    var bean = __.newBean('com.enonic.app.officeleague.image.ImageHandler');
+    return __.toNativeObject(bean.isValidImage(imageStream));
+};
+
 var checkRequired = function (params, name) {
     if (params[name] === undefined) {
         throw "Parameter '" + name + "' is required";

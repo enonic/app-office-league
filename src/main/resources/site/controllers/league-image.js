@@ -15,8 +15,13 @@ exports.get = function (req) {
         return defaultImageHandler();
     }
 
-    return attachmentLib.serveAttachment(req, storeLib.getRepoConnection(), league, league.image, defaultImageHandler,
-        imageHelper.processImage);
+    try {
+        return attachmentLib.serveAttachment(req, storeLib.getRepoConnection(), league, league.image, defaultImageHandler,
+            imageHelper.processImage);
+    } catch (e) {
+        log.warning('Unable to process league image ("' + leagueName + '"): ' + e);
+        return defaultImageHandler();
+    }
 };
 
 var defaultImageHandler = function () {

@@ -32,3 +32,7 @@ var isProcessableImage = function (mimeType) {
            mimeType.indexOf('image/bmp') === 0 ||
            mimeType.indexOf('image/x-bmp') === 0
 };
+
+exports.isValidImage = function (imageStream, mimeType) {
+    return mimeType.indexOf('image/svg+xml') === 0 ||imageLib.isValidImage(imageStream);
+};

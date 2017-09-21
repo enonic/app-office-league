@@ -2977,10 +2977,10 @@ var sendPushNotification = function (params) {
         };
         var status = pushLib.sendPushNotification(params.endpoint, params.auth, params.key, message);
         if (status >= 200 && status < 300) {
-            log.warn('Could not send push notification, response status: ' + status);
+            log.warning('Could not send push notification, response status: ' + status);
         }
     } catch (e) {
-        log.warn('Could not send push notification: %s', e)
+        log.warning('Could not send push notification: %s', e)
     }
 };
 

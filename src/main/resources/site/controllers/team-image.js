@@ -15,8 +15,13 @@ exports.get = function (req) {
         return defaultImageHandler();
     }
 
-    return attachmentLib.serveAttachment(req, storeLib.getRepoConnection(), team, team.image, defaultImageHandler,
-        imageHelper.processImage);
+    try {
+        return attachmentLib.serveAttachment(req, storeLib.getRepoConnection(), team, team.image, defaultImageHandler,
+            imageHelper.processImage);
+    } catch (e) {
+        log.warning('Unable to process team image ("' + teamName + '"): ' + e);
+        return defaultImageHandler();
+    }
 };
 
 var defaultImageHandler = function () {
