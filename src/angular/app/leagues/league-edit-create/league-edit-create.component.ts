@@ -73,17 +73,16 @@ export class LeagueEditCreateComponent
     ngOnInit(): void {
         super.ngOnInit();
 
-        const defaultPointsToWin = LeagueEditCreateComponent.DEFAULT_POINTS_TO_WIN + '';
-        const defaultMinimumDifference = LeagueEditCreateComponent.DEFAULT_MIN_DIFFERENCE + '';
         this.leagueForm = this.fb.group({
             name: new FormControl(null,
                 [Validators.required, CustomValidators.minLength(3), CustomValidators.maxLength(40), CustomValidators.validName()],
                 LeagueValidator.nameInUseValidator(this.graphQLService)),
             description: null,
             id: null,
-            pointsToWin: new FormControl(defaultPointsToWin, [Validators.required, CustomValidators.integer(2, 100)]),
-            minimumDifference: new FormControl(defaultMinimumDifference, [Validators.required, CustomValidators.integer(1, 10)])
+            pointsToWin: new FormControl(null, [Validators.required, CustomValidators.integer(2, 100)]),
+            minimumDifference: new FormControl(null, [Validators.required, CustomValidators.integer(1, 10)])
         }, {validator: LeagueValidator.minimumDifference()});
+
         const updateFormErrors = (data?: any) => {
             LeagueValidator.updateFormErrors(this.leagueForm, this.formErrors);
         };
@@ -107,6 +106,10 @@ export class LeagueEditCreateComponent
     ngAfterViewInit(): void {
         let inputEl: HTMLInputElement = this.inputEl.nativeElement;
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
+        this.leagueForm.patchValue({
+            pointsToWin: LeagueEditCreateComponent.DEFAULT_POINTS_TO_WIN + '',
+            minimumDifference: LeagueEditCreateComponent.DEFAULT_MIN_DIFFERENCE + ''
+        });
     }
 
     ngOnDestroy(): void {
