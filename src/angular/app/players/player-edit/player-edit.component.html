@@ -68,7 +68,8 @@
                 <div class="row" *ngIf="pushSupported">
                     <div class="switch player-edit__notifications">
                         <a class="waves-effect waves-teal btn green player-edit__btn player-edit__btn--notifications"
-                           [class.darken-4]="pushEnabled" (click)="onNotificationsToggleClick($event)" [class.disabled]="updatingPush">{{enableNotificationsText}}</a>
+                           [class.brown]="pushEnabled" [class.darken-1]="pushEnabled" (click)="onNotificationsToggleClick($event)"
+                           [class.disabled]="updatingPush">{{enableNotificationsText}}</a>
                     </div>
                 </div>
                 <div class="row" *ngIf="!pushSupported">

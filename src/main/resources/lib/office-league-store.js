@@ -1,5 +1,6 @@
 var nodeLib = require('/lib/xp/node');
 var valueLib = require('/lib/xp/value');
+var taskLib = require('/lib/xp/task');
 var ratingLib = require('/lib/office-league-rating');
 var eventLib = require('/lib/xp/event');
 var randomLib = require('/lib/random-names');
@@ -2919,6 +2920,7 @@ exports.removePushSubscription = function (params) {
  * @param {string[]} params.playerIds Player ids.
  * @param {string} params.text Text message.
  * @param {string} params.url Url to load on notification click.
+ * @param {string} [params.key] Player subscription key. Will send only to the player subscription with this key.
  */
 exports.sendPushNotification = function (params) {
     var repoConn = newConnection();
@@ -2948,13 +2950,18 @@ exports.sendPushNotification = function (params) {
         var subs = [].concat(playerSub.subscriptions);
 
         subs.forEach(function (sub) {
+            if (params.key && (params.key !== sub.key)) {
+                return;
+            }
             sendPushNotification({
                 endpoint: sub.endpoint,
                 key: sub.key,
                 auth: sub.auth,
                 text: params.text,
-                url: params.url
+                url: params.url,
+                async: true
             });
+
         });
     });
 };
@@ -2968,19 +2975,38 @@ exports.sendPushNotification = function (params) {
  * @param {string} params.endpoint Push subscription endpoint.
  * @param {string} params.key Push subscription endpoint.
  * @param {string} params.auth Push subscription endpoint.
+ * @param {boolean} params.async Send the request in the background.
  */
 var sendPushNotification = function (params) {
+    if (!params.async) {
+        doSendPushNotification(params);
+    } else {
+        taskLib.submit({
+            description: 'Push notification task (' + params.key + '',
+            task: function () {
+                doSendPushNotification(params);
+            }
+        });
+    }
+};
+
+var doSendPushNotification = function (params) {
+    var prefix = '[' + params.key.substring(0, 10) + '] ';
     try {
+        log.info(prefix + 'Sending push notification');
+
         var message = {
             text: params.text,
             url: params.url
         };
         var status = pushLib.sendPushNotification(params.endpoint, params.auth, params.key, message);
         if (status >= 200 && status < 300) {
-            log.warning('Could not send push notification, response status: ' + status);
+            log.warning(prefix + 'Could not send push notification, response status: ' + status);
+        } else {
+            log.info(prefix + 'Push notification sent successfully');
         }
     } catch (e) {
-        log.warning('Could not send push notification: %s', e)
+        log.warning(prefix + 'Could not send push notification: %s', e);
     }
 };
 

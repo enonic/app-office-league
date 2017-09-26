@@ -490,7 +490,8 @@ exports.rootMutationType = graphQlLib.createObjectType({
 
                 storeLib.sendPushNotification({
                     playerIds: [currentPlayerId],
-                    text: "Office League notifications enabled."
+                    text: "Office League notifications enabled.",
+                    key: env.args.key
                 });
 
                 return !!addedPushSubscription;
