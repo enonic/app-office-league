@@ -2999,12 +2999,8 @@ var doSendPushNotification = function (params) {
             text: params.text,
             url: params.url
         };
-        var status = pushLib.sendPushNotification(params.endpoint, params.auth, params.key, message);
-        if (status >= 200 && status < 300) {
-            log.warning(prefix + 'Could not send push notification, response status: ' + status);
-        } else {
-            log.info(prefix + 'Push notification sent successfully');
-        }
+        pushLib.sendPushNotification(params.endpoint, params.auth, params.key, message);
+
     } catch (e) {
         log.warning(prefix + 'Could not send push notification: %s', e);
     }

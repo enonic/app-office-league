@@ -42,6 +42,7 @@ export class PushNotificationService {
                 .then((swReg: ServiceWorkerRegistration) => {
                     if (!swReg || !swReg.active) {
                         resolve(null);
+                        return;
                     }
 
                     swReg.pushManager.subscribe({
@@ -70,6 +71,7 @@ export class PushNotificationService {
                 .then((swReg: ServiceWorkerRegistration) => {
                     if (!swReg || !swReg.active) {
                         resolve(null);
+                        return;
                     }
 
                     swReg.pushManager.getSubscription().then(function (subscription) {

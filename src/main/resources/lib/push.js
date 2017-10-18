@@ -22,15 +22,21 @@ exports.getKeyPair = function () {
 
 exports.sendPushNotification = function (endpoint, auth, p256dh, message) {
     var keyPair = exports.getKeyPair();
-    var status = notifications.send({
+
+    notifications.sendAsync({
         privateKey: keyPair.privateKey,
         publicKey: keyPair.publicKey,
         endpoint: endpoint,
         auth: auth,
         receiverKey: p256dh,
-        payload: message
+        payload: message,
+        success: function () {
+            log.info(prefix + 'Push notification sent successfully');
+        },
+        error: function () {
+            log.warning(prefix + 'Could not send push notification');
+        }
     });
-    return status >= 200 && status < 300;
 };
 
 

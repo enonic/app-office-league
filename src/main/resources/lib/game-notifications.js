@@ -18,7 +18,7 @@ exports.setupPushNotifications = function () {
 
 var sendGameNotifications = function (gameId, leagueId) {
     var game = storeLib.getGameById(gameId);
-    if (!game || !game.finished) {
+    if (!game) {
         return;
     }
     var league = storeLib.getLeagueById(leagueId);
@@ -30,14 +30,27 @@ var sendGameNotifications = function (gameId, leagueId) {
         return gp.playerId;
     });
 
-    log.info('Sending push notifications for game: ' + JSON.stringify(game, null, 4));
-
     var baseUrl = app.config['officeleague.baseUrl'] || 'http://localhost:8080/portal/draft/office-league/app';
     var url = baseUrl + '/games/' + game._id;
 
-    storeLib.sendPushNotification({
-        playerIds: playerIds,
-        text: "A game has ended in '" + league.name + "'",
-        url: url
-    });
+    var points = [].concat(game.points || []);
+    if (game.finished) {
+        log.info('Sending push notifications for ended game: ' + JSON.stringify(game, null, 2));
+
+        storeLib.sendPushNotification({
+            playerIds: playerIds,
+            text: "A game has ended in '" + league.name + "'",
+            url: url
+        });
+
+    } else if (points.length === 0) {
+        log.info('Sending push notifications for new game: ' + JSON.stringify(game, null, 2));
+
+        storeLib.sendPushNotification({
+            playerIds: playerIds,
+            text: "A game has started in '" + league.name + "'",
+            url: url
+        });
+
+    }
 };
