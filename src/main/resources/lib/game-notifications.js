@@ -26,16 +26,17 @@ var sendGameNotifications = function (gameId, leagueId) {
         return;
     }
 
-    var playerIds = game.gamePlayers.map(function (gp) {
-        return gp.playerId;
+    var playerIds = storeLib.getLeaguePlayersByLeagueId(leagueId, 0, -1).hits.map(function (lp) {
+        return lp.playerId;
     });
+    log.info('League player Ids: ' + playerIds.join(','));
 
     var baseUrl = app.config['officeleague.baseUrl'] || 'http://localhost:8080/portal/draft/office-league/app';
     var url = baseUrl + '/games/' + game._id;
 
     var points = [].concat(game.points || []);
     if (game.finished) {
-        log.info('Sending push notifications for ended game: ' + JSON.stringify(game, null, 2));
+        log.info('Sending push notifications for ended game: ' + gameId);
 
         storeLib.sendPushNotification({
             playerIds: playerIds,
@@ -44,7 +45,7 @@ var sendGameNotifications = function (gameId, leagueId) {
         });
 
     } else if (points.length === 0) {
-        log.info('Sending push notifications for new game: ' + JSON.stringify(game, null, 2));
+        log.info('Sending push notifications for new game: ' + gameId);
 
         storeLib.sendPushNotification({
             playerIds: playerIds,

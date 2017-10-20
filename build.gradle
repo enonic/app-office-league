@@ -1,24 +1,9 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-        maven {
-            url 'https://repo.enonic.com/public'
-        }
-    }
-
-    dependencies {
-        classpath "com.enonic.xp:gradle-plugin:${xpVersion}"
-        classpath 'com.enonic.gradle:gradle-defaults:1.0.1'
-    }
-}
-
 plugins {
+    id 'com.enonic.xp.app' version '1.0.13'
     id "com.moowork.node" version "1.1.1"
 }
 
 apply plugin: 'com.enonic.xp.app'
-apply plugin: 'com.enonic.defaults'
 apply plugin: 'maven'
 
 app {
@@ -49,8 +34,8 @@ dependencies {
     include "com.enonic.xp:lib-websocket:${xpVersion}"
     include "com.enonic.xp:lib-event:${xpVersion}"
     include "com.enonic.xp:lib-task:${xpVersion}"
-    include "com.enonic.xp:lib-http-client:${xpVersion}"
     include "com.enonic.xp:lib-mail:${xpVersion}"
+    include "com.enonic.lib:lib-http-client:1.0.0"
     include "com.enonic.lib:util:1.1.1"
     include "com.enonic.lib:graphql:0.5.2"
     include 'com.enonic.lib:geoip:1.0.0'

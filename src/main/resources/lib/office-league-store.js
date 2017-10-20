@@ -2923,6 +2923,10 @@ exports.removePushSubscription = function (params) {
  * @param {string} [params.key] Player subscription key. Will send only to the player subscription with this key.
  */
 exports.sendPushNotification = function (params) {
+    if (!params.playerIds || params.playerIds.length === 0) {
+        log.warning('SendPushNotification: missing playerids');
+        return;
+    }
     var repoConn = newConnection();
 
     var playerIdsStr = params.playerIds.map(function (id) {
