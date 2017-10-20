@@ -1,6 +1,7 @@
 plugins {
     id 'com.enonic.xp.app' version '1.0.13'
     id "com.moowork.node" version "1.1.1"
+    id 'com.enonic.defaults' version '1.0.3'
 }
 
 apply plugin: 'com.enonic.xp.app'
