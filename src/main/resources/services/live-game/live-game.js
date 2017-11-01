@@ -27,7 +27,6 @@ exports.get = function (req) {
 };
 
 exports.webSocketEvent = function (event) {
-    log.info(JSON.stringify(event));
     var sessionId = event.session.id;
     var gameId = event.session.params['gameId'];
     var leagueId = event.session.params['leagueId'];
