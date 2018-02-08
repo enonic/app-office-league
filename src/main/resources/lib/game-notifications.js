@@ -18,6 +18,7 @@ exports.setupPushNotifications = function () {
 };
 
 var sendGameNotifications = function (gameId, leagueId) {
+    storeLib.refresh();
     var game = storeLib.getGameById(gameId);
     if (!game) {
         return;
