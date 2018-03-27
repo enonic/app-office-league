@@ -17,13 +17,6 @@ Take foosball to the next level!
 - Player and team ranking for each league
 
 
-## Compatibility
-
-| Version | XP Version  | Download                       |
-|---------|-------------|----------------------------------|
-| 1.0.0   | 6.10.x      | [Download](http://repo.enonic.com/public/com/enonic/app/officeleague/1.0.0/officeleague-1.0.0.jar) |
-| 1.2.0   | 6.10.x      | [Download](http://repo.enonic.com/public/com/enonic/app/officeleague/1.2.0/officeleague-1.2.0.jar) |
-
 ## Configuration
 
 The application can be configured using the file "com.enonic.app.officeleague.cfg":
