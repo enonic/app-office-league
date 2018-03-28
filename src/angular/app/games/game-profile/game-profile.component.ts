@@ -23,6 +23,7 @@ export class GameProfileComponent
     implements OnDestroy {
     materializeActions = new EventEmitter<string | MaterializeAction>();
     materializeActionsDelete = new EventEmitter<string | MaterializeAction>();
+    materializeActionsContinue = new EventEmitter<string | MaterializeAction>();
     @ViewChild('commenttextarea') commentsTextAreaElementRef;
 
     comment: string;
@@ -84,6 +85,11 @@ export class GameProfileComponent
             }
         }
         this.connectionError = false;
+
+        const userInGame = (game.gamePlayers || []).find((gp) => gp.player.id === this.playerId);
+        if (userInGame && !game.finished) {
+            this.showModalContinuePlaying();
+        }
     }
 
     protected getGameQuery(): string {
@@ -132,6 +138,9 @@ export class GameProfileComponent
             }
         });
     }
+    onConfirmContinueClicked() {
+        this.router.navigate(['games', this.game.league.id, 'game-play'], {replaceUrl: true, queryParams: {gameId: this.gameId}});
+    }
 
     public showModalMessage(): void {
         this.materializeActions.emit({action: "modal", params: ['open']});
@@ -147,6 +156,14 @@ export class GameProfileComponent
 
     public hideModalDelete(): void {
         this.materializeActionsDelete.emit({action: "modal", params: ['close']});
+    }
+
+    public showModalContinuePlaying(): void {
+        this.materializeActionsContinue.emit({action: "modal", params: ['open']});
+    }
+
+    public hideModalContinuePlaying(): void {
+        this.materializeActionsContinue.emit({action: "modal", params: ['close']});
     }
 
     onWsMessage(event: RemoteEvent) {
@@ -271,6 +288,7 @@ export class GameProfileComponent
             }
         }
         league {
+            id
             name
             imageUrl
             adminPlayers(first: -1) {

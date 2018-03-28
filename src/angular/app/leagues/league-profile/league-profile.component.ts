@@ -62,7 +62,7 @@ export class LeagueProfileComponent
         if (!this.league && name) {
             this.refreshData(name).then(() => {
                 if (this.league) {
-                    this.wsMan = new WebSocketManager(this.getWsUrl(this.league.id), true);
+                    this.wsMan = new WebSocketManager(this.getWsUrl(this.league.id));
                     this.wsMan.onMessage(this.onWsMessage.bind(this));
                     this.wsMan.connect();
                 }

@@ -61,3 +61,15 @@
         <a (click)="onConfirmDeleteClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Delete</a>
     </div>
 </div>
+
+<div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
+     [materializeActions]="materializeActionsContinue">
+    <div class="modal-content">
+        <h5 class="center">Game in progress</h5>
+        <p>This game is not finished. Would you like to continue playing?</p>
+    </div>
+    <div class="modal-footer">
+        <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">No, thanks</a>
+        <a (click)="onConfirmContinueClicked()" class="modal-action modal-close waves-effect waves-blue btn-flat blue white-text">Yes</a>
+    </div>
+</div>
