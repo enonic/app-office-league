@@ -334,9 +334,9 @@ exports.getLeaguesById = function (leagueIds) {
 
     var obj = repoConn.get(leagueIds);
     return obj && [].concat(obj).filter(function (obj) {
-            setImageUrl(obj);
-            return obj.type === TYPE.LEAGUE;
-        });
+        setImageUrl(obj);
+        return obj.type === TYPE.LEAGUE;
+    });
 };
 
 /**
@@ -626,9 +626,9 @@ exports.getPlayersById = function (playerIds) {
 
     var obj = repoConn.get(playerIds);
     return obj && [].concat(obj).filter(function (obj) {
-            setImageUrl(obj);
-            return obj.type === TYPE.PLAYER;
-        });
+        setImageUrl(obj);
+        return obj.type === TYPE.PLAYER;
+    });
 };
 
 /**
@@ -689,9 +689,9 @@ exports.getTeamsById = function (teamIds) {
 
     var obj = repoConn.get(teamIds);
     return obj && [].concat(obj).filter(function (obj) {
-            setImageUrl(obj);
-            return obj.type === TYPE.TEAM;
-        });
+        setImageUrl(obj);
+        return obj.type === TYPE.TEAM;
+    });
 };
 
 /**
@@ -2387,8 +2387,8 @@ exports.updateLeague = function (params) {
             if (params.minimumDifference != null) {
                 params.minimumDifference =
                     params.minimumDifference < 1 || params.minimumDifference > 10
-                        ? DEFAULT_MINIMUM_DIFFERENCE
-                        : params.minimumDifference;
+                    ? DEFAULT_MINIMUM_DIFFERENCE
+                    : params.minimumDifference;
                 node.rules.minimumDifference = toInt(params.minimumDifference);
             }
             if (params.halfTimeSwitch != null) {
@@ -2603,6 +2603,7 @@ exports.setTeamLeagueRating = function (leagueId, teamId, rating) {
  * @param {Point[]} [params.points] Array of points scored during the game.
  * @param {GamePlayer[]} [params.gamePlayers] Array with the players and its properties for this game.
  * @param {GameTeam[]} [params.gameTeams] Array with the teams and its properties for this game.
+ * @param {boolean} [params.skipNotifications=false] Skip notifications.
  */
 exports.updateGame = function (params) {
     var repoConn = newConnection();
@@ -2702,7 +2703,9 @@ exports.updateGame = function (params) {
         }
     }
 
-    notifyGameUpdate(params.gameId, leagueId);
+    if (!params.skipNotifications) {
+        notifyGameUpdate(params.gameId, leagueId);
+    }
 };
 
 var notifyGameUpdate = function (gameId, leagueId) {
@@ -2743,8 +2746,9 @@ var notifyJoinedLeague = function (leagueId, playerId) {
  * Apply ranking updates as a result of a game.
  *
  * @param {Game} game Game object.
+ * @param {boolean} [skipNotifications=false] True to skip notifications.
  */
-exports.updateGameRanking = function (game) {
+exports.updateGameRanking = function (game, skipNotifications) {
     if (!game.finished) {
         log.info('Skipping game ranking changes, game not finished: ' + game._id);
         return;
@@ -2771,7 +2775,8 @@ exports.updateGameRanking = function (game) {
         finished: true,
         gamePlayers: game.gamePlayers,
         gameTeams: game.gameTeams,
-        points: game.points
+        points: game.points,
+        skipNotifications: !!skipNotifications
     });
 };
 
@@ -3182,7 +3187,7 @@ exports.regenerateLeagueRanking = function (league) {
             games = gamesResp.hits;
             for (i = 0; i < games.length; i++) {
                 game = games[i];
-                exports.updateGameRanking(game);
+                exports.updateGameRanking(game, true);
                 exports.refresh();
                 game = exports.getGameById(game._id);
                 exports.logGameRanking(game);
