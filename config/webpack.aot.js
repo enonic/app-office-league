@@ -13,7 +13,8 @@ var aotPlugin = new AotPlugin({
 module.exports = webpackMerge(commonConfig, {
 
     entry: {
-        'app': './src/angular/main.aot.ts'
+        'app': './src/angular/main.aot.ts',
+        'vendor': './src/angular/vendor.aot.ts'
     },
 
     output: {
@@ -50,7 +51,7 @@ module.exports = webpackMerge(commonConfig, {
 
 // Fix for AotPlugin Error: Cannot read property 'getSourceFile' of undefined
 // https://github.com/angular/angular-cli/issues/5329?platform=hootsuite
-aotPlugin._compilerHost._resolve = function (path_to_resolve) {
+/*aotPlugin._compilerHost._resolve = function (path_to_resolve) {
     path_1 = require("path");
     path_to_resolve = aotPlugin._compilerHost._normalizePath(path_to_resolve);
     if (path_to_resolve[0] == '.') {
@@ -62,4 +63,4 @@ aotPlugin._compilerHost._resolve = function (path_to_resolve) {
     else {
         return aotPlugin._compilerHost._normalizePath(path_1.join(aotPlugin._compilerHost._basePath, path_to_resolve));
     }
-};
+};*/
