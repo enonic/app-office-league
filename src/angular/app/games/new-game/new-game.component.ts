@@ -111,6 +111,14 @@ export class NewGameComponent
         this.playSound(this.backgroundSound);
         this.enterFullScreen();
 
+        if ('speechSynthesis' in window) {
+            try {
+                window.speechSynthesis.speak(new SpeechSynthesisUtterance(" ")); // hack to enable speech in callbacks later
+            } catch (e) {
+                console.warn("Error processing message", e);
+            }
+        }
+
         this.createGame().then((gameId) => {
             console.log('Initial game created: ' + gameId);
             this.gameSelection.gameId = gameId;
@@ -214,7 +222,7 @@ export class NewGameComponent
 
     private createGame(): Promise<string> {
         let players = [this.bluePlayer1, this.redPlayer1, this.bluePlayer2, this.redPlayer2].filter((p) => !!p).map((p) => {
-            return {"playerId": p.id, "side": ( p === this.bluePlayer1 || p === this.bluePlayer2 ? 'blue' : 'red')};
+            return {"playerId": p.id, "side": (p === this.bluePlayer1 || p === this.bluePlayer2 ? 'blue' : 'red')};
         });
         let createGameParams = {
             points: [],
