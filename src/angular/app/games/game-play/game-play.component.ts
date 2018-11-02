@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../services/graphql.service';
 import {League} from '../../../graphql/schemas/League';
@@ -878,6 +878,19 @@ export class GamePlayComponent
         this.nameClassesGameBottomBarMsg['game-bottom-bar-message__hide'] = true;
     }
 
+    private sayMessage(player: Player, message: string) {
+        if (!('speechSynthesis' in window)) {
+            return;
+        }
+        try {
+            let text = player.name + ' says: ' + message.replace(/[\r\n]+/g, " ");
+            let msg = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(msg);
+        } catch (e) {
+            console.warn("Error processing message", e);
+        }
+    }
+
     ngOnDestroy() {
         this.wsMan && this.wsMan.disconnect();
         document.removeEventListener("visibilitychange", this.visibilityChangeHandler);
@@ -891,6 +904,7 @@ export class GamePlayComponent
             let player: Player = Player.fromJson(event.data.player);
             let message: string = event.data.message;
             this.showMessage(player, message);
+            this.sayMessage(player, message);
         }
     }
 
