@@ -884,8 +884,13 @@ export class GamePlayComponent
         }
         try {
             let text = player.name + ' says: ' + message.replace(/[\r\n]+/g, " ");
-            let msg = new SpeechSynthesisUtterance(text);
-            window.speechSynthesis.speak(msg);
+            let speechMsg = new SpeechSynthesisUtterance(text);
+            this.pauseBackgroundSound();
+            speechMsg.onend = (e) => {
+                this.resumeBackgroundSound();
+            };
+            window.speechSynthesis.speak(speechMsg);
+
         } catch (e) {
             console.warn("Error processing message", e);
         }
