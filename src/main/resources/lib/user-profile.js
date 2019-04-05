@@ -1,6 +1,6 @@
 var gravatarLib = require('/lib/gravatar');
 var authLib = require('/lib/xp/auth');
-var httpClient = require('/lib/xp/http-client');
+var httpClient = require('/lib/http-client');
 var nodeLib = require('/lib/xp/node');
 var valueLib = require('/lib/xp/value');
 var imageLib = require('/lib/image');

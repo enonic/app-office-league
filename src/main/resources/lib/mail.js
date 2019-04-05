@@ -1,6 +1,6 @@
 var mail = require('/lib/xp/mail');
 var taskLib = require('/lib/xp/task');
-var mustache = require('/lib/xp/mustache');
+var mustache = require('/lib/mustache');
 var storeLib = require('office-league-store');
 var authLib = require('/lib/xp/auth');
 var ioLib = require('/lib/xp/io');

@@ -1,5 +1,5 @@
 var portalLib = require('/lib/xp/portal');
-var mustache = require('/lib/xp/mustache');
+var mustache = require('/lib/mustache');
 var authLib = require('/lib/xp/auth');
 var version = (Date.now() / 1000).toFixed();
 
