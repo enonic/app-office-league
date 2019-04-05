@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <part>
   <display-name>Call to action</display-name>
-  <config>
+  <form>
     <input type="TextLine" name="buttonText">
       <label>Button text</label>
       <occurrences minimum="1" maximum="1"/>
@@ -11,5 +11,5 @@
       <label>Image</label>
       <occurrences minimum="0" maximum="1"/>
     </input>
-  </config>
+  </form>
 </part>

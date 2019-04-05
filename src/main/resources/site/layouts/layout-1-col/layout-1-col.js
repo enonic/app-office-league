@@ -1,7 +1,7 @@
 var libs = {
     portal: require('/lib/xp/portal'),
-    thymeleaf: require('/lib/xp/thymeleaf'),
-    util: require('/lib/enonic/util')
+    thymeleaf: require('/lib/thymeleaf'),
+    util: require('/lib/util')
 };
 
 // Handle GET request

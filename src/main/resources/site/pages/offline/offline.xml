@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <page>
   <display-name>You are offline</display-name>
-  <config></config>
+  <form></form>
   <regions>
     <region name="main"/>
   </regions>

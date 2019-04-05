@@ -1,5 +1,5 @@
 var portalLib = require('/lib/xp/portal');
-var mustache = require('/lib/xp/mustache');
+var mustache = require('/lib/mustache');
 
 exports.get = function(req) {
     var sitePath = portalLib.getSite()._path;

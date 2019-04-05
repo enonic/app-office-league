@@ -1,22 +1,21 @@
 plugins {
-    id 'com.enonic.xp.app' version '1.0.13'
-    id "com.moowork.node" version "1.1.1"
-    id 'com.enonic.defaults' version '1.0.3'
+    id 'maven-publish'
+    id 'com.enonic.defaults' version '2.0.1'
+    id 'com.enonic.xp.app' version '2.0.0'
+    id "com.moowork.node" version '1.3.1'
 }
-
-apply plugin: 'com.enonic.xp.app'
-apply plugin: 'maven'
 
 app {
     name = project.appName
     displayName = 'Office League'
     vendorName = 'Enonic AS'
     vendorUrl = 'http://enonic.com'
+    systemVersion = "${xpVersion}"
 }
 
 node {
     download = true
-    version = '6.9.2'
+    version = '10.15.3'
 }
 
 dependencies {
@@ -26,30 +25,28 @@ dependencies {
     include "com.enonic.xp:lib-content:${xpVersion}"
     include "com.enonic.xp:lib-context:${xpVersion}"
     include "com.enonic.xp:lib-io:${xpVersion}"
-    include "com.enonic.xp:lib-mustache:${xpVersion}"
     include "com.enonic.xp:lib-node:${xpVersion}"
     include "com.enonic.xp:lib-portal:${xpVersion}"
     include "com.enonic.xp:lib-repo:${xpVersion}"
-    include "com.enonic.xp:lib-thymeleaf:${xpVersion}"
     include "com.enonic.xp:lib-value:${xpVersion}"
     include "com.enonic.xp:lib-websocket:${xpVersion}"
     include "com.enonic.xp:lib-event:${xpVersion}"
     include "com.enonic.xp:lib-task:${xpVersion}"
     include "com.enonic.xp:lib-mail:${xpVersion}"
-    include "com.enonic.lib:lib-http-client:1.0.0"
-    include "com.enonic.lib:util:1.1.1"
-    include "com.enonic.lib:graphql:0.5.2"
-    include 'com.enonic.lib:geoip:1.0.0'
-    include 'com.enonic.lib:text-encoding:1.1.0'
-    include 'com.enonic.lib:notifications:1.2.0'
+    include "com.enonic.lib:lib-thymeleaf:2.0.0-B1"
+    include "com.enonic.lib:lib-mustache:2.0.0-B1"
+    include 'com.enonic.lib:lib-http-client:2.0.0-B1'
+    include 'com.enonic.lib:lib-util:2.0.0-B1'
+    include "com.enonic.lib:lib-graphql:1.0.0-B1"
+    include 'com.enonic.lib:lib-geoip:2.0.0-B1'
+    include 'com.enonic.lib:lib-text-encoding:2.0.0-B1'
+    include 'com.enonic.lib:lib-notifications:2.0.0-B1'
 }
 
 repositories {
     mavenLocal()
     mavenCentral()
-    maven {
-        url 'https://repo.enonic.com/public'
-    }
+    xp.enonicRepo()
 }
 
 task webpackBuild( type: NpmTask ) {

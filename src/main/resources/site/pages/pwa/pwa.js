@@ -1,10 +1,10 @@
 var portalLib = require('/lib/xp/portal');
 var authLib = require('/lib/xp/auth');
-var mustacheLib = require('/lib/xp/mustache');
+var mustacheLib = require('/lib/mustache');
 var storeLib = require('/lib/office-league-store');
 var invitationLib = require('/lib/invitation');
 var pushLib = require('/lib/push');
-var geoipLib = require('/lib/enonic/geoip');
+var geoipLib = require('/lib/geoip');
 var view = resolve('pwa.html');
 
 exports.get = function (req) {

@@ -1,4 +1,4 @@
-var mustache = require('/lib/xp/mustache');
+var mustache = require('/lib/mustache');
 
 exports.get = function (req) {
     var res = mustache.render(resolve('../../assets/icons/favicon.ico'), {});
