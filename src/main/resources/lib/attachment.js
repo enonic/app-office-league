@@ -15,40 +15,50 @@
  * @param {Function} [processHandler] Function to be called for processing stream. Takes node and attachment objects as parameter, should return a new stream.
  * @returns {Object} HTTP response object.
  */
-exports.serveAttachment = function (httpRequest, repoConn, node, attachmentName, notFoundHandler, processHandler) {
+exports.serveAttachment = function (
+    httpRequest,
+    repoConn,
+    node,
+    attachmentName,
+    notFoundHandler,
+    processHandler
+) {
     notFoundHandler = notFoundHandler || notFound;
 
     var attachment = findAttachment(node, attachmentName);
     if (!attachment) {
         return notFoundHandler();
     }
-    var ifNoneMatch = httpRequest.headers['If-None-Match'];
+    var ifNoneMatch = httpRequest.headers["If-None-Match"];
     if (ifNoneMatch === node._versionKey) {
         return notModified(attachment.mimeType);
     }
 
     var binaryStream = repoConn.getBinary({
         key: node._id,
-        binaryReference: attachment.binary
+        binaryReference: attachment.binary,
     });
+
     if (!binaryStream) {
         return notFoundHandler();
     }
 
     if (processHandler) {
-        binaryStream = processHandler(node, attachment, httpRequest.params) || binaryStream;
+        binaryStream =
+            processHandler(node, attachment, httpRequest.params) ||
+            binaryStream;
     }
 
     return {
         contentType: attachment.mimeType,
         body: binaryStream,
         headers: exports.setCacheForever({
-            ETag: node._versionKey
-        })
-    }
+            ETag: node._versionKey,
+        }),
+    };
 };
 
-var findAttachment = function (node, attachmentName) {
+function findAttachment(node, attachmentName) {
     var attachments = [].concat(node.attachment || []);
     var i, att;
     for (i = 0; i < attachments.length; i++) {
@@ -58,22 +68,22 @@ var findAttachment = function (node, attachmentName) {
         }
     }
     return att;
-};
+}
 
 var notFound = function () {
     return {
-        status: 404
-    }
+        status: 404,
+    };
 };
 
 var notModified = function (mimeType) {
     return {
         status: 304,
-        contentType: mimeType
-    }
+        contentType: mimeType,
+    };
 };
 
 exports.setCacheForever = function (headers) {
-    headers['Cache-Control'] = 'private, max-age=31536000';
+    headers["Cache-Control"] = "private, max-age=31536000";
     return headers;
 };

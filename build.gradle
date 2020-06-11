@@ -15,7 +15,7 @@ app {
 
 node {
     download = true
-    version = '10.15.3'
+    version = '12.16.0'
 }
 
 dependencies {
@@ -33,14 +33,14 @@ dependencies {
     include "com.enonic.xp:lib-event:${xpVersion}"
     include "com.enonic.xp:lib-task:${xpVersion}"
     include "com.enonic.xp:lib-mail:${xpVersion}"
-    include "com.enonic.lib:lib-thymeleaf:2.0.0-B1"
-    include "com.enonic.lib:lib-mustache:2.0.0-B1"
-    include 'com.enonic.lib:lib-http-client:2.0.0-B1'
-    include 'com.enonic.lib:lib-util:2.0.0-B1'
-    include "com.enonic.lib:lib-graphql:1.0.0-B1"
-    include 'com.enonic.lib:lib-geoip:2.0.0-B1'
-    include 'com.enonic.lib:lib-text-encoding:2.0.0-B1'
-    include 'com.enonic.lib:lib-notifications:2.0.0-B1'
+    include "com.enonic.lib:lib-thymeleaf:2.0.0"
+    include "com.enonic.lib:lib-mustache:2.0.0"
+    include "com.enonic.lib:lib-http-client:2.1.1"
+    include "com.enonic.lib:lib-util:2.2.1"
+    include "com.enonic.lib:lib-graphql:1.1.1"
+    include "com.enonic.lib:lib-geoip:2.0.0"
+    include "com.enonic.lib:lib-text-encoding:2.0.0"
+    include "com.enonic.lib:lib-notifications:2.0.0"
 }
 
 repositories {

@@ -101,18 +101,8 @@ public final class ImageHandler
         {
             params.backgroundColor( getBackgroundColor() );
         }
-
-        String format = this.format;
-        if ( format == null && this.mimeType != null )
-        {
-            format = imageService.get().getFormatByMimeType( this.mimeType );
-        }
-        if ( format == null )
-        {
-            format = "png";
-        }
-
-        params.format( format );
+        params.mimeType(this.mimeType);
+        
         if ( orientation != null )
         {
             params.orientation( ImageOrientation.valueOf( orientation.intValue() ) );
