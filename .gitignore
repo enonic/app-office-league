@@ -6,6 +6,9 @@
 # Icon must end with two \r
 Icon
 
+#enonic-cli
+.enonic
+
 # Thumbnails
 ._*
 
@@ -27,9 +30,6 @@ Temporary Items
 ### Gradle ###
 .gradle
 build/
-
-# Enonic CLI #
-.enonic
 
 # Ignore Gradle GUI config
 gradle-app.setting

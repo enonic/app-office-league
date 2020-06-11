@@ -2,7 +2,7 @@ var graphQlLib = require('/lib/graphql');
 var graphQlConnectionLib = require('/lib/graphql-connection');
 var graphQlEnumsLib = require('./graphql-enums');
 var graphQlUtilLib = require('./graphql-util');
-var storeLib = require('office-league-store');
+var storeLib = require('/lib/office-league-store');
 var authLib = require('/lib/xp/auth');
 
 /* -----------------------------------------------------------------------

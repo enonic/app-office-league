@@ -1,11 +1,11 @@
-var portalLib = require('/lib/xp/portal');
-var authLib = require('/lib/xp/auth');
-var mustacheLib = require('/lib/mustache');
-var storeLib = require('/lib/office-league-store');
-var invitationLib = require('/lib/invitation');
-var pushLib = require('/lib/push');
-var geoipLib = require('/lib/geoip');
-var view = resolve('pwa.html');
+const portalLib = require('/lib/xp/portal');
+const authLib = require('/lib/xp/auth');
+const mustacheLib = require('/lib/mustache');
+const storeLib = require('/lib/office-league-store');
+const invitationLib = require('/lib/invitation');
+const pushLib = require('/lib/push');
+const geoipLib = require('/lib/geoip');
+const view = resolve('pwa.html');
 
 exports.get = function (req) {
 
@@ -42,7 +42,7 @@ exports.get = function (req) {
                 type: 'absolute',
                 redirect: req.url
             })
-        }
+        };
     }
 
     if (isPlayerCreatePage(req, appBaseUrl)) {

@@ -1,32 +1,43 @@
-var storeLib = require('/lib/office-league-store');
-var attachmentLib = require('/lib/attachment');
-var ioLib = require('/lib/xp/io');
-var imageHelper = require('./image-helper');
+const storeLib = require("/lib/office-league-store");
+const attachmentLib = require("/lib/attachment");
+const ioLib = require("/lib/xp/io");
+const imageHelper = require("./image-helper");
+const util = require("/lib/util");
 
-var defaultImage = ioLib.getResource('/site/controllers/default-images/account.svg').getStream();
-var defaultImageType = 'image/svg+xml';
+const defaultImage = ioLib
+    .getResource("/site/controllers/default-images/account.svg")
+    .getStream();
+const defaultImageType = "image/svg+xml";
 
 exports.get = function (req) {
-    var pathParts = req.path.split('/');
-    var playerName = decodeURIComponent(pathParts[pathParts.length - 1]);
+    let pathParts = req.path.split("/");
+    let playerName = decodeURIComponent(pathParts[pathParts.length - 1]);
 
-    var player = storeLib.getPlayerByName(playerName);
-    if (!player || req.path.endsWith('/-/default')) {
+    let player = storeLib.getPlayerByName(playerName);
+    if (!player || req.path.endsWith("/-/default")) {
         return defaultImageHandler();
     }
     try {
-        return attachmentLib.serveAttachment(req, storeLib.getRepoConnection(), player, player.image, defaultImageHandler,
-            imageHelper.processImage);
+        return attachmentLib.serveAttachment(
+            req,
+            storeLib.getRepoConnection(),
+            player,
+            player.image,
+            defaultImageHandler,
+            imageHelper.processImage
+        );
     } catch (e) {
-        log.warning('Unable to process player image ("' + playerName + '"): ' + e);
+        log.warning(
+            'Unable to process player image ("' + playerName + '"): ' + e
+        );
         return defaultImageHandler();
     }
 };
 
-var defaultImageHandler = function () {
+function defaultImageHandler() {
     return {
         body: defaultImage,
         contentType: defaultImageType,
-        headers: attachmentLib.setCacheForever({})
-    }
-};
+        headers: attachmentLib.setCacheForever({}),
+    };
+}

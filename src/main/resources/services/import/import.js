@@ -1,15 +1,15 @@
-var contentLib = require('/lib/xp/content');
-var storeLib = require('/lib/office-league-store');
-var rankingLib = require('../ranking/ranking');
+const contentLib = require('/lib/xp/content');
+const storeLib = require('/lib/office-league-store');
+const rankingLib = require('../ranking/ranking');
 
-var LEGACY_APP_NAME = 'systems.rcd.enonic.foos';
+const LEGACY_APP_NAME = 'systems.rcd.enonic.foos';
 
 exports.get = function (req) {
 
-    var playerContentToNodeId = importPlayers();
+    let playerContentToNodeId = importPlayers();
     importTeams(playerContentToNodeId);
     storeLib.refresh();
-    var league = importLeague(playerContentToNodeId);
+    let league = importLeague(playerContentToNodeId);
     rankingLib.updateLeagues([league]);
     removeRetiredPlayers(playerContentToNodeId);
 
@@ -20,18 +20,18 @@ exports.get = function (req) {
         body: {
             success: true
         }
-    }
+    };
 };
 
-var importPlayers = function () {
-    var players = fetchPlayers();
-    var p;
+const importPlayers = function () {
+    let players = fetchPlayers();
+    let p;
     log.info(players.length + ' players found');
-    var playerContentToNodeId = {};
-    for (var i = 0; i < players.length; i++) {
+    let playerContentToNodeId = {};
+    for (let i = 0; i < players.length; i++) {
         p = players[i];
         // log.info(JSON.stringify(p));
-        var playerIds = createPlayer(p);
+        let playerIds = createPlayer(p);
         if (playerIds) {
             playerContentToNodeId[playerIds.contentId] = playerIds.nodeId;
         }
@@ -39,25 +39,25 @@ var importPlayers = function () {
     return playerContentToNodeId;
 };
 
-var importTeams = function (playerContentToNodeId) {
-    var teams = fetchTeams();
-    var t;
+const importTeams = function (playerContentToNodeId) {
+    let teams = fetchTeams();
+    let t;
     log.info(teams.length + ' teams found');
-    for (var i = 0; i < teams.length; i++) {
+    for (let i = 0; i < teams.length; i++) {
         t = teams[i];
         // log.info(JSON.stringify(t));
         createTeam(t, playerContentToNodeId);
     }
 };
 
-var importLeague = function (playerContentToNodeId) {
-    var leagueNode = storeLib.createLeague({
+const importLeague = function (playerContentToNodeId) {
+    let leagueNode = storeLib.createLeague({
         name: 'Enonic Foos',
         description: 'Enonic Foos League',
         sport: 'foos'
     });
 
-    var from = 0, games = [], i;
+    let from = 0, games = [], i;
     do {
         from = from + games.length;
         games = fetchGames(from);
@@ -67,42 +67,42 @@ var importLeague = function (playerContentToNodeId) {
     } while (games && games.length > 0);
 
     // add players to league
-    var playersResult = storeLib.getPlayers(0, 1000);
+    let playersResult = storeLib.getPlayers(0, 1000);
     playersResult.hits.forEach(function (player) {
-        var playerLeagues = storeLib.getLeaguesByPlayerId(player._id, 0, 0);
+        let playerLeagues = storeLib.getLeaguesByPlayerId(player._id, 0, 0);
         if (playerLeagues.total !== 0) {
             log.info('Skipping player from another league: ' + player.name);
             return;
         }
         storeLib.joinPlayerLeague(leagueNode._id, player._id);
         storeLib.refresh();
-        var contentPlayer = findPlayerContentByName(player.name);
+        let contentPlayer = findPlayerContentByName(player.name);
         if (contentPlayer) {
             storeLib.setPlayerLeagueRating(leagueNode._id, player._id, contentPlayer.data.rating);
         }
     });
 
     // add teams to league
-    var teamsResult = storeLib.getTeams(0, 1000);
+    let teamsResult = storeLib.getTeams(0, 1000);
     teamsResult.hits.forEach(function (team) {
-        var teamLeagues = storeLib.getLeaguesByTeamId(team._id, 0, 0);
+        let teamLeagues = storeLib.getLeaguesByTeamId(team._id, 0, 0);
         if (teamLeagues.total !== 0) {
             log.info('Skipping team from another league: ' + team.name);
             return;
         }
         storeLib.joinTeamLeague(leagueNode._id, team._id);
         storeLib.refresh();
-        var contentTeam = findTeamContentByName(team.name);
+        let contentTeam = findTeamContentByName(team.name);
         if (contentTeam) {
             storeLib.setTeamLeagueRating(leagueNode._id, team._id, contentTeam.data.rating);
         }
     });
 
     // set league admins
-    var adminP1 = findPlayerContentByName('aro');
-    var adminP2 = findPlayerContentByName('gri');
-    var adminIds = [playerContentToNodeId[adminP1._id], playerContentToNodeId[adminP2._id]];
-    var updatedLeague = storeLib.updateLeague({
+    let adminP1 = findPlayerContentByName('aro');
+    let adminP2 = findPlayerContentByName('gri');
+    let adminIds = [playerContentToNodeId[adminP1._id], playerContentToNodeId[adminP2._id]];
+    let updatedLeague = storeLib.updateLeague({
         leagueId: leagueNode._id,
         adminPlayerIds: adminIds
     });
@@ -110,8 +110,8 @@ var importLeague = function (playerContentToNodeId) {
     return leagueNode;
 };
 
-var removeRetiredPlayers = function (playerContentToNodeId) {
-    var retiredPlayers = contentLib.query({
+const removeRetiredPlayers = function (playerContentToNodeId) {
+    let retiredPlayers = contentLib.query({
         start: 0,
         count: -1,
         contentTypes: [LEGACY_APP_NAME + ":player"],
@@ -120,7 +120,7 @@ var removeRetiredPlayers = function (playerContentToNodeId) {
     }).hits;
     log.info('removeRetiredPlayers: ' + JSON.stringify(retiredPlayers, null, 2));
 
-    var p, playerId, leagues, l, teams, t, team;
+    let p, playerId, leagues, l, teams, t, team;
     for (p = 0; p < retiredPlayers.length; p++) {
         playerId = playerContentToNodeId[retiredPlayers[p]._id];
         // log.info('removeRetiredPlayers: ' + playerId + ' ' + retiredPlayers[p]);
@@ -140,7 +140,7 @@ var removeRetiredPlayers = function (playerContentToNodeId) {
     }
 };
 
-var fetchGames = function (from) {
+const fetchGames = function (from) {
     from = from || 0;
     return contentLib.query({
         start: from,
@@ -152,7 +152,7 @@ var fetchGames = function (from) {
     }).hits;
 };
 
-var fetchPlayers = function () {
+const fetchPlayers = function () {
     return contentLib.query({
         start: 0,
         count: -1,
@@ -162,7 +162,7 @@ var fetchPlayers = function () {
     }).hits;
 };
 
-var fetchTeams = function () {
+const fetchTeams = function () {
     return contentLib.query({
         start: 0,
         count: -1,
@@ -172,11 +172,11 @@ var fetchTeams = function () {
     }).hits;
 };
 
-var createGame = function (foosGame, leagueId, playerContentToNodeId) {
-    var blueIds = [], redIds = [], goals = [], playerTable = {};
-    var foosGoal, goal;
-    var pw1, pw2, pl1, pl2;
-    var gamePlayers = {}, gameTeams = {};
+const createGame = function (foosGame, leagueId, playerContentToNodeId) {
+    let blueIds = [], redIds = [], goals = [], playerTable = {};
+    let foosGoal, goal;
+    let pw1, pw2, pl1, pl2;
+    let gamePlayers = {}, gameTeams = {};
 
     if (foosGame.data.winners.length == 2) {
         pw1 = foosGame.data.winners[0].playerId;
@@ -223,12 +223,12 @@ var createGame = function (foosGame, leagueId, playerContentToNodeId) {
         };
 
         storeLib.refresh();
-        var teamNodeW = storeLib.getTeamByPlayerIds(playerContentToNodeId[pw1], playerContentToNodeId[pw2]);
+        let teamNodeW = storeLib.getTeamByPlayerIds(playerContentToNodeId[pw1], playerContentToNodeId[pw2]);
         teamNodeW = teamNodeW ? teamNodeW._id : null;
         if (!teamNodeW) {
             teamNodeW = createTeamWithPlayers(playerContentToNodeId[pw1], playerContentToNodeId[pw2]);
         }
-        var teamNodeL = storeLib.getTeamByPlayerIds(playerContentToNodeId[pl1], playerContentToNodeId[pl2]);
+        let teamNodeL = storeLib.getTeamByPlayerIds(playerContentToNodeId[pl1], playerContentToNodeId[pl2]);
         teamNodeL = teamNodeL ? teamNodeL._id : null;
         if (!teamNodeL) {
             teamNodeL = createTeamWithPlayers(playerContentToNodeId[pl1], playerContentToNodeId[pl2]);
@@ -274,7 +274,7 @@ var createGame = function (foosGame, leagueId, playerContentToNodeId) {
         };
     }
 
-    for (var g = 0, l = foosGame.data.goals && foosGame.data.goals.length; g < l; g++) {
+    for (let g = 0, l = foosGame.data.goals && foosGame.data.goals.length; g < l; g++) {
         foosGoal = foosGame.data.goals[g];
         goal = {
             playerId: playerContentToNodeId[foosGoal.playerId],
@@ -284,7 +284,7 @@ var createGame = function (foosGame, leagueId, playerContentToNodeId) {
         goals.push(goal);
     }
 
-    var k, gamePlayerList = [], gameTeamList = [];
+    let k, gamePlayerList = [], gameTeamList = [];
     for (k in gamePlayers) {
         gamePlayerList.push(gamePlayers[k]);
     }
@@ -301,22 +301,22 @@ var createGame = function (foosGame, leagueId, playerContentToNodeId) {
     });
 };
 
-var createPlayer = function (foosPlayer) {
-    var playerExist = storeLib.getPlayerByName(foosPlayer._name);
+const createPlayer = function (foosPlayer) {
+    let playerExist = storeLib.getPlayerByName(foosPlayer._name);
     if (playerExist) {
         log.warning('Player with name "' + foosPlayer._name + '" already exists, cannot be imported.');
         return;
     }
 
-    var foosImg = foosPlayer.data.picture;
-    var pictureContent, stream, mimeType;
+    let foosImg = foosPlayer.data.picture;
+    let pictureContent, stream, mimeType;
     if (foosImg) {
         pictureContent = contentLib.get({
             key: foosImg,
             branch: 'draft'
         });
         if (pictureContent) {
-            var attachName = pictureContent.data.media.attachment;
+            let attachName = pictureContent.data.media.attachment;
             stream = contentLib.getAttachmentStream({
                 key: foosImg,
                 name: attachName
@@ -327,7 +327,7 @@ var createPlayer = function (foosPlayer) {
         }
     }
 
-    var playerNode = storeLib.createPlayer({
+    let playerNode = storeLib.createPlayer({
         name: foosPlayer.displayName,
         fullname: foosPlayer.displayName,
         description: foosPlayer.data.nickname,
@@ -343,22 +343,22 @@ var createPlayer = function (foosPlayer) {
     };
 };
 
-var createTeam = function (foosTeam, playerContentToNodeId) {
-    var teamExist = storeLib.getTeamByName(foosTeam._name);
+const createTeam = function (foosTeam, playerContentToNodeId) {
+    let teamExist = storeLib.getTeamByName(foosTeam._name);
     if (teamExist) {
         log.warning('Team with name "' + foosTeam._name + '" already exists, cannot be imported.');
         return;
     }
 
-    var foosImg = foosTeam.data.picture;
-    var pictureContent, stream, mimeType;
+    let foosImg = foosTeam.data.picture;
+    let pictureContent, stream, mimeType;
     if (foosImg) {
         pictureContent = contentLib.get({
             key: foosImg,
             branch: 'draft'
         });
         if (pictureContent) {
-            var attachName = pictureContent.data.media.attachment;
+            let attachName = pictureContent.data.media.attachment;
             stream = contentLib.getAttachmentStream({
                 key: foosImg,
                 name: attachName
@@ -368,13 +368,13 @@ var createTeam = function (foosTeam, playerContentToNodeId) {
             }
         }
     }
-    var players = [];
+    let players = [];
     players.push(playerContentToNodeId[foosTeam.data.playerIds[0]]);
     players.push(playerContentToNodeId[foosTeam.data.playerIds[1]]);
 
-    var displayName = foosTeam.displayName.replace(/&|\?/g, "-");
+    let displayName = foosTeam.displayName.replace(/&|\?/g, "-");
     displayName = displayName.slice(-1) === '-' ? displayName.slice(0, -1) : displayName;
-    var playerNode = storeLib.createTeam({
+    let playerNode = storeLib.createTeam({
         name: displayName,
         description: foosTeam.data.description,
         imageStream: stream,
@@ -383,20 +383,20 @@ var createTeam = function (foosTeam, playerContentToNodeId) {
     });
 };
 
-var createTeamWithPlayers = function (playerId1, playerId2) {
-    var playerIds = [];
+const createTeamWithPlayers = function (playerId1, playerId2) {
+    let playerIds = [];
     playerIds.push(playerId1);
     playerIds.push(playerId2);
 
-    var teamNode = storeLib.createTeam({
+    let teamNode = storeLib.createTeam({
         description: '',
         playerIds: playerIds
     });
     return teamNode._id;
 };
 
-var findPlayerContentByName = function (playerContentName) {
-    var results = contentLib.query({
+const findPlayerContentByName = function (playerContentName) {
+    let results = contentLib.query({
         start: 0,
         count: 1,
         query: "_name = '" + playerContentName + "'",
@@ -407,8 +407,8 @@ var findPlayerContentByName = function (playerContentName) {
     return results.count > 0 ? results.hits[0] : null;
 };
 
-var findTeamContentByName = function (teamContentName) {
-    var results = contentLib.query({
+const findTeamContentByName = function (teamContentName) {
+    let results = contentLib.query({
         start: 0,
         count: 1,
         query: "displayName = '" + teamContentName + "'",
