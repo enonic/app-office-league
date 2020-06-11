@@ -25,5 +25,5 @@ var defaultImageHandler = function () {
         body: defaultImage,
         contentType: defaultImageType,
         headers: attachmentLib.setCacheForever({})
-    }
+    };
 };

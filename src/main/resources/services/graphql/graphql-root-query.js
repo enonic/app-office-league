@@ -1,9 +1,9 @@
-var graphQlLib = require('/lib/graphql');
-var graphQlConnectionLib = require('/lib/graphql-connection');
-var graphQlObjectTypesLib = require('./graphql-object-types');
-var graphQlInfoPagesLib = require('./graphql-info-pages');
-var storeLib = require('office-league-store');
-var contentLib = require('office-league-content');
+const graphQlLib = require('/lib/graphql');
+const graphQlConnectionLib = require('/lib/graphql-connection');
+const graphQlObjectTypesLib = require('./graphql-object-types');
+const graphQlInfoPagesLib = require('./graphql-info-pages');
+const storeLib = require('/lib/office-league-store');
+const contentLib = require('/lib/office-league-content');
 
 exports.rootQueryType = graphQlLib.createObjectType({
     name: 'Query',

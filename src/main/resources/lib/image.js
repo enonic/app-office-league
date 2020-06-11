@@ -23,7 +23,6 @@ exports.processImage = function (params) {
     bean.scale = __.nullOrValue(checkRequired(params, 'scale'));
     bean.quality = __.nullOrValue(params.quality);
     bean.background = __.nullOrValue(params.background);
-    bean.format = __.nullOrValue(params.format);
     bean.mimeType = __.nullOrValue(params.mimeType);
     bean.filter = __.nullOrValue(params.filter);
     bean.orientation = __.nullOrValue(params.orientation);

@@ -1,7 +1,7 @@
 var graphQlLib = require('/lib/graphql');
-var graphQlConnectionLib = require('/lib/graphql-connection');
-var graphQlEnumsLib = require('./graphql-enums');
-var graphQlUtilLib = require('./graphql-util');
+// var graphQlConnectionLib = require('/lib/graphql-connection');
+// var graphQlEnumsLib = require('./graphql-enums');
+// var graphQlUtilLib = require('./graphql-util');
 var portalLib = require('/lib/xp/portal');
 
 exports.infoPageType = graphQlLib.createObjectType({

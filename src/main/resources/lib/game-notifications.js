@@ -1,5 +1,5 @@
 var eventLib = require('/lib/xp/event');
-var storeLib = require('office-league-store');
+var storeLib = require('/lib/office-league-store');
 var authLib = require('/lib/xp/auth');
 
 var OFFICE_LEAGUE_GAME_EVENT_ID = storeLib.OFFICE_LEAGUE_GAME_EVENT_ID;

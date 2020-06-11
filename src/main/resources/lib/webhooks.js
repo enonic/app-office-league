@@ -1,7 +1,7 @@
 var eventLib = require('/lib/xp/event');
-var storeLib = require('office-league-store');
-var reportLib = require('office-league-report');
-var httpClient = require('/lib/xp/http-client');
+var storeLib = require('/lib/office-league-store');
+var reportLib = require('/lib/office-league-report');
+var httpClient = require('/lib/http-client');
 
 var OFFICE_LEAGUE_GAME_REPORT_EVENT_ID = reportLib.OFFICE_LEAGUE_GAME_REPORT_EVENT_ID;
 var UUID = Java.type('java.util.UUID');

@@ -1,5 +1,5 @@
 var encodingLib = require('/lib/text-encoding');
-var httpClient = require('/lib/xp/http-client');
+var httpClient = require('/lib/http-client');
 
 /**
  * Generate a Gravatar URL for a given email.
