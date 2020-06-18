@@ -3,6 +3,7 @@ import {Location} from '@angular/common';
 import {AuthService} from './services/auth.service';
 import {GraphQLService} from './services/graphql.service';
 import {ImageService} from './services/image.service';
+import {filter} from 'rxjs/operators';
 import {NavigationStart, Router} from '@angular/router';
 import {PageTitleService} from './services/page-title.service';
 import {UserProfileService} from './services/user-profile.service';
@@ -46,9 +47,10 @@ export class AppComponent implements OnInit {
 
         this.displayMenu = !this.router.navigated || this.isTopLevelPage(this.router.url);
 
-        router.events
-            .filter(event => event instanceof NavigationStart)
-            .subscribe((event: NavigationStart) => {
+        router.events.pipe(
+            filter(event => event instanceof NavigationStart)
+        )
+        .subscribe((event: NavigationStart) => {
                 this.isPlayingGame = new RegExp('/games/.*/game-play').test(event.url);
                 this.displayMenu = !this.router.navigated || this.isTopLevelPage(event.url);
                 this.pageTitleService.resetTitle();

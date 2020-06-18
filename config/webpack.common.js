@@ -119,9 +119,18 @@ module.exports = {
         /* new config.optimize.splitChunks({
             name: 'common'
         }), */
-        new CopyWebpackPlugin([
-            {from: './src/angular/assets', ignore: 'img/flags/**', debug: 'warning'}  // don't copy flags as they are referenced from css file
-        ]),
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: './src/angular/assets', 
+                    globOptions: {
+                        gitignore: true,
+                        ignore: [ 'img/flags/**' ],
+                    },
+                    //debug: 'warning'
+                }
+            ]
+        }),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",

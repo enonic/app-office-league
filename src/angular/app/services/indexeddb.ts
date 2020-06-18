@@ -89,7 +89,7 @@ export class IndexedDB {
             request.onsuccess = evt => {
                 let cursor = (<IDBOpenDBRequest>evt.target).result;
                 if (cursor) {
-                    values.push(cursor.value);
+                    values.push(cursor["value"]);
                     cursor['continue']();
                 } else {
                     resolve(values);
@@ -98,7 +98,7 @@ export class IndexedDB {
         });
     }
 
-    add(storeName: string, value: any, key?: IDBKeyRange | IDBValidKey): Promise<any> {
+    add(storeName: string, value: any, key?: IDBArrayKey | IDBValidKey): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             if (!this.checkDbReady(storeName, reject)) {
                 return;

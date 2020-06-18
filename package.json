@@ -18,8 +18,8 @@
     "@angular/upgrade": "^9.1.11",
     "angular2-materialize": "^15.1.10",
     "angular2-moment": "^1.9.0",
-    "chart.js": "2.5.0",
-    "chartjs-plugin-annotation": "0.5.2",
+    "chart.js": "^2.9.3",
+    "chartjs-plugin-annotation": "^0.5.7",
     "core-js": "^3.6.5",
     "crypto-js": "^4.0.0",
     "material-design-icons": "3.0.1",
@@ -38,7 +38,7 @@
     "angular2-router-loader": "0.3.5",
     "angular2-template-loader": "0.6.2",
     "awesome-typescript-loader": "^5.2.1",
-    "copy-webpack-plugin": "4.0.1",
+    "copy-webpack-plugin": "^6.0.2",
     "css-loader": "^3.6.0",
     "file-loader": "^6.0.0",
     "html-loader": "^1.1.0",
@@ -53,6 +53,6 @@
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "2.6.1"
+    "webpack-merge": "^4.2.2"
   }
 }

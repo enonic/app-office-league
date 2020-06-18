@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {Observable} from 'rxjs';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+//import {Headers, Http, RequestOptions, Response} from '@angular/common/http';
+import {Observable, empty} from 'rxjs';
+import {catchError, } from 'rxjs/operators'
 import {Team} from '../../graphql/schemas/Team';
 import {Game} from '../../graphql/schemas/Game';
 import {League} from '../../graphql/schemas/League';
@@ -18,21 +20,31 @@ export class GraphQLService {
     league: League;
     player: Player;
 
-    constructor(private http: Http, private cryptoService: CryptoService, private authService: AuthService) {
+    constructor(private http: HttpClient, private cryptoService: CryptoService, private authService: AuthService) {
     }
     post(query: string, variables?: {[key: string]: any}, successCallback?: (data) => void, failureCallback?: (error) => void): Promise<any> {
         let body = JSON.stringify({query: query, variables: variables});
         let hash = this.cryptoService.sha1(body);
-        let url = this.url + '?etag=' + hash;
+        let url = this.url; //+ '?etag=' + hash;
 
-        let headers = new Headers();
+        /* new http */
+
+        let headers = new HttpHeaders();
         headers.append('Content-Type', 'application/json; charset=utf-8');
-        let options = new RequestOptions({headers: headers});
 
-        let networkPromise = this.http.post(url, body, options)
-            .map(this.extractData)
-            .catch(this.handleError.bind(this))
-            .toPromise();
+        let networkPromise = this.http.get(
+            url,
+            {
+                headers,
+                observe: "body",
+                params: { etag: hash }
+            }
+        )
+        .pipe(
+            catchError(this.handleError),
+            this.extractData,
+        )
+        .toPromise();
 
         if (typeof CacheStorage !== "undefined" && !!successCallback) {
             return this.getCachePromise(url, networkPromise, successCallback, failureCallback);
@@ -77,7 +89,7 @@ export class GraphQLService {
         return res.json();
     }
 
-    private extractData(res: Response) {
+    private extractData(res) { //TODO need to do this with the observable?
         let json = res.json();
         if (json.errors && json.errors.length > 0) {
             throw json.errors;
@@ -86,8 +98,9 @@ export class GraphQLService {
     }
 
     private handleError(error: Response | any) {
-        if (!navigator.onLine) {
-            return Observable.empty<Response>();
+        if (!navigator.onLine) {   
+            console.log("Empty response return?");
+            return empty();
         }
 
         if (error.status === 401) {
@@ -97,10 +110,10 @@ export class GraphQLService {
             return Observable.throw('Not authenticated');
         }
 
-        let errMsg: string;
+        let errMsg: String;
         if (error instanceof Response) {
             const body = error.json() || '';
-            const err = body.error || JSON.stringify(body);
+            const err = body["error"] || JSON.stringify(body);
             errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
         } else if (Array.isArray(error)) {
             errMsg = error[0].message ? error[0].message : JSON.stringify(error);
