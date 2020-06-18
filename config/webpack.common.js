@@ -1,5 +1,5 @@
 var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var path = require('path');
 var helpers = require('./helpers');
@@ -24,7 +24,7 @@ module.exports = {
         chunks: true,
         source: true,
         entrypoints: true,
-        depth: 2
+        depth: true
     },
 
     entry: {
@@ -37,6 +37,12 @@ module.exports = {
 
     resolve: {
         extensions: ['.ts', '.js', 'less', '.css']
+    },
+
+    optimization: {
+        splitChunks: {
+            chunks: 'all'
+        }
     },
 
     module: {
@@ -74,18 +80,28 @@ module.exports = {
                 test: /\.(less|css)$/,
                 include: [helpers.root('src', 'angular'), helpers.root('src', 'main', 'resources', 'assets')],
                 exclude: helpers.root('src', 'angular', 'app'),
-                loader: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    publicPath: '../',
-                    use: 'css-loader!less-loader'
-                })
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            fallback: 'style-loader',
+                            publicPath: '../',
+                        }
+                    },
+                    'css-loader',
+                    'less-loader',
+                ]
             },
             {   // load angular component styles
                 test: /\.(less|css)$/,
                 include: helpers.root('src', 'angular', 'app'),
-                loader: 'to-string-loader!css-loader?url=false!less-loader'
+                use: [
+                    'to-string-loader',
+                    'css-loader?url=false',
+                    'less-loader'
+                ]
             }
-        ]
+        ],
     },
 
     plugins: [
@@ -96,13 +112,13 @@ module.exports = {
             helpers.root('./src'), // location of your src
             {} // a map of your routes
         ),
-        new ExtractTextPlugin({
+        new MiniCssExtractPlugin({
             filename: 'css/[name].css',
-            allChunks: true
+            //allChunks: true
         }),
-        new webpack.optimize.CommonsChunkPlugin({
+        /* new config.optimize.splitChunks({
             name: 'common'
-        }),
+        }), */
         new CopyWebpackPlugin([
             {from: './src/angular/assets', ignore: 'img/flags/**', debug: 'warning'}  // don't copy flags as they are referenced from css file
         ]),

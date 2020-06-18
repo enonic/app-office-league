@@ -1486,7 +1486,6 @@ exports.createLeague = function (params) {
     var leagueNode = repoConn.create({
         _name: prettifyName(params.name),
         _parentPath: LEAGUES_PATH,
-        _permissions: ROOT_PERMISSIONS, //TODO Remove after XP issue 4801 resolution
         type: TYPE.LEAGUE,
         name: params.name,
         sport: params.sport,
@@ -1502,25 +1501,21 @@ exports.createLeague = function (params) {
         }
     });
 
-    var playersNode = repoConn.create({
+    repoConn.create({
         _name: 'players',
         _parentPath: leagueNode._path,
-        _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
     });
-    var teamsNode = repoConn.create({
+    repoConn.create({
         _name: 'teams',
         _parentPath: leagueNode._path,
-        _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
     });
-    var gamesNode = repoConn.create({
+    repoConn.create({
         _name: 'games',
         _parentPath: leagueNode._path,
-        _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
     });
-    var invitationsNode = repoConn.create({
+    repoConn.create({
         _name: 'invitations',
         _parentPath: leagueNode._path,
-        _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
     });
 
     return setImageUrl(leagueNode);
@@ -1639,7 +1634,7 @@ exports.createTeam = function (params) {
 
 var teamWithNameExists = function (repoConn, teamName) {
     var query = "type = '" + TYPE.TEAM + "' AND name='" + teamName + "'";
-    return queryExists(query, repoConn)
+    return queryExists(query, repoConn);
 };
 
 /**

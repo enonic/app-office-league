@@ -1,6 +1,6 @@
 import {ErrorHandler, NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
+import {HttpClientModule} from '@angular/common/http';
 import {AppComponent} from './app.component';
 import {RouterModule, Routes} from '@angular/router';
 import {PlayersModule} from './players/players.module';
@@ -39,7 +39,7 @@ const appRoutes: Routes = [
         MaterializeModule,
         RouterModule.forRoot(appRoutes),
         FormsModule,
-        HttpModule,
+        HttpClientModule,
         PlayersModule,
         GamesModule,
         TeamsModule,

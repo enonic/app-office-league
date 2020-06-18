@@ -1,7 +1,7 @@
-<template [ngIf]="playerForm == null">
+<ng-template [ngIf]="playerForm == null">
     <loading></loading>
-</template>
-<template [ngIf]="playerForm != null">
+</ng-template>
+<ng-template [ngIf]="playerForm != null">
     <div class="card edit-form player-create">
         <div class="card-content">
             <span class="card-title">Create player</span>
@@ -71,4 +71,4 @@
             </form>
         </div>
     </div>
-</template>
+</ng-template>

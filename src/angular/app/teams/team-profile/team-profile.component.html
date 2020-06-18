@@ -1,9 +1,9 @@
-<template [ngIf]="team == null && !connectionError">
+<ng-template [ngIf]="team == null && !connectionError">
     <loading></loading>
-</template>
-<template [ngIf]="team == null && connectionError">
+</ng-template>
+<ng-template [ngIf]="team == null && connectionError">
     <connection-error></connection-error>
-</template>
+</ng-template>
 <div *ngIf="team != null" class="team-profile">
 
 

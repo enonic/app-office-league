@@ -48,7 +48,7 @@
 </div>
 
 <ul *ngIf="!isNewUser" class="side-nav" id="mobile-side-nav">
-    <template [ngIf]="isAuthenticated">
+    <ng-template [ngIf]="isAuthenticated">
         <li class="user-profile">
             <a href="#" class="side-nav-close right" (click)="closeNav()"><i class="material-icons right">close</i></a>
             <a href="#" routerLink="/">
@@ -57,7 +57,7 @@
             </a>
         </li>
         <li class="divider"></li>
-    </template>
+    </ng-template>
     <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>
     <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
     <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
@@ -65,11 +65,10 @@
     <li *ngIf="infoPages?.length > 0" class="divider"></li>
     <li *ngFor="let infoPage of infoPages" routerLinkActive="active"><a routerLink="/{{infoPage.name}}" href="#">{{infoPage.title}}</a></li>
     <li class="divider"></li>
-    <template [ngIf]="!isAuthenticated" class="nav navbar-nav pull-right">
+    <ng-template [ngIf]="!isAuthenticated" class="nav navbar-nav pull-right">
         <li><a href="#!" (click)="auth.login()">Login</a></li>
-    </template>
-    <template [ngIf]="isAuthenticated">
+    </ng-template>
+    <ng-template [ngIf]="isAuthenticated">
         <li><a href="#!" (click)="auth.logout()">Logout</a></li>
-    </template>
-
+    </ng-template>
 </ul>

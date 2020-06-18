@@ -12,6 +12,8 @@ var aotPlugin = new AotPlugin({
 
 module.exports = webpackMerge(commonConfig, {
 
+    mode: "development",
+
     entry: {
         'app': './src/angular/main.aot.ts',
         'vendor': './src/angular/vendor.aot.ts'
@@ -21,14 +23,14 @@ module.exports = webpackMerge(commonConfig, {
         path: helpers.root('build/resources/main/assets'),
         publicPath: 'assets/',
         filename: 'js/[name].js',
-        chunkFilename: 'js/[id].chunk.js'
+        //chunkFilename: 'js/[id].chunk.js'
     },
 
     module: {
         rules: [
             {
                 test: /\.ts$/,
-                loaders: ['@ngtools/webpack']
+                loader: '@ngtools/webpack'
             }
         ]
     },
@@ -40,12 +42,12 @@ module.exports = webpackMerge(commonConfig, {
             filename: '../site/pages/pwa/pwa.html',
             inject: false
         }),
-        new webpack.optimize.UglifyJsPlugin({
+        /* new webpack.optimize.UglifyJsPlugin({
             minimize: true,
             compress: {
                 warnings: false
             }
-        })
+        }) */
     ]
 });
 

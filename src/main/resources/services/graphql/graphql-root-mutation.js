@@ -480,6 +480,15 @@ exports.rootMutationType = graphQlLib.createObjectType({
             resolve: function (env) {
                 var currentPlayerId = getCurrentPlayerId();
 
+                //TODO notifications don't work outside localhost
+
+                log.info(JSON.stringify({
+                    currentPlayerId,
+                    endpoint: env.args.endpoint,
+                    key: env.args.key,
+                    auth: env.args.auth
+                }, null, 4));
+
                 var addedPushSubscription = storeLib.addPushSubscription({
                     playerId: currentPlayerId,
                     endpoint: env.args.endpoint,

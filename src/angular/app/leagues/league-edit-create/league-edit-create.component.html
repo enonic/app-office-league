@@ -1,15 +1,15 @@
-<template [ngIf]="leagueForm == null">
+<ng-template [ngIf]="leagueForm == null">
     <loading></loading>
-</template>
-<template [ngIf]="leagueForm != null">
+</ng-template>
+<ng-template [ngIf]="leagueForm != null">
     <div class="card edit-form league-edit-create">
         <div class="card-content">
-            <template [ngIf]="editMode">
+            <ng-template [ngIf]="editMode">
                 <span class="card-title">Edit league</span>
-            </template>
-            <template [ngIf]="!editMode">
+            </ng-template>
+            <ng-template [ngIf]="!editMode">
                 <span class="card-title">Create league</span>
-            </template>
+            </ng-template>
             <form [formGroup]="leagueForm">
                 <div class="row">
                     <div class="input-field">
@@ -49,7 +49,7 @@
                         </div>
                     </div>
                 </div>
-                <template [ngIf]="!editMode">
+                <ng-template [ngIf]="!editMode">
                     <div class="row">
                         <div class="">
                             <label>Players</label>
@@ -62,7 +62,7 @@
                             </div>
                         </div>
                     </div>
-                </template>
+                </ng-template>
 
                 <fieldset>
                     <legend>Rules</legend>
@@ -98,17 +98,17 @@
                 </fieldset>
 
                 <div class="row submit-row league-edit-create__submit-row">
-                    <template [ngIf]="!editMode">
+                    <ng-template [ngIf]="!editMode">
                         <a class="waves-effect waves-teal btn red league-edit-create__btn league-edit-create__btn--cancel" (click)="onCancelClicked()">Cancel</a>
                         <a class="waves-effect waves-teal btn light-blue league-edit-create__btn league-edit-create__btn--submit"
                            [attr.disabled]="!online||!leagueForm.valid||admins.length===0?true:null"
                            (click)="onCreateClicked()">Create</a>
-                    </template>
-                    <template [ngIf]="editMode">
+                    </ng-template>
+                    <ng-template [ngIf]="editMode">
                         <a class="waves-effect waves-teal btn red league-edit-create__btn league-edit-create__btn--cancel" (click)="onCancelClicked()">Cancel</a>
                         <a class="waves-effect waves-teal btn light-blue league-edit-create__btn league-edit-create__btn--submit"
                            [attr.disabled]="!online||!leagueForm.valid||admins.length===0?true:null" (click)="onUpdateClicked()">Save</a>
-                    </template>
+                    </ng-template>
 
                 </div>
             </form>
@@ -136,4 +136,4 @@
     </div>
 
 
-</template>
+</ng-template>

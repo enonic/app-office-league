@@ -1,7 +1,7 @@
-<template [ngIf]="id == '' && !createMode">
+<ng-template [ngIf]="id == '' && !createMode">
     <loading></loading>
-</template>
-<template [ngIf]="id != '' || createMode">
+</ng-template>
+<ng-template [ngIf]="id != '' || createMode">
     <div class="card edit-form">
         <div class="card-content">
             <span class="card-title">Edit team</span>
@@ -34,12 +34,12 @@
                             <player-summary [player]="player"></player-summary>
                         </li>
                     </ul>
-                    <template [ngIf]="createMode">
+                    <ng-template [ngIf]="createMode">
                         <button class="btn waves-effect waves-light grey darken-1" type="button" name="selectPlayer"
                                 (click)="onSelectPlayerClicked()">
                             Select player
                         </button>
-                    </template>
+                    </ng-template>
 
                 </div>
                 <div class="row">
@@ -63,7 +63,7 @@
             </form>
         </div>
     </div>
-</template>
+</ng-template>
 
 <div class="modal center player-select-modal" materialize="modal"
      [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">

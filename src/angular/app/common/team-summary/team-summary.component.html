@@ -1,7 +1,7 @@
-<template [ngIf]="team == null">
+<ng-template [ngIf]="team == null">
     <loading></loading>
-</template>
-<template [ngIf]="team != null">
+</ng-template>
+<ng-template [ngIf]="team != null">
     <div class="team-summary">
         <div class="team-summary__ranking" *ngIf="ranking > 0">{{ranking}}</div>
         <img src="{{team.imageUrl}}?size=42" alt="{{team.name}}" class="team-summary__avatar">
@@ -22,4 +22,4 @@
         </div>-->
     </div>
 
-</template>
+</ng-template>

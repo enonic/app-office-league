@@ -1,9 +1,9 @@
-<template [ngIf]="game == null && !connectionError">
+<ng-template [ngIf]="game == null && !connectionError">
     <loading></loading>
-</template>
-<template [ngIf]="game == null && connectionError">
+</ng-template>
+<ng-template [ngIf]="game == null && connectionError">
     <connection-error></connection-error>
-</template>
+</ng-template>
 <div *ngIf="game != null" class="game-profile">
 
     <game [game]="game"></game>
@@ -11,11 +11,11 @@
         <small class="center grey-text">{{game.time | amCalendar:{lastDay: '[Yesterday at] HH:mm', sameDay: '[Today at] HH:mm', nextDay : '[Tomorrow at] HH:mm', lastWeek : '[last] dddd [at] HH:mm', nextWeek : 'dddd [at] HH:mm', sameElse : 'll HH:mm'} }}</small>
     </div>
     <game-flow [game]="game"></game-flow>
-    <template [ngIf]="playerId && !deletable">
+    <ng-template [ngIf]="playerId && !deletable">
         <div class="fixed-action-btn">
             <a class="btn-floating global__btn--comment green" (click)="onCommentClicked()" [attr.disabled]="online?null:true"><i class="material-icons">comment</i></a>
         </div>
-    </template>
+    </ng-template>
 
 
     <game-points [game]="game"></game-points>
