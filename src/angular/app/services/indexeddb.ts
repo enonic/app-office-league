@@ -120,7 +120,7 @@ export class IndexedDB {
         });
     }
 
-    put(storeName: string, value: any, key?: IDBKeyRange | IDBValidKey): Promise<any> {
+    put(storeName: string, value: any, key?: IDBValidKey): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             if (!this.checkDbReady(storeName, reject)) {
                 return;

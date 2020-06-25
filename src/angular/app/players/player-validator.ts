@@ -1,4 +1,4 @@
-import {AbstractControl, AsyncValidatorFn, FormGroup} from '@angular/forms';
+import {AbstractControl, AsyncValidatorFn, FormGroup, ValidationErrors} from '@angular/forms';
 import {GraphQLService} from '../services/graphql.service';
 
 export class PlayerValidator {
@@ -38,7 +38,7 @@ export class PlayerValidator {
     }
 
     static nameInUseValidator(graphQLService: GraphQLService, id?: string): AsyncValidatorFn {
-        return (control: AbstractControl): { [key: string]: any } => {
+        return (control: AbstractControl): Promise<ValidationErrors> => {
             const name = control.value;
             return graphQLService.post(PlayerValidator.playerNameInUseQuery, {name: name}).then(data => {
                 return data && data.player && (data.player.id !== id) ? {'nameinuse': true} : null;

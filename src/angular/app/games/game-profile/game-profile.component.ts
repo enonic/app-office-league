@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, Renderer, ViewChild} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, Renderer2, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GameComponent} from '../game/game.component';
@@ -36,7 +36,7 @@ export class GameProfileComponent
     private wsMan: WebSocketManager;
 
     constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, protected router: Router,
-                private authService: AuthService, private _renderer: Renderer, private pageTitleService: PageTitleService,
+                private authService: AuthService, private _renderer: Renderer2, private pageTitleService: PageTitleService,
                 protected offlineService: OfflinePersistenceService, private onlineStatusService: OnlineStatusService) {
         super(graphQLService, route, router, offlineService);
     }
@@ -107,9 +107,9 @@ export class GameProfileComponent
     onCommentClicked() {
         this.comment = '';
         this.showModalMessage();
-        setTimeout(_ =>
-            this._renderer.invokeElementMethod(
-                this.commentsTextAreaElementRef.nativeElement, 'focus', []), 0);
+        this._renderer.selectRootElement(
+            this.commentsTextAreaElementRef.nativeElement
+        ).focus();
     }
 
     onCommentDoneClicked() {

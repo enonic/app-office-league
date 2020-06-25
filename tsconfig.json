@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
+    "target":"ES2015",
     "baseUrl": "",
     "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": ["es6", "dom"],
+    "lib": ["ES2015", "dom"],
     "mapRoot": "./",
-    "module": "es6",
+    "module": "es2015",
     "moduleResolution": "node",
     "outDir": "../dist/out-tsc",
     "sourceMap": true,

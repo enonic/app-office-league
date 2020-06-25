@@ -4,7 +4,7 @@ import {Location} from '@angular/common';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
 import {MaterializeAction} from 'angular2-materialize/dist/index';
-import {Headers, Http, RequestOptions} from '@angular/http';
+import {HttpHeaders, HttpClient, RequestOptions} from '@angular/common/http';
 import {XPCONFIG} from '../../app.config';
 import {Team} from '../../../graphql/schemas/Team';
 import {PageTitleService} from '../../services/page-title.service';
@@ -137,7 +137,7 @@ export class TeamEditCreateComponent
             return team.players.map((p) => p.id).filter((id) => id != playerId)[0];
         });
 
-        let possibleTeamMateIds = new Set();
+        let possibleTeamMateIds : Set<string> = new Set();
         data.player.leaguePlayers.forEach((leaguePlayer => {
             leaguePlayer.league.leaguePlayers.forEach((relatedLeaguePlayer) => {
                 if (relatedLeaguePlayer.player.id != data.player.id) {
@@ -258,10 +258,11 @@ export class TeamEditCreateComponent
             formData.append('type', 'team');
             formData.append('id', id);
 
-            let headers = new Headers();
-            headers.append('Accept', 'application/json');
-            let options = new RequestOptions({headers: headers});
-            return this.http.post(XPCONFIG.setImageUrl, formData, options)
+            return this.http.post(XPCONFIG.setImageUrl, formData, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
                 .map(this.extractData)
                 .catch(this.handleError)
                 .toPromise();

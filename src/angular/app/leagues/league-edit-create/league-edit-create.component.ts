@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
 import {BaseComponent} from '../../common/base.component';
 import {XPCONFIG} from '../../app.config';
-import {Headers, Http, RequestOptions} from '@angular/http';
+import {HttpClient} from '@angular/common/http';
 import {Sport, SportUtil} from '../../../graphql/schemas/Sport';
 import {League} from '../../../graphql/schemas/League';
 import {AuthService} from '../../services/auth.service';
@@ -63,7 +63,7 @@ export class LeagueEditCreateComponent
     private online: boolean;
     private onlineStateCallback = () => this.online = navigator.onLine;
 
-    constructor(private http: Http, private authService: AuthService, private graphQLService: GraphQLService,
+    constructor(private http: HttpClient, private authService: AuthService, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private onlineStatusService: OnlineStatusService,
                 route: ActivatedRoute, private location: Location, private router: Router, private fb: FormBuilder,
                 private sanitizer: DomSanitizer) {
@@ -261,10 +261,11 @@ export class LeagueEditCreateComponent
             formData.append('type', 'league');
             formData.append('id', id);
 
-            let headers = new Headers();
-            headers.append('Accept', 'application/json');
-            let options = new RequestOptions({headers: headers});
-            return this.http.post(XPCONFIG.setImageUrl, formData, options)
+            return this.http.post(XPCONFIG.setImageUrl, formData, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
                 .map(this.extractData)
                 .catch(this.handleError)
                 .toPromise();

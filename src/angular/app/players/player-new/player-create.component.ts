@@ -151,10 +151,11 @@ export class PlayerCreateComponent extends BaseComponent implements OnInit, Afte
             formData.append('type', 'player');
             formData.append('id', id);
 
-            let headers = new Headers();
-            headers.append('Accept', 'application/json');
-            let options = new RequestOptions({headers: headers});
-            return this.http.post(XPCONFIG.setImageUrl, formData, options)
+            return this.http.post(XPCONFIG.setImageUrl, formData, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
                 .map(this.extractData)
                 .catch(this.handleError)
                 .toPromise();

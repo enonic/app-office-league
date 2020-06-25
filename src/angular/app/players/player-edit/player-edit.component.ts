@@ -7,7 +7,7 @@ import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
 import {Countries} from '../../common/countries';
 import {Country} from '../../common/country';
-import {Headers, Http, RequestOptions} from '@angular/http';
+import {HttpClient} from '@angular/common/http';
 import {XPCONFIG} from '../../app.config';
 import {PageTitleService} from '../../services/page-title.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
@@ -45,7 +45,7 @@ export class PlayerEditComponent
     private onlineStateCallback = () => this.online = navigator.onLine;
     @ViewChild('fileInput') inputEl: ElementRef;
 
-    constructor(private http: Http, route: ActivatedRoute, private pageTitleService: PageTitleService,
+    constructor(private http: HttpClient, route: ActivatedRoute, private pageTitleService: PageTitleService,
                 private graphQLService: GraphQLService, private onlineStatusService: OnlineStatusService,
                 private router: Router, private location: Location, private fb: FormBuilder, private sanitizer: DomSanitizer,
                 private userProfileService: UserProfileService, private notifService: PushNotificationService) {
@@ -248,13 +248,14 @@ export class PlayerEditComponent
             formData.append('type', 'player');
             formData.append('id', id);
 
-            let headers = new Headers();
-            headers.append('Accept', 'application/json');
-            let options = new RequestOptions({headers: headers});
-            return this.http.post(XPCONFIG.setImageUrl, formData, options)
-                .map(this.extractData)
-                .catch(this.handleError)
-                .toPromise();
+            return this.http.post(XPCONFIG.setImageUrl, formData, {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .toPromise()
+            .catch(this.handleError)
+            .then(this.extractData);
         }
         return Promise.resolve();
     }
