@@ -16,12 +16,14 @@
 
   "files": [
     "src/angular/app/app.module.ts",
-    "src/angular/main.aot.ts"
+    "src/angular/main.aot.ts",
+    "src/angular/polyfills.ts",
+    "src/angular/vendor.aot.ts",
   ],
 
   "angularCompilerOptions": {
     "genDir": "src/angular/assets/aot",
-    "skipMetadataEmit": true
+    "skipMetadataEmit": false
   },
   "exclude": [
     "node_modules",

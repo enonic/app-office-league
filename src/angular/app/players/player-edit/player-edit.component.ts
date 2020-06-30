@@ -18,6 +18,8 @@ import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {UserProfileService} from '../../services/user-profile.service';
 import {OnlineStatusService} from '../../services/online-status.service';
 import {PushNotificationService} from '../../services/push-notification.sevice';
+import { catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'player-edit',
@@ -257,7 +259,6 @@ export class PlayerEditComponent
             .catch(this.handleError)
             .then(this.extractData);
         }
-        return Promise.resolve();
     }
 
     private onFileInputChange(input: HTMLInputElement) {

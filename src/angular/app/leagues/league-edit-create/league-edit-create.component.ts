@@ -5,6 +5,7 @@ import {Location} from '@angular/common';
 import {BaseComponent} from '../../common/base.component';
 import {XPCONFIG} from '../../app.config';
 import {HttpClient} from '@angular/common/http';
+import {catchError} from 'rxjs/operators';
 import {Sport, SportUtil} from '../../../graphql/schemas/Sport';
 import {League} from '../../../graphql/schemas/League';
 import {AuthService} from '../../services/auth.service';
@@ -266,9 +267,9 @@ export class LeagueEditCreateComponent
                         'Accept': 'application/json'
                     }
                 })
-                .map(this.extractData)
+                .toPromise()
                 .catch(this.handleError)
-                .toPromise();
+                .then(this.extractData);
         }
         return Promise.resolve();
     }

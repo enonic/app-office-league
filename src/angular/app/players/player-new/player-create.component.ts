@@ -5,7 +5,7 @@ import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
 import {Countries} from '../../common/countries';
 import {Country} from '../../common/country';
-import {Headers, Http, RequestOptions} from '@angular/http';
+import {HttpClient} from '@angular/common/http';
 import {XPCONFIG} from '../../app.config';
 import {AuthService} from '../../services/auth.service';
 import {PageTitleService} from '../../services/page-title.service';
@@ -38,7 +38,7 @@ export class PlayerCreateComponent extends BaseComponent implements OnInit, Afte
     private onlineStateCallback = () => this.online = navigator.onLine;
     @ViewChild('fileInput') inputEl: ElementRef;
 
-    constructor(private http: Http, route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
+    constructor(private http: HttpClient, route: ActivatedRoute, private router: Router, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private onlineStatusService: OnlineStatusService,
                 private auth: AuthService, private fb: FormBuilder, private sanitizer: DomSanitizer,
                 private userProfileService: UserProfileService) {
@@ -156,9 +156,9 @@ export class PlayerCreateComponent extends BaseComponent implements OnInit, Afte
                         'Accept': 'application/json'
                     }
                 })
-                .map(this.extractData)
+                .toPromise()
                 .catch(this.handleError)
-                .toPromise();
+                .then(this.extractData);
         }
         return Promise.resolve();
     }

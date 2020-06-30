@@ -4,7 +4,7 @@ import {Location} from '@angular/common';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
 import {MaterializeAction} from 'angular2-materialize/dist/index';
-import {HttpHeaders, HttpClient, RequestOptions} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {XPCONFIG} from '../../app.config';
 import {Team} from '../../../graphql/schemas/Team';
 import {PageTitleService} from '../../services/page-title.service';
@@ -46,7 +46,7 @@ export class TeamEditCreateComponent
     private onlineStateCallback = () => this.online = navigator.onLine;
     @ViewChild('fileInput') inputEl: ElementRef;
 
-    constructor(private http: Http, route: ActivatedRoute, private graphQLService: GraphQLService,
+    constructor(private http: HttpClient, route: ActivatedRoute, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private router: Router, private location: Location,
                 private authService: AuthService, private onlineStatusService: OnlineStatusService, 
                 private fb: FormBuilder, private sanitizer: DomSanitizer) {
@@ -263,9 +263,9 @@ export class TeamEditCreateComponent
                         'Accept': 'application/json'
                     }
                 })
-                .map(this.extractData)
-                .catch(this.handleError)
-                .toPromise();
+                .toPromise()
+                .catch(this.extractData)
+                .then(this.handleError);
         }
         return Promise.resolve();
     }

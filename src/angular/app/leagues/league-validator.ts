@@ -1,5 +1,6 @@
-import {AbstractControl, AsyncValidatorFn, FormGroup, ValidatorFn} from '@angular/forms';
+import {AbstractControl, AsyncValidatorFn, FormGroup, ValidatorFn, ValidationErrors} from '@angular/forms';
 import {GraphQLService} from '../services/graphql.service';
+import { Observable } from 'rxjs';
 
 export class LeagueValidator {
 
@@ -44,7 +45,7 @@ export class LeagueValidator {
     }
 
     static nameInUseValidator(graphQLService: GraphQLService, id?: string): AsyncValidatorFn {
-        return (control: AbstractControl): { [key: string]: any } => {
+        return (control: AbstractControl): Promise<any> => {
             const name = control.value;
             return graphQLService.post(LeagueValidator.leagueNameInUseQuery, {name: name}).then(data => {
                 return data && data.league && (data.league.id !== id) ? {'nameinuse': true} : null;

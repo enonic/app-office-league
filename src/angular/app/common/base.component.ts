@@ -30,7 +30,7 @@ export class BaseComponent implements OnInit, OnChanges, OnDestroy {
         return this;
     }
 
-    protected extractData(res : any) {
+    protected extractData(res : Promise<any>) {
         return res;
     }
 
