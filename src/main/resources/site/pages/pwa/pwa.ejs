@@ -15,10 +15,10 @@
     <link rel="mask-icon" href="{{assetsUrl}}/icons/safari-pinned-tab.svg" color="#142663">
     <meta name="theme-color" content="#ffffff">
 
-    <% for (key in htmlWebpackPlugin.files.css) { %>
+    <!-- <% for (key in htmlWebpackPlugin.files.css) { %>
     <% item = htmlWebpackPlugin.files.css[key]; %>
     <link rel="stylesheet" href="<%= '{{baseHref}}' + item %>" media="none" onload="if(media!='all')media='all'"/>
-    <% }; %>
+    <% }; %> -->
 
     <style type="text/css">
         /* Define styles here to show them instantly while css is being loaded */
@@ -97,6 +97,8 @@
         let serviceWorker = registration.installing || registration.active;
         if (serviceWorker) {
             let assets = [];
+            // TODO load asset workers
+
             <% for (key in htmlWebpackPlugin.files.chunks) { %>
             <%      item = htmlWebpackPlugin.files.chunks[key].entry; %>
             assets.push('<%= '{{baseHref}}' + item %>');

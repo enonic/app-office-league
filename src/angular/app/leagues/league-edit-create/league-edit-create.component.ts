@@ -17,7 +17,6 @@ import {LeagueValidator} from '../league-validator';
 import {CustomValidators} from '../../common/validators';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {Player} from '../../../graphql/schemas/Player';
-import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
 
 @Component({
     selector: 'league-edit-create',
@@ -59,8 +58,8 @@ export class LeagueEditCreateComponent
         'pointsToWin': '',
         'minimumDifference': ''
     };
-    materializeActionsAdmin = new EventEmitter<string | MaterializeAction>();
-    materializeActionsPlayer = new EventEmitter<string | MaterializeAction>();
+    materializeActionsAdmin = new EventEmitter<string>();
+    materializeActionsPlayer = new EventEmitter<string>();
     private online: boolean;
     private onlineStateCallback = () => this.online = navigator.onLine;
 
@@ -338,21 +337,21 @@ export class LeagueEditCreateComponent
     }
 
     showSelectAdminModal(): void {
-        this.materializeActionsAdmin.emit({action: "modal", params: ['open']});
+        //this.materializeActionsAdmin.emit({action: "modal", params: ['open']});
     }
 
     showSelectPlayerModal(): void {
         this.onlyPlayerNamesToAdd = [];
-        this.materializeActionsPlayer.emit({action: "modal", params: ['open']});
+        //this.materializeActionsPlayer.emit({action: "modal", params: ['open']});
         setTimeout(() => this.addPlayerChipsViewChild.focus(), 300); //No possibility to set a callback on display
     }
 
     hideSelectAdminModal(): void {
-        this.materializeActionsAdmin.emit({action: "modal", params: ['close']});
+        //this.materializeActionsAdmin.emit({action: "modal", params: ['close']});
     }
 
     hideSelectPlayerModal(): void {
-        this.materializeActionsPlayer.emit({action: "modal", params: ['close']});
+        //this.materializeActionsPlayer.emit({action: "modal", params: ['close']});
     }
 
     private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $adminPlayerIds: [ID], $playerNames: [String], $pointsToWin: Int, $minimumDifference: Int, $halfTimeSwitch: Boolean) {

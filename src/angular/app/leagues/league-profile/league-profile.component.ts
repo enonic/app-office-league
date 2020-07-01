@@ -8,7 +8,6 @@ import {Game} from '../../../graphql/schemas/Game';
 import {PageTitleService} from '../../services/page-title.service';
 import {OnlineStatusService} from '../../services/online-status.service';
 import {Player} from '../../../graphql/schemas/Player';
-import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
 import {WebSocketManager} from '../../services/websocket.manager';
 import {XPCONFIG} from '../../app.config';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
@@ -36,13 +35,13 @@ export class LeagueProfileComponent
     removePlayer: Player;
     approvePlayer: Player;
     approvePollingTimerId: any;
-    materializeActions = new EventEmitter<string | MaterializeAction>();
-    materializeActionsRemove = new EventEmitter<string | MaterializeAction>();
-    materializeActionsApprove = new EventEmitter<string | MaterializeAction>();
-    materializeActionsPending = new EventEmitter<string | MaterializeAction>();
-    materializeActionsDelete = new EventEmitter<string | MaterializeAction>();
-    materializeActionsLeave = new EventEmitter<string | MaterializeAction>();
-    materializeActionsRegenerateRanking = new EventEmitter<string | MaterializeAction>();
+    materializeActions = new EventEmitter<string>();
+    materializeActionsRemove = new EventEmitter<string>();
+    materializeActionsApprove = new EventEmitter<string>();
+    materializeActionsPending = new EventEmitter<string>();
+    materializeActionsDelete = new EventEmitter<string>();
+    materializeActionsLeave = new EventEmitter<string>();
+    materializeActionsRegenerateRanking = new EventEmitter<string>();
     online: boolean;
     onlineStateCallback = () => this.online = navigator.onLine;
     private wsMan: WebSocketManager;
@@ -279,65 +278,65 @@ export class LeagueProfileComponent
 
     showModal(): void {
         this.playerNamesToAdd = [];
-        this.materializeActions.emit({action: "modal", params: ['open']});
+        //this.materializeActions.emit({action: "modal", params: ['open']});
         setTimeout(() => this.addPlayerChipsViewChild.focus(), 300); //No possibility to set a callback on display
     }
 
     hideModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['close']});
+        //this.materializeActions.emit({action: "modal", params: ['close']});
     }
 
     public showModalRemove(): void {
-        this.materializeActionsRemove.emit({action: "modal", params: ['open']});
+        //this.materializeActionsRemove.emit({action: "modal", params: ['open']});
     }
 
     public hideModalRemove(): void {
-        this.materializeActionsRemove.emit({action: "modal", params: ['close']});
+        //this.materializeActionsRemove.emit({action: "modal", params: ['close']});
     }
 
     public showModalApprove(): void {
-        this.materializeActionsApprove.emit({action: "modal", params: ['open']});
+        //this.materializeActionsApprove.emit({action: "modal", params: ['open']});
     }
 
     public hideModalApprove(): void {
-        this.materializeActionsApprove.emit({action: "modal", params: ['close']});
+        //this.materializeActionsApprove.emit({action: "modal", params: ['close']});
     }
 
     public showModalPending(): void {
         // check if pending, show info modal if still pending
         this.refreshData(this.league.name).then(() => {
             if (!this.playerInLeague && this.joinLeagueRequested) {
-                this.materializeActionsPending.emit({action: "modal", params: ['open']});
+                //this.materializeActionsPending.emit({action: "modal", params: ['open']});
             }
         });
     }
 
     public hideModalPending(): void {
-        this.materializeActionsPending.emit({action: "modal", params: ['close']});
+        //this.materializeActionsPending.emit({action: "modal", params: ['close']});
     }
 
     public showModalDelete(): void {
-        this.materializeActionsDelete.emit({action: "modal", params: ['open']});
+        //this.materializeActionsDelete.emit({action: "modal", params: ['open']});
     }
 
     public hideModalDelete(): void {
-        this.materializeActionsDelete.emit({action: "modal", params: ['close']});
+        //this.materializeActionsDelete.emit({action: "modal", params: ['close']});
     }
 
     public showModalLeave(): void {
-        this.materializeActionsLeave.emit({action: "modal", params: ['open']});
+        //this.materializeActionsLeave.emit({action: "modal", params: ['open']});
     }
 
     public hideModalLeave(): void {
-        this.materializeActionsLeave.emit({action: "modal", params: ['close']});
+        //this.materializeActionsLeave.emit({action: "modal", params: ['close']});
     }
 
     public showModalRanking(): void {
-        this.materializeActionsRegenerateRanking.emit({action: "modal", params: ['open']});
+        //this.materializeActionsRegenerateRanking.emit({action: "modal", params: ['open']});
     }
 
     public hideModalRanking(): void {
-        this.materializeActionsRegenerateRanking.emit({action: "modal", params: ['close']});
+        //this.materializeActionsRegenerateRanking.emit({action: "modal", params: ['close']});
     }
 
     onWsMessage(event: RemoteEvent) {

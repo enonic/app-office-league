@@ -15,7 +15,6 @@ import {EditRouteGuard} from './guards/edit.route.guard';
 import {AuthService} from './services/auth.service';
 import {CryptoService} from './services/crypto.service';
 import {CommonModule} from './common/common.module';
-import {MaterializeModule} from 'angular2-materialize';
 import {PageTitleService} from './services/page-title.service';
 import {OfflinePersistenceService} from './services/offline-persistence.service';
 import {OnlineStatusService} from './services/online-status.service';
@@ -36,7 +35,6 @@ const appRoutes: Routes = [
     ],
     imports: [
         CommonModule,
-        MaterializeModule,
         RouterModule.forRoot(appRoutes),
         FormsModule,
         HttpClientModule,

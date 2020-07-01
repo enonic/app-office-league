@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
-import {MaterializeAction} from 'angular2-materialize/dist/index';
+import {Modal} from 'materialize-css';
 import {HttpClient} from '@angular/common/http';
 import {XPCONFIG} from '../../app.config';
 import {Team} from '../../../graphql/schemas/Team';
@@ -25,8 +25,10 @@ import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 export class TeamEditCreateComponent
     extends BaseComponent
     implements AfterViewInit {
-    materializeActions = new EventEmitter<string | MaterializeAction>();
-
+    materializeActions = new EventEmitter<string>();
+    @ViewChild('player-select-modal') playerSelectModalRef;
+    @ViewChild('fileInput') inputEl: ElementRef;
+    
     name: string;
     id: string;
     description: string;
@@ -44,8 +46,8 @@ export class TeamEditCreateComponent
     private currentPlayer: Player;
     private online: boolean;
     private onlineStateCallback = () => this.online = navigator.onLine;
-    @ViewChild('fileInput') inputEl: ElementRef;
-
+    private playerSelectModal : Modal;
+    
     constructor(private http: HttpClient, route: ActivatedRoute, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private router: Router, private location: Location,
                 private authService: AuthService, private onlineStatusService: OnlineStatusService, 
@@ -88,6 +90,7 @@ export class TeamEditCreateComponent
     ngAfterViewInit(): void {
         let inputEl: HTMLInputElement = this.inputEl.nativeElement;
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
+        this.playerSelectModal = Modal.init(this.playerSelectModalRef.nativeElement, { inDuration: 100, outDuration: 100, dismissible: true });
     }
 
     private updatePageTitle(title: string) {
@@ -233,11 +236,11 @@ export class TeamEditCreateComponent
     }
 
     public showModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['open']});
+        this.playerSelectModal.open();
     }
 
     public hideModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['close']});
+        this.playerSelectModal.close();
     }
 
     private checkTeamNameInUse(name: string): Promise<boolean> {

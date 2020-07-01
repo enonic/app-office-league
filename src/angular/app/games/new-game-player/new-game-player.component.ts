@@ -1,7 +1,7 @@
-import {Component, Input, Output, EventEmitter, ElementRef, HostBinding, HostListener} from '@angular/core';
+import {Component, Input, Output, EventEmitter, ElementRef, HostBinding, HostListener, ViewChild} from '@angular/core';
 import {Player} from '../../../graphql/schemas/Player';
 import {XPCONFIG} from '../../app.config';
-import {MaterializeAction} from 'angular2-materialize';
+import {Modal} from 'materialize-css';
 
 @Component({
     selector: 'new-game-player',
@@ -9,13 +9,17 @@ import {MaterializeAction} from 'angular2-materialize';
     styleUrls: ['new-game-player.component.less']
 })
 export class NewGamePlayerComponent {
-    materializeActions = new EventEmitter<string|MaterializeAction>();
+    materializeActions = new EventEmitter<string>();
 
     @Input() player: Player;
     @Input() leaguePlayerIds: string[];
     @Input() selectedPlayerIds: string[];
     @Input() sideClass: string;
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
+
+    @ViewChild('PlayerSelect') playerSelectedRef;
+
+    private playerSelectedModal : Modal;
 
     playerSelectEnabled: boolean;
     public modalTitle: string = 'Select a player';
@@ -26,6 +30,10 @@ export class NewGamePlayerComponent {
     public setPlayer(player: Player) {
         this.player = player;
         this.playerSelected.emit(player);
+    }
+
+    ngAfterViewInit() {
+        this.playerSelectedModal = Modal.init(this.playerSelectedRef.nativeElement, { dismissible: true, inDuration: 100, outDuration: 100});
     }
 
     onClicked() {
@@ -40,13 +48,13 @@ export class NewGamePlayerComponent {
     }
 
     public showModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['open']});
+        this.playerSelectedModal.open();
         this.playerSelectEnabled = true;
     }
 
     public hideModal(): void {
-        this.playerSelectEnabled = false;
-        this.materializeActions.emit({action: "modal", params: ['close']});
+        this.playerSelectedModal.close();
+        this.playerSelectEnabled = false;        
     }
 
     questionMarkImg(): string {

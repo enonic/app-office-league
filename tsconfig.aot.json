@@ -15,10 +15,10 @@
   },
 
   "files": [
-    "src/angular/app/app.module.ts",
-    "src/angular/main.aot.ts",
     "src/angular/polyfills.ts",
     "src/angular/vendor.aot.ts",
+    "src/angular/main.aot.ts",
+    "src/angular/app/app.module.ts",
   ],
 
   "angularCompilerOptions": {

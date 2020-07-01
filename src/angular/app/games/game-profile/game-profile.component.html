@@ -35,8 +35,7 @@
     </div>
 
 </div>
-<div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
-     [materializeActions]="materializeActions">
+<div id="gameCommentModal" class="modal center">
     <div class="modal-content">
         <h6 class="center">Game comment</h6>
         <div class="input-field col s12">
@@ -50,8 +49,7 @@
     </div>
 </div>
 
-<div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
-     [materializeActions]="materializeActionsDelete">
+<div id="gameDeleteModal" class="modal center">
     <div class="modal-content">
         <h5 class="center">Delete game</h5>
         <p>You are about to permanently delete this game. <strong>This operation cannot be undone.</strong></p>
@@ -62,8 +60,7 @@
     </div>
 </div>
 
-<div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
-     [materializeActions]="materializeActionsContinue">
+<div id="gameContinueModal" class="modal center">
     <div class="modal-content">
         <h5 class="center">Game in progress</h5>
         <p>This game is not finished. Would you like to continue playing?</p>

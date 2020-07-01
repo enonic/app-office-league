@@ -3,12 +3,11 @@ import './polyfills.ts';
 import '@angular/platform-browser';
 import '@angular/core';
 import '@angular/common';
-import '@angular/http';
 import '@angular/router';
 // RxJS
 import 'rxjs';
 import 'jquery';
-import 'materialize-css';
+import 'materialize-css/dist/js/materialize';
 import 'crypto-js';
 import 'chart.js';
 import 'chartjs-plugin-annotation';

@@ -1,6 +1,6 @@
 <div class="navbar-fixed" [hidden]="isPlayingGame">
     <nav class="app__navbar">
-        <a href="#" materialize="sideNav" [materializeParams]="[{closeOnClick: true, edge: 'right'}]"
+        <a href="#" id="sideNavigation" (click)="closeSideNav()"
            data-activates="mobile-side-nav" class="app__navbar-menu-btn button-collapse">
             <i class="material-icons">menu</i>
         </a>

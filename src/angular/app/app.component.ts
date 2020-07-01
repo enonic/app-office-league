@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Location} from '@angular/common';
 import {AuthService} from './services/auth.service';
 import {GraphQLService} from './services/graphql.service';
 import {ImageService} from './services/image.service';
 import {filter} from 'rxjs/operators';
+import {Sidenav} from 'materialize-css';
 import {NavigationStart, Router} from '@angular/router';
 import {PageTitleService} from './services/page-title.service';
 import {UserProfileService} from './services/user-profile.service';
@@ -27,6 +28,10 @@ export class AppComponent implements OnInit {
     displayMenu: boolean;
     isOffline: boolean;
     infoPages: any[];
+    
+    @ViewChild('sideNavigation') sideNavigationRef;
+    private sideNavigation: Sidenav;
+
 
     constructor(public auth: AuthService,private graphQlService: GraphQLService, private pageTitleService: PageTitleService, private location: Location, private router: Router,
                 private userProfileService: UserProfileService) {
@@ -63,6 +68,10 @@ export class AppComponent implements OnInit {
         });
     }
 
+    ngAfterViewInit(): void {
+        this.sideNavigation = Sidenav.init(this.sideNavigationRef.nativeElement, { edge: "right", draggable: true, });
+    }
+
     back(): boolean {
         this.location.back();
         return false;
@@ -79,6 +88,10 @@ export class AppComponent implements OnInit {
 
     closeNav(): boolean {
         return false;
+    }
+
+    closeSideNav(): void {
+        this.sideNavigation.close();
     }
 
     private isTopLevelPage(url: string): boolean {

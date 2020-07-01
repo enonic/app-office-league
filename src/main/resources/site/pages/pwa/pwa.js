@@ -47,7 +47,7 @@ exports.get = function (req) {
 
     if (isPlayerCreatePage(req, appBaseUrl)) {
         if (req.params.invitation) {
-            var player = getPlayer();
+            let player = getPlayer();
             if (player) {
                 var invitation = invitationLib.removeInvitationByToken(req.params.invitation);
                 if (invitation) {
@@ -61,14 +61,14 @@ exports.get = function (req) {
         if (isLoggedInUserWithoutPlayer()) {
             return {
                 redirect: appBaseUrl + '/player-create'
-            }
+            };
         }
     }
 
 
     var userObj = user && {key: user.key};
     if (user) {
-        var player = storeLib.getPlayerByUserKey(user.key);
+        let player = storeLib.getPlayerByUserKey(user.key);
         userObj.playerId = player && player._id;
         userObj.playerName = (player && player.name) || user.displayName;
         userObj.playerImageUrl = player ? appBaseUrl + player.imageUrl : '';
@@ -100,7 +100,7 @@ exports.get = function (req) {
         idProvider: portalLib.idProviderUrl(),
         setImageUrl: portalLib.serviceUrl({service: "set-image"}),
         liveGameUrl: getWebSocketUrl(portalLib.serviceUrl({service: "live-game", type: "absolute"})),
-        publicKey: keyPair.publicKey
+        publicKey: keyPair.publicKey,
     };
     var body = mustacheLib.render(view, params);
 

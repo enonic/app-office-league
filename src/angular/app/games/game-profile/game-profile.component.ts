@@ -5,10 +5,10 @@ import {GameComponent} from '../game/game.component';
 import {XPCONFIG} from '../../app.config';
 import {Game} from '../../../graphql/schemas/Game';
 import {Comment} from '../../../graphql/schemas/Comment';
-import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
 import {AuthService} from '../../services/auth.service';
 import {OfflinePersistenceService} from '../../services/offline-persistence.service';
 import {PageTitleService} from '../../services/page-title.service';
+import { Modal } from 'materialize-css'
 import {OnlineStatusService} from '../../services/online-status.service';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 import {WebSocketManager} from '../../services/websocket.manager';
@@ -21,10 +21,13 @@ import {WebSocketManager} from '../../services/websocket.manager';
 export class GameProfileComponent
     extends GameComponent
     implements OnDestroy {
-    materializeActions = new EventEmitter<string | MaterializeAction>();
-    materializeActionsDelete = new EventEmitter<string | MaterializeAction>();
-    materializeActionsContinue = new EventEmitter<string | MaterializeAction>();
+    materializeActions = new EventEmitter<string>();
+    materializeActionsDelete = new EventEmitter<string>();
+    materializeActionsContinue = new EventEmitter<string>();
     @ViewChild('commenttextarea') commentsTextAreaElementRef;
+    @ViewChild('gameCommentModal') gameCommentModalRef;
+    @ViewChild('gameDeleteModal') gameDeleteModalRef;
+    @ViewChild('gameContinueModal') gameContinueModalRef;
 
     comment: string;
     playerId: string;
@@ -34,6 +37,9 @@ export class GameProfileComponent
     private onlineStateCallback = () => this.online = navigator.onLine;
     private gameId: string;
     private wsMan: WebSocketManager;
+    private gameCommentModal: Modal;
+    private gameDeleteModal: Modal;
+    private gameContinueModal : Modal;
 
     constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, protected router: Router,
                 private authService: AuthService, private _renderer: Renderer2, private pageTitleService: PageTitleService,
@@ -59,6 +65,13 @@ export class GameProfileComponent
     ngOnDestroy(): void {
         this.wsMan && this.wsMan.disconnect();
         this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);
+    }
+
+    ngAfterViewInit(): void {
+        let options = { inDuration: 100, outDuration: 100, dismissible: true};
+        this.gameCommentModal = Modal.init(this.gameCommentModalRef.nativeElement, options);
+        this.gameDeleteModal = Modal.init(this.gameDeleteModalRef.nativeElement, options);
+        this.gameContinueModal = Modal.init(this.gameContinueModalRef.nativeElement, options);
     }
 
     protected afterGameLoaded(game: Game) {
@@ -138,32 +151,33 @@ export class GameProfileComponent
             }
         });
     }
+    
     onConfirmContinueClicked() {
         this.router.navigate(['games', this.game.league.id, 'game-play'], {replaceUrl: true, queryParams: {gameId: this.gameId}});
     }
 
     public showModalMessage(): void {
-        this.materializeActions.emit({action: "modal", params: ['open']});
+        this.gameCommentModal.open();
     }
 
     public hideModalMessage(): void {
-        this.materializeActions.emit({action: "modal", params: ['close']});
+        this.gameCommentModal.close();
     }
 
     public showModalDelete(): void {
-        this.materializeActionsDelete.emit({action: "modal", params: ['open']});
+        this.gameDeleteModal.open();
     }
 
     public hideModalDelete(): void {
-        this.materializeActionsDelete.emit({action: "modal", params: ['close']});
+        this.gameDeleteModal.close();
     }
 
     public showModalContinuePlaying(): void {
-        this.materializeActionsContinue.emit({action: "modal", params: ['open']});
+        this.gameContinueModal.open();
     }
 
     public hideModalContinuePlaying(): void {
-        this.materializeActionsContinue.emit({action: "modal", params: ['close']});
+        this.gameContinueModal.close();
     }
 
     onWsMessage(event: RemoteEvent) {

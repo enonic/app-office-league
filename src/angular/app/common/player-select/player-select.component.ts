@@ -1,6 +1,5 @@
 import {Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChange, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {MaterializeAction} from 'angular2-materialize';
 import {List2Component} from '../list2.component';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../services/graphql.service';
@@ -17,7 +16,7 @@ import {GraphQLService} from '../../services/graphql.service';
 export class PlayerSelectComponent extends List2Component {
     @Input() playerIds: string[];
     @Input() excludedPlayerIds: string[] = [];
-    @Input() materializeActions: EventEmitter<string|MaterializeAction> = new EventEmitter<string|MaterializeAction>();
+    @Input() materializeEvent: EventEmitter<string> = new EventEmitter<string>();
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
     allPlayers: Player[] = [];
     players: Player[] = [];
@@ -31,8 +30,8 @@ export class PlayerSelectComponent extends List2Component {
     ngOnInit(): void {
         super.ngOnInit();
         this.searchValue = '';
-        if (this.materializeActions) {
-            this.materializeActions.subscribe((materialAction) => {
+        if (this.materializeEvent) {
+            this.materializeEvent.subscribe((materialAction) => {
                 if (materialAction.params && materialAction.params[0] === 'open') {
                     this.searchValue = '';
                     this.onSearchFieldModified();

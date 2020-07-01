@@ -14,15 +14,15 @@ module.exports = webpackMerge(commonConfig, {
     mode: "development",
 
     entry: {
-        app: "./src/angular/main.aot.ts",
         vendor: "./src/angular/vendor.aot.ts",
+        app: "./src/angular/main.aot.ts"
     },
 
     output: {
         path: helpers.root("build/resources/main/assets"),
         publicPath: "assets/",
         filename: "js/[name].js",
-        //chunkFilename: 'js/[id].chunk.js'
+        chunkFilename: 'js/[id].chunk.js'
     },
 
     module: {
@@ -42,7 +42,7 @@ module.exports = webpackMerge(commonConfig, {
         new HtmlWebpackPlugin({
             template: "src/main/resources/site/pages/pwa/pwa.ejs",
             filename: "../site/pages/pwa/pwa.html",
-            inject: false,
+            chunks: ["app", "vender"]
         }),
         /* new webpack.optimize.UglifyJsPlugin({
             minimize: true,

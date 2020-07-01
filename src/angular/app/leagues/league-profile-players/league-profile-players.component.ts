@@ -6,7 +6,7 @@ import {League} from '../../../graphql/schemas/League';
 import {LeaguePlayer} from '../../../graphql/schemas/LeaguePlayer';
 import {BaseComponent} from '../../common/base.component';
 import {PageTitleService} from '../../services/page-title.service';
-import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
+//import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
 import {Player} from '../../../graphql/schemas/Player';
 
 @Component({
@@ -23,8 +23,8 @@ export class LeagueProfilePlayersComponent
     private leagueName: string;
     private pageCount: number = 1;
     adminInLeague: boolean;
-    materializeActionsRemove = new EventEmitter<string | MaterializeAction>();
-    materializeActionsApprove = new EventEmitter<string | MaterializeAction>();
+    materializeActionsRemove = new EventEmitter<string>();
+    materializeActionsApprove = new EventEmitter<string>();
     removePlayer: Player;
     approvePlayer: Player;
     connectionError: boolean;
@@ -120,19 +120,23 @@ export class LeagueProfilePlayersComponent
     }
 
     public showModalRemove(): void {
-        this.materializeActionsRemove.emit({action: "modal", params: ['open']});
+        //TODO
+        //this.materializeActionsRemove.emit({action: "modal", params: ['open']});
     }
 
     public hideModalRemove(): void {
-        this.materializeActionsRemove.emit({action: "modal", params: ['close']});
+        //TODO
+        //this.materializeActionsRemove.emit({action: "modal", params: ['close']});
     }
 
     public showModalApprove(): void {
-        this.materializeActionsApprove.emit({action: "modal", params: ['open']});
+        //TODO
+        //this.materializeActionsApprove.emit({action: "modal", params: ['open']});
     }
 
     public hideModalApprove(): void {
-        this.materializeActionsApprove.emit({action: "modal", params: ['close']});
+        //TODO
+        //this.materializeActionsApprove.emit({action: "modal", params: ['close']});
     }
 
     private static readonly getLeagueQuery = `query ($name: String, $after:String, $first:Int, $sort: String, $playerId: ID!, $gamesSince: String) {

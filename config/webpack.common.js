@@ -44,7 +44,6 @@ module.exports = {
             chunks: 'all'
         }
     },
-
     module: {
         rules: [
             {
@@ -114,11 +113,8 @@ module.exports = {
         ),
         new MiniCssExtractPlugin({
             filename: 'css/[name].css',
-            //allChunks: true
+            allChunks: true
         }),
-        /* new config.optimize.splitChunks({
-            name: 'common'
-        }), */
         new CopyWebpackPlugin({
             patterns: [
                 {
@@ -128,7 +124,7 @@ module.exports = {
                         ignore: [ 'img/flags/**' ],
                     },
                     //debug: 'warning'
-                }
+                },
             ]
         }),
         new webpack.ProvidePlugin({

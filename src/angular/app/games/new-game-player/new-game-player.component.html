@@ -12,11 +12,10 @@
             <span class="new-game-player__player-title">{{player.name}}</span>
         </div>
     </ng-template>
-    <div class="modal center player-select-modal" materialize="modal"
-         [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
+    <div id="PlayerSelect" class="modal center player-select-modal">
         <div class="modal-content">
             <h5 class="center new-game-player__title">{{modalTitle}}</h5>
-            <player-select [playerIds]="leaguePlayerIds" [excludedPlayerIds]="selectedPlayerIds" [materializeActions]="materializeActions"
+            <player-select [playerIds]="leaguePlayerIds" [excludedPlayerIds]="selectedPlayerIds"
                            (playerSelected)="onSelected($event)"></player-select>
         </div>
     </div>

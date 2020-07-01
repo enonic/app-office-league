@@ -12,7 +12,6 @@ import {LeagueProfilePlayersComponent} from './league-profile-players/league-pro
 import {LeagueProfileTeamsComponent} from './league-profile-teams/league-profile-teams.component';
 import {LeagueEditCreateComponent} from './league-edit-create/league-edit-create.component';
 import {FormsModule} from '@angular/forms';
-import {MaterializeModule} from 'angular2-materialize/dist/index';
 import {ChartsModule} from 'ng2-charts';
 import {PlayerRouteGuard} from '../guards/player.route.guard';
 import {AdminListComponent} from './admin-list/admin-list.component';
@@ -44,7 +43,6 @@ const leagueRoutes: Routes = [
         AdminSummaryComponent
     ],
     imports: [
-        MaterializeModule,
         FormsModule,
         CommonModule,
         GamesModule,

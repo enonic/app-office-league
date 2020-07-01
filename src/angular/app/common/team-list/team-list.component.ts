@@ -2,7 +2,6 @@ import {Component, Input} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {List2Component} from '../../common/list2.component';
 import {Team} from '../../../graphql/schemas/Team';
-import {MaterializeDirective} from 'angular2-materialize/dist/index';
 
 @Component({
     selector: 'team-list',

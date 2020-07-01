@@ -26,9 +26,9 @@ module.exports = webpackMerge(commonConfig, {
                         loader: 'awesome-typescript-loader',
                         options: {configFileName: helpers.root('tsconfig.json')}
                     },
-                    'angular2-template-loader',
+                    //'angular2-template-loader',
                     // https://medium.com/@daviddentoom/angular-2-lazy-loading-with-webpack-d25fe71c29c1#.2l9gygqbr
-                    'angular2-router-loader'
+                    //'angular2-router-loader'
                 ]
             }
         ]
@@ -36,7 +36,7 @@ module.exports = webpackMerge(commonConfig, {
 
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'src/main/resources/site/pages/pwa/pwa.ejs',
+            template: 'src/main/resources/site/pages/pwa/pwa.html',
             filename: '../site/pages/pwa/pwa.html',
             inject: false
         })
