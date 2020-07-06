@@ -24,6 +24,9 @@ import {UserProfileService} from './services/user-profile.service';
 import {WindowRefService} from './services/window-ref.service';
 import {AudioService} from './services/audio.service';
 import {PushNotificationService} from './services/push-notification.sevice';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 const appRoutes: Routes = [
     {path: '**', redirectTo: '', pathMatch: 'full'}
@@ -34,6 +37,8 @@ const appRoutes: Routes = [
         AppComponent
     ],
     imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
         CommonModule,
         RouterModule.forRoot(appRoutes),
         FormsModule,
@@ -42,7 +47,8 @@ const appRoutes: Routes = [
         GamesModule,
         TeamsModule,
         LeaguesModule,
-        InfoPageModule
+        InfoPageModule,
+        MatSidenavModule
     ],
     providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard, EditRouteGuard,
         OfflinePersistenceService, OnlineStatusService, RankingService, UserProfileService, WindowRefService, AudioService,

@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-//import {Headers, Http, RequestOptions, Response} from '@angular/common/http';
 import {Observable, empty} from 'rxjs';
-import {catchError, } from 'rxjs/operators'
+import {catchError, map} from 'rxjs/operators'
 import {Team} from '../../graphql/schemas/Team';
 import {Game} from '../../graphql/schemas/Game';
 import {League} from '../../graphql/schemas/League';
@@ -25,30 +24,32 @@ export class GraphQLService {
     post(query: string, variables?: {[key: string]: any}, successCallback?: (data) => void, failureCallback?: (error) => void): Promise<any> {
         let body = JSON.stringify({query: query, variables: variables});
         let hash = this.cryptoService.sha1(body);
-        let url = this.url; //+ '?etag=' + hash;
+        let url = this.url;
 
-        /* new http */
+        let headers = new HttpHeaders()
+            .append('Content-Type', 'application/json; charset=utf-8');
 
-        let headers = new HttpHeaders();
-        headers.append('Content-Type', 'application/json; charset=utf-8');
-
-        let networkPromise = this.http.get(
+        let networkPromise = this.http.post(
             url,
             {
                 headers,
-                observe: "body",
+                body,
                 params: { etag: hash }
             }
         )
         .pipe(
-            catchError(this.handleError),
-            this.extractData,
+            map(this.extractData),
+            catchError(this.handleError)
         )
         .toPromise();
 
         if (typeof CacheStorage !== "undefined" && !!successCallback) {
             return this.getCachePromise(url, networkPromise, successCallback, failureCallback);
         }
+
+        networkPromise
+            .catch(this.handleError)
+            .then(this.extractData)
 
         if (!!successCallback) {
             return networkPromise.then(successCallback);
@@ -85,11 +86,11 @@ export class GraphQLService {
             .catch(() => fallbackPromise);
     }
 
-    private extractCachedData(res: Response) {
+    private extractCachedData(res) {
         return res.json();
     }
 
-    private extractData(res) { //TODO need to do this with the observable?
+    private extractData(res) {
         let json = res.json();
         if (json.errors && json.errors.length > 0) {
             throw json.errors;
@@ -107,7 +108,7 @@ export class GraphQLService {
             if (this.authService.isAuthenticated()) {
                 this.authService.login();
             }
-            return Observable.throw('Not authenticated');
+            return Promise.reject('Not authenticated');
         }
 
         let errMsg: String;
@@ -122,7 +123,7 @@ export class GraphQLService {
             errMsg = error.message ? error.message : error.toString();
         }
         console.error(errMsg);
-        return Observable.throw('Failed to retrieve data');
+        return Promise.reject('Failed to retrieve data');
     }
 
 }

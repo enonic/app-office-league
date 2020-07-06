@@ -16,22 +16,22 @@ module.exports = {
         errorDetails: true,
         colors: true,
         reasons: true,
-        timings: true,
-        children: true,
-        modules: true,
+        timings: false,
+        children: false,
+        modules: false,
         assets: false,
-        chunkModules: true,
+        chunkModules: false,
         chunks: true,
-        source: true,
-        entrypoints: true,
-        depth: true
+        source: false,
+        entrypoints: false,
+        depth: false
     },
 
     entry: {
-        'polyfills': './src/angular/polyfills.ts',
+        //'polyfills': './src/angular/polyfills.ts',
         'vendor': './src/angular/vendor.ts',
         'app': './src/angular/main.ts',
-        'styles': './src/angular/styles.less',
+        //'styles': './src/angular/styles.less',
         'critical': './src/main/resources/assets/css/critical.less'
     },
 

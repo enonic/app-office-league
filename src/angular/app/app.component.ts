@@ -1,14 +1,13 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {AuthService} from './services/auth.service';
 import {GraphQLService} from './services/graphql.service';
 import {ImageService} from './services/image.service';
-import {filter} from 'rxjs/operators';
-import {Sidenav} from 'materialize-css';
 import {NavigationStart, Router} from '@angular/router';
 import {PageTitleService} from './services/page-title.service';
 import {UserProfileService} from './services/user-profile.service';
 import {Player} from '../graphql/schemas/Player';
+import {filter} from 'rxjs/operators';
 
 @Component({
     selector: 'office-league',
@@ -28,10 +27,6 @@ export class AppComponent implements OnInit {
     displayMenu: boolean;
     isOffline: boolean;
     infoPages: any[];
-    
-    @ViewChild('sideNavigation') sideNavigationRef;
-    private sideNavigation: Sidenav;
-
 
     constructor(public auth: AuthService,private graphQlService: GraphQLService, private pageTitleService: PageTitleService, private location: Location, private router: Router,
                 private userProfileService: UserProfileService) {
@@ -47,18 +42,17 @@ export class AppComponent implements OnInit {
         window.addEventListener('online', () => this.isOffline = false);
         window.addEventListener('gesturestart', (e) => e.preventDefault());
 
-        this.pageTitleService.subscribeTitle(title => this.pageTitle = title).setTitle(AppComponent.DEFAULT_TITLE);
+        //this.pageTitleService.subscribeTitle(title => this.pageTitle = title).setTitle(AppComponent.DEFAULT_TITLE);
         this.userProfileService.subscribePlayer(player => this.updatePlayerProfile(player));
 
         this.displayMenu = !this.router.navigated || this.isTopLevelPage(this.router.url);
 
-        router.events.pipe(
-            filter(event => event instanceof NavigationStart)
-        )
-        .subscribe((event: NavigationStart) => {
+        router.events
+            .pipe(filter(event => event instanceof NavigationStart))
+            .subscribe((event: NavigationStart) => {
                 this.isPlayingGame = new RegExp('/games/.*/game-play').test(event.url);
                 this.displayMenu = !this.router.navigated || this.isTopLevelPage(event.url);
-                this.pageTitleService.resetTitle();
+                //this.pageTitleService.resetTitle();
             });
     }
 
@@ -66,10 +60,6 @@ export class AppComponent implements OnInit {
         this.graphQlService.post(AppComponent.initQuery, {}, data => {
             this.infoPages = data.infoPages || [];
         });
-    }
-
-    ngAfterViewInit(): void {
-        this.sideNavigation = Sidenav.init(this.sideNavigationRef.nativeElement, { edge: "right", draggable: true, });
     }
 
     back(): boolean {
@@ -86,13 +76,9 @@ export class AppComponent implements OnInit {
         return false;
     }
 
-    closeNav(): boolean {
+    /* closeNav(): boolean {
         return false;
-    }
-
-    closeSideNav(): void {
-        this.sideNavigation.close();
-    }
+    } */
 
     private isTopLevelPage(url: string): boolean {
         return url.match(/\//g).length <= 1;

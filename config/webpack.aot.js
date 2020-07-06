@@ -18,6 +18,10 @@ module.exports = webpackMerge(commonConfig, {
         app: "./src/angular/main.aot.ts"
     },
 
+    /* optimization: {
+        minimize: false,
+    }, */
+
     output: {
         path: helpers.root("build/resources/main/assets"),
         publicPath: "assets/",
@@ -44,12 +48,6 @@ module.exports = webpackMerge(commonConfig, {
             filename: "../site/pages/pwa/pwa.html",
             chunks: ["app", "vender"]
         }),
-        /* new webpack.optimize.UglifyJsPlugin({
-            minimize: true,
-            compress: {
-                warnings: false
-            }
-        }) */
     ],
 });
 

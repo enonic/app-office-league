@@ -29,8 +29,4 @@ export interface Config {
     publicKey: string;
 }
 
-export declare let XPCONFIG: Config;
-
-//export declare let appEntryPoint: Config;
-
-//export {XPCONFIG};
+export var XPCONFIG : Config = (window as any).XPCONFIG;

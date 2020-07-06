@@ -6,7 +6,6 @@ import {League} from '../../../graphql/schemas/League';
 import {LeaguePlayer} from '../../../graphql/schemas/LeaguePlayer';
 import {BaseComponent} from '../../common/base.component';
 import {PageTitleService} from '../../services/page-title.service';
-//import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
 import {Player} from '../../../graphql/schemas/Player';
 
 @Component({
