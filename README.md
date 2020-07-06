@@ -4,7 +4,7 @@
 
 # Office League App
 
-[![Build Status](https://travis-ci.org/enonic/app-office-league.svg?branch=master)](https://travis-ci.org/enonic/app-office-league)
+[![Actions Status](https://github.com/enonic/app-office-league/workflows/Gradle%20Build/badge.svg)](https://github.com/enonic/app-office-league/actions)
 [![License](https://img.shields.io/github/license/enonic/lib-sql.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 [Office League](https://officeleague.rocks) application for [Enonic XP](https://enonic.com/developer-tour).
