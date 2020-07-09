@@ -39,7 +39,7 @@ export class GraphQLService {
         )
         .pipe(
             map(this.extractData),
-            catchError(this.handleError)
+            //catchError(this.handleError)
         )
         .toPromise();
 
@@ -48,7 +48,7 @@ export class GraphQLService {
         }
 
         networkPromise
-            .catch(this.handleError)
+            .catch((err) => console.error("Promise error", err))
             .then(this.extractData)
 
         if (!!successCallback) {
@@ -87,18 +87,20 @@ export class GraphQLService {
     }
 
     private extractCachedData(res) {
-        return res.json();
+        return res;
     }
 
     private extractData(res) {
-        let json = res.json();
+        console.log(res);
+        let json = res;
         if (json.errors && json.errors.length > 0) {
             throw json.errors;
         }
         return json.data || {};
     }
 
-    private handleError(error: Response | any) {
+    //TODO Change this to give good/proper error messages
+    private handleError(error: Response | Observable<Object> | any) {
         if (!navigator.onLine) {   
             console.log("Empty response return?");
             return empty();
@@ -118,7 +120,7 @@ export class GraphQLService {
             errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
         } else if (Array.isArray(error)) {
             errMsg = error[0].message ? error[0].message : JSON.stringify(error);
-            return Observable.throw(error);
+            return Promise.reject(errMsg);
         } else {
             errMsg = error.message ? error.message : error.toString();
         }
