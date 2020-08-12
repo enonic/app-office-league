@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable, empty} from 'rxjs';
+import {Observable, empty, throwError} from 'rxjs';
 import {catchError, map} from 'rxjs/operators'
 import {Team} from '../../graphql/schemas/Team';
 import {Game} from '../../graphql/schemas/Game';
@@ -9,6 +9,7 @@ import {Player} from '../../graphql/schemas/Player';
 import {CryptoService} from './crypto.service';
 import {XPCONFIG} from '../app.config';
 import {AuthService} from './auth.service';
+import { data } from 'jquery';
 
 @Injectable()
 export class GraphQLService {
@@ -27,29 +28,30 @@ export class GraphQLService {
         let url = this.url;
 
         let headers = new HttpHeaders()
-            .append('Content-Type', 'application/json; charset=utf-8');
+            .append('Content-Type', 'application/json; charset=utf-8');        
 
         let networkPromise = this.http.post(
             url,
+            body,
             {
                 headers,
-                body,
+                observe: "body",
                 params: { etag: hash }
             }
         )
         .pipe(
             map(this.extractData),
-            //catchError(this.handleError)
+            catchError(err => {
+                console.error('Graphql service error', err);
+                //throw err;
+                return throwError(err);
+            })
         )
         .toPromise();
 
         if (typeof CacheStorage !== "undefined" && !!successCallback) {
             return this.getCachePromise(url, networkPromise, successCallback, failureCallback);
         }
-
-        networkPromise
-            .catch((err) => console.error("Promise error", err))
-            .then(this.extractData)
 
         if (!!successCallback) {
             return networkPromise.then(successCallback);
@@ -91,7 +93,6 @@ export class GraphQLService {
     }
 
     private extractData(res) {
-        console.log(res);
         let json = res;
         if (json.errors && json.errors.length > 0) {
             throw json.errors;
@@ -100,11 +101,11 @@ export class GraphQLService {
     }
 
     //TODO Change this to give good/proper error messages
-    private handleError(error: Response | Observable<Object> | any) {
-        if (!navigator.onLine) {   
+    private handleError(error: Response | any) {
+        /* if (!navigator.onLine) {   
             console.log("Empty response return?");
             return empty();
-        }
+        } */
 
         if (error.status === 401) {
             if (this.authService.isAuthenticated()) {
