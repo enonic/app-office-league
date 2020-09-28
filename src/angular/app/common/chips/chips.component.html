@@ -1,1 +1,26 @@
-<div #div class="chips" materialize="material_chip" (chip.add)="add($event.detail)" (chip.delete)="delete($event.detail)" (chip.select)="select($event.detail)" autofocus></div>
+<!--div #div class="chips" materialize="material_chip" (chip.add)="add($event.detail)" (chip.delete)="delete($event.detail)" (chip.select)="select($event.detail)" autofocus></div-->
+<mat-form-field class="chip-list">
+    <mat-chip-list #chipList aria-label="tag selection">
+      <mat-chip
+        *ngFor="let tag of selectedTags"
+        [selectable]="selectable"
+        [removable]="removable"
+        (removed)="remove(tag)">
+        {{fruit}}
+        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+      </mat-chip>
+      <input
+        [placeholder]="placeholder"
+        #tagInput
+        [formControl]="tagCtrl"
+        [matAutocomplete]="auto"
+        [matChipInputFor]="chipList"
+        (matChipInputTokenEnd)="add($event)">
+    </mat-chip-list>
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+      <mat-option *ngFor="let tag of availableTags | async" [value]="selectedTags">
+        {{fruit}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  

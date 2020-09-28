@@ -1,6 +1,9 @@
-import {Component, Input, Output, OnChanges, AfterViewInit, SimpleChanges, SimpleChange, EventEmitter, ElementRef, ViewChild} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
-import {BaseComponent} from '../base.component';
+import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
+import { Component, Input, Output, OnChanges, AfterViewInit, SimpleChanges, SimpleChange, EventEmitter, ElementRef, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { FormControl } from '@angular/forms';
+import { BaseComponent } from '../base.component';
+
 declare var $: any;
 
 @Component({
@@ -8,53 +11,39 @@ declare var $: any;
     templateUrl: 'chips.component.html',
     styleUrls: ['chips.component.less']
 })
-export class ChipsComponent extends BaseComponent implements AfterViewInit {
+export class ChipsComponent extends BaseComponent {
+    visible = true;
 
-    @Input() availableTags: string[];
-    @Input() excludedTags: string[] = [];
-    @Input() selectedTags: string[] = [];
-    @Input() placeholder: string;
-    @ViewChild ('div') div;
-    
+    availableTags: string[];
+    excludedTags: string[] = [];
+    selectedTags: string[] = [];
+    placeholder: string;
+    tagCtrl = new FormControl();
+
+
+    @ViewChild('tagInput') fruitInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto') matAutocomplete: MatAutocomplete;
+
+
     constructor(route: ActivatedRoute) {
         super(route);
-    }
-    
-    ngOnInit() : void {
-        super.ngOnInit();
-    }
-
-    ngAfterViewInit(): void {        
-        this.refreshChips();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         super.ngOnChanges(changes);
         if (changes['availableTags'] || changes['selectedTags']) {
-            this.refreshChips();
+            this.updateState();
         }
     }
 
-    focus() {
-        if (this.div) {
-            this.div.nativeElement.children[0].focus();
-        }
-    }
-    
-    refreshChips(): void {
+    updateState(): void {
         let autocompleteData = {};
-        this.availableTags.filter((tag) => this.excludedTags.indexOf(tag) == -1 ).
+        this.availableTags.filter((tag) => this.excludedTags.indexOf(tag) == -1).
             forEach((tag) => autocompleteData[tag] = null);
-        $('.chips').material_chip({
-            autocompleteOptions: {
-                data: autocompleteData,
-                limit: Infinity,
-                minLength: 1
-            },
-            placeholder: this.placeholder,
-            secondaryPlaceholder: this.placeholder
-        });
-        
+
+        this.placeholder = this.placeholder;
+        //this.secondaryPlaceholder = this.placeholder;
+
     }
 
     add(chip) {
@@ -68,6 +57,6 @@ export class ChipsComponent extends BaseComponent implements AfterViewInit {
         }
     }
 
-    select(chip) {
+    selected(chip) {
     }
 }

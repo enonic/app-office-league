@@ -25,6 +25,8 @@ import {WindowRefService} from './services/window-ref.service';
 import {AudioService} from './services/audio.service';
 import {PushNotificationService} from './services/push-notification.sevice';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatChipsModule} from '@angular/material/chips'; 
+import {MatFormFieldModule} from '@angular/material/form-field'; 
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -48,7 +50,9 @@ const appRoutes: Routes = [
         TeamsModule,
         LeaguesModule,
         InfoPageModule,
-        MatSidenavModule
+        MatSidenavModule,
+        MatChipsModule,
+        MatFormFieldModule,
     ],
     providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard, EditRouteGuard,
         OfflinePersistenceService, OnlineStatusService, RankingService, UserProfileService, WindowRefService, AudioService,

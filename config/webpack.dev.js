@@ -24,10 +24,9 @@ module.exports = webpackMerge(commonConfig, {
         }),
         new HtmlWebpackPlugin({
             template: 'src/angular/index.html',
-            devServer: 'http://localhost:4200'
+            //devServer: 'http://localhost:4200'
         }),
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoEmitOnErrorsPlugin()
     ],
 
     devServer: {
