@@ -1,39 +1,45 @@
 //var webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpackMerge = require("webpack-merge");
+const { merge } = require("webpack-merge");
 const AngularCompilerPlugin = require("@ngtools/webpack").AngularCompilerPlugin;
 const commonConfig = require("./webpack.common.js");
 const helpers = require("./helpers");
+var path = require('path');
 
 /* var aotPlugin = new AotPlugin({
     tsConfigPath: 'tsconfig.aot.json',
     entryModule: helpers.root('src/angular/app/app.module#AppModule')
 }); */
 
-module.exports = webpackMerge(commonConfig, {
+module.exports = merge(commonConfig, {
     mode: "development",
 
     entry: {
         vendor: "./src/angular/vendor.aot.ts",
-        app: "./src/angular/main.aot.ts"
+        app: "./src/angular/main.aot.ts",
     },
 
-    /* optimization: {
+    optimization: {
         minimize: false,
-    }, */
+        splitChunks: {
+            chunks: 'all'
+        }
+    },
 
     output: {
-        path: helpers.root("build/resources/main/assets"),
+        path: path.resolve(__dirname, "build/resources/main/assets"),
         publicPath: "assets/",
         filename: "js/[name].js",
-        chunkFilename: 'js/[id].chunk.js'
+        chunkFilename: "js/[id].chunk.js",
     },
 
     module: {
         rules: [
             {
                 test: /\.ts$/,
-                loader: "@ngtools/webpack",
+                use: [{
+                    loader: "@ngtools/webpack",
+                }]
             },
         ],
     },
@@ -46,7 +52,7 @@ module.exports = webpackMerge(commonConfig, {
         new HtmlWebpackPlugin({
             template: "src/main/resources/site/pages/pwa/pwa.ejs",
             filename: "../site/pages/pwa/pwa.html",
-            chunks: ["app", "vender"]
+            chunks: ["app", "vender"],
         }),
     ],
 });

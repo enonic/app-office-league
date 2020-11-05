@@ -36,9 +36,9 @@
     </div>
 
     <div *ngIf="adminInLeague || playerSystemAdmin" class="fixed-action-btn click-to-toggle">
-        <a class="btn-floating btn-large light-blue lighten-2">
+        <button mat-button class="btn-floating btn-large light-blue lighten-2">
             <i class="material-icons">more_vert</i>
-        </a>
+        </button>
         <ul>
             <li *ngIf="playerSystemAdmin"><a class="btn-floating purple" (click)="onRankingRefreshClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">poll</i></a></li>
             <li><a class="btn-floating green" (click)="onAddPlayerClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">person_add</i></a></li>

@@ -7,7 +7,7 @@ import '@angular/router';
 // RxJS
 import 'rxjs';
 import 'jquery';
-import 'materialize-css/dist/js/materialize';
+import 'materialize-css/dist/js/materialize.min.js';
 import 'crypto-js';
 import 'chart.js';
 import 'chartjs-plugin-annotation';
