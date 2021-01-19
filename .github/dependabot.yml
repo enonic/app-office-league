@@ -15,9 +15,9 @@ updates:
     interval: "monthly"
   open-pull-requests-limit: 10
   assignees:
-    - "alansemenov"
+    - "poi33"
   reviewers:
-    - "alansemenov"
+    - "poi33"
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
