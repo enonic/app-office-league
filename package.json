@@ -44,7 +44,7 @@
     "html-loader": "0.4.5",
     "html-webpack-plugin": "3.2.0",
     "less": "2.7.2",
-    "less-loader": "2.2.3",
+    "less-loader": "5.0.0",
     "style-loader": "0.13.2",
     "to-string-loader": "1.1.6",
     "typescript": "2.3.2",
