@@ -4,6 +4,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var webpack = require('webpack');
 var commonConfig = require('./webpack.common.js');
 var helpers = require('./helpers');
+const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 
 module.exports = webpackMerge(commonConfig, {
     devtool: 'source-map',
@@ -16,8 +17,12 @@ module.exports = webpackMerge(commonConfig, {
         filename: '[name].js',
         chunkFilename: '[id].chunk.js'
     },
-
     plugins: [
+        new ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery'
+        }),
         new ExtractTextPlugin({
             filename: 'styles.css',
             allChunks: true

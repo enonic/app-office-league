@@ -1,8 +1,8 @@
-var webpack = require("webpack");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var webpackMerge = require('webpack-merge');
 var commonConfig = require('./webpack.common.js');
 var helpers = require('./helpers');
+const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 
 module.exports = webpackMerge(commonConfig, {
 
@@ -33,8 +33,12 @@ module.exports = webpackMerge(commonConfig, {
             }
         ]
     },
-
     plugins: [
+        new ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery'
+        }),
         new HtmlWebpackPlugin({
             template: 'src/main/resources/site/pages/pwa/pwa.ejs',
             filename: '../site/pages/pwa/pwa.html',
