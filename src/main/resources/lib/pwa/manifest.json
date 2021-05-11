@@ -1,10 +1,11 @@
 {
   "name": "Office League",
   "short_name": "Office League",
+  "description": "Foosball app for leagues, teams, matches and score keeping",
   "theme_color": "#1C2641",
   "background_color": "#1C2641",
   "display": "fullscreen",
-  "start_url": "{{siteUrl}}app?source=web_app_manifest",
+  "start_url": "{{siteUrl}}app",
   "icons": [
     {
       "src": "{{iconUrl}}/android-chrome-192x192.png",

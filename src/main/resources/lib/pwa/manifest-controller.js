@@ -9,7 +9,7 @@ exports.get = function(req) {
         iconUrl : portalLib.assetUrl({path: '/icons'})
     };
     var res = mustache.render(resolve('manifest.json'), params);
-
+    
     return {
         body: res,
         contentType: 'application/json'
