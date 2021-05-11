@@ -11,9 +11,9 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{assetsUrl}}/icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" href="{{assetsUrl}}/icons/favicon-32x32.png" sizes="32x32">
     <link rel="icon" type="image/png" href="{{assetsUrl}}/icons/favicon-16x16.png" sizes="16x16">
-    <link rel="manifest" href="{{baseHref}}manifest.json">
     <link rel="mask-icon" href="{{assetsUrl}}/icons/safari-pinned-tab.svg" color="#142663">
     <meta name="theme-color" content="#ffffff">
+    <link rel="manifest" crossorigin="use-credentials" href="{{siteUrl}}/app/manifest.json"/>
 
     <% for (key in htmlWebpackPlugin.files.css) { %>
     <% item = htmlWebpackPlugin.files.css[key]; %>
@@ -68,7 +68,7 @@
         publicKey: '{{publicKey}}'
     }
     {{#isLive}}
-    var serviceWorker;
+
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker
             .getRegistration()
@@ -83,13 +83,13 @@
         }
         else {
             return navigator.serviceWorker
-                .register('../service-worker.js', {scope: '{{siteUrl}}/app'})
+                .register('../service-worker.js') // {scope: '{{siteUrl}}/app/'}
                 .then(function (registration) {
                     console.log('Service Worker registered with scope ' + registration.scope);
                     return registration;
-                }, function () {
+                }).catch(function () {
                     console.log('Service Worker registration failure.');
-                })
+                });
         }    
     }
     

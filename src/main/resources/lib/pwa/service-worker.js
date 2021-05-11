@@ -7,7 +7,7 @@ const debugging = false;
 const offlineUrl = '{{appUrl}}/offline';
 const appUrl = '{{appUrl}}';
 const APIUrl = '{{appUrl}}/api/graphql?etag';
-const homePageUrl = '{{appUrl}}?source=web_app_manifest';
+const homePageUrl = '{{appUrl}}';
 const staticAssets = [
     '{{appUrl}}/manifest.json',
     '{{assetUrl}}/css/critical.css',
