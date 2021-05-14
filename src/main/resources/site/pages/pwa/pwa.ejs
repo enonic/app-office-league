@@ -83,7 +83,7 @@
         }
         else {
             return navigator.serviceWorker
-                .register('../service-worker.js') // {scope: '{{siteUrl}}/app/'}
+                .register('../service-worker.js', {scope: '{{siteUrl}}/app/'})
                 .then(function (registration) {
                     console.log('Service Worker registered with scope ' + registration.scope);
                     return registration;
