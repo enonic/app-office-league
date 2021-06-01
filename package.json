@@ -17,7 +17,7 @@
     "@angular/router": "3.4.10",
     "@angular/upgrade": "2.4.10",
     "ng2-charts": "1.6.0",
-    "angular2-materialize": "6.7.2",
+    "angular2-materialize": "9.0.1",
     "core-js": "2.4.1",
     "crypto-js": "4.0.0",
     "material-design-icons": "3.0.1",
