@@ -1,7 +1,7 @@
-var ioLib = require('/lib/xp/io');
+const ioLib = require('/lib/xp/io');
 
-exports.get = function (req) {
-    var path = req.url.split('app/assets/')[1];
+exports.get = function(req) {
+    var path = req.url.split('assets/')[1];
     var type = getMimeType(path);
 
     return {
@@ -10,7 +10,7 @@ exports.get = function (req) {
     };
 };
 
-var getMimeType = function (path) {
+const getMimeType = function (path) {
     var type = ioLib.getMimeType(path);
     if (type && type !== 'application/octet-stream') {
         return type

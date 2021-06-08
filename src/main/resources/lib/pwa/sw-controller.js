@@ -4,15 +4,11 @@ var authLib = require('/lib/xp/auth');
 var version = (Date.now() / 1000).toFixed();
 
 exports.get = function (req) {
-    var sitePath = portalLib.getSite()._path;
-    var siteUrl = portalLib.pageUrl({path: sitePath});
     var user = authLib.getUser();
 
-    siteUrl = (siteUrl == '/') ? '' : siteUrl;
-
     var params = {
-        appUrl: siteUrl + '/app',
-        assetUrl: siteUrl + '/app/assets',
+        appUrl: '',
+        assetUrl: '/assets',
         version: version,
         userKey: user ? user.key : ''
     };

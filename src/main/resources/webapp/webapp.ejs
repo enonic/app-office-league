@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="{{baseHref}}">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1C2641">
+    <title>Office League</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{{assetsUrl}}/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="{{assetsUrl}}/icons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{assetsUrl}}/icons/favicon-16x16.png" sizes="16x16">
+    <link rel="mask-icon" href="{{assetsUrl}}/icons/safari-pinned-tab.svg" color="#142663">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="manifest" crossorigin="use-credentials" href="{{siteUrl}}/manifest.json"/>
+
+    <% for (key in htmlWebpackPlugin.files.css) { %>
+    <% item = htmlWebpackPlugin.files.css[key]; %>
+    <link rel="stylesheet" href="<%= '{{baseHref}}' + item %>" media="none" onload="if(media!='all')media='all'"/>
+    <% }; %>
+
+    <style type="text/css">
+        /* Define styles here to show them instantly while css is being loaded */
+        body {
+            background-color: #1C2641;
+        }
+        .office-league-loader {
+            display: block;
+            height: 200px;
+            top: 50%;
+            position: absolute;
+            left: 50%;
+            margin: -100px 0 0 -80px;
+        }
+    </style>
+</head>
+
+<body>
+
+<office-league>
+    <img class="office-league-loader" src="{{assetsUrl}}/img/office-league-loader.svg"></img>
+<!--    <div class="loading">
+        <div class="loading&#45;&#45;1"></div>
+        <div class="loading&#45;&#45;2"></div>
+        <div class="loading&#45;&#45;3"></div>
+    </div>-->
+</office-league>
+
+<script type="text/javascript">
+    var XPCONFIG = {
+        locale: '{{{locale}}}',
+        countryIsoCode: '{{{countryIsoCode}}}',
+        {{#user}}user: {{{.}}},{{/user}}        
+        {{#content}}content: {
+            name: '{{_name}}',
+            type: '{{type}}'
+        },{{/content}}
+        baseHref: '{{{baseHref}}}',
+        assetsUrl: '{{{assetsUrl}}}',
+        audioUrl: '{{{audioUrl}}}',
+        loginUrl: '{{{loginUrl}}}',
+        logoutUrl: '{{{logoutUrl}}}',
+        logoutMarketingUrl: '{{{logoutMarketingUrl}}}',
+        graphQlUrl: '{{baseHref}}api/graphql',
+        setImageUrl: '{{setImageUrl}}',
+        liveGameUrl: '{{liveGameUrl}}',
+        publicKey: '{{publicKey}}'
+    }
+    {{#isLive}}
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker
+            .getRegistration()
+            .then(registerServiceWorker)
+            .then(postAssets);
+    }
+    
+    function registerServiceWorker(registration) {
+        if (!!registration && registration.active) {
+            console.log('Detected active Service Worker with scope ' + registration.scope);
+            return registration;
+        }
+        else {
+            {{! "unsure about the relative scope" }}
+            return navigator.serviceWorker
+                .register('./service-worker.js', {scope: './'})
+                .then(function (registration) {
+                    console.log('Service Worker registered with scope ' + registration.scope);
+                    return registration;
+                }).catch(function (err) {
+                    console.log('Service Worker registration failure.');
+                    console.log(err);
+                });
+        }    
+    }
+    
+    function postAssets(registration) {
+        let serviceWorker = registration.installing || registration.active;
+        if (serviceWorker) {
+            let assets = [];
+            <% for (key in htmlWebpackPlugin.files.chunks) { %>
+            <%      item = htmlWebpackPlugin.files.chunks[key].entry; %>
+            assets.push('<%= '{{baseHref}}' + item %>');
+            <% }; %>
+            <% for (key in htmlWebpackPlugin.files.css) { %>
+            <%      item = htmlWebpackPlugin.files.css[key]; %>
+            assets.push('<%= '{{baseHref}}' + item %>');
+            <% }; %>
+
+            if (assets.length > 0) {
+                serviceWorker.postMessage({
+                    assets: assets
+                });
+            }
+        }
+        return registration;     
+    }
+
+    {{/isLive}}
+</script>
+
+<% for (key in htmlWebpackPlugin.files.chunks) { %>
+<% item = htmlWebpackPlugin.files.chunks[key].entry; %>
+<script type="text/javascript" src="<%= '{{baseHref}}' + item %>"></script>
+<% }; %>
+</body>
+</html>

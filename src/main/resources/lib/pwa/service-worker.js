@@ -4,12 +4,12 @@ const imageCacheName = 'office-league-image-cache-{{version}}';
 const cacheNames = [cacheName, dataCacheName, imageCacheName];
 
 const debugging = false;
-const offlineUrl = '{{appUrl}}/offline';
+const offlineUrl = './offline';
 const appUrl = '{{appUrl}}';
-const APIUrl = '{{appUrl}}/api/graphql?etag';
+const APIUrl = './api/graphql?etag';
 const homePageUrl = '{{appUrl}}';
 const staticAssets = [
-    '{{appUrl}}/manifest.json',
+    './manifest.json',
     '{{assetUrl}}/css/critical.css',
     '{{assetUrl}}/css/styles.css',
     '{{assetUrl}}/img/office-league-logo.svg',

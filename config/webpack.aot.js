@@ -36,9 +36,9 @@ module.exports = webpackMerge(commonConfig, {
     plugins: [
         aotPlugin,
         new HtmlWebpackPlugin({
-            template: 'src/main/resources/site/pages/pwa/pwa.ejs',
-            filename: '../site/pages/pwa/pwa.html',
-            inject: false
+            template: 'src/main/resources/webapp/webapp.ejs',
+            filename: '../webapp/webapp.html',
+            inject: false,
         }),
         new webpack.optimize.UglifyJsPlugin({
             minimize: true,
