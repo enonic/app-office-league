@@ -67,7 +67,6 @@
         liveGameUrl: '{{liveGameUrl}}',
         publicKey: '{{publicKey}}'
     }
-    {{#isLive}}
 
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker
@@ -116,8 +115,6 @@
         }
         return registration;     
     }
-
-    {{/isLive}}
 </script>
 
 <% for (key in htmlWebpackPlugin.files.chunks) { %>

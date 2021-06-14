@@ -1,8 +1,9 @@
-var eventLib = require('/lib/xp/event');
-var storeLib = require('/lib/office-league-store');
-var authLib = require('/lib/xp/auth');
+const eventLib = require('/lib/xp/event');
+const storeLib = require('/lib/office-league-store');
+const authLib = require('/lib/xp/auth');
+const portal = require('/lib/xp/portal'); 
 
-var OFFICE_LEAGUE_GAME_EVENT_ID = storeLib.OFFICE_LEAGUE_GAME_EVENT_ID;
+const OFFICE_LEAGUE_GAME_EVENT_ID = storeLib.OFFICE_LEAGUE_GAME_EVENT_ID;
 
 exports.setupPushNotifications = function () {
     eventLib.listener({
@@ -31,9 +32,9 @@ var sendGameNotifications = function (gameId, leagueId) {
     var playerIds = storeLib.getLeaguePlayersByLeagueId(leagueId, 0, -1).hits.map(function (lp) {
         return lp.playerId;
     });
-    log.info('League player Ids: ' + playerIds.join(','));
+    // log.info('League player Ids: ' + playerIds.join(','));
 
-    var baseUrl = app.config['officeleague.baseUrl'] || 'http://localhost:8080/portal/draft/office-league/app';
+    var baseUrl = portal.pageUrl({ path: '/', type: "absolute" });
     var url = baseUrl + '/games/' + game._id;
 
     var points = [].concat(game.points || []);
@@ -48,7 +49,7 @@ var sendGameNotifications = function (gameId, leagueId) {
     //
     // } else
     if (points.length === 0) {
-        log.info('Sending push notifications for new game: ' + gameId);
+        // log.info('Sending push notifications for new game: ' + gameId);
 
         storeLib.sendPushNotification({
             playerIds: playerIds,

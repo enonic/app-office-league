@@ -30,6 +30,10 @@ router.get("/assets/{path}/{file}", function (req) {
     return controllers.assets.get(req);
 });
 
+router.get("/assets/img/flags/{file}", function (req) {
+    return controllers.assets.get(req);
+})
+
 // Image asset routs
 router.get("/teams/image/{id}/{name}/", function(req) {
     return controllers.teamImage.get(req);
@@ -52,12 +56,12 @@ router.get("/manifest.json", function(req) {
     return manifest.get(req);
 });
 
+router.get("/", defaultRout);
+router.get("/player-create", defaultRout);
 
-router.get("/", function (req) {
-    const baseHref = "/webapp/com.enonic.app.officeleague";
-    const baseAbsoluteUrl =
-        "localhost:8080/webapp/com.enonic.app.officeleague/";
-    // const idproviderUrl = portalLib.idProviderUrl();
+function defaultRout(req) {
+    let baseHref = portalLib.pageUrl({ path: '/', type: 'relative' });
+    let baseAbsoluteUrl = portalLib.pageUrl({ path: '/', type: 'absolute' });
 
     if (mustLogIn(req)) {
         return {
@@ -122,14 +126,13 @@ router.get("/", function (req) {
         countryIsoCode: countryIsoCode,
         user: userObj && JSON.stringify(userObj),
         content: req.mode === "edit" && portalLib.getContent(),
-        isLive: req.mode === "live",
         siteUrl: baseHref === "/" ? "" : baseHref,
         baseHref: baseHref + "/", // trailing slash for relative urls to be correct
         assetsUrl: baseHref + "/assets",
         audioUrl: baseHref + "/assets/audio/",
         loginUrl: portalLib.loginUrl({ redirect: baseHref }),
-        logoutUrl: portalLib.logoutUrl({ redirect: baseAbsoluteUrl }),
-        logoutMarketingUrl: portalLib.logoutUrl({ redirect: baseAbsoluteUrl }),
+        logoutUrl: portalLib.logoutUrl({ redirect: baseAbsoluteUrl, type: "absolute" }),
+        logoutMarketingUrl: portalLib.url({ path: '/', type: 'absolute'}),
         idProvider: portalLib.idProviderUrl(),
         setImageUrl: portalLib.serviceUrl({ service: "set-image" }),
         liveGameUrl: getWebSocketUrl(
@@ -143,7 +146,7 @@ router.get("/", function (req) {
         contentType: "text/html",
         body: body,
     };
-});
+};
 
 var isPlayerCreatePage = function (req, appBaseUrl) {
     return endsWith(req.path, appBaseUrl + "/player-create");
