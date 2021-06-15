@@ -260,7 +260,7 @@ var createRootNodes = function () {
         var leaguesNode = repoConn.create({
             _name: LEAGUES_PATH.slice(1),
             _parentPath: '/',
-            _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
+            _inheritsPermissions: true
         });
     }
     var teamsExist = nodeWithPathExists(repoConn, TEAMS_PATH);
@@ -269,7 +269,7 @@ var createRootNodes = function () {
         var teamsNode = repoConn.create({
             _name: TEAMS_PATH.slice(1),
             _parentPath: '/',
-            _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
+            _inheritsPermissions: true
         });
     }
     var playersExist = nodeWithPathExists(repoConn, PLAYERS_PATH);
@@ -278,7 +278,7 @@ var createRootNodes = function () {
         var playersNode = repoConn.create({
             _name: PLAYERS_PATH.slice(1),
             _parentPath: '/',
-            _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
+            _inheritsPermissions: true
         });
     }
     var pushSubscriptionsExist = nodeWithPathExists(repoConn, PUSH_SUBSCRIPTIONS_PATH);
@@ -287,7 +287,7 @@ var createRootNodes = function () {
         var playersNode = repoConn.create({
             _name: PUSH_SUBSCRIPTIONS_PATH.slice(1),
             _parentPath: '/',
-            _permissions: ROOT_PERMISSIONS //TODO Remove after XP issue 4801 resolution
+            _inheritsPermissions: true
         });
     }
 };

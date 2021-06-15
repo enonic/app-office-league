@@ -104,7 +104,7 @@ var secondsBetween = function (t1, t2) {
 
 var canGarbageCollectGame = function (game) {
     var now = new Date();
-    var lastChange = parseDate(game._timestamp);
+    var lastChange = parseDate(game._ts);
     var secSinceLastChange = secondsBetween(lastChange, now);
     return secSinceLastChange > UnfinishedGameMaxTimeSeconds;
 };
