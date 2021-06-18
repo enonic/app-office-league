@@ -55,8 +55,6 @@ var doInitialize = function () {
         createRepo();
     }
     createRootNodes();
-
-    //createSite();
 };
 
 var createRepo = function () {

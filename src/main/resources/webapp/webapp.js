@@ -57,7 +57,7 @@ router.get("/manifest.json", function(req) {
 });
 
 router.get("/", defaultRout);
-router.get("/player-create", defaultRout);
+router.get("/{path}", defaultRout);
 
 function defaultRout(req) {
     let baseHref = portalLib.pageUrl({ path: '/', type: 'relative' });
