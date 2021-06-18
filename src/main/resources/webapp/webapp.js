@@ -56,10 +56,10 @@ router.get("/manifest.json", function(req) {
     return manifest.get(req);
 });
 
-router.get("/", defaultRout);
-router.get("/{path}", defaultRout);
+router.get("/", defaultRoute);
+router.get("/{path}", defaultRoute);
 
-function defaultRout(req) {
+function defaultRoute(req) {
     let baseHref = portalLib.pageUrl({ path: '/', type: 'relative' });
     let baseAbsoluteUrl = portalLib.pageUrl({ path: '/', type: 'absolute' });
 
