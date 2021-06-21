@@ -32,7 +32,6 @@ module.exports = {
         'vendor': './src/angular/vendor.ts',
         'app': './src/angular/main.ts',
         'styles': './src/angular/styles.less',
-        'critical': './src/main/resources/assets/css/critical.less'
     },
 
     resolve: {
@@ -72,7 +71,7 @@ module.exports = {
             {
                 // load app wide styles
                 test: /\.(less|css)$/,
-                include: [helpers.root('src', 'angular'), helpers.root('src', 'main', 'resources', 'assets')],
+                include: [helpers.root('src', 'angular')],
                 exclude: helpers.root('src', 'angular', 'app'),
                 loader: ExtractTextPlugin.extract({
                     fallback: 'style-loader',

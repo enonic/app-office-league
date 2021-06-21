@@ -24,7 +24,6 @@
             <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
             <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
             <li routerLinkActive="active"><a routerLink="/games" href="#">Games</a></li>
-            <li *ngFor="let infoPage of infoPages" routerLinkActive="active"><a routerLink="/{{infoPage.name}}" href="#">{{infoPage.title}}</a></li>
             <li *ngIf="isAuthenticated">
                 <ul id="user-dropdown" class="dropdown-content">
                     <li><a href="#" routerLink="/">{{playerName}}</a></li>

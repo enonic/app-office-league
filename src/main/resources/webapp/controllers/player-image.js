@@ -5,7 +5,7 @@ const imageHelper = require("./image-helper");
 const util = require("/lib/util");
 
 const defaultImage = ioLib
-    .getResource("/site/controllers/default-images/account.svg")
+    .getResource("/assets/img/default-images/account.svg")
     .getStream();
 const defaultImageType = "image/svg+xml";
 

@@ -5,7 +5,7 @@
   "theme_color": "#1C2641",
   "background_color": "#1C2641",
   "display": "fullscreen",
-  "start_url": "{{siteUrl}}app/",
+  "start_url": "{{startUrl}}",
   "icons": [
     {
       "src": "{{iconUrl}}/android-chrome-192x192.png",
