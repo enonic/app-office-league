@@ -60,8 +60,8 @@ router.get("/", defaultRoute);
 router.get("/{path}", defaultRoute);
 
 function defaultRoute(req) {
-    let baseHref = portalLib.pageUrl({ path: '/', type: 'relative' });
-    let baseAbsoluteUrl = portalLib.pageUrl({ path: '/', type: 'absolute' });
+    const baseHref = portalLib.pageUrl({ path: '/', type: 'relative' });
+    const baseAbsoluteUrl = portalLib.pageUrl({ path: '/', type: 'absolute' });
 
     if (mustLogIn(req)) {
         return {
@@ -72,7 +72,7 @@ function defaultRoute(req) {
         };
     }
 
-    var user = authLib.getUser();
+    const user = authLib.getUser();
     if (!user && hasLoginSuggestParam(req)) {
         return {
             redirect: portalLib.loginUrl({
@@ -84,9 +84,9 @@ function defaultRoute(req) {
 
     if (isPlayerCreatePage(req, baseHref)) {
         if (req.params.invitation) {
-            var player = getPlayer();
+            const player = getPlayer();
             if (player) {
-                var invitation = invitationLib.removeInvitationByToken(
+                const invitation = invitationLib.removeInvitationByToken(
                     req.params.invitation
                 );
                 if (invitation) {
@@ -103,25 +103,25 @@ function defaultRoute(req) {
         }
     }
 
-    var userObj = user && { key: user.key };
+    const userObj = user && { key: user.key };
     if (user) {
-        var player = storeLib.getPlayerByUserKey(user.key);
+        const player = storeLib.getPlayerByUserKey(user.key);
         userObj.playerId = player && player._id;
         userObj.playerName = (player && player.name) || user.displayName;
         userObj.playerImageUrl = player ? baseHref + player.imageUrl : "";
         userObj.isAdmin = authLib.hasRole("system.admin");
     }
 
-    var countryIsoCode;
+    const countryIsoCode;
     if (req.remoteAddress) {
-        var locationData = geoipLib.getLocationData(req.remoteAddress);
+        const locationData = geoipLib.getLocationData(req.remoteAddress);
         countryIsoCode = geoipLib.countryISO(locationData);
     }
     countryIsoCode = countryIsoCode || "no";
 
-    var keyPair = pushLib.getKeyPair();
+    const keyPair = pushLib.getKeyPair();
 
-    var params = {
+    const params = {
         locale: req.params.locale || "en",
         countryIsoCode: countryIsoCode,
         user: userObj && JSON.stringify(userObj),
@@ -140,7 +140,7 @@ function defaultRoute(req) {
         ),
         publicKey: keyPair.publicKey,
     };
-    var body = mustacheLib.render(view, params);
+    const body = mustacheLib.render(view, params);
 
     return {
         contentType: "text/html",
@@ -148,11 +148,11 @@ function defaultRoute(req) {
     };
 };
 
-var isPlayerCreatePage = function (req, appBaseUrl) {
+function isPlayerCreatePage(req, appBaseUrl) {
     return endsWith(req.path, appBaseUrl + "/player-create");
 };
 
-var mustLogIn = function (req) {
+function mustLogIn (req) {
     return (
         !authLib.getUser() &&
         (req.path.search(/\/app$/) !== -1 ||
@@ -160,28 +160,28 @@ var mustLogIn = function (req) {
     );
 };
 
-var hasLoginSuggestParam = function (req) {
+function hasLoginSuggestParam(req) {
     return req.params.login;
 };
 
-var getPlayer = function () {
-    var user = authLib.getUser();
+function getPlayer() {
+    const user = authLib.getUser();
     return user && storeLib.getPlayerByUserKey(user.key);
 };
 
-var isLoggedInUserWithoutPlayer = function () {
-    var user = authLib.getUser();
+function isLoggedInUserWithoutPlayer() {
+    const user = authLib.getUser();
     if (!user) {
         return false;
     }
     return !storeLib.getPlayerByUserKey(user.key);
 };
 
-var endsWith = function (str, suffix) {
+function endsWith(str, suffix) {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
 };
 
-var getWebSocketUrl = function (url) {
-    var wsProto = url.indexOf("https:") === 0 ? "wss" : "ws";
+function getWebSocketUrl(url) {
+    const wsProto = url.indexOf("https:") === 0 ? "wss" : "ws";
     return wsProto + url.substring(url.indexOf(":"));
 };
