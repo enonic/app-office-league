@@ -112,7 +112,7 @@ function defaultRoute(req) {
         userObj.isAdmin = authLib.hasRole("system.admin");
     }
 
-    const countryIsoCode;
+    let countryIsoCode;
     if (req.remoteAddress) {
         const locationData = geoipLib.getLocationData(req.remoteAddress);
         countryIsoCode = geoipLib.countryISO(locationData);
