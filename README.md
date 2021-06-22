@@ -24,7 +24,6 @@ The application can be configured using the file "com.enonic.app.officeleague.cf
 | Property name        | Default value                                        | Description                                                               |
 |----------------------|------------------------------------------------------|---------------------------------------------------------------------------|
 | skip-test-data       | false                                                | Skip the import of test players, teams and league on application start-up |
-| officeleague.baseUrl | http://localhost:8080/portal/draft/office-league/app | Application URL used by mail generation                                   |
 | mail.from            |                                                      | Skip the import of test players, teams and league on application start-up |
   
 ```properties
