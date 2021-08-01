@@ -24,7 +24,7 @@
     "materialize-css": "0.98.2",
     "rxjs": "5.0.1",
     "zone.js": "0.7.8",
-    "chart.js": "2.9.4",
+    "chart.js": "3.5.0",
     "chartjs-plugin-annotation": "0.5.7",
     "angular2-moment": "1.9.0"
   },
