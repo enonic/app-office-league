@@ -55,12 +55,20 @@ router.post("/api/graphql", function (req) {
 router.get("/manifest.json", function(req) {
     return manifest.get(req);
 });
-router.get("/leagues/{name}", defaultRoute);
-router.get("/players/{name}", defaultRoute);
-router.get("/teams/{name}", defaultRoute);
-router.get("/games/{id}", defaultRoute);
-router.get("/", defaultRoute);
-router.get("/{path}", defaultRoute);
+router.get(
+    [
+        "/leagues/{name}",
+        "/leagues/{name}/players",
+        "/leagues/{name}/teams",
+        "/leagues/{name}/games",
+        "/players/{name}",
+        "/teams/{name}",
+        "/games/{id}",
+        "/",
+        "/{path}",
+    ],
+    defaultRoute
+);
 
 function defaultRoute(req) {
     const baseHref = portalLib.pageUrl({ path: '/', type: 'relative' });
