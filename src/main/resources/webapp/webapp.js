@@ -35,7 +35,7 @@ router.get("/assets/img/flags/{file}", function (req) {
 })
 
 // Image asset routs
-router.get("/teams/image/{id}/{name}/", function(req) {
+router.get("/teams/image/{id}/{name}", function(req) {
     return controllers.teamImage.get(req);
 });
 router.get("/players/image/{id}/{name}", function(req) {
@@ -55,7 +55,8 @@ router.post("/api/graphql", function (req) {
 router.get("/manifest.json", function(req) {
     return manifest.get(req);
 });
-router.get(
+router.route(
+    'GET',
     [
         "/leagues/{name}",
         "/leagues/{name}/players",

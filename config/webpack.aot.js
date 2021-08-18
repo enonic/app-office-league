@@ -1,4 +1,6 @@
 var webpack = require("webpack");
+
+
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var webpackMerge = require('webpack-merge');
 const AotPlugin = require('@ngtools/webpack').AotPlugin;
@@ -11,6 +13,7 @@ var aotPlugin = new AotPlugin({
 });
 
 module.exports = webpackMerge(commonConfig, {
+    devtool: "source-map",
 
     entry: {
         'app': './src/angular/main.aot.ts',
