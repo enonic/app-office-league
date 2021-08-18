@@ -177,21 +177,26 @@ export class LeaguePlayerGraphComponent
                 }
             }
 
-            let chartDataset = {
-                // lineTension: 0,
-                cubicInterpolationMode: 'monotone',
-                fill: false,
-                data: data,
-                label: leaguePlayer.player.name,
-                borderWidth: 1,
-                pointRadius: 0,
-                borderColor: 'rgb(20, 55, 87)'
-            };
-            chartDatasets.push(chartDataset);
-            lineChartColors.push({
-                    borderColor: this.getColor(idx)
-                }
-            )
+            if (leaguePlayer.player !== undefined) {
+                let chartDataset = {
+                    // lineTension: 0,
+                    cubicInterpolationMode: 'monotone',
+                    fill: false,
+                    data: data,
+                    label: leaguePlayer.player.name,
+                    borderWidth: 1,
+                    pointRadius: 0,
+                    borderColor: 'rgb(20, 55, 87)'
+                };
+                chartDatasets.push(chartDataset);
+                lineChartColors.push({
+                        borderColor: this.getColor(idx)
+                    }
+                );
+            } else {
+                console.log(leaguePlayer);
+                console.log("Found game with no players \n Remove the game from storrage");
+            }
         });
 
         for (let cd = chartDatasets.length; cd < 10; cd++) {

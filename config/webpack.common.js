@@ -6,9 +6,6 @@ var helpers = require('./helpers');
 
 // https://angular.io/docs/ts/latest/guide/webpack.html
 module.exports = {
-
-    devtool: 'source-map',
-
     // Configure the console output
     stats: {
         warnings: true,
