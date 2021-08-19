@@ -3264,8 +3264,6 @@ var setRankingUpdateStart = function (leagueId) {
         key: leagueId,
         editor: function (node) {
             var prevRankingUpdateStart = node.rankingUpdateStart;
-            log.info(JSON.stringify(node, null, 2));
-            log.info(node.rankingUpdateStart);
 
             if (prevRankingUpdateStart) {
                 try {
@@ -3287,7 +3285,6 @@ var setRankingUpdateStart = function (leagueId) {
             return node;
         }
     });
-    log.info(JSON.stringify(leagueNode, null, 2));
 
     if (updated) {
         setImageUrl(leagueNode);
