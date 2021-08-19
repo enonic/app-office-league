@@ -1,11 +1,11 @@
-var portalLib = require('/lib/xp/portal');
-var storeLib = require('/lib/office-league-store');
-var authLib = require('/lib/xp/auth');
-var imageHelper = require('/site/controllers/image-helper.js');
+const portalLib = require('/lib/xp/portal');
+const storeLib = require('/lib/office-league-store');
+const authLib = require('/lib/xp/auth');
+const imageHelper = require('/webapp/controllers/image-helper.js');
 
 exports.post = function (req) {
-    var entityType = portalLib.getMultipartText('type');
-    var id = portalLib.getMultipartText('id');
+    const entityType = portalLib.getMultipartText('type');
+    const id = portalLib.getMultipartText('id');
     if (!id) {
         return handleError(400, 'Expected id parameter');
     }
@@ -13,7 +13,7 @@ exports.post = function (req) {
         return handleError(400, 'Invalid type: [' + (entityType || '') + ']');
     }
 
-    var created = false;
+    let created = false;
     switch (entityType) {
     case 'league':
         if (!hasLeaguePermissions(id)) {
