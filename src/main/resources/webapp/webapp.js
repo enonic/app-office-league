@@ -62,6 +62,7 @@ router.route(
         "/leagues/{name}/players",
         "/leagues/{name}/teams",
         "/leagues/{name}/games",
+        "/players/{name}/edit",
         "/players/{name}",
         "/teams/{name}",
         "/games/{id}",
