@@ -6,24 +6,24 @@ updates:
     interval: "weekly"
   open-pull-requests-limit: 10
   assignees:
-    - "rymsha"
+  - "rymsha"
   reviewers:
-    - "rymsha"
+  - "rymsha"
 - package-ecosystem: "npm"
   directory: "/"
   schedule:
-    interval: "monthly"
+    interval: "weekly"
   open-pull-requests-limit: 10
   assignees:
-    - "poi33"
+  - "poi33"
   reviewers:
-    - "poi33"
+  - "poi33"
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
     interval: "monthly"
   open-pull-requests-limit: 10
   assignees:
-    - "rymsha"
+  - "rymsha"
   reviewers:
-    - "rymsha"
+  - "rymsha"
