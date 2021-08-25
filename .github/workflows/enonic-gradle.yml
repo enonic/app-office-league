@@ -56,7 +56,7 @@ jobs:
 
       - run: ./gradlew build -Pcom.enonic.xp.app.production=true
 
-      - uses: codecov/codecov-action@v2.0.2
+      - uses: codecov/codecov-action@v2.0.3
 
       - name: Publish
         if: needs.publish_vars.outputs.publish == 'true'
