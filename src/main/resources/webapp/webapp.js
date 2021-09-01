@@ -55,6 +55,7 @@ router.post("/api/graphql", function (req) {
 router.get("/manifest.json", function(req) {
     return manifest.get(req);
 });
+
 router.route(
     'GET',
     [
@@ -66,8 +67,9 @@ router.route(
         "/players/{name}",
         "/teams/{name}",
         "/games/{id}",
-        "/",
         "/{path}",
+        "/",
+        "",
     ],
     defaultRoute
 );
