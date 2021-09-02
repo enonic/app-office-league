@@ -59,16 +59,7 @@ router.get("/manifest.json", function(req) {
 router.route(
     'GET',
     [
-        "/leagues/{name}",
-        "/leagues/{name}/players",
-        "/leagues/{name}/teams",
-        "/leagues/{name}/games",
-        "/players/{name}/edit",
-        "/players/{name}",
-        "/teams/{name}",
-        "/games/{id}",
-        "/{path}",
-        "/",
+        ".*",
         "",
     ],
     defaultRoute
