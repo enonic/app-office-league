@@ -18,7 +18,7 @@
     "@angular/upgrade": "2.4.10",
     "ng2-charts": "1.6.0",
     "angular2-materialize": "6.7.2",
-    "core-js": "2.4.1",
+    "core-js": "3.17.3",
     "crypto-js": "4.0.0",
     "material-design-icons": "3.0.1",
     "materialize-css": "0.98.2",
