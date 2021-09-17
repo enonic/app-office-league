@@ -1,55 +1,52 @@
-var webpack = require("webpack");
+var { webpack } = require("webpack");
 
-
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var webpackMerge = require('webpack-merge');
-const AotPlugin = require('@ngtools/webpack').AotPlugin;
-var commonConfig = require('./webpack.common.js');
-var helpers = require('./helpers');
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+const { merge } = require("webpack-merge");
+const AotPlugin = require("@ngtools/webpack").AngularWebpackPlugin;
+var commonConfig = require("./webpack.common.js");
+var helpers = require("./helpers");
 
 var aotPlugin = new AotPlugin({
-    tsConfigPath: 'tsconfig.aot.json',
-    entryModule: helpers.root('src/angular/app/app.module#AppModule')
+  tsConfigPath: "tsconfig.aot.json",
+  entryModule: helpers.root("src/angular/app/app.module#AppModule"),
 });
 
-module.exports = webpackMerge(commonConfig, {
-    devtool: "source-map",
+module.exports = merge(commonConfig, {
+  devtool: "source-map",
 
-    entry: {
-        'app': './src/angular/main.aot.ts',
-        'vendor': './src/angular/vendor.aot.ts'
-    },
+  entry: {
+    app: "./src/angular/main.aot.ts",
+    vendor: "./src/angular/vendor.aot.ts",
+  },
 
-    output: {
-        path: helpers.root('build/resources/main/assets'),
-        publicPath: 'assets/',
-        filename: 'js/[name].js',
-        chunkFilename: 'js/[id].chunk.js'
-    },
+  output: {
+    path: helpers.root("build/resources/main/assets"),
+    publicPath: "assets/",
+    filename: "js/[name].js",
+    chunkFilename: "js/[id].chunk.js",
+  },
 
-    module: {
-        rules: [
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        use: [
             {
-                test: /\.ts$/,
-                loaders: ['@ngtools/webpack']
+                loader: ["@ngtools/webpack"],
             }
         ]
-    },
+      },
+    ],
+  },
 
-    plugins: [
-        aotPlugin,
-        new HtmlWebpackPlugin({
-            template: 'src/main/resources/webapp/webapp.ejs',
-            filename: '../webapp/webapp.html',
-            inject: false,
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            minimize: true,
-            compress: {
-                warnings: false
-            }
-        })
-    ]
+  plugins: [
+    aotPlugin,
+    new HtmlWebpackPlugin({
+      template: "src/main/resources/webapp/webapp.ejs",
+      filename: "../webapp/webapp.html",
+      inject: false,
+    }),
+  ],
 });
 
 // Fix for AotPlugin Error: Cannot read property 'getSourceFile' of undefined
