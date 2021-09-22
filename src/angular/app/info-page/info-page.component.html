@@ -1,8 +1,8 @@
-<template [ngIf]="infoPage == null && !connectionError">
+<ng-template [ngIf]="infoPage == null && !connectionError">
     <loading></loading>
-</template>
-<template [ngIf]="infoPage == null && connectionError">
+</ng-template>
+<ng-template [ngIf]="infoPage == null && connectionError">
     <connection-error></connection-error>
-</template>
+</ng-template>
 <div *ngIf="infoPage != null" class="info-page" [innerHTML]="infoPage.body">
 </div>

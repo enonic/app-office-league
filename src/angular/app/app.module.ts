@@ -1,6 +1,6 @@
 import {ErrorHandler, NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
+import {HttpClientModule} from '@angular/common/http';
 import {AppComponent} from './app.component';
 import {RouterModule, Routes} from '@angular/router';
 import {PlayersModule} from './players/players.module';
@@ -15,7 +15,6 @@ import {EditRouteGuard} from './guards/edit.route.guard';
 import {AuthService} from './services/auth.service';
 import {CryptoService} from './services/crypto.service';
 import {CommonModule} from './common/common.module';
-import {MaterializeModule} from 'angular2-materialize';
 import {PageTitleService} from './services/page-title.service';
 import {OfflinePersistenceService} from './services/offline-persistence.service';
 import {OnlineStatusService} from './services/online-status.service';
@@ -36,10 +35,9 @@ const appRoutes: Routes = [
     ],
     imports: [
         CommonModule,
-        MaterializeModule,
         RouterModule.forRoot(appRoutes),
         FormsModule,
-        HttpModule,
+        HttpClientModule,
         PlayersModule,
         GamesModule,
         TeamsModule,

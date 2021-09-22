@@ -44,7 +44,7 @@ export class LeagueValidator {
     }
 
     static nameInUseValidator(graphQLService: GraphQLService, id?: string): AsyncValidatorFn {
-        return (control: AbstractControl): { [key: string]: any } => {
+        return (control: AbstractControl): Promise<{ [key: string]: any }> => {
             const name = control.value;
             return graphQLService.post(LeagueValidator.leagueNameInUseQuery, {name: name}).then(data => {
                 return data && data.league && (data.league.id !== id) ? {'nameinuse': true} : null;

@@ -58,7 +58,8 @@ export class GameListPageComponent extends BaseComponent {
     private playerName: string;
     private teamName: string;
 
-    constructor(private router: Router, private service: GraphQLService, private pageTitleService: PageTitleService,
+    constructor(
+        private service: GraphQLService, private pageTitleService: PageTitleService,
                 route: ActivatedRoute) {
         super(route);
     }

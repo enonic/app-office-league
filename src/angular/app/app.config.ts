@@ -29,6 +29,4 @@ export interface Config {
     publicKey: string;
 }
 
-declare var XPCONFIG: Config;
-
-export {XPCONFIG};
+export var XPCONFIG: Partial<Config> = {};

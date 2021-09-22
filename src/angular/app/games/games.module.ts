@@ -7,7 +7,6 @@ import {CommonModule} from '../common/common.module';
 import {GameProfileComponent} from './game-profile/game-profile.component';
 import {NewGameComponent} from './new-game/new-game.component';
 import {NewGamePlayerComponent} from './new-game-player/new-game-player.component';
-import {MaterializeModule} from 'angular2-materialize/dist/index';
 import {FormsModule} from '@angular/forms';
 import {GamePlayComponent} from './game-play/game-play.component';
 import {GamePointsComponent} from './game-points/game-points.component';
@@ -43,7 +42,6 @@ const gameRoutes: Routes = [
     ],
     imports: [
         CommonModule,
-        MaterializeModule,
         RouterModule.forChild(gameRoutes),
         FormsModule,
         ChartsModule,

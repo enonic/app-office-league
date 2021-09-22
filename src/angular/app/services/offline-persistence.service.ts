@@ -206,7 +206,7 @@ export class OfflinePersistenceService {
         });
     }
 
-    deleteOfflineGame(gameId: string): Promise<any> {
+    deleteOfflineGame(gameId: string): Promise<void> {
         return new Promise((resolve, reject) => {
             let db = this.getDb();
 

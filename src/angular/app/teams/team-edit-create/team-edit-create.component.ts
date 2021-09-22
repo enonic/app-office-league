@@ -3,8 +3,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
-import {MaterializeAction} from 'angular2-materialize/dist/index';
-import {Headers, Http, RequestOptions} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
 import {Team} from '../../../graphql/schemas/Team';
 import {PageTitleService} from '../../services/page-title.service';
@@ -16,6 +14,8 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {TeamValidator} from '../team-validator';
 import {CustomValidators} from '../../common/validators';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, lastValueFrom, map } from 'rxjs';
 
 @Component({
     selector: 'team-edit-create',
@@ -25,7 +25,7 @@ import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 export class TeamEditCreateComponent
     extends BaseComponent
     implements AfterViewInit {
-    materializeActions = new EventEmitter<string | MaterializeAction>();
+    materializeActions = new EventEmitter<any>();
 
     name: string;
     id: string;
@@ -46,7 +46,7 @@ export class TeamEditCreateComponent
     private onlineStateCallback = () => this.online = navigator.onLine;
     @ViewChild('fileInput') inputEl: ElementRef;
 
-    constructor(private http: Http, route: ActivatedRoute, private graphQLService: GraphQLService,
+    constructor(private http: HttpClient, route: ActivatedRoute, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private router: Router, private location: Location,
                 private authService: AuthService, private onlineStatusService: OnlineStatusService, 
                 private fb: FormBuilder, private sanitizer: DomSanitizer) {
@@ -137,7 +137,7 @@ export class TeamEditCreateComponent
             return team.players.map((p) => p.id).filter((id) => id != playerId)[0];
         });
 
-        let possibleTeamMateIds = new Set();
+        let possibleTeamMateIds = new Set<string>();
         data.player.leaguePlayers.forEach((leaguePlayer => {
             leaguePlayer.league.leaguePlayers.forEach((relatedLeaguePlayer) => {
                 if (relatedLeaguePlayer.player.id != data.player.id) {
@@ -258,13 +258,16 @@ export class TeamEditCreateComponent
             formData.append('type', 'team');
             formData.append('id', id);
 
-            let headers = new Headers();
-            headers.append('Accept', 'application/json');
-            let options = new RequestOptions({headers: headers});
-            return this.http.post(XPCONFIG.setImageUrl, formData, options)
-                .map(this.extractData)
-                .catch(this.handleError)
-                .toPromise();
+            const httpOptions = {
+                headers: new HttpHeaders({
+                    'Accept': 'application/json'
+                })
+            };
+
+            return lastValueFrom(this.http.post(XPCONFIG.setImageUrl, formData, httpOptions).pipe(
+                map((dto: any) => dto.data),
+                catchError(this.handleError)
+            ));
         }
         return Promise.resolve();
     }

@@ -1,7 +1,7 @@
-<template [ngIf]="playerForm.controls.id.value == ''">
+<ng-template [ngIf]="playerForm.controls.id.value == ''">
     <loading></loading>
-</template>
-<template [ngIf]="playerForm.controls.id.value != ''">
+</ng-template>
+<ng-template [ngIf]="playerForm.controls.id.value != ''">
     <div class="card edit-form player-edit">
         <div class="card-content">
             <span class="card-title">Edit player</span>
@@ -86,4 +86,4 @@
             </form>
         </div>
     </div>
-</template>
+</ng-template>
