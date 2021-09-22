@@ -1,11 +1,10 @@
-import {Component, EventEmitter, OnDestroy, Renderer, ViewChild} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GameComponent} from '../game/game.component';
 import {XPCONFIG} from '../../app.config';
 import {Game} from '../../../graphql/schemas/Game';
 import {Comment} from '../../../graphql/schemas/Comment';
-import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
 import {AuthService} from '../../services/auth.service';
 import {OfflinePersistenceService} from '../../services/offline-persistence.service';
 import {PageTitleService} from '../../services/page-title.service';
@@ -21,9 +20,9 @@ import {WebSocketManager} from '../../services/websocket.manager';
 export class GameProfileComponent
     extends GameComponent
     implements OnDestroy {
-    materializeActions = new EventEmitter<string | MaterializeAction>();
-    materializeActionsDelete = new EventEmitter<string | MaterializeAction>();
-    materializeActionsContinue = new EventEmitter<string | MaterializeAction>();
+    materializeActions = new EventEmitter<any>();
+    materializeActionsDelete = new EventEmitter<any>();
+    materializeActionsContinue = new EventEmitter<any>();
     @ViewChild('commenttextarea') commentsTextAreaElementRef;
 
     comment: string;
@@ -36,7 +35,7 @@ export class GameProfileComponent
     private wsMan: WebSocketManager;
 
     constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, protected router: Router,
-                private authService: AuthService, private _renderer: Renderer, private pageTitleService: PageTitleService,
+                private authService: AuthService, private pageTitleService: PageTitleService,
                 protected offlineService: OfflinePersistenceService, private onlineStatusService: OnlineStatusService) {
         super(graphQLService, route, router, offlineService);
     }
@@ -107,9 +106,10 @@ export class GameProfileComponent
     onCommentClicked() {
         this.comment = '';
         this.showModalMessage();
-        setTimeout(_ =>
-            this._renderer.invokeElementMethod(
-                this.commentsTextAreaElementRef.nativeElement, 'focus', []), 0);
+        // TODO: fix this.
+        // setTimeout(_ =>
+        //     this._renderer.invokeElementMethod(
+        //         this.commentsTextAreaElementRef.nativeElement, 'focus', []), 0);
     }
 
     onCommentDoneClicked() {

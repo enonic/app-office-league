@@ -7,7 +7,6 @@ import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
 import {Countries} from '../../common/countries';
 import {Country} from '../../common/country';
-import {Headers, Http, RequestOptions} from '@angular/http';
 import {XPCONFIG} from '../../app.config';
 import {PageTitleService} from '../../services/page-title.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
@@ -18,6 +17,8 @@ import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {UserProfileService} from '../../services/user-profile.service';
 import {OnlineStatusService} from '../../services/online-status.service';
 import {PushNotificationService} from '../../services/push-notification.sevice';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, lastValueFrom, map } from 'rxjs';
 
 @Component({
     selector: 'player-edit',
@@ -45,7 +46,7 @@ export class PlayerEditComponent
     private onlineStateCallback = () => this.online = navigator.onLine;
     @ViewChild('fileInput') inputEl: ElementRef;
 
-    constructor(private http: Http, route: ActivatedRoute, private pageTitleService: PageTitleService,
+    constructor(private http: HttpClient, route: ActivatedRoute, private pageTitleService: PageTitleService,
                 private graphQLService: GraphQLService, private onlineStatusService: OnlineStatusService,
                 private router: Router, private location: Location, private fb: FormBuilder, private sanitizer: DomSanitizer,
                 private userProfileService: UserProfileService, private notifService: PushNotificationService) {
@@ -248,13 +249,16 @@ export class PlayerEditComponent
             formData.append('type', 'player');
             formData.append('id', id);
 
-            let headers = new Headers();
-            headers.append('Accept', 'application/json');
-            let options = new RequestOptions({headers: headers});
-            return this.http.post(XPCONFIG.setImageUrl, formData, options)
-                .map(this.extractData)
-                .catch(this.handleError)
-                .toPromise();
+            const httpOptions = {
+                headers: new HttpHeaders({
+                    'Accept': 'application/json'
+                })
+            };
+
+            return lastValueFrom(this.http.post(XPCONFIG.setImageUrl, formData, httpOptions).pipe(
+                map((dto: any) => dto.data),
+                catchError(this.handleError)
+            ));
         }
         return Promise.resolve();
     }

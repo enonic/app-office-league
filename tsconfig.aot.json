@@ -6,6 +6,7 @@
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "skipLibCheck": true,
     "lib": [
       "es2015",
       "dom"
@@ -14,17 +15,18 @@
     "suppressImplicitAnyIndexErrors": true
   },
 
-  "files": [
+  "include": [
+    "src/angular/**/*.ts",
     "src/angular/app/app.module.ts",
     "src/angular/main.aot.ts"
   ],
 
   "angularCompilerOptions": {
     "genDir": "src/angular/assets/aot",
-    "skipMetadataEmit": true
+    "skipMetadataEmit": false
   },
   "exclude": [
-    "node_modules",
+    "./node_modules/**",
     "**/main.ts"
   ]
 }

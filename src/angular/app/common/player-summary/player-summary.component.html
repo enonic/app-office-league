@@ -1,7 +1,7 @@
-<template [ngIf]="player == null">
+<ng-template [ngIf]="player == null">
     <loading></loading>
-</template>
-<template [ngIf]="player != null">
+</ng-template>
+<ng-template [ngIf]="player != null">
     <div class="player-summary">
         <div class="player-summary__ranking" *ngIf="ranking > 0">{{ranking}}</div>
         <div class="player-summary__ranking" *ngIf="pendingApproval">&mdash;</div>
@@ -22,4 +22,4 @@
             </div>
         </div>-->
     </div>
-</template>
+</ng-template>

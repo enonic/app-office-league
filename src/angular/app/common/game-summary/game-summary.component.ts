@@ -10,8 +10,8 @@ import {OfflinePersistenceService} from '../../services/offline-persistence.serv
 
 @Component({
     selector: 'game-summary',
-    templateUrl: 'game-summary.component.html',
-    styleUrls: ['game-summary.component.less']
+    templateUrl: './game-summary.component.html',
+    styleUrls: ['./game-summary.component.less']
 })
 export class GameSummaryComponent
     extends BaseComponent {

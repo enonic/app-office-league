@@ -1,4 +1,5 @@
 import {AbstractControl, AsyncValidatorFn, FormGroup, ValidatorFn} from '@angular/forms';
+import { Observable } from 'rxjs';
 import {GraphQLService} from '../services/graphql.service';
 
 export class TeamValidator {
@@ -32,13 +33,23 @@ export class TeamValidator {
     }
 
     static nameInUseValidator(graphQLService: GraphQLService, id?: string): AsyncValidatorFn {
-        return (control: AbstractControl): { [key: string]: any } => {
+        return (control: AbstractControl): Promise<{[key: string]: any}> => {
             const name = control.value;
             return graphQLService.post(TeamValidator.teamNameInUseQuery, {name: name}).then(data => {
                 return data && data.team && (data.team.id !== id) ? {'nameinuse': true} : null;
             });
         };
     }
+
+    // Old version (remove if migration is okey)
+    // static nameInUseValidator(graphQLService: GraphQLService, id?: string): AsyncValidatorFn {
+    //     return (control: AbstractControl): { [key: string]: any } => {
+    //         const name = control.value;
+    //         return graphQLService.post(TeamValidator.teamNameInUseQuery, {name: name}).then(data => {
+    //             return data && data.team && (data.team.id !== id) ? {'nameinuse': true} : null;
+    //         });
+    //     };
+    // }
 
     private static readonly teamNameInUseQuery = `query($name: String) {
         team(name: $name) {

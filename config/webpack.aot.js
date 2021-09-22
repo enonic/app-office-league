@@ -3,16 +3,22 @@ var { webpack } = require("webpack");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 const { merge } = require("webpack-merge");
 const AotPlugin = require("@ngtools/webpack").AngularWebpackPlugin;
+var nodeExternals = require('webpack-node-externals');
 var commonConfig = require("./webpack.common.js");
 var helpers = require("./helpers");
 
 var aotPlugin = new AotPlugin({
-  tsConfigPath: "tsconfig.aot.json",
+  tsconfig: "./tsconfig.aot.json",
   entryModule: helpers.root("src/angular/app/app.module#AppModule"),
 });
 
 module.exports = merge(commonConfig, {
   devtool: "source-map",
+  target: 'node',
+  externals: [nodeExternals()],
+  externalsPresets: {
+    node: true // in order to ignore built-in modules like path, fs, etc. 
+  },
 
   entry: {
     app: "./src/angular/main.aot.ts",
@@ -32,7 +38,7 @@ module.exports = merge(commonConfig, {
         test: /\.ts$/,
         use: [
             {
-                loader: ["@ngtools/webpack"],
+                loader: "@ngtools/webpack",
             }
         ]
       },

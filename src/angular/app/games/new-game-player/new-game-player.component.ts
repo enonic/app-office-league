@@ -1,7 +1,6 @@
-import {Component, Input, Output, EventEmitter, ElementRef, HostBinding, HostListener} from '@angular/core';
+import {Component, Input, Output, EventEmitter, ElementRef} from '@angular/core';
 import {Player} from '../../../graphql/schemas/Player';
 import {XPCONFIG} from '../../app.config';
-import {MaterializeAction} from 'angular2-materialize';
 
 @Component({
     selector: 'new-game-player',
@@ -9,7 +8,7 @@ import {MaterializeAction} from 'angular2-materialize';
     styleUrls: ['new-game-player.component.less']
 })
 export class NewGamePlayerComponent {
-    materializeActions = new EventEmitter<string|MaterializeAction>();
+    materializeActions = new EventEmitter<any>();
 
     @Input() player: Player;
     @Input() leaguePlayerIds: string[];

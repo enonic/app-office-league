@@ -7,6 +7,7 @@ import {NavigationStart, Router} from '@angular/router';
 import {PageTitleService} from './services/page-title.service';
 import {UserProfileService} from './services/user-profile.service';
 import {Player} from '../graphql/schemas/Player';
+import { filter } from 'rxjs';
 
 @Component({
     selector: 'office-league',
@@ -29,7 +30,9 @@ export class AppComponent implements OnInit {
 
     constructor(public auth: AuthService,private graphQlService: GraphQLService, private pageTitleService: PageTitleService, private location: Location, private router: Router,
                 private userProfileService: UserProfileService) {
+        console.log('working');
         this.logoUrl = ImageService.logoUrl();
+        console.log('this.logoUrl', this.logoUrl);
         this.isPlayingGame = new RegExp('/games/.*/game-play').test(location.path());
         let user = auth.getUser();
         this.playerImage = !!user ? user.playerImageUrl : ImageService.playerDefault();
@@ -46,8 +49,7 @@ export class AppComponent implements OnInit {
 
         this.displayMenu = !this.router.navigated || this.isTopLevelPage(this.router.url);
 
-        router.events
-            .filter(event => event instanceof NavigationStart)
+        router.events.pipe(filter((event => event instanceof NavigationStart)))
             .subscribe((event: NavigationStart) => {
                 this.isPlayingGame = new RegExp('/games/.*/game-play').test(event.url);
                 this.displayMenu = !this.router.navigated || this.isTopLevelPage(event.url);

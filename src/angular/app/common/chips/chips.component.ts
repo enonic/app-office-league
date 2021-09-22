@@ -1,6 +1,5 @@
 import {Component, Input, Output, OnChanges, AfterViewInit, SimpleChanges, SimpleChange, EventEmitter, ElementRef, ViewChild} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
-import {MaterializeAction, MaterializeDirective} from 'angular2-materialize';
 import {BaseComponent} from '../base.component';
 declare var $: any;
 

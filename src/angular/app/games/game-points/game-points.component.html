@@ -1,19 +1,19 @@
-<template [ngIf]="game == null">
+<ng-template [ngIf]="game == null">
     <div class="empty-text blue-grey-text">Loading...</div>
-</template>
-<template [ngIf]="game != null">
+</ng-template>
+<ng-template [ngIf]="game != null">
 
 
     <div class="game-points">
 
         <div *ngFor="let entry of timeline" class="game-points__item">
             <div class="game-points__score">
-                <template [ngIf]="!entry.isComment">
+                <ng-template [ngIf]="!entry.isComment">
                     <span>{{entry.score}}</span>
-                </template>
-                <template [ngIf]="entry.isComment">
+                </ng-template>
+                <ng-template [ngIf]="entry.isComment">
                     <i class="material-icons white-text text-lighten-3">comment</i>
-                </template>
+                </ng-template>
             </div>
             <img *ngIf="entry.imageUrl" src="{{entry.imageUrl}}?size=200" class="game-points__avatar game-points__avatar--{{entry.side}}"/>
             <div class="game-points__event">
@@ -29,12 +29,12 @@
             <section class="timeline">
                 <div *ngFor="let entry of timeline" class="block team-{{entry.side}} {{entry.isComment?'comment':''}}">
                     <div class="time">
-                        <template [ngIf]="!entry.isComment">
+                        <ng-template [ngIf]="!entry.isComment">
                             <span class="fix">{{entry.score}}</span>
-                        </template>
-                        <template [ngIf]="entry.isComment">
+                        </ng-template>
+                        <ng-template [ngIf]="entry.isComment">
                             <i class="material-icons blue-text text-lighten-3">comment</i>
-                        </template>
+                        </ng-template>
                     </div>
                     <div class="description">
                         <img *ngIf="entry.imageUrl" src="{{entry.imageUrl}}?size=200" class="circle timeline__avatar"/>
@@ -51,4 +51,4 @@
         </div>
     </div>-->
 
-</template>
+</ng-template>

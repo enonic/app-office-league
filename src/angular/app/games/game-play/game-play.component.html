@@ -79,10 +79,10 @@
                 </g>
             </svg>
 
-            <template [ngIf]="bluePlayer1 == null">
+            <ng-template [ngIf]="bluePlayer1 == null">
                 <loading></loading>
-            </template>
-            <template [ngIf]="bluePlayer1 != null">
+            </ng-template>
+            <ng-template [ngIf]="bluePlayer1 != null">
                 <div class="sides">
 
                     <div class="side side-red">
@@ -117,7 +117,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <template [ngIf]="redPlayer2 != null">
+                            <ng-template [ngIf]="redPlayer2 != null">
                                 <div class="game-play__player game-play__player--red" [ngClass]="nameClassesRed2" (click)="onPlayerClicked(redPlayer2)">
                                     <img class="game-play__player-img" src="{{redPlayer2? redPlayer2.imageUrl + '?size=200' : null}}" alt="{{redPlayer2?.name}}">
                                     <div class="game-play__player-name">
@@ -126,7 +126,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </template>
+                            </ng-template>
                         </div>
                     </div>
                     <div class="side side-blue">
@@ -139,7 +139,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <template [ngIf]="bluePlayer2 != null">
+                            <ng-template [ngIf]="bluePlayer2 != null">
                                 <div class="game-play__player game-play__player--blue" [ngClass]="nameClassesBlue2" (click)="onPlayerClicked(bluePlayer2)">
                                     <img class="game-play__player-img" src="{{bluePlayer2? bluePlayer2.imageUrl + '?size=200' : null}}" alt="{{bluePlayer2?.name}}">
                                     <div class="game-play__player-name">
@@ -148,7 +148,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </template>
+                            </ng-template>
                         </div>
                         <svg class="add-goal add-goal--red" (click)="onBlueGoalClick()" height="300" viewBox="0 0 300 300" width="300" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <g mask="url(#c)" transform="translate(-27753 4109)">
@@ -173,7 +173,7 @@
                         </svg>
                     </div>
                 </div>
-            </template>
+            </ng-template>
 
         </div>
         <div class="game-play__commentator" [ngClass]="nameClassesGamePlayCommentator">

@@ -1,6 +1,7 @@
 var webpack = require("webpack");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var path = require("path");
 var helpers = require("./helpers");
 
@@ -52,7 +53,7 @@ module.exports = {
       {
         // load all flags to corresponding folder
         test: /\.(png|jpe?g|gif|ico|svg)$/,
-        include: helpers.root("src", "angular", "assets", "img", "flags"),
+        include: [helpers.root("src", "angular", "assets", "img", "flags")],
         use: [
           {
             loader: "file-loader",
@@ -65,7 +66,7 @@ module.exports = {
       {
         // copy all the images (except flags)
         test: /\.(png|jpe?g|gif|ico|svg)$/,
-        exclude: helpers.root("src", "angular", "assets", "img", "flags"),
+        exclude: [helpers.root("src", "angular", "assets", "img", "flags")],
         use: [
           {
             loader: "file-loader",
@@ -105,20 +106,24 @@ module.exports = {
         // load app wide styles
         test: /\.(less|css)$/,
         include: [helpers.root("src", "angular")],
-        exclude: helpers.root("src", "angular", "app"),
-        loader: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          publicPath: "../",
-          use: "css-loader!less-loader",
-        }),
+        exclude: [helpers.root("src", "angular", "app")],
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          "less-loader"
+        ]
       },
       {
         // load angular component styles
         test: /\.(less|css)$/,
-        include: helpers.root("src", "angular", "app"),
-        loader: "to-string-loader!css-loader?url=false!less-loader",
-      },
-    ],
+        include: [helpers.root("src", "angular", "app")],
+        use: [
+          "to-string-loader",
+          "css-loader",
+          "less-loader"
+        ]
+      }
+    ]
   },
 
   plugins: [
@@ -129,10 +134,6 @@ module.exports = {
       helpers.root("./src"), // location of your src
       {} // a map of your routes
     ),
-    new ExtractTextPlugin({
-      filename: "css/[name].css",
-      allChunks: true,
-    }),
     new CopyWebpackPlugin({
       patterns: [
         {
@@ -141,6 +142,7 @@ module.exports = {
         }, // don't copy flags as they are referenced from css file
       ],
     }),
+    new MiniCssExtractPlugin(),
     new webpack.ProvidePlugin({
       $: "jquery",
       jQuery: "jquery",

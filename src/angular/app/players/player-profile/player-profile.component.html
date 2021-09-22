@@ -1,9 +1,9 @@
-<template [ngIf]="player == null && !connectionError">
+<ng-template [ngIf]="player == null && !connectionError">
     <loading></loading>
-</template>
-<template [ngIf]="player == null && connectionError">
+</ng-template>
+<ng-template [ngIf]="player == null && connectionError">
     <connection-error></connection-error>
-</template>
+</ng-template>
 <div *ngIf="player != null" class="player-profile">
 
 

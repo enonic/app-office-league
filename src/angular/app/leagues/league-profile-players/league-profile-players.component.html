@@ -1,10 +1,10 @@
-<template [ngIf]="league == null && !connectionError">
+<ng-template [ngIf]="league == null && !connectionError">
     <loading></loading>
-</template>
-<template [ngIf]="league == null && connectionError">
+</ng-template>
+<ng-template [ngIf]="league == null && connectionError">
     <connection-error></connection-error>
-</template>
-<template [ngIf]="league != null">
+</ng-template>
+<ng-template [ngIf]="league != null">
     <div class="row">
         <div class="col s12">
             <ul class="row list">
@@ -46,4 +46,4 @@
             <a (click)="onConfirmPlayerJoin(false)" class="modal-action waves-effect btn-flat red white-text">Deny</a>
         </div>
     </div>
-</template>
+</ng-template>

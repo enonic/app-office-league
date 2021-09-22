@@ -38,7 +38,7 @@ export class PlayerValidator {
     }
 
     static nameInUseValidator(graphQLService: GraphQLService, id?: string): AsyncValidatorFn {
-        return (control: AbstractControl): { [key: string]: any } => {
+        return (control: AbstractControl): Promise<{ [key: string]: any }> => {
             const name = control.value;
             return graphQLService.post(PlayerValidator.playerNameInUseQuery, {name: name}).then(data => {
                 return data && data.player && (data.player.id !== id) ? {'nameinuse': true} : null;
