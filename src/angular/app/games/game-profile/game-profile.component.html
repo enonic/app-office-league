@@ -1,9 +1,9 @@
-<template [ngIf]="game == null && !connectionError">
+<ng-template [ngIf]="game == null && !connectionError">
     <loading></loading>
-</template>
-<template [ngIf]="game == null && connectionError">
+</ng-template>
+<ng-template [ngIf]="game == null && connectionError">
     <connection-error></connection-error>
-</template>
+</ng-template>
 <div *ngIf="game != null" class="game-profile">
 
     <game [game]="game"></game>
@@ -11,11 +11,11 @@
         <small class="center grey-text">{{game.time | amCalendar:{lastDay: '[Yesterday at] HH:mm', sameDay: '[Today at] HH:mm', nextDay : '[Tomorrow at] HH:mm', lastWeek : '[last] dddd [at] HH:mm', nextWeek : 'dddd [at] HH:mm', sameElse : 'll HH:mm'} }}</small>
     </div>
     <game-flow [game]="game"></game-flow>
-    <template [ngIf]="playerId && !deletable">
+    <ng-template [ngIf]="playerId && !deletable">
         <div class="fixed-action-btn">
             <a class="btn-floating global__btn--comment green" (click)="onCommentClicked()" [attr.disabled]="online?null:true"><i class="material-icons">comment</i></a>
         </div>
-    </template>
+    </ng-template>
 
 
     <game-points [game]="game"></game-points>
@@ -35,8 +35,7 @@
     </div>
 
 </div>
-<div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
-     [materializeActions]="materializeActions">
+<div class="modal center" materialize="modal">
     <div class="modal-content">
         <h6 class="center">Game comment</h6>
         <div class="input-field col s12">
@@ -50,8 +49,7 @@
     </div>
 </div>
 
-<div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
-     [materializeActions]="materializeActionsDelete">
+<div class="modal center" materialize="modal">
     <div class="modal-content">
         <h5 class="center">Delete game</h5>
         <p>You are about to permanently delete this game. <strong>This operation cannot be undone.</strong></p>
@@ -62,8 +60,7 @@
     </div>
 </div>
 
-<div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
-     [materializeActions]="materializeActionsContinue">
+<div class="modal center" materialize="modal">
     <div class="modal-content">
         <h5 class="center">Game in progress</h5>
         <p>This game is not finished. Would you like to continue playing?</p>

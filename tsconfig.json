@@ -2,15 +2,18 @@
   "compilerOptions": {
     "baseUrl": "",
     "declaration": false,
+    "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "importHelpers": true,
     "lib": ["es6", "dom"],
     "mapRoot": "./",
-    "module": "es6",
+    "module": "es2015",
     "moduleResolution": "node",
     "outDir": "../dist/out-tsc",
     "sourceMap": true,
-    "target": "es5",
+    "target": "es2015",
     "typeRoots": [
       "./node_modules/@types"
     ],
@@ -20,7 +23,7 @@
     "genDir": "src/angular/assets/locale"
   },
   "exclude": [
-    "node_modules",
+    "./node_modules",
     "**/main.aot.ts"
   ]
 }

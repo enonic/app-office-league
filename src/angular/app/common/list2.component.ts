@@ -1,7 +1,6 @@
 import {Component, Input, SimpleChanges} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {BaseComponent} from './base.component';
-import {MaterializeDirective} from 'angular2-materialize/dist/index';
 
 @Component({
     selector: 'list2',

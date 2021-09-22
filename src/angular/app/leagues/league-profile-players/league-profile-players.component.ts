@@ -6,7 +6,6 @@ import {League} from '../../../graphql/schemas/League';
 import {LeaguePlayer} from '../../../graphql/schemas/LeaguePlayer';
 import {BaseComponent} from '../../common/base.component';
 import {PageTitleService} from '../../services/page-title.service';
-import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
 import {Player} from '../../../graphql/schemas/Player';
 
 @Component({
@@ -23,8 +22,8 @@ export class LeagueProfilePlayersComponent
     private leagueName: string;
     private pageCount: number = 1;
     adminInLeague: boolean;
-    materializeActionsRemove = new EventEmitter<string | MaterializeAction>();
-    materializeActionsApprove = new EventEmitter<string | MaterializeAction>();
+    materializeActionsRemove = new EventEmitter<any>();
+    materializeActionsApprove = new EventEmitter<any>();
     removePlayer: Player;
     approvePlayer: Player;
     connectionError: boolean;

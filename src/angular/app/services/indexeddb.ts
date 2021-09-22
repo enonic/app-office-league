@@ -22,7 +22,7 @@ export class IndexedDB {
     }
 
     createStore(onUpgradeNeeded: (ev: IDBVersionChangeEvent, db: IDBDatabase) => any): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             let request = this.indexedDB.open(this.name, this.version);
             request.onsuccess = () => {
                 this.db = request.result;
@@ -89,7 +89,7 @@ export class IndexedDB {
             request.onsuccess = evt => {
                 let cursor = (<IDBOpenDBRequest>evt.target).result;
                 if (cursor) {
-                    values.push(cursor.value);
+                    values.push((cursor as any).value);
                     cursor['continue']();
                 } else {
                     resolve(values);
@@ -116,7 +116,8 @@ export class IndexedDB {
             });
 
             let objectStore = transaction.objectStore(storeName);
-            objectStore.add(value, key);
+            // TODO: possible bug
+            objectStore.add(value, key as IDBValidKey);
         });
     }
 
@@ -141,12 +142,13 @@ export class IndexedDB {
             });
 
             let objectStore = transaction.objectStore(storeName);
-            objectStore.put(value, key);
+            // TODO: possible bug
+            objectStore.put(value, key as IDBValidKey);
         });
     }
 
     remove(storeName: string, key: IDBKeyRange | IDBValidKey): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             if (!this.checkDbReady(storeName, reject)) {
                 return;
             }
@@ -171,7 +173,7 @@ export class IndexedDB {
     }
 
     clear(storeName: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             if (!this.checkDbReady(storeName, reject)) {
                 return;
             }

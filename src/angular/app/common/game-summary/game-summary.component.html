@@ -1,37 +1,37 @@
-<template [ngIf]="game == null">
+<ng-template [ngIf]="game == null">
     <loading></loading>
-</template>
-<template [ngIf]="game != null">
+</ng-template>
+<ng-template [ngIf]="game != null">
 
     <div class="game-summary">
         <img src="{{game.league.imageUrl}}" alt="{{game.league.name}}" class="game-summary__avatar">
         <div class="game-summary__sides">
             <div class="game-summary__side">
-                <template [ngIf]="blueTeam">
+                <ng-template [ngIf]="blueTeam">
                     {{blueTeam.team.name}}
-                </template>
-                <template [ngIf]="!blueTeam">
+                </ng-template>
+                <ng-template [ngIf]="!blueTeam">
                     {{bluePlayers[0]?.player.name}}
-                </template>
+                </ng-template>
             </div>
             <div class="game-summary__side">
-                <template [ngIf]="redTeam">
+                <ng-template [ngIf]="redTeam">
                     {{redTeam.team.name}}
-                </template>
-                <template [ngIf]="!redTeam">
+                </ng-template>
+                <ng-template [ngIf]="!redTeam">
                     {{redPlayers[0]?.player.name}}
-                </template>
+                </ng-template>
             </div>
         </div>
-        <template [ngIf]="!game.finished">
+        <ng-template [ngIf]="!game.finished">
             <div class="game-summary__live">
                 <span class="game-summary__live--text">Live</span>
             </div>
-        </template>
+        </ng-template>
         <div class="game-summary__result">
             <div class="">{{blueScore}}</div>
             <div class="">{{redScore}}</div>
         </div>
     </div>
 
-</template>
+</ng-template>

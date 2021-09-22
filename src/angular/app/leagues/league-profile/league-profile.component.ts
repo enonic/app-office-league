@@ -8,7 +8,6 @@ import {Game} from '../../../graphql/schemas/Game';
 import {PageTitleService} from '../../services/page-title.service';
 import {OnlineStatusService} from '../../services/online-status.service';
 import {Player} from '../../../graphql/schemas/Player';
-import {MaterializeAction, MaterializeDirective} from 'angular2-materialize/dist/index';
 import {WebSocketManager} from '../../services/websocket.manager';
 import {XPCONFIG} from '../../app.config';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
@@ -36,13 +35,13 @@ export class LeagueProfileComponent
     removePlayer: Player;
     approvePlayer: Player;
     approvePollingTimerId: any;
-    materializeActions = new EventEmitter<string | MaterializeAction>();
-    materializeActionsRemove = new EventEmitter<string | MaterializeAction>();
-    materializeActionsApprove = new EventEmitter<string | MaterializeAction>();
-    materializeActionsPending = new EventEmitter<string | MaterializeAction>();
-    materializeActionsDelete = new EventEmitter<string | MaterializeAction>();
-    materializeActionsLeave = new EventEmitter<string | MaterializeAction>();
-    materializeActionsRegenerateRanking = new EventEmitter<string | MaterializeAction>();
+    materializeActions = new EventEmitter<any>();
+    materializeActionsRemove = new EventEmitter<any>();
+    materializeActionsApprove = new EventEmitter<any>();
+    materializeActionsPending = new EventEmitter<any>();
+    materializeActionsDelete = new EventEmitter<any>();
+    materializeActionsLeave = new EventEmitter<any>();
+    materializeActionsRegenerateRanking = new EventEmitter<any>();
     online: boolean;
     onlineStateCallback = () => this.online = navigator.onLine;
     private wsMan: WebSocketManager;
@@ -99,7 +98,7 @@ export class LeagueProfileComponent
             activeGameCount: 3, gameCount: 3
         };
 
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             this.graphQLService.post(
                 LeagueProfileComponent.getLeagueQuery,
                 getLeagueParams,

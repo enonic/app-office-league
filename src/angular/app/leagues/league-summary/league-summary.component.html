@@ -1,7 +1,7 @@
-<template [ngIf]="league == null">
+<ng-template [ngIf]="league == null">
     <loading></loading>
-</template>
-<template [ngIf]="league != null">
+</ng-template>
+<ng-template [ngIf]="league != null">
     <!--<div class="league-summary">
         <img src="{{league.imageUrl}}" alt="{{league.name}}" class="circle">
         <div class="primary">
@@ -35,4 +35,4 @@
             </div>
         </div>-->
     </div>
-</template>
+</ng-template>

@@ -8,7 +8,6 @@ import {TeamEditCreateComponent} from './team-edit-create/team-edit-create.compo
 import {TeamListPageComponent} from './team-list-page/team-list-page.component';
 import {FormsModule} from '@angular/forms';
 import {PlayerRouteGuard, } from '../guards/player.route.guard';
-import {MaterializeModule} from 'angular2-materialize/dist/index';
 
 const teamRoutes: Routes = [
     {path: 'teams', component: TeamListPageComponent, canActivate: [PlayerRouteGuard,]},
@@ -24,7 +23,6 @@ const teamRoutes: Routes = [
         TeamEditCreateComponent
     ],
     imports: [
-        MaterializeModule,
         CommonModule,
         GamesModule,
         LeaguesModule,

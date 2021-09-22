@@ -1,6 +1,6 @@
-<template [ngIf]="players == null">
+<ng-template [ngIf]="players == null">
     <loading></loading>
-</template>
+</ng-template>
 <ul *ngIf="players != null">
     <li class="chip" *ngFor="let player of players">
         <i class="avatar circle material-icons">face</i>
