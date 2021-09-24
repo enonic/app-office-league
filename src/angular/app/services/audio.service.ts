@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {WindowRefService} from './window-ref.service';
-import {XPCONFIG} from '../app.config';
+import {Config} from '../app.config';
 
+declare var XPCONFIG: Config;
 
 export interface WebAudioSound {
     play(): void;

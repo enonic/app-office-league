@@ -1,6 +1,8 @@
 import {Component, Input, Output, EventEmitter, ElementRef} from '@angular/core';
 import {Player} from '../../../graphql/schemas/Player';
-import {XPCONFIG} from '../../app.config';
+import { Config } from '../../app.config';
+
+declare var XPCONFIG: Config;
 
 @Component({
     selector: 'new-game-player',

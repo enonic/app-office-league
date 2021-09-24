@@ -5,9 +5,11 @@ import {Game} from '../../graphql/schemas/Game';
 import {League} from '../../graphql/schemas/League';
 import {Player} from '../../graphql/schemas/Player';
 import {CryptoService} from './crypto.service';
-import {XPCONFIG} from '../app.config';
 import {AuthService} from './auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Config } from '../app.config';
+
+declare var XPCONFIG: Config;
 
 @Injectable()
 export class GraphQLService {

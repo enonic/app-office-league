@@ -7,6 +7,7 @@ const helpers = require("./helpers");
 
 module.exports = merge(commonConfig, {
   mode: "production",
+  target: 'web',
 
   entry: {
     app: "./src/angular/main.ts",
@@ -35,9 +36,10 @@ module.exports = merge(commonConfig, {
   plugins: [
     new AngularWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: "src/angular/index.html",
-      filename: "index.html",
+      template: 'src/main/resources/site/pages/pwa/pwa.ejs',
+      filename: '../site/pages/pwa/pwa.html',
       inject: false,
     }),
+    new webpack.optimize.UglifyJsPlugin()
   ],
 });

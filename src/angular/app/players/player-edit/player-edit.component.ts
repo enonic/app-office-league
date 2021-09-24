@@ -7,7 +7,6 @@ import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
 import {Countries} from '../../common/countries';
 import {Country} from '../../common/country';
-import {XPCONFIG} from '../../app.config';
 import {PageTitleService} from '../../services/page-title.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PlayerValidator} from '../player-validator';
@@ -19,6 +18,9 @@ import {OnlineStatusService} from '../../services/online-status.service';
 import {PushNotificationService} from '../../services/push-notification.sevice';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, lastValueFrom, map } from 'rxjs';
+import { Config } from '../../app.config';
+
+declare var XPCONFIG: Config;
 
 @Component({
     selector: 'player-edit',

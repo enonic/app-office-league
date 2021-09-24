@@ -5,10 +5,11 @@ import {Game} from './Game';
 import {LeaguePlayer} from './LeaguePlayer';
 import {Player} from './Player';
 import {LeagueTeam} from './LeagueTeam';
-import {XPCONFIG} from '../../app/app.config';
 import {UrlHelper} from './UrlHelper';
 import {LeagueStats} from './LeagueStats';
 import {LeagueRules} from './LeagueRules';
+
+declare var XPCONFIG: any;
 
 export class League
     extends NamedEntity {

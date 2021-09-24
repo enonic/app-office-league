@@ -8,11 +8,13 @@ import {GraphQLService} from '../../services/graphql.service';
 import {Countries} from '../../common/countries';
 import {Game} from '../../../graphql/schemas/Game';
 import {Team} from '../../../graphql/schemas/Team';
-import {XPCONFIG} from '../../app.config';
 import {PageTitleService} from '../../services/page-title.service';
 import {OnlineStatusService} from '../../services/online-status.service';
 import {NewGameComponent} from '../../games/new-game/new-game.component';
 import {PlayerSelectComponent} from '../../common/player-select/player-select.component';
+import { Config } from '../../app.config';
+
+declare var XPCONFIG: Config;
 
 @Component({
     selector: 'player-profile',

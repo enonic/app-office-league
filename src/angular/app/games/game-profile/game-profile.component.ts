@@ -2,7 +2,6 @@ import {Component, EventEmitter, OnDestroy, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GameComponent} from '../game/game.component';
-import {XPCONFIG} from '../../app.config';
 import {Game} from '../../../graphql/schemas/Game';
 import {Comment} from '../../../graphql/schemas/Comment';
 import {AuthService} from '../../services/auth.service';
@@ -11,6 +10,9 @@ import {PageTitleService} from '../../services/page-title.service';
 import {OnlineStatusService} from '../../services/online-status.service';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 import {WebSocketManager} from '../../services/websocket.manager';
+import { Config } from '../../app.config';
+
+declare var XPCONFIG: Config;
 
 @Component({
     selector: 'game-profile',
