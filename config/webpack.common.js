@@ -34,7 +34,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: [".ts", ".js", "less", ".css"],
+    extensions: [".ts", ".js", ".less", ".css"],
   },
 
   optimization: {
@@ -86,6 +86,7 @@ module.exports = {
               limit: 10000,
               mimetype: "application/font-woff",
               name: "fonts/[name].[hash].[ext]",
+              esModule: false
             },
           },
         ],
@@ -98,6 +99,7 @@ module.exports = {
             loader: "file-loader",
             options: {
               name: "fonts/[name].[hash].[ext]",
+              esModule: false
             },
           },
         ],
@@ -105,12 +107,17 @@ module.exports = {
       {
         // load app wide styles
         test: /\.(less|css)$/,
-        include: [helpers.root("src", "angular")],
+        // include: [helpers.root("src", "angular")],
         exclude: [helpers.root("src", "angular", "app")],
         use: [
-          MiniCssExtractPlugin.loader,
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../',  // /webapp/com.enonic.app.officeleague/
+            },
+          },
           "css-loader",
-          "less-loader"
+          'less-loader'
         ]
       },
       {
@@ -119,8 +126,8 @@ module.exports = {
         include: [helpers.root("src", "angular", "app")],
         use: [
           "to-string-loader",
-          "css-loader",
-          "less-loader"
+          'css-loader',
+          'less-loader'
         ]
       }
     ]
@@ -142,10 +149,13 @@ module.exports = {
         }, // don't copy flags as they are referenced from css file
       ],
     }),
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].css'
+    }),
     new webpack.ProvidePlugin({
-      $: "jquery",
-      jQuery: "jquery",
+      // $: "jquery",
+      // jQuery: "jquery",
+      // "window.jQuery": "jquery",
       "window.jQuery": "jquery",
       Crypto: "crypto-js",
     }),

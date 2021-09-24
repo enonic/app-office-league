@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
-import {ConfigUser, XPCONFIG} from '../app.config';
+import {Config, ConfigUser} from '../app.config';
 import {UrlHelper} from '../../graphql/schemas/UrlHelper';
+
+declare var XPCONFIG: Config;
 
 @Injectable()
 export class ImageService {

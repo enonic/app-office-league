@@ -2,7 +2,6 @@ import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/co
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
-import {XPCONFIG} from '../../app.config';
 import {League} from '../../../graphql/schemas/League';
 import {GamePlayComponent} from '../game-play/game-play.component';
 import {PageTitleService} from '../../services/page-title.service';
@@ -13,6 +12,9 @@ import {AudioService, WebAudioSound} from '../../services/audio.service';
 import {WebSocketManager} from '../../services/websocket.manager';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 import {LeagueRules} from '../../../graphql/schemas/LeagueRules';
+import { Config } from '../../app.config';
+
+declare var XPCONFIG: Config;
 
 @Component({
     selector: 'new-game',

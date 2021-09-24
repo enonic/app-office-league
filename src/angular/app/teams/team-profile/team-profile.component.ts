@@ -5,8 +5,10 @@ import {GraphQLService} from '../../services/graphql.service';
 import {OnlineStatusService} from '../../services/online-status.service';
 import {Game} from '../../../graphql/schemas/Game';
 import {Team} from '../../../graphql/schemas/Team';
-import {XPCONFIG} from '../../app.config';
 import {PageTitleService} from '../../services/page-title.service';
+import { Config } from '../../app.config';
+
+declare var XPCONFIG: Config;
 
 @Component({
     selector: 'team-profile',

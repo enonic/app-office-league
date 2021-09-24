@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {CanActivate, Router} from '@angular/router';
-import {XPCONFIG} from '../app.config';
+import { Config } from '../app.config';
+
+declare var XPCONFIG: Config;
 
 @Injectable()
 export class EditRouteGuard implements CanActivate {

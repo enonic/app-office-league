@@ -14,11 +14,7 @@ var aotPlugin = new AotPlugin({
 
 module.exports = merge(commonConfig, {
   devtool: "source-map",
-  target: 'node',
-  externals: [nodeExternals()],
-  externalsPresets: {
-    node: true // in order to ignore built-in modules like path, fs, etc. 
-  },
+  target: 'web',
 
   entry: {
     app: "./src/angular/main.aot.ts",
@@ -51,7 +47,7 @@ module.exports = merge(commonConfig, {
       template: "src/main/resources/webapp/webapp.ejs",
       filename: "../webapp/webapp.html",
       inject: false,
-    }),
+    })
   ],
 });
 

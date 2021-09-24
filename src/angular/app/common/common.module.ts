@@ -15,6 +15,7 @@ import {PlayerSelectComponent} from './player-select/player-select.component';
 import {ChipsComponent} from './chips/chips.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {ConnectionErrorComponent} from './connection-error/connection-error.component';
+import { MaterializeModule } from 'angular2-materialize';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import {ConnectionErrorComponent} from './connection-error/connection-error.comp
     ],
     imports: [
         BrowserModule,
+        MaterializeModule,
         FormsModule,
         ReactiveFormsModule
     ],

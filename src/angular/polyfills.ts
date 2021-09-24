@@ -16,6 +16,7 @@
 // import 'core-js/es6/reflect';
 
 // import 'core-js/es7/reflect';
+import '@angular/localize/init'
 import 'core-js/es/reflect'; 
 import 'core-js/stable/reflect'; 
 import 'core-js/features/reflect';
