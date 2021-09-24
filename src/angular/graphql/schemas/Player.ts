@@ -3,9 +3,10 @@ import {ImageService} from '../../app/services/image.service';
 import {Handedness, HandednessUtil} from './Handedness';
 import {Team} from './Team';
 import {LeaguePlayer} from './LeaguePlayer';
-import {XPCONFIG} from '../../app/app.config';
 import {UrlHelper} from './UrlHelper';
 import {PlayerStats} from './PlayerStats';
+
+declare var XPCONFIG: any;
 
 export class Player
     extends NamedEntity {

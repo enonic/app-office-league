@@ -11,11 +11,13 @@ import {GamePlayer} from '../../../graphql/schemas/GamePlayer';
 import {GameTeam} from '../../../graphql/schemas/GameTeam';
 import {Team} from '../../../graphql/schemas/Team';
 import {GameSelection} from '../GameSelection';
-import {XPCONFIG} from '../../app.config';
 import {WebSocketManager} from '../../services/websocket.manager';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 import {RankingService} from '../../services/ranking.service';
 import {AudioService, WebAudioSound} from '../../services/audio.service';
+import { Config } from '../../app.config';
+
+declare var XPCONFIG: Config;
 
 enum GameState {
     NotStarted, Playing, Paused, Finished

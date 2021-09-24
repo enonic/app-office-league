@@ -5,7 +5,6 @@ import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
 import {Countries} from '../../common/countries';
 import {Country} from '../../common/country';
-import {XPCONFIG} from '../../app.config';
 import {AuthService} from '../../services/auth.service';
 import {PageTitleService} from '../../services/page-title.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
@@ -18,6 +17,9 @@ import {CustomValidators} from '../../common/validators';
 import {ImageService} from '../../services/image.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, lastValueFrom, map } from 'rxjs';
+import { Config } from '../../app.config';
+
+declare var XPCONFIG: Config;
 
 @Component({
     selector: 'player-create',

@@ -3,7 +3,6 @@ import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
 import {BaseComponent} from '../../common/base.component';
-import {XPCONFIG} from '../../app.config';
 import {Sport, SportUtil} from '../../../graphql/schemas/Sport';
 import {League} from '../../../graphql/schemas/League';
 import {AuthService} from '../../services/auth.service';
@@ -17,6 +16,10 @@ import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {Player} from '../../../graphql/schemas/Player';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, lastValueFrom, map } from 'rxjs';
+import { Config } from '../../app.config';
+import { MaterializeAction } from 'angular2-materialize';
+
+declare var XPCONFIG: Config;
 
 @Component({
     selector: 'league-edit-create',
@@ -58,7 +61,7 @@ export class LeagueEditCreateComponent
         'pointsToWin': '',
         'minimumDifference': ''
     };
-    materializeActionsAdmin = new EventEmitter<any>();
+    materializeActionsAdmin = new EventEmitter<string | MaterializeAction>();
     materializeActionsPlayer = new EventEmitter<any>();
     private online: boolean;
     private onlineStateCallback = () => this.online = navigator.onLine;
@@ -304,6 +307,7 @@ export class LeagueEditCreateComponent
     }
 
     onAddAdminClicked() {
+        console.log('test');
         this.showSelectAdminModal();
     }
 
@@ -339,6 +343,7 @@ export class LeagueEditCreateComponent
     }
 
     showSelectAdminModal(): void {
+        console.log('test');
         this.materializeActionsAdmin.emit({action: "modal", params: ['open']});
     }
 

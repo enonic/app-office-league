@@ -9,8 +9,10 @@ import {PageTitleService} from '../../services/page-title.service';
 import {OnlineStatusService} from '../../services/online-status.service';
 import {Player} from '../../../graphql/schemas/Player';
 import {WebSocketManager} from '../../services/websocket.manager';
-import {XPCONFIG} from '../../app.config';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
+import { Config } from '../../app.config';
+
+declare var XPCONFIG: Config;
 
 @Component({
     selector: 'league-profile',

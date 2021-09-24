@@ -3,7 +3,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
 import {BaseComponent} from '../../common/base.component';
 import {GraphQLService} from '../../services/graphql.service';
-import {XPCONFIG} from '../../app.config';
 import {Team} from '../../../graphql/schemas/Team';
 import {PageTitleService} from '../../services/page-title.service';
 import {Player} from '../../../graphql/schemas/Player';
@@ -16,6 +15,9 @@ import {CustomValidators} from '../../common/validators';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, lastValueFrom, map } from 'rxjs';
+import { Config } from '../../app.config';
+
+declare var XPCONFIG: Config;
 
 @Component({
     selector: 'team-edit-create',

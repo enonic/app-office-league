@@ -2,9 +2,10 @@ import {NamedEntity} from './NamedEntity';
 import {ImageService} from '../../app/services/image.service';
 import {Player} from './Player';
 import {LeagueTeam} from './LeagueTeam';
-import {XPCONFIG} from '../../app/app.config';
 import {UrlHelper} from './UrlHelper';
 import {TeamStats} from './TeamStats';
+
+declare var XPCONFIG: any;
 
 export class Team
     extends NamedEntity {

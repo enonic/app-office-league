@@ -17,6 +17,7 @@ import {PlayerRouteGuard} from '../guards/player.route.guard';
 import {AdminListComponent} from './admin-list/admin-list.component';
 import {AdminSummaryComponent} from './admin-summary/admin-summary.component';
 import {LeaguePlayerGraphComponent} from './league-player-graph/league-player-graph.component';
+import { MaterializeModule } from 'angular2-materialize';
 
 const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, canActivate: [PlayerRouteGuard,]},
@@ -43,6 +44,7 @@ const leagueRoutes: Routes = [
         AdminSummaryComponent
     ],
     imports: [
+        MaterializeModule,
         FormsModule,
         CommonModule,
         GamesModule,

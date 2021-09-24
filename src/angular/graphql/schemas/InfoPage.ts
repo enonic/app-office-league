@@ -1,12 +1,3 @@
-import {NamedEntity} from './NamedEntity';
-import {ImageService} from '../../app/services/image.service';
-import {Handedness, HandednessUtil} from './Handedness';
-import {Team} from './Team';
-import {LeaguePlayer} from './LeaguePlayer';
-import {XPCONFIG} from '../../app/app.config';
-import {UrlHelper} from './UrlHelper';
-import {PlayerStats} from './PlayerStats';
-
 export class InfoPage {
     name: string;
     title: string;

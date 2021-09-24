@@ -16,6 +16,7 @@ import {GameFlowComponent} from './game-flow/game-flow.component';
 import {GameSelection} from './GameSelection';
 import {RatingPointsComponent} from './rating-points/rating-points.component';
 import {MomentModule} from 'angular2-moment';
+import { MaterializeModule } from 'angular2-materialize';
 
 const gameRoutes: Routes = [
     {path: 'games', component: GameListPageComponent, canActivate: [PlayerRouteGuard]},
@@ -42,6 +43,7 @@ const gameRoutes: Routes = [
     ],
     imports: [
         CommonModule,
+        MaterializeModule,
         RouterModule.forChild(gameRoutes),
         FormsModule,
         ChartsModule,

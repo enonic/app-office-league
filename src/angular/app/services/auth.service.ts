@@ -1,8 +1,10 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ConfigUser, XPCONFIG} from '../app.config';
+import {ConfigUser, Config} from '../app.config';
 import {UserProfileService} from './user-profile.service';
 import {Player} from '../../graphql/schemas/Player';
+
+declare var XPCONFIG: Config;
 
 @Injectable()
 export class AuthService {

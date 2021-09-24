@@ -3,8 +3,10 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../common/base.component';
 import {GraphQLService} from '../services/graphql.service';
 import {InfoPage} from '../../graphql/schemas/InfoPage';
-import {XPCONFIG} from '../app.config';
 import {PageTitleService} from '../services/page-title.service';
+import { Config } from '../app.config';
+
+declare var XPCONFIG: Config;
 
 @Component({
     selector: 'info-page',

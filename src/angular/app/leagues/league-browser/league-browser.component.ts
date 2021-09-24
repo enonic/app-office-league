@@ -7,7 +7,6 @@ import {OnlineStatusService} from '../../services/online-status.service';
 import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
 import {PageTitleService} from '../../services/page-title.service';
-declare var $: any;
 
 @Component({
     selector: 'league-browser',
