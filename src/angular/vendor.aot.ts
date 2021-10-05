@@ -7,7 +7,6 @@ import '@angular/common/http';
 import '@angular/router';
 // RxJS
 import 'rxjs';
-// import 'jquery';
 import 'materialize-css';
 import 'crypto-js';
 import 'chart.js';
