@@ -1,5 +1,4 @@
 var webpack = require("webpack");
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var path = require("path");
@@ -86,10 +85,11 @@ module.exports = {
               limit: 10000,
               mimetype: "application/font-woff",
               name: "fonts/[name].[hash].[ext]",
-              esModule: false
-            },
+              esModule: false,
+            }
           },
         ],
+        type: 'javascript/auto'
       },
       {
         // load all other fonts to the same folder
@@ -99,7 +99,7 @@ module.exports = {
             loader: "file-loader",
             options: {
               name: "fonts/[name].[hash].[ext]",
-              esModule: false
+              esModule: false,
             },
           },
         ],
@@ -107,7 +107,7 @@ module.exports = {
       {
         // load app wide styles
         test: /\.(less|css)$/,
-        // include: [helpers.root("src", "angular")],
+        include: [helpers.root("src", "angular")],
         exclude: [helpers.root("src", "angular", "app")],
         use: [
           {
@@ -121,16 +121,19 @@ module.exports = {
         ]
       },
       {
-        // load angular component styles
-        test: /\.(less|css)$/,
+        test: /\.(less)$/,
         include: [helpers.root("src", "angular", "app")],
         use: [
-          "to-string-loader",
-          'css-loader',
-          'less-loader'
+            { loader: 'to-string-loader' },
+            { loader: 'css-loader',
+              options: {
+                esModule: false,
+              }
+            },
+            { loader: 'less-loader' }
         ]
       }
-    ]
+    ],
   },
 
   plugins: [
@@ -150,12 +153,9 @@ module.exports = {
       ],
     }),
     new MiniCssExtractPlugin({
-      filename: 'css/[name].css'
+      filename: "./css/[name].css",
     }),
     new webpack.ProvidePlugin({
-      // $: "jquery",
-      // jQuery: "jquery",
-      // "window.jQuery": "jquery",
       "window.jQuery": "jquery",
       Crypto: "crypto-js",
     }),
