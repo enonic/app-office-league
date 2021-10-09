@@ -156,8 +156,10 @@ module.exports = {
       filename: "./css/[name].css",
     }),
     new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery",
       "window.jQuery": "jquery",
-      Crypto: "crypto-js",
+      Crypto: 'crypto-js'
     }),
   ],
 };

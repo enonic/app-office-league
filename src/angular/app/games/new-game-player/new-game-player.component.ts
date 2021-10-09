@@ -1,6 +1,7 @@
 import {Component, Input, Output, EventEmitter, ElementRef} from '@angular/core';
 import {Player} from '../../../graphql/schemas/Player';
 import { Config } from '../../app.config';
+import {MaterializeAction} from 'angular2-materialize';
 
 declare var XPCONFIG: Config;
 
@@ -10,7 +11,7 @@ declare var XPCONFIG: Config;
     styleUrls: ['new-game-player.component.less']
 })
 export class NewGamePlayerComponent {
-    materializeActions = new EventEmitter<any>();
+    materializeActions = new EventEmitter<string|MaterializeAction>();
 
     @Input() player: Player;
     @Input() leaguePlayerIds: string[];
@@ -41,6 +42,7 @@ export class NewGamePlayerComponent {
     }
 
     public showModal(): void {
+        console.log('clicked', this.materializeActions);
         this.materializeActions.emit({action: "modal", params: ['open']});
         this.playerSelectEnabled = true;
     }
