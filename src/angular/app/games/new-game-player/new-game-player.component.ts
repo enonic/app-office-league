@@ -42,7 +42,6 @@ export class NewGamePlayerComponent {
     }
 
     public showModal(): void {
-        console.log('clicked', this.materializeActions);
         this.materializeActions.emit({action: "modal", params: ['open']});
         this.playerSelectEnabled = true;
     }

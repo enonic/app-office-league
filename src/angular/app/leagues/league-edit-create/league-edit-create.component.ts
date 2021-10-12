@@ -307,7 +307,6 @@ export class LeagueEditCreateComponent
     }
 
     onAddAdminClicked() {
-        console.log('test');
         this.showSelectAdminModal();
     }
 
@@ -343,7 +342,6 @@ export class LeagueEditCreateComponent
     }
 
     showSelectAdminModal(): void {
-        console.log('test');
         this.materializeActionsAdmin.emit({action: "modal", params: ['open']});
     }
 

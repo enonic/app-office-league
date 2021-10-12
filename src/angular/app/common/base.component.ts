@@ -17,7 +17,6 @@ export class BaseComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        //console.log('BaseComponent.ngOnChanges()', changes);
     }
     
     ngOnDestroy(): void {        

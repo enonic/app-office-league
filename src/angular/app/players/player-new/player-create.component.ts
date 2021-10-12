@@ -116,7 +116,6 @@ export class PlayerCreateComponent extends BaseComponent implements OnInit, Afte
     }
 
     savePlayer() {
-        console.log('this.playerForm.value', this.playerForm.value);
         this.graphQLService.post(PlayerCreateComponent.createPlayerMutation, {
             name: this.playerForm.value.name,
             fullname: this.playerForm.value.fullname,
