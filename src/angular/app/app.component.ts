@@ -30,9 +30,7 @@ export class AppComponent implements OnInit {
 
     constructor(public auth: AuthService,private graphQlService: GraphQLService, private pageTitleService: PageTitleService, private location: Location, private router: Router,
                 private userProfileService: UserProfileService) {
-        console.log('working');
         this.logoUrl = ImageService.logoUrl();
-        console.log('this.logoUrl', this.logoUrl);
         this.isPlayingGame = new RegExp('/games/.*/game-play').test(location.path());
         let user = auth.getUser();
         this.playerImage = !!user ? user.playerImageUrl : ImageService.playerDefault();
