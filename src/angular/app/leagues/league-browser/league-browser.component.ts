@@ -74,7 +74,7 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
     private handleLeaguesQueryResponse(data) {
         this.myLeagues = data.myLeagues.map(league => League.fromJson(league));
         if (this.myLeagues.length == 0) {
-            $('ul.tabs').tabs('select_tab', 'discoverLeagues');
+            $('ul.tabs').tabs('select', 'discoverLeagues');
         }
         let myLeagueIds = data.myLeagues.map(league => league.id);
 
