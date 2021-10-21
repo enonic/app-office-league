@@ -1,6 +1,6 @@
 <div class="navbar-fixed" [hidden]="isPlayingGame">
     <nav class="app__navbar">
-        <a href="#" data-activates="mobile-side-nav" class="app__navbar-menu-btn button-collapse">
+        <a href="#" data-target="mobile-side-nav" class="app__navbar-menu-btn button-collapse">
             <i class="material-icons">menu</i>
         </a>
 
@@ -45,7 +45,7 @@
     </div>
 </div>
 
-<ul *ngIf="!isNewUser" class="side-nav" id="mobile-side-nav">
+<ul *ngIf="!isNewUser" class="sidenav" id="mobile-side-nav">
     <ng-template [ngIf]="isAuthenticated">
         <li class="user-profile">
             <a href="#" class="side-nav-close right" (click)="closeNav()"><i class="material-icons right">close</i></a>
