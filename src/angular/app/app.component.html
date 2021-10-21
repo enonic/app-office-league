@@ -1,6 +1,6 @@
 <div class="navbar-fixed" [hidden]="isPlayingGame">
     <nav class="app__navbar">
-        <a href="#" data-target="mobile-side-nav" class="app__navbar-menu-btn button-collapse">
+        <a href="#" data-target="mobile-side-nav" class="sidenav-trigger app__navbar-menu-btn button-collapse">
             <i class="material-icons">menu</i>
         </a>
 
@@ -48,7 +48,7 @@
 <ul *ngIf="!isNewUser" class="sidenav" id="mobile-side-nav">
     <ng-template [ngIf]="isAuthenticated">
         <li class="user-profile">
-            <a href="#" class="side-nav-close right" (click)="closeNav()"><i class="material-icons right">close</i></a>
+            <a href="#" class="sidenav-close right" (click)="closeNav()"><i class="material-icons right">close</i></a>
             <a href="#" routerLink="/">
                 <img [src]="playerImage" alt="{{playerName}}" class="circle">
                 <span>{{playerName}}</span>
