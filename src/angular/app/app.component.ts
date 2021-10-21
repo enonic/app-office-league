@@ -59,6 +59,10 @@ export class AppComponent implements OnInit {
         this.graphQlService.post(AppComponent.initQuery, {}, data => {
             this.infoPages = data.infoPages || [];
         });
+        const elems = document.querySelectorAll('.sidenav');
+        M.Sidenav.init(elems, {
+            edge: 'right'
+        });
     }
 
     back(): boolean {
