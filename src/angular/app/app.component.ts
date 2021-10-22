@@ -57,6 +57,7 @@ export class AppComponent implements OnInit {
 
     ngAfterViewInit(): void {
         this.initSidenav();
+        this.initUserDropdown();
     }
 
     initSidenav(): void {
@@ -64,6 +65,11 @@ export class AppComponent implements OnInit {
         M.Sidenav.init(elems, {
             edge: 'right'
         });
+    }
+
+    initUserDropdown(): void {
+        const elems = document.querySelectorAll('.dropdown-trigger');
+        M.Dropdown.init(elems);
     }
 
     ngOnInit(): void {
