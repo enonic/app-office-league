@@ -1,6 +1,6 @@
 <div class="navbar-fixed" [hidden]="isPlayingGame">
     <nav class="app__navbar">
-        <a href="#" data-target="mobile-side-nav" class="sidenav-trigger app__navbar-menu-btn button-collapse">
+        <a href="#" data-target="mobile-sidenav" class="sidenav-trigger app__navbar-menu-btn button-collapse">
             <i class="material-icons">menu</i>
         </a>
 
@@ -29,7 +29,7 @@
                     <li><a href="#!" (click)="auth.logout()">Logout</a></li>
                 </ul>
 
-                <a class="dropdown-button" href="#!" data-activates="user-dropdown">{{playerName}}
+                <a class="dropdown-button" href="#!" data-target="user-dropdown">{{playerName}}
                     <i class="material-icons right">arrow_drop_down</i></a>
             </li>
             <li *ngIf="!isAuthenticated">
@@ -45,10 +45,10 @@
     </div>
 </div>
 
-<ul *ngIf="!isNewUser" class="sidenav" id="mobile-side-nav">
+<ul *ngIf="!isNewUser" class="sidenav" id="mobile-sidenav">
     <ng-template [ngIf]="isAuthenticated">
         <li class="user-profile">
-            <a href="#" class="sidenav-close right" (click)="closeNav()"><i class="material-icons right">close</i></a>
+            <a href="#" class="sidenav-close right"><i class="material-icons right">close</i></a>
             <a href="#" routerLink="/">
                 <img [src]="playerImage" alt="{{playerName}}" class="circle">
                 <span>{{playerName}}</span>

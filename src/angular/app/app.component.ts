@@ -55,13 +55,20 @@ export class AppComponent implements OnInit {
             });
     }
 
-    ngOnInit(): void {
-        this.graphQlService.post(AppComponent.initQuery, {}, data => {
-            this.infoPages = data.infoPages || [];
-        });
+    ngAfterViewInit(): void {
+        this.initSidenav();
+    }
+
+    initSidenav(): void {
         const elems = document.querySelectorAll('.sidenav');
         M.Sidenav.init(elems, {
             edge: 'right'
+        });
+    }
+
+    ngOnInit(): void {
+        this.graphQlService.post(AppComponent.initQuery, {}, data => {
+            this.infoPages = data.infoPages || [];
         });
     }
 
