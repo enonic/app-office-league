@@ -92,10 +92,6 @@ export class AppComponent implements OnInit {
         return false;
     }
 
-    closeNav(): boolean {
-        return false;
-    }
-
     private isTopLevelPage(url: string): boolean {
         return url.match(/\//g).length <= 1;
     }

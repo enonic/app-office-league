@@ -76,6 +76,15 @@ export class LeagueProfileComponent
         this.online = navigator.onLine;
     }
 
+    ngAfterViewInit(): void {
+        setTimeout(() => this.initFloatingButtons(), 500);
+    }
+
+    initFloatingButtons(): void {
+        const buttons = document.querySelectorAll('.fixed-action-btn');
+        M.FloatingActionButton.init(buttons);
+    }
+
     ngOnDestroy() {
         clearTimeout(this.approvePollingTimerId);
         this.approvePollingTimerId = undefined;

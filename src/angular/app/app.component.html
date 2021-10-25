@@ -1,6 +1,6 @@
 <div class="navbar-fixed" [hidden]="isPlayingGame">
     <nav class="app__navbar">
-        <a href="#" data-target="mobile-sidenav" class="sidenav-trigger app__navbar-menu-btn button-collapse">
+        <a href="#" data-target="mobile-sidenav" class="sidenav-trigger app__navbar-menu-btn">
             <i class="material-icons">menu</i>
         </a>
 
@@ -10,7 +10,7 @@
 
         <span class="app__navbar-title">{{pageTitle}}</span>
 
-        <a *ngIf="!displayMenu" href="#" (click)="back()" class="app__navbar-back button-collapse">
+        <a *ngIf="!displayMenu" href="#" (click)="back()" class="app__navbar-back">
             <i class="material-icons">arrow_back</i>
         </a>
 
@@ -19,10 +19,10 @@
         </a>
 
         <ul *ngIf="!isNewUser" class="app__navbar-menu right hide-on-med-and-down">
-            <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>
-            <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
-            <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
-            <li routerLinkActive="active"><a routerLink="/games" href="#">Games</a></li>
+            <li routerLinkActive="active" class="sidenav-close"><a routerLink="/leagues" href="#">Leagues</a></li>
+            <li routerLinkActive="active" class="sidenav-close"><a routerLink="/teams" href="#">Teams</a></li>
+            <li routerLinkActive="active" class="sidenav-close"><a routerLink="/players" href="#">Players</a></li>
+            <li routerLinkActive="active" class="sidenav-close"><a routerLink="/games" href="#">Games</a></li>
             <li *ngIf="isAuthenticated">
                 <ul id="user-dropdown" class="dropdown-content">
                     <li><a href="#" routerLink="/">{{playerName}}</a></li>
@@ -56,10 +56,10 @@
         </li>
         <li class="divider"></li>
     </ng-template>
-    <li routerLinkActive="active"><a routerLink="/leagues" href="#">Leagues</a></li>
-    <li routerLinkActive="active"><a routerLink="/teams" href="#">Teams</a></li>
-    <li routerLinkActive="active"><a routerLink="/players" href="#">Players</a></li>
-    <li routerLinkActive="active"><a routerLink="/games" href="#">Games</a></li>
+    <li routerLinkActive="active" class="sidenav-close"><a routerLink="/leagues" href="#">Leagues</a></li>
+    <li routerLinkActive="active" class="sidenav-close"><a routerLink="/teams" href="#">Teams</a></li>
+    <li routerLinkActive="active" class="sidenav-close"><a routerLink="/players" href="#">Players</a></li>
+    <li routerLinkActive="active" class="sidenav-close"><a routerLink="/games" href="#">Games</a></li>
     <li *ngIf="infoPages?.length > 0" class="divider"></li>
     <li *ngFor="let infoPage of infoPages" routerLinkActive="active"><a routerLink="/{{infoPage.name}}" href="#">{{infoPage.title}}</a></li>
     <li class="divider"></li>
