@@ -57,6 +57,15 @@ export class GameProfileComponent
         this.wsMan.onMessage(this.onWsMessage.bind(this));
     }
 
+    ngAfterViewInit(): void {
+        setTimeout(() => this.initFloatingButtons(), 500);
+    }
+
+    initFloatingButtons(): void {
+        const buttons = document.querySelectorAll('.fixed-action-btn');
+        M.FloatingActionButton.init(buttons);
+    }
+
     ngOnDestroy(): void {
         this.wsMan && this.wsMan.disconnect();
         this.onlineStatusService.removeOnlineStateEventListener(this.onlineStateCallback);

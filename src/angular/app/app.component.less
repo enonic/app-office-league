@@ -22,11 +22,6 @@
     }
 
     &-home {
-      @media (min-width: 993px) {
-        display: none;
-      }
-
-      margin: 0 18px;
       padding-top: 4px;
 
       img {
@@ -34,12 +29,18 @@
       }
     }
 
-    &-offline {
+    &-offline,
+    &-home,
+    &-back {
       @media (min-width: 993px) {
         display: none;
       }
     }
 
+    &-home,
+    &-back {
+      margin: 0 18px;
+    }
   }
 }
 

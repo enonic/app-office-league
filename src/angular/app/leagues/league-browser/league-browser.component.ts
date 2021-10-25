@@ -74,7 +74,9 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
     private handleLeaguesQueryResponse(data) {
         this.myLeagues = data.myLeagues.map(league => League.fromJson(league));
         if (this.myLeagues.length == 0) {
-            $('ul.tabs').tabs('select', 'discoverLeagues');
+            const tabs = document.querySelectorAll('ul.tabs').item(0);
+            const tabInstance = M.Tabs.getInstance(tabs);
+            tabInstance.select('discoverLeagues');
         }
         let myLeagueIds = data.myLeagues.map(league => league.id);
 
@@ -88,7 +90,12 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
     }
 
     ngAfterViewInit(): void {
-        $(this.elementRef.nativeElement).find('ul.tabs').tabs();
+        this.initTabs();
+    }
+
+    initTabs(): void {
+        const tabs = document.querySelectorAll('.tabs');
+        M.Tabs.init(tabs);
     }
 
     private static compareLeagueByLastGameTime(l1: League, l2: League) {
