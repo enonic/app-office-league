@@ -51,58 +51,29 @@ module.exports = {
       },
       {
         // load all flags to corresponding folder
+        type: 'asset/resource',
         test: /\.(png|jpe?g|gif|ico|svg)$/,
         include: [helpers.root("src", "angular", "assets", "img", "flags")],
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              name: "img/flags/[name].[hash].[ext]",
-            },
-          },
-        ],
+        generator: {
+          filename: 'img/flags/[name].[hash].[ext]'
+        }
       },
       {
         // copy all the images (except flags)
+        type: 'asset/resource',
         test: /\.(png|jpe?g|gif|ico|svg)$/,
         exclude: [helpers.root("src", "angular", "assets", "img", "flags")],
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              name: "img/[name].[hash].[ext]",
-            },
-          },
-        ],
-      },
-      {
-        // load all woff fonts to corresponding folder
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        use: [
-          {
-            loader: "url-loader",
-            options: {
-              limit: 10000,
-              mimetype: "application/font-woff",
-              name: "fonts/[name].[hash].[ext]",
-              esModule: false,
-            }
-          },
-        ],
-        type: 'javascript/auto'
+        generator: {
+          filename: 'img/[name].[hash].[ext]'
+        },
       },
       {
         // load all other fonts to the same folder
-        test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              name: "fonts/[name].[hash].[ext]",
-              esModule: false,
-            },
-          },
-        ],
+        type: 'asset/resource',
+        test: /\.(ttf|eot|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        generator: {
+          filename: 'fonts/[name].[hash].[ext]'
+        },
       },
       {
         // load app wide styles
