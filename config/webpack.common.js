@@ -55,7 +55,7 @@ module.exports = {
         test: /\.(png|jpe?g|gif|ico|svg)$/,
         include: [helpers.root("src", "angular", "assets", "img", "flags")],
         generator: {
-          filename: 'img/flags/[name].[hash].[ext]'
+          filename: 'img/flags/[name].[hash][ext]'
         }
       },
       {
@@ -64,7 +64,7 @@ module.exports = {
         test: /\.(png|jpe?g|gif|ico|svg)$/,
         exclude: [helpers.root("src", "angular", "assets", "img", "flags")],
         generator: {
-          filename: 'img/[name].[hash].[ext]'
+          filename: 'img/[name].[hash][ext]'
         },
       },
       {
@@ -72,7 +72,7 @@ module.exports = {
         type: 'asset/resource',
         test: /\.(ttf|eot|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         generator: {
-          filename: 'fonts/[name].[hash].[ext]'
+          filename: 'fonts/[name].[hash][ext]'
         },
       },
       {
