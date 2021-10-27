@@ -45,19 +45,9 @@ export class ChipsComponent extends BaseComponent implements AfterViewInit {
         let autocompleteData = {};
         this.availableTags.filter((tag) => this.excludedTags.indexOf(tag) == -1 ).
             forEach((tag) => autocompleteData[tag] = null);
-        const chips = $('.chips');
-        for (let i = 0; i < chips.length; i++){
-            M.Chips.init(chips[i], {
-                autocompleteOptions: {
-                    data: autocompleteData,
-                    limit: Infinity,
-                    minLength: 1
-                },
-                placeholder: this.placeholder,
-                secondaryPlaceholder: this.placeholder
-            });
-        }/*
-        chips.chips({
+
+        const chips = document.querySelectorAll('.chips');
+        M.Chips.init(chips, {
             autocompleteOptions: {
                 data: autocompleteData,
                 limit: Infinity,
@@ -65,8 +55,7 @@ export class ChipsComponent extends BaseComponent implements AfterViewInit {
             },
             placeholder: this.placeholder,
             secondaryPlaceholder: this.placeholder
-        });*/
-        
+        });
     }
 
     add(chip) {
