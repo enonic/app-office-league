@@ -81,7 +81,7 @@ jobs:
 
       - name: Write new snapshot version
         if: needs.publish_vars.outputs.release == 'true'
-        uses: christian-draeger/write-properties@1.0.1
+        uses: christian-draeger/write-properties@1.1.0
         with:
           path: './gradle.properties'
           property: 'version'
