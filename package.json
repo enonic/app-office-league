@@ -38,7 +38,7 @@
     "@angular-devkit/build-angular": "~12.2.12",
     "@angular/compiler-cli": "12.2.6",
     "@angular/platform-server": "12.2.6",
-    "@ngtools/webpack": "12.2.12",
+    "@ngtools/webpack": "12.2.13",
     "@types/materialize-css": "1.0.11",
     "@types/node": "16.11.6",
     "angular-router-loader": "^0.8.5",
