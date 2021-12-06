@@ -7,7 +7,7 @@
     "i18n": "ng-xi18n -p tsconfig.json"
   },
   "dependencies": {
-    "@angular/cli": "^13.0.3",
+    "@angular/cli": "^13.0.4",
     "@angular/common": "12.2.6",
     "@angular/compiler": "12.2.6",
     "@angular/core": "12.2.6",
