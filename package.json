@@ -46,7 +46,7 @@
     "angular2-template-loader": "0.6.2",
     "awesome-typescript-loader": "5.2.1",
     "codelyzer": "^6.0.2",
-    "copy-webpack-plugin": "9.1.0",
+    "copy-webpack-plugin": "10.2.0",
     "css-loader": "6.5.1",
     "html-loader": "3.1.0",
     "html-webpack-plugin": "5.5.0",
