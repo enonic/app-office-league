@@ -89,7 +89,7 @@ jobs:
 
       - name: Commit and push new version
         if: needs.publish_vars.outputs.release == 'true'
-        uses: EndBug/add-and-commit@v7
+        uses: EndBug/add-and-commit@v8.0.1
         with:
           add: ./gradle.properties
           message: 'Updated to next SNAPSHOT version'
