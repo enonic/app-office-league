@@ -119,7 +119,10 @@ module.exports = {
       patterns: [
         {
           from: "./src/angular/assets",
-          globOptions: { ignore: "img/flags/**", debug: "warning" },
+          noErrorOnMissing: true,
+          globOptions: {
+            ignore: ["**/img/flags/**"]
+          },
         }, // don't copy flags as they are referenced from css file
       ],
     }),
