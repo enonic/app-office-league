@@ -1,6 +1,7 @@
 {
   "name": "Office League",
   "short_name": "Office League",
+  "id": "office league",
   "description": "Foosball app for leagues, teams, matches and score keeping",
   "theme_color": "#1C2641",
   "background_color": "#1C2641",
