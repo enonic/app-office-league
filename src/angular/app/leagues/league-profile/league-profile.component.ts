@@ -77,7 +77,13 @@ export class LeagueProfileComponent
     }
 
     ngAfterViewInit(): void {
-        setTimeout(() => this.initFloatingButtons(), 500);
+        // Poll until loaded
+        const buttonPollId = setInterval(() => {
+            if (this.league) {
+                this.initFloatingButtons();
+                clearInterval(buttonPollId);
+            }
+        }, 500);
     }
 
     initFloatingButtons(): void {
