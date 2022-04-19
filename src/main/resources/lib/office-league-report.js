@@ -17,13 +17,17 @@ eventLib.listener({
         if (game) {
             var baseUrl = app.config['officeleague.baseUrl'] || 'localhost:8080/webapp/com.enonic.app.officeleague';
             var gameData = createGameData(game, baseUrl);
+
+            log.info(JSON.stringify(gameData, null, 4));
+
             eventLib.send({
                 type: OFFICE_LEAGUE_GAME_REPORT_EVENT_ID,
                 distributed: false,
                 data: {
-                    game: JSON.stringify(gameData) //TODO Bug in eventLib
+                    game: JSON.stringify(gameData)
                 }
             });
+
         }
     }
 });
@@ -36,10 +40,10 @@ const createGameData = function (game, baseUrl) {
         startTime: game.time,
         modifiedTime: game._timestamp,
         points: [].concat(game.points || []),
-        players: {},
+        players: [],
         playerCount: game.gamePlayers.length,
         teamCount: game.gameTeams.length,
-        teams: {},
+        teams: [],
         league: {},
         sides: {
             blue: {
@@ -64,7 +68,7 @@ const createGameData = function (game, baseUrl) {
 
         playerJson = createPlayerJson(player, gp, leaguePlayer, baseUrl);
         playerJson.ranking = storeLib.getRankingForPlayerLeague(gp.playerId, game.leagueId);
-        gameData.players[p] = playerJson;
+        gameData.players.push(playerJson);
 
         if (gp.side === 'red') {
             gameData.sides.red.totalScore += gp.score;
@@ -83,12 +87,12 @@ const createGameData = function (game, baseUrl) {
 
         teamJson = createTeamJson(team, gt, leagueTeam, baseUrl);
         teamJson.ranking = storeLib.getRankingForTeamLeague(gt.teamId, game.leagueId);
-        gameData.teams[t] = teamJson;
+        gameData.teams.push(teamJson);
     }
     var winPoints = (league.rules || {}).pointsToWin || 10;
     setExpectedScore(gameData, winPoints);
 
-    return createNewMessage(gameData);
+    return gameData;
 };
 
 var createTeamJson = function (team, gameTeam, leagueTeam, baseUrl) {
@@ -128,14 +132,14 @@ var createLeagueJson = function (league, baseUrl) {
         leagueId: league._id,
         name: league.name,
         description: league.description,
+        slackIntegration: league.slackIntegration || false,
         imageUrl: url(baseUrl, league.imageUrl)
     };
 };
 
 var setExpectedScore = function (gameJson, winPoints) {
-    var player, redRating = [], blueRating = [];
-    for (var id in gameJson.players) {
-        player = gameJson.players[id];
+    var redRating = [], blueRating = [];
+    for (const player of gameJson.players) {
         if (player.side === 'red') {
             redRating.push(player.rating);
         } else {
@@ -160,153 +164,3 @@ var avg = function (numberArray) {
 var url = function (baseUrl, relUrl) {
     return baseUrl + relUrl;
 };
-
-function createNewMessage(data) {
-    if (data.finished) {
-        return createFinishedGameMessage(data);
-    } else {
-        return createNewGameMessage(data);
-    }
-}
-
-/**
- * Formats the finished game to a slack message format
- */
-function createFinishedGameMessage(data) {
-    const message = {
-        "blocks": []
-    };
-
-    message.blocks.push(
-        {
-            "type": "header",
-            "text": {
-                "type": "plain_text",
-                "text": `Game finished in ${data.league.name}`
-            }
-        }
-    );
-
-    return message;
-}
-
-/**
- * Formats the new game to a slack message format
- * @returns Object
- */
-function createNewGameMessage(data) {
-    const message = {
-        "blocks": []
-    };
-
-    message.blocks.push(
-        {
-            "type": "header",
-            "text": {
-                "type": "plain_text",
-                "text": `New game in  ${data.league.name}`
-            }
-        }
-    );
-    if (Array.isArray(data.teams) && data.teams.length > 0) {
-        message.blocks.push(
-            createTeamSection(data.teams[1], [data.players[0], data.players[2]]),
-            createVsTeamSection(data.players),
-            createTeamSection(data.teams[0], [data.players[1], data.players[3]])
-        );
-    } else {
-        message.blocks.push(
-            createPlayerSection(data.players[0]),
-            createVsPlayerSection(data.players),
-            createPlayerSection(data.players[1])
-        );
-    }
-
-    return message;
-}
-
-function createVsTeamSection(data) {
-    return {
-        "type": "context",
-        "elements": [
-            {
-                "type": "image",
-                "image_url": `${players[0].imageUrl}`,
-                "alt_text": `Profile image of ${players[0].name}`
-            },
-            {
-                "type": "image",
-                "image_url": `${players[2].imageUrl}`,
-                "alt_text": `Profile image of ${players[2].name}`
-            },
-            {
-                "type": "mrkdwn",
-                "text": "*VS*"
-            },
-            {
-                "type": "image",
-                "image_url": `${players[1].imageUrl}`,
-                "alt_text": `Profile image of ${players[1].name}`
-            },
-            {
-                "type": "image",
-                "image_url": `${players[3].imageUrl}`,
-                "alt_text": `Profile image of ${players[3].name}`
-            }
-        ]
-    };
-}
-
-function createVsPlayerSection(players) {
-    return {
-        "type": "context",
-        "elements": [
-            {
-                "type": "mrkdwn",
-                "text": "*VS*"
-            }
-        ]
-    };
-}
-
-function createPlayerSection(player) {
-    return {
-        "type": "section",
-        "fields": [
-            {
-                "type": "mrkdwn",
-                "text": `*${player.name}* ${player.rating}`
-            },
-        ],
-        "accessory": {
-            "type": "image",
-            "image_url": `${player.imageUrl}`,
-            "alt_text": `Profile image of ${player.name}`
-        }
-    }
-}
-
-function createTeamSection(teamData, players) {
-    return {
-        "type": "section",
-        "text": {
-            "type": "mrkdwn",
-            "text": `*${teamData.name}*`
-        },
-        "fields": [
-            {
-                "type": "mrkdwn",
-                "text": `*${players[0].name}* ${players[0].rating}`
-            },
-            {
-                "type": "mrkdwn",
-                "text": `*${players[1].name}* ${players[1].rating}`
-            }
-        ],
-        "accessory": {
-            "type": "image",
-            "image_url": `${teamData.imageUrl}`,
-            "alt_text": `Profile image for ${teamData.name}`
-        }
-    };
-}
