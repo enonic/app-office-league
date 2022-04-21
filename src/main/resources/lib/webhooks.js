@@ -80,8 +80,8 @@ const processGameWebhook = function (gameData, url) {
             });
 
             if (response.status >= 300 || response.status < 200) {
-                log.info('Error posting webhook to [' + url + ']: ' + response.status + ' ' + response.message);
-                log.info(JSON.stringify(response, null, 4));
+                log.warn('Error posting webhook to [' + url + ']: ' + response.status + ' ' + response.message);
+                log.warn(JSON.stringify(response, null, 4));
             }
 
         }
