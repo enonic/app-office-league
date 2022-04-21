@@ -14,16 +14,19 @@ function createFinishedGameMessage(data) {
         "blocks": []
     };
 
-    let matchResult = "";
-    let ratingResult = "";
+    let matchResult;
+    let ratingResult;
 
     if (data.playerCount > 2) {
         matchResult = formatWinning(data.teams);
-        ratingResult = formatRating(data.teams) + "\n" + formatRatingPlayers(data.players);
+        ratingResult = [].concat(
+            ratingContext(data.teams),
+            ratingContextPlayers(data.players)
+        );
     }
     else {
         matchResult = formatWinning(data.players);
-        ratingResult = formatRating(data.players);
+        ratingResult = ratingContext(data.players);
     }
 
     message.blocks.push(
@@ -40,20 +43,12 @@ function createFinishedGameMessage(data) {
                 {
                     "type": "mrkdwn",
                     "text": matchResult
-                },
-
-            ]
-        },
-        {
-            "type": "context",
-            "elements": [
-                {
-                    "type": "mrkdwn",
-                    "text": ratingResult
-                },
+                }
             ]
         }
     );
+
+    message.blocks = message.blocks.concat(ratingResult);
 
     return message;
 }
@@ -93,7 +88,7 @@ function createNewGameMessage(data) {
             }
         );
 
-        message.blocks.concat(createTeamSection(data));
+        message.blocks = message.blocks.concat(createTeamSection(data));
     } else {
         const sides = getSides(data.players);
 
@@ -125,7 +120,7 @@ function createNewGameMessage(data) {
 }
 
 /**
- * Method for formating the expted message
+ * Method for formating the expected message
  * @param {Array<Object>} group - player or team
  * @param {string|number} expectedScoreWinner - The winners expected score
  * @param {string|number} expectedscoreLoser - The losing teams expected score
@@ -162,23 +157,53 @@ function formatWinning(opponents) {
  * Formats a message of diff in rating
  * @param {Array<object>} opponents - Team or players
  */
-function formatRating(opponents) {
+function ratingContext(opponents) {
     const winner = opponents[0].score > opponents[1].score ? opponents[0] : opponents[1];
     const loser = opponents[1].score > opponents[0].score ? opponents[0] : opponents[1];
 
-    return `${winner.name} wins ${winner.ratingDelta} points. New rating ${winner.rating}\n` +
-           `${loser.name} loses ${loser.ratingDelta} points. New rating ${loser.rating}`;
+    const context = [
+        imageAndTextContext(winner),
+        imageAndTextContext(loser)
+    ];
+
+    return context;
 }
 
-function formatRatingPlayers(players) {
-    let playerRatingText = "";
+/**
+ *
+ * @param {object} profile Team or player profile
+ * @param {boolean} context If the context should be inlcuded or elements/fields only
+ * @returns {object|Array} Based on the context boolean
+ */
+function imageAndTextContext(profile) {
+    const winLose = profile.ratingDelta < 0 ? '⬇️' : '⬆️';
+    const elements = [
+        {
+            "type": "image",
+            "image_url": `${profile.imageUrl}`,
+            "alt_text": `Profile image of ${profile.name}`
+        },
+        {
+            "type": "mrkdwn",
+            "text": `${profile.name} ${winLose} ${profile.ratingDelta} point${profile.ratingDelta == 1 || profile.ratingDelta == -1 ? '' : 's'}. New rating ${profile.rating}\n`
+        },
+    ];
 
-    for (const player in players) {
-        const winLose = player.ratingDelta < 0 ? 'lose' : 'wins';
-        playerRatingText += `${player.name} ${winLose} ${player.ratingDelta} points. New rating ${player.rating}\n`
-    }
 
-    return playerRatingText;
+    return {
+        "type": "context",
+        "elements": elements
+    };
+}
+
+function ratingContextPlayers(players) {
+    let blocks = [];
+
+    for (const player of players) {
+        blocks = blocks.concat(imageAndTextContext(player));
+    };
+
+    return blocks;
 }
 
 function createVsTeamSection(players) {

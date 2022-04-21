@@ -18,8 +18,6 @@ eventLib.listener({
             var baseUrl = app.config['officeleague.baseUrl'] || 'localhost:8080/webapp/com.enonic.app.officeleague';
             var gameData = createGameData(game, baseUrl);
 
-            log.info(JSON.stringify(gameData, null, 4));
-
             eventLib.send({
                 type: OFFICE_LEAGUE_GAME_REPORT_EVENT_ID,
                 distributed: false,
