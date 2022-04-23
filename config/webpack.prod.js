@@ -1,45 +1,52 @@
-const {AngularWebpackPlugin} = require('@ngtools/webpack');
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+import { merge } from 'webpack-merge';
+import webpack from 'webpack';
+import { AngularWebpackPlugin } from '@ngtools/webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import commonConfig from './webpack.common.js';
 
-const { merge } = require('webpack-merge');
-const commonConfig = require("./webpack.common.js");
-const helpers = require("./helpers");
+import { root } from "./helpers.js";
 
-module.exports = merge(commonConfig, {
-  mode: "production",
+const angularWebpackPlugin = new AngularWebpackPlugin({
+  jitMode: true, // false=AOT by default
+});
+
+const htmlWebpackPlugin = new HtmlWebpackPlugin({
+  template: "src/angular/index.html",
+  devServer: "http://localhost:4200/",
+});
+
+const hotModuleReplacementPlugin = new webpack.HotModuleReplacementPlugin();
+
+export default merge(commonConfig, {
+  mode: "development",
+
+  devtool: "source-map",
   target: 'web',
 
-  entry: {
-    app: "./src/angular/main.ts",
-  },
-
+  watch: true,
+  
   output: {
-    path: helpers.root("build/resources/main/assets"),
-    publicPath: "assets/",
-    filename: "js/[name].js",
-    chunkFilename: "js/[id].chunk.js",
+    path: root("dist"),
+    publicPath: "http://localhost:4200/",
+    filename: "[name].js",
+    chunkFilename: "[id].chunk.js",
   },
 
   module: {
     rules: [
+      // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
       {
-          test: /\.ts$/,
-          use: [
-              {
-                  loader: "@ngtools/webpack",
-              }
-          ]
-        }
-    ],
+        test: /\.tsx?$/,
+        loader: '@ngtools/webpack'
+      }
+    ]
   },
 
-  plugins: [
-    new AngularWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      template: 'src/main/resources/site/pages/pwa/pwa.ejs',
-      filename: '../site/pages/pwa/pwa.html',
-      inject: false,
-    }),
-    new webpack.optimize.UglifyJsPlugin()
-  ],
+  plugins: [ angularWebpackPlugin, htmlWebpackPlugin, hotModuleReplacementPlugin ],
+  
+  devServer: {
+    historyApiFallback: true,
+    port: 4200,
+    hot: true,
+  },
 });

@@ -1,12 +1,23 @@
-const { merge } = require('webpack-merge');
-const path = require("path");
-const { AngularWebpackPlugin } = require('@ngtools/webpack');
-var HtmlWebpackPlugin = require("html-webpack-plugin");
-var webpack = require("webpack");
-var commonConfig = require("./webpack.common.js");
-var helpers = require("./helpers");
+import { merge } from 'webpack-merge';
+import webpack from 'webpack';
+import { AngularWebpackPlugin } from '@ngtools/webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import commonConfig from './webpack.common.js';
 
-module.exports = merge(commonConfig, {
+import { root } from "./helpers.js";
+
+const angularWebpackPlugin = new AngularWebpackPlugin({
+  jitMode: true, // false=AOT by default
+});
+
+const htmlWebpackPlugin = new HtmlWebpackPlugin({
+  template: "src/angular/index.html",
+  devServer: "http://localhost:4200/",
+});
+
+const hotModuleReplacementPlugin = new webpack.HotModuleReplacementPlugin();
+
+export default merge(commonConfig, {
   mode: "development",
 
   devtool: "source-map",
@@ -15,7 +26,7 @@ module.exports = merge(commonConfig, {
   watch: true,
   
   output: {
-    path: helpers.root("dist"),
+    path: root("dist"),
     publicPath: "http://localhost:4200/",
     filename: "[name].js",
     chunkFilename: "[id].chunk.js",
@@ -31,17 +42,8 @@ module.exports = merge(commonConfig, {
     ]
   },
 
-  plugins: [
-    new AngularWebpackPlugin({
-      jitMode: true, // false=AOT by default
-    }),
-    new HtmlWebpackPlugin({
-      template: "src/angular/index.html",
-      devServer: "http://localhost:4200/",
-    }),
-    new webpack.HotModuleReplacementPlugin(),
-  ],
-
+  plugins: [ angularWebpackPlugin, htmlWebpackPlugin, hotModuleReplacementPlugin ],
+  
   devServer: {
     historyApiFallback: true,
     port: 4200,
