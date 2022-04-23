@@ -1,11 +1,12 @@
-var webpack = require("webpack");
-var CopyWebpackPlugin = require("copy-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-var path = require("path");
-var helpers = require("./helpers");
+import webpack from "webpack";
+import CopyWebpackPlugin from "copy-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import linkerPlugin from '@angular/compiler-cli/linker/babel';
+
+import { root } from "./helpers.js";
 
 // https://angular.io/docs/ts/latest/guide/webpack.html
-module.exports = {
+export default {
   mode: "none",
   // Configure the console output
   stats: {
@@ -45,6 +46,16 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.m?js$/,
+        resolve: {fullySpecified: false},
+        use: {
+          loader: 'babel-loader',
+          options: {
+            plugins: [ linkerPlugin ],
+          }
+        }
+      },
+      {
         test: /\.html$/,
         exclude: /node_modules/,
         loader: "html-loader",
@@ -53,7 +64,7 @@ module.exports = {
         // load all flags to corresponding folder
         type: 'asset/resource',
         test: /\.(png|jpe?g|gif|ico|svg)$/,
-        include: [helpers.root("src", "angular", "assets", "img", "flags")],
+        include: [root("src", "angular", "assets", "img", "flags")],
         generator: {
           filename: 'img/flags/[name].[hash][ext]'
         }
@@ -62,7 +73,7 @@ module.exports = {
         // copy all the images (except flags)
         type: 'asset/resource',
         test: /\.(png|jpe?g|gif|ico|svg)$/,
-        exclude: [helpers.root("src", "angular", "assets", "img", "flags")],
+        exclude: [root("src", "angular", "assets", "img", "flags")],
         generator: {
           filename: 'img/[name].[hash][ext]'
         },
@@ -78,8 +89,8 @@ module.exports = {
       {
         // load app wide styles
         test: /\.(less|css)$/,
-        include: [helpers.root("src", "angular")],
-        exclude: [helpers.root("src", "angular", "app")],
+        include: [root("src", "angular")],
+        exclude: [root("src", "angular", "app")],
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
@@ -93,7 +104,7 @@ module.exports = {
       },
       {
         test: /\.(less)$/,
-        include: [helpers.root("src", "angular", "app")],
+        include: [root("src", "angular", "app")],
         use: [
             { loader: 'to-string-loader' },
             { loader: 'css-loader',
@@ -112,7 +123,7 @@ module.exports = {
     new webpack.ContextReplacementPlugin(
       // The (\\|\/) piece accounts for path separators in *nix and Windows
       /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
-      helpers.root("./src"), // location of your src
+      root("./src"), // location of your src
       {} // a map of your routes
     ),
     new CopyWebpackPlugin({

@@ -1,18 +1,22 @@
-var { webpack } = require("webpack");
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import { merge } from "webpack-merge";
+import { AngularWebpackPlugin as AotPlugin } from "@ngtools/webpack";
+import commonConfig from "./webpack.common.js";
 
-var HtmlWebpackPlugin = require("html-webpack-plugin");
-const { merge } = require("webpack-merge");
-const AotPlugin = require("@ngtools/webpack").AngularWebpackPlugin;
-var nodeExternals = require('webpack-node-externals');
-var commonConfig = require("./webpack.common.js");
-var helpers = require("./helpers");
+import { root } from "./helpers.js";
 
-var aotPlugin = new AotPlugin({
+const aotPlugin = new AotPlugin({
   tsconfig: "./tsconfig.aot.json",
-  entryModule: helpers.root("src/angular/app/app.module#AppModule"),
+  entryModule: root("src/angular/app/app.module#AppModule"),
 });
 
-module.exports = merge(commonConfig, {
+const htmlWebpackPlugin = new HtmlWebpackPlugin({
+  template: "src/main/resources/webapp/webapp.ejs",
+  filename: "../webapp/webapp.html",
+  inject: false,
+});
+
+export default merge(commonConfig, {
   devtool: "source-map",
   target: 'web',
 
@@ -22,7 +26,7 @@ module.exports = merge(commonConfig, {
   },
 
   output: {
-    path: helpers.root("build/resources/main/assets"),
+    path: root("build/resources/main/assets"),
     publicPath: "assets/",
     filename: "js/[name].js",
     chunkFilename: "js/[id].chunk.js",
@@ -32,23 +36,14 @@ module.exports = merge(commonConfig, {
     rules: [
       {
         test: /\.ts$/,
-        use: [
-            {
-                loader: "@ngtools/webpack",
-            }
-        ]
-      },
+        use: {
+          loader: "@ngtools/webpack",
+        }
+      }
     ],
   },
 
-  plugins: [
-    aotPlugin,
-    new HtmlWebpackPlugin({
-      template: "src/main/resources/webapp/webapp.ejs",
-      filename: "../webapp/webapp.html",
-      inject: false,
-    })
-  ],
+  plugins: [ aotPlugin, htmlWebpackPlugin],
 });
 
 // Fix for AotPlugin Error: Cannot read property 'getSourceFile' of undefined
