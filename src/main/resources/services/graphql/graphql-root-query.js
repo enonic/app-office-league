@@ -1,4 +1,4 @@
-const graphQlLib = require('/lib/graphql');
+const graphQlLib = require('/lib/officeleague/graphql');
 const graphQlConnectionLib = require('/lib/graphql-connection');
 const graphQlObjectTypesLib = require('./graphql-object-types');
 const graphQlInfoPagesLib = require('./graphql-info-pages');

@@ -1,4 +1,4 @@
-var graphQlLib = require('/lib/graphql');
+var graphQlLib = require('/lib/officeleague/graphql');
 var graphQlEnumsLib = require('./graphql-enums');
 
 exports.pointCreationType = graphQlLib.createInputObjectType({

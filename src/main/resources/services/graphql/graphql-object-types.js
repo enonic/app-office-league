@@ -1,4 +1,4 @@
-var graphQlLib = require('/lib/graphql');
+var graphQlLib = require('/lib/officeleague/graphql');
 var graphQlConnectionLib = require('/lib/graphql-connection');
 var graphQlEnumsLib = require('./graphql-enums');
 var graphQlUtilLib = require('./graphql-util');
@@ -165,7 +165,7 @@ exports.playerType = graphQlLib.createObjectType({
     }
 });
 
-exports.playerConnectionType = graphQlConnectionLib.createConnectionType(exports.playerType);
+exports.playerConnectionType = graphQlConnectionLib.createConnectionType(graphQlLib.getSchemaGenerator(), exports.playerType);
 
 exports.teamStatsType = graphQlLib.createObjectType({
     name: 'TeamStats',
@@ -251,7 +251,7 @@ exports.teamType = graphQlLib.createObjectType({
         }
     }
 });
-exports.teamConnectionType = graphQlConnectionLib.createConnectionType(exports.teamType);
+exports.teamConnectionType = graphQlConnectionLib.createConnectionType(graphQlLib.getSchemaGenerator(), exports.teamType);
 
 exports.gamePlayerType = graphQlLib.createObjectType({
     name: 'GamePlayer',
@@ -470,7 +470,7 @@ exports.gameType = graphQlLib.createObjectType({
         }
     }
 });
-exports.gameConnectionType = graphQlConnectionLib.createConnectionType(exports.gameType);
+exports.gameConnectionType = graphQlConnectionLib.createConnectionType(graphQlLib.getSchemaGenerator(), exports.gameType);
 
 exports.leaguePlayerType = graphQlLib.createObjectType({
     name: 'LeaguePlayer',
@@ -536,7 +536,7 @@ exports.leaguePlayerType = graphQlLib.createObjectType({
         }
     }
 });
-exports.leaguePlayerConnectionType = graphQlConnectionLib.createConnectionType(exports.leaguePlayerType);
+exports.leaguePlayerConnectionType = graphQlConnectionLib.createConnectionType(graphQlLib.getSchemaGenerator(), exports.leaguePlayerType);
 
 exports.leagueTeamType = graphQlLib.createObjectType({
     name: 'LeagueTeam',
@@ -576,7 +576,7 @@ exports.leagueTeamType = graphQlLib.createObjectType({
         }
     }
 });
-exports.leagueTeamConnectionType = graphQlConnectionLib.createConnectionType(exports.leagueTeamType);
+exports.leagueTeamConnectionType = graphQlConnectionLib.createConnectionType(graphQlLib.getSchemaGenerator(), exports.leagueTeamType);
 
 exports.leagueStatsType = graphQlLib.createObjectType({
     name: 'LeagueStats',
