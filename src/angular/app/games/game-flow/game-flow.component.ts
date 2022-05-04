@@ -32,47 +32,48 @@ export class GameFlowComponent
     lineChartOptions: any = {
         responsive: true,
         scales: {
-            xAxes: [{
-                scaleID: 'x-axis-0',
+            xAxis: {
                 type: 'linear',
                 position: 'bottom',
-                gridLines: {
+                grid: {
                     color: 'rgba(255,255,255,0.1)'
                 },
+                min: 0,
+                suggestedMax: 60,
                 ticks: {
-                    min: 0,
-                    suggestedMax: 60,
                     fontColor: 'rgba(255,255,255,0.8)',
                     callback: function (label, index, labels) {
                         return label == -1 ? '' : GameFlowComponent.formatSeconds(parseInt(label, 10));
                     }
                 }
-            }],
-            yAxes: [{
-                id: 'y-axis-0',
-                gridLines: {
+            },
+            yAxis: {
+                grid: {
                     color: 'rgba(255,255,255,0.1)'
                 },
+                min: 0,
+                suggestedMax: 10,
                 ticks: {
-                    min: 0,
-                    suggestedMax: 10,
                     stepSize: 1,
                     fontColor: 'rgba(255,255,255,0.8)'
                 }
-            }]
-        },
-        tooltips: {
-            callbacks: {
-                title: function (tooltipItems, data) {
-                    return tooltipItems.length && GameFlowComponent.formatSeconds(tooltipItems[0].xLabel);
-                }
             }
+        },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    title: (ctx) => {
+                        const rawLabel = ctx[0].raw.x;
+                        return GameFlowComponent.formatSeconds(rawLabel);
+                    }
+                }
+            },
         },
         annotation: {
             annotations: [{
                 type: 'line',
                 mode: 'vertical',
-                scaleID: 'x-axis-0',
+                scaleID: 'xAxis',
                 value: 0,
                 borderColor: 'rgba(84, 110, 122, 0)',
                 borderDash: [4, 2],
