@@ -25,11 +25,10 @@ export class LeaguePlayerGraphComponent
     lineChartOptions: any = {
         responsive: true,
         scales: {
-            xAxes: [{
-                scaleID: 'x-axis-0',
+            xAxes: {
                 type: 'linear',
                 position: 'bottom',
-                gridLines: {
+                grid: {
                     color: 'rgba(255,255,255,0.1)'
                 },
                 ticks: {
@@ -38,26 +37,33 @@ export class LeaguePlayerGraphComponent
                         return label == -1 ? '' : LeaguePlayerGraphComponent.formatTime(parseInt(label, 10));
                     }
                 },
-                scaleLabel: {
+                title: {
                     display: true,
-                    labelString: 'Time'
+                    text: 'Time'
                 }
-            }],
-            yAxes: [{
-                id: 'y-axis-0',
-                gridLines: {
+            },
+            yAxes: {
+                grid: {
                     color: 'rgba(255,255,255,0.1)'
                 },
                 ticks: {
-                    // min: 1000,
-                    // suggestedMax: 1800,
                     fontColor: 'rgba(255,255,255,0.8)'
                 },
-                scaleLabel: {
+                title: {
                     display: true,
-                    labelString: 'Ranking Points'
+                    text: 'Ranking Points'
                 }
-            }]
+            }
+        },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    title: (ctx) => {
+                        const rawLabel = ctx[0].raw.x;
+                        return LeaguePlayerGraphComponent.formatTime(parseInt(rawLabel, 10));
+                    },
+                }
+            }
         }
     };
     lineChartColors: Array<any> = [];
@@ -93,15 +99,15 @@ export class LeaguePlayerGraphComponent
 
     private handleResize() {
         if (window.innerWidth < 600) {
-            this.lineChartOptions.scales.xAxes[0].scaleLabel.display = false;
-            this.lineChartOptions.scales.xAxes[0].ticks.display = false;
-            this.lineChartOptions.scales.xAxes[0].ticks.fontSize = 8;
-            this.lineChartOptions.scales.yAxes[0].scaleLabel.labelString = '';
+            this.lineChartOptions.scales.xAxes.title.display = false;
+            this.lineChartOptions.scales.xAxes.ticks.display = false;
+            this.lineChartOptions.scales.xAxes.ticks.fontSize = 8;
+            this.lineChartOptions.scales.yAxes.title.text = '';
         } else {
-            this.lineChartOptions.scales.xAxes[0].scaleLabel.display = true;
-            this.lineChartOptions.scales.xAxes[0].ticks.display = true;
-            this.lineChartOptions.scales.xAxes[0].ticks.fontSize = 12;
-            this.lineChartOptions.scales.yAxes[0].scaleLabel.labelString = 'Ranking Points';
+            this.lineChartOptions.scales.xAxes.title.display = true;
+            this.lineChartOptions.scales.xAxes.ticks.display = true;
+            this.lineChartOptions.scales.xAxes.ticks.fontSize = 12;
+            this.lineChartOptions.scales.yAxes.title.text = 'Ranking Points';
         }
     }
 
@@ -186,12 +192,14 @@ export class LeaguePlayerGraphComponent
                     label: leaguePlayer.player.name,
                     borderWidth: 1,
                     pointRadius: 0,
-                    borderColor: 'rgb(20, 55, 87)'
+                    backgroundColor: this.getColor(idx),
+                    borderColor: this.getColor(idx)
                 };
                 chartDatasets.push(chartDataset);
                 lineChartColors.push({
-                        borderColor: this.getColor(idx)
-                    }
+                    backgroundColor: this.getColor(idx),
+                    borderColor: 'rgb(20, 55, 87)'
+                }
                 );
             } else {
                 console.log(leaguePlayer);
@@ -208,9 +216,9 @@ export class LeaguePlayerGraphComponent
             };
             chartDatasets.push(chartDataset);
             lineChartColors.push({
-                    borderColor: this.getColor(cd)
-                }
-            )
+                backgroundColor: this.getColor(cd),
+                borderColor: 'rgb(20, 55, 87)'
+            })
         }
 
         this.lineChartColors = lineChartColors;
@@ -218,8 +226,8 @@ export class LeaguePlayerGraphComponent
         this.lineChartColors = this.lineChartColors.slice();
         this.chartDatasets = this.chartDatasets.slice();
 
-        this.lineChartOptions.scales.xAxes[0].ticks.min = firstDatePoint;
-        this.lineChartOptions.scales.xAxes[0].ticks.max = lastDatePoint;
+        this.lineChartOptions.scales.xAxes.min = firstDatePoint;
+        this.lineChartOptions.scales.xAxes.max = lastDatePoint;
     }
 
     public static formatTime = function (s) {
