@@ -1,4 +1,4 @@
-var graphQlLib = require('/lib/graphql');
+var graphQlLib = require('/lib/officeleague/graphql');
 var schemaLib = require('./graphql-schema');
 
 exports.post = function (req) {

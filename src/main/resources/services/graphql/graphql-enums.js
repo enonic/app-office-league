@@ -1,4 +1,4 @@
-var graphQlLib = require('/lib/graphql');
+var graphQlLib = require('/lib/officeleague/graphql');
 
 exports.handednessEnumType = graphQlLib.createEnumType({
     name: 'Handedness',

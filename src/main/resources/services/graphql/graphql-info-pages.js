@@ -1,4 +1,4 @@
-var graphQlLib = require('/lib/graphql');
+var graphQlLib = require('/lib/officeleague/graphql');
 // var graphQlConnectionLib = require('/lib/graphql-connection');
 // var graphQlEnumsLib = require('./graphql-enums');
 // var graphQlUtilLib = require('./graphql-util');
