@@ -36,7 +36,7 @@ dependencies {
     include 'com.enonic.lib:lib-router:3.0.0'
     include "com.enonic.lib:lib-thymeleaf:2.0.0"
     include "com.enonic.lib:lib-mustache:2.0.0"
-    include "com.enonic.lib:lib-http-client:3.0.0"
+    include "com.enonic.lib:lib-http-client:3.0.1"
     include "com.enonic.lib:lib-util:2.2.1"
     include "com.enonic.lib:lib-graphql:1.1.1"
     include "com.enonic.lib:lib-geoip:2.0.0"
