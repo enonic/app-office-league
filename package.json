@@ -27,7 +27,7 @@
     "jquery": "^3.5.0",
     "material-design-icons": "3.0.1",
     "materialize-css": "1.0.0",
-    "ng2-charts": "^3.0.10",
+    "ng2-charts": "^3.0.11",
     "rxjs": "7.5.5",
     "ts-loader": "^9.3.0",
     "tslib": "^2.4.0",
