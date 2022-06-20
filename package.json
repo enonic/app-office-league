@@ -32,7 +32,7 @@
     "ts-loader": "^9.3.0",
     "tslib": "^2.4.0",
     "webpack-node-externals": "^3.0.0",
-    "zone.js": "~0.11.5"
+    "zone.js": "~0.11.6"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~14.0.0",
