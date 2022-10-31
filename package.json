@@ -45,7 +45,7 @@
     "angular2-router-loader": "0.3.5",
     "angular2-template-loader": "0.6.2",
     "awesome-typescript-loader": "5.2.1",
-    "babel-loader": "^8.2.5",
+    "babel-loader": "^9.0.0",
     "codelyzer": "^6.0.2",
     "copy-webpack-plugin": "11.0.0",
     "css-loader": "6.7.1",
