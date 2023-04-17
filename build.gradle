@@ -34,7 +34,7 @@ dependencies {
     include "com.enonic.xp:lib-task:${xpVersion}"
     include "com.enonic.xp:lib-mail:${xpVersion}"
     include 'com.enonic.lib:lib-router:3.0.0'
-    include "com.enonic.lib:lib-thymeleaf:2.0.2"
+    include "com.enonic.lib:lib-thymeleaf:2.1.0"
     include "com.enonic.lib:lib-mustache:2.1.0"
     include "com.enonic.lib:lib-http-client:3.2.2"
     include "com.enonic.lib:lib-util:2.2.1"
