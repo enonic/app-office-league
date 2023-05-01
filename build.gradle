@@ -41,7 +41,7 @@ dependencies {
     include "com.enonic.lib:lib-graphql:2.0.3"
     include "com.enonic.lib:lib-geoip:2.1.0"
     include "com.enonic.lib:lib-text-encoding:2.1.1"
-    include "com.enonic.lib:lib-notifications:2.0.0"
+    include "com.enonic.lib:lib-notifications:2.0.1"
 }
 
 repositories {
