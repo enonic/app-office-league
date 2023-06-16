@@ -24,4 +24,3 @@ jobs:
       - uses: enonic/release-tools/release@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          zenhub-token: ${{ secrets.ZENHUB_TOKEN }}
