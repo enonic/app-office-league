@@ -40,7 +40,7 @@
     "@angular/platform-server": "16.2.6",
     "@ngtools/webpack": "14.0.0",
     "@types/materialize-css": "1.0.11",
-    "@types/node": "20.6.2",
+    "@types/node": "20.6.5",
     "angular-router-loader": "^0.8.5",
     "angular2-router-loader": "0.3.5",
     "angular2-template-loader": "0.6.2",
