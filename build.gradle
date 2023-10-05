@@ -2,7 +2,7 @@ plugins {
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.1.2'
     id 'com.enonic.xp.app' version '3.4.0'
-    id "com.github.node-gradle.node" version '7.0.0'
+    id "com.github.node-gradle.node" version '7.0.1'
 }
 
 app {
