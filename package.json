@@ -37,7 +37,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "~16.2.8",
     "@angular/compiler-cli": "13.2.6",
-    "@angular/platform-server": "16.2.11",
+    "@angular/platform-server": "16.2.12",
     "@ngtools/webpack": "14.0.0",
     "@types/materialize-css": "1.0.13",
     "@types/node": "20.8.9",
