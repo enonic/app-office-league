@@ -9,7 +9,7 @@ app {
     name = project.appName
     displayName = 'Office League'
     vendorName = 'Enonic AS'
-    vendorUrl = 'http://enonic.com'
+    vendorUrl = 'https://enonic.com'
     systemVersion = "${xpVersion}"
 }
 
@@ -19,8 +19,9 @@ node {
 }
 
 dependencies {
-    compile "com.enonic.xp:core-api:${xpVersion}"
-    compile "com.enonic.xp:portal-api:${xpVersion}"
+    implementation "com.enonic.xp:core-api:${xpVersion}"
+    implementation "com.enonic.xp:portal-api:${xpVersion}"
+    include "com.enonic.xp:lib-admin:${xpVersion}"
     include "com.enonic.xp:lib-auth:${xpVersion}"
     include "com.enonic.xp:lib-content:${xpVersion}"
     include "com.enonic.xp:lib-context:${xpVersion}"
@@ -50,9 +51,9 @@ repositories {
     xp.enonicRepo()
 }
 
-task webpackBuild( type: NpmTask ) {
+tasks.register('webpackBuild', NpmTask) {
+    dependsOn npmInstall
     args = ['run', 'build:aot']
 }
 
-webpackBuild.dependsOn 'npmInstall'
 jar.dependsOn webpackBuild
