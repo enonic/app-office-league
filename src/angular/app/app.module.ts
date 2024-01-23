@@ -25,6 +25,11 @@ import {WindowRefService} from './services/window-ref.service';
 import {AudioService} from './services/audio.service';
 import {PushNotificationService} from './services/push-notification.sevice';
 //import { MaterializeModule } from 'angular2-materialize';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 const appRoutes: Routes = [
     {path: '**', redirectTo: '', pathMatch: 'full'}
@@ -44,7 +49,12 @@ const appRoutes: Routes = [
         GamesModule,
         TeamsModule,
         LeaguesModule,
-        InfoPageModule
+        InfoPageModule,
+        MatSidenavModule,
+        MatToolbarModule,
+        MatListModule,
+        MatIconModule,
+        MatButtonModule,
     ],
     providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard, EditRouteGuard,
         OfflinePersistenceService, OnlineStatusService, RankingService, UserProfileService, WindowRefService, AudioService,

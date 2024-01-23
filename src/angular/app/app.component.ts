@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Location} from '@angular/common';
 import {AuthService} from './services/auth.service';
 import {GraphQLService} from './services/graphql.service';
@@ -8,6 +8,7 @@ import {PageTitleService} from './services/page-title.service';
 import {UserProfileService} from './services/user-profile.service';
 import {Player} from '../graphql/schemas/Player';
 import { filter } from 'rxjs';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
     selector: 'office-league',
@@ -15,8 +16,11 @@ import { filter } from 'rxjs';
     styleUrls: ['app.component.less']
 })
 export class AppComponent implements OnInit {
+    @ViewChild('sidenav') sidenav: MatSidenav;
+
     private static DEFAULT_TITLE = 'Office League';
 
+    sidenavOpened: boolean = false;
     logoUrl: string;
     isPlayingGame: boolean;
     playerImage: string;
@@ -54,7 +58,7 @@ export class AppComponent implements OnInit {
                 this.pageTitleService.resetTitle();
             });
     }
-
+/*
     ngAfterViewInit(): void {
         this.initSidenav();
         this.initUserDropdown();
@@ -70,6 +74,11 @@ export class AppComponent implements OnInit {
     initUserDropdown(): void {
         const elems = document.querySelectorAll('.dropdown-trigger');
         M.Dropdown.init(elems);
+    }
+*/
+    toggleSidenav(): void {
+        this.sidenav.toggle();
+        this.sidenavOpened = !this.sidenavOpened;
     }
 
     ngOnInit(): void {
