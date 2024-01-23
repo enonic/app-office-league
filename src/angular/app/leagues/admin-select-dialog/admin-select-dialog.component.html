@@ -1,0 +1,5 @@
+<div class="modal-content">
+    <h6 class="center">Select an admin to add</h6>
+    <player-select [playerIds]="data.allPlayerIds" [excludedPlayerIds]="data.adminPlayerIds"
+                   (playerSelected)="onAdminSelected($event)"></player-select>
+</div>

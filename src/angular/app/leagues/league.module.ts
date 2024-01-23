@@ -17,7 +17,10 @@ import {PlayerRouteGuard} from '../guards/player.route.guard';
 import {AdminListComponent} from './admin-list/admin-list.component';
 import {AdminSummaryComponent} from './admin-summary/admin-summary.component';
 import {LeaguePlayerGraphComponent} from './league-player-graph/league-player-graph.component';
-import { MaterializeModule } from 'angular2-materialize';
+import {AdminSelectDialogComponent} from './admin-select-dialog/admin-select-dialog.component';
+import {PlayerSelectDialogComponent} from './player-select-dialog/player-select-dialog.component';
+// import { MaterializeModule } from 'angular2-materialize';
+import { MatButtonModule } from '@angular/material/button';
 
 const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, canActivate: [PlayerRouteGuard,]},
@@ -41,15 +44,18 @@ const leagueRoutes: Routes = [
         LeagueEditCreateComponent,
         LeaguePlayerGraphComponent,
         AdminListComponent,
-        AdminSummaryComponent
+        AdminSummaryComponent,
+        AdminSelectDialogComponent,
+        PlayerSelectDialogComponent
     ],
     imports: [
-        MaterializeModule,
+        //MaterializeModule,
         FormsModule,
         CommonModule,
         GamesModule,
         NgChartsModule,
-        RouterModule.forChild(leagueRoutes)
+        RouterModule.forChild(leagueRoutes),
+        MatButtonModule
     ],
     exports: [LeagueListComponent, LeaguePlayerListComponent, LeagueTeamListComponent],
     providers: [],

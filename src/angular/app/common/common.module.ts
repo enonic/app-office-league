@@ -15,8 +15,8 @@ import {PlayerSelectComponent} from './player-select/player-select.component';
 import {ChipsComponent} from './chips/chips.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {ConnectionErrorComponent} from './connection-error/connection-error.component';
-import { MaterializeModule } from 'angular2-materialize';
-
+//import { MaterializeModule } from 'angular2-materialize';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
     declarations: [
@@ -36,7 +36,8 @@ import { MaterializeModule } from 'angular2-materialize';
     ],
     imports: [
         BrowserModule,
-        MaterializeModule,
+        //MaterializeModule,
+        MatSnackBarModule,
         FormsModule,
         ReactiveFormsModule
     ],

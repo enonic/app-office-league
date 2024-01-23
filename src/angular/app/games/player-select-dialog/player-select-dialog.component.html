@@ -1,0 +1,5 @@
+<div class="modal-content">
+    <h5 class="center new-game-player__title">Select a player</h5>
+    <player-select [playerIds]="data.leaguePlayerIds" [excludedPlayerIds]="data.selectedPlayerIds"
+                   (playerSelected)="onPlayerSelected($event)"></player-select>
+</div>

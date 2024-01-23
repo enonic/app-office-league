@@ -1,7 +1,9 @@
 import {Component, Input, Output, EventEmitter, ElementRef} from '@angular/core';
 import {Player} from '../../../graphql/schemas/Player';
 import { Config } from '../../app.config';
-import {MaterializeAction} from 'angular2-materialize';
+//import {MaterializeAction} from 'angular2-materialize';
+import { MatDialog } from '@angular/material/dialog';
+import {PlayerSelectDialogComponent} from '../player-select-dialog/player-select-dialog.component';
 
 declare var XPCONFIG: Config;
 
@@ -11,8 +13,6 @@ declare var XPCONFIG: Config;
     styleUrls: ['new-game-player.component.less']
 })
 export class NewGamePlayerComponent {
-    materializeActions = new EventEmitter<string|MaterializeAction>();
-
     @Input() player: Player;
     @Input() leaguePlayerIds: string[];
     @Input() selectedPlayerIds: string[];
@@ -20,35 +20,28 @@ export class NewGamePlayerComponent {
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
 
     playerSelectEnabled: boolean;
-    public modalTitle: string = 'Select a player';
 
-    constructor(private el: ElementRef) {
-    }
+    constructor(private dialog: MatDialog) {}
 
-    public setPlayer(player: Player) {
-        this.player = player;
-        this.playerSelected.emit(player);
-    }
-
-    onClicked() {
+    onNewPlayerClicked() {
         this.showModal();
     }
 
-    onSelected(p: Player) {
-        if (p) {
-            this.hideModal();
-            this.playerSelected.emit(p);
-        }
-    }
-
     public showModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['open']});
-        this.playerSelectEnabled = true;
-    }
+        const dialogRef = this.dialog.open(PlayerSelectDialogComponent, {
+            width: '250px',
+            data: {
+                leaguePlayerIds: this.leaguePlayerIds,
+                selectedPlayerIds: this.selectedPlayerIds
+            }
+        });
 
-    public hideModal(): void {
-        this.playerSelectEnabled = false;
-        this.materializeActions.emit({action: "modal", params: ['close']});
+        dialogRef.afterClosed().subscribe(player => {
+            this.playerSelectEnabled = false;
+            this.playerSelected.emit(player);
+        });
+
+        this.playerSelectEnabled = true;
     }
 
     questionMarkImg(): string {

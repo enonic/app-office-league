@@ -1,22 +1,15 @@
 <div class="new-game-player">
     <ng-template [ngIf]="player == null">
-        <div class="new-game-player__player" (click)="onClicked()">
+        <div class="new-game-player__player" (click)="onNewPlayerClicked()">
             <img class="new-game-player__avatar" src="{{questionMarkImg()}}" alt="Select a player">
             <span class="new-game-player__player-title">Select a player</span>
         </div>
     </ng-template>
 
     <ng-template [ngIf]="player != null">
-        <div class="new-game-player__player" (click)="onClicked()">
+        <div class="new-game-player__player" (click)="onNewPlayerClicked()">
             <img class="new-game-player__avatar" src="{{player.imageUrl}}?size=200" alt="{{player.name}}">
             <span class="new-game-player__player-title">{{player.name}}</span>
         </div>
     </ng-template>
-    <div class="modal center player-select-modal" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
-        <div class="modal-content">
-            <h5 class="center new-game-player__title">{{modalTitle}}</h5>
-            <player-select [playerIds]="leaguePlayerIds" [excludedPlayerIds]="selectedPlayerIds" [materializeActions]="materializeActions"
-                           (playerSelected)="onSelected($event)"></player-select>
-        </div>
-    </div>
 </div>

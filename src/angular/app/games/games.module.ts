@@ -15,8 +15,11 @@ import {NgChartsModule} from 'ng2-charts';
 import {GameFlowComponent} from './game-flow/game-flow.component';
 import {GameSelection} from './GameSelection';
 import {RatingPointsComponent} from './rating-points/rating-points.component';
-import {MomentModule} from 'angular2-moment'
-import { MaterializeModule } from 'angular2-materialize';
+//import {MomentModule} from 'angular2-moment'
+//import { MaterializeModule } from 'angular2-materialize';
+import { MatDialogModule } from '@angular/material/dialog';
+import {PlayerSelectDialogComponent} from './player-select-dialog/player-select-dialog.component';
+import {NgOptimizedImage} from '@angular/common';
 
 const gameRoutes: Routes = [
     {path: 'games', component: GameListPageComponent, canActivate: [PlayerRouteGuard]},
@@ -39,15 +42,18 @@ const gameRoutes: Routes = [
         GamePlayComponent,
         GamePointsComponent,
         GameFlowComponent,
-        RatingPointsComponent
+        RatingPointsComponent,
+        PlayerSelectDialogComponent
     ],
     imports: [
         CommonModule,
-        MaterializeModule,
+        //MaterializeModule,
         RouterModule.forChild(gameRoutes),
         FormsModule,
         NgChartsModule,
-        MomentModule
+        //MomentModule
+        MatDialogModule,
+        NgOptimizedImage
     ],
     exports: [GameListComponent],
     providers: [GameSelection],
