@@ -1,74 +1,46 @@
-import {Component, Input, Output, OnChanges, AfterViewInit, SimpleChanges, SimpleChange, EventEmitter, ElementRef, ViewChild} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
-import {BaseComponent} from '../base.component';
-declare var $: any;
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
-    selector: 'chips',
+    selector: 'app-chips',
     templateUrl: 'chips.component.html',
     styleUrls: ['chips.component.less']
 })
-export class ChipsComponent extends BaseComponent implements AfterViewInit {
-
+export class ChipsComponent implements AfterViewInit {
     @Input() availableTags: string[];
     @Input() excludedTags: string[] = [];
     @Input() selectedTags: string[] = [];
     @Input() placeholder: string;
-    @ViewChild ('div') div;
-    
-    constructor(route: ActivatedRoute) {
-        super(route);
-    }
-    
-    ngOnInit() : void {
-        super.ngOnInit();
-    }
+    @ViewChild('chipList') chipList: ElementRef;
 
-    ngAfterViewInit(): void {        
-        this.refreshChips();
-    }
+    readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
-    ngOnChanges(changes: SimpleChanges): void {
-        super.ngOnChanges(changes);
-        if (changes['availableTags'] || changes['selectedTags']) {
-            this.refreshChips();
+    constructor() {}
+
+    ngAfterViewInit(): void {}
+
+    add(event: MatChipInputEvent): void {
+        const input = event.input;
+        const value = event.value;
+
+        // Add our tag
+        if ((value || '').trim()) {
+            if (this.availableTags.includes(value.trim()) && !this.excludedTags.includes(value.trim())) {
+                this.selectedTags.push(value.trim());
+            }
+        }
+
+        // Reset the input value
+        if (input) {
+            input.value = '';
         }
     }
 
-    focus() {
-        if (this.div) {
-            this.div.nativeElement.children[0].focus();
+    delete(tag: string): void {
+        const index = this.selectedTags.indexOf(tag);
+        if (index >= 0) {
+            this.selectedTags.splice(index, 1);
         }
-    }
-    
-    refreshChips(): void {
-        let autocompleteData = {};
-        this.availableTags.filter((tag) => this.excludedTags.indexOf(tag) == -1 ).
-            forEach((tag) => autocompleteData[tag] = null);
-
-        const chips = document.querySelectorAll('.chips');
-        M.Chips.init(chips, {
-            autocompleteOptions: {
-                data: autocompleteData,
-                limit: Infinity,
-                minLength: 1
-            },
-            placeholder: this.placeholder,
-            secondaryPlaceholder: this.placeholder
-        });
-    }
-
-    add(chip) {
-        this.selectedTags.push(chip.tag);
-    }
-
-    delete(chip) {
-        let deleteIndex = this.selectedTags.indexOf(chip.tag);
-        if (deleteIndex > -1) {
-            this.selectedTags.splice(deleteIndex, 1);
-        }
-    }
-
-    select(chip) {
     }
 }

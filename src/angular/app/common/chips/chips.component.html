@@ -1,1 +1,11 @@
-<div #div class="chips" materialize="chips" (chip.add)="add($event.detail)" (chip.delete)="delete($event.detail)" (chip.select)="select($event.detail)" autofocus></div>
+<mat-chip-list #chipList>
+    <mat-chip *ngFor="let tag of selectedTags" [selectable]="true" [removable]="true" (removed)="delete(tag)">
+        {{tag}}
+        <mat-icon matChipRemove>cancel</mat-icon>
+    </mat-chip>
+    <input placeholder="{{placeholder}}"
+           [matChipInputFor]="chipList"
+           [matChipInputAddOnBlur]="true"
+           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+           (matChipInputTokenEnd)="add($event)">
+</mat-chip-list>

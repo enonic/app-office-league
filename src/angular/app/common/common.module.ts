@@ -17,6 +17,8 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {ConnectionErrorComponent} from './connection-error/connection-error.component';
 //import { MaterializeModule } from 'angular2-materialize';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
     declarations: [
@@ -39,7 +41,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
         //MaterializeModule,
         MatSnackBarModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatChipsModule,
+        MatIconModule
     ],
     exports: [
         BrowserModule,
