@@ -11,12 +11,12 @@
         <small class="center grey-text">{{game.time | amCalendar:{lastDay: '[Yesterday at] HH:mm', sameDay: '[Today at] HH:mm', nextDay : '[Tomorrow at] HH:mm', lastWeek : '[last] dddd [at] HH:mm', nextWeek : 'dddd [at] HH:mm', sameElse : 'll HH:mm'} }}</small>
     </div>
     <game-flow [game]="game"></game-flow>
+
     <ng-template [ngIf]="playerId && !deletable">
         <div class="fixed-action-btn">
             <a class="btn-floating global__btn--comment green" (click)="onCommentClicked()" [attr.disabled]="online?null:true"><i class="material-icons">comment</i></a>
         </div>
     </ng-template>
-
 
     <game-points [game]="game"></game-points>
 
@@ -34,39 +34,18 @@
         </ul>
     </div>
 
-</div>
-<div class="modal center" materialize="modal">
-    <div class="modal-content">
-        <h6 class="center">Game comment</h6>
-        <div class="input-field col s12">
-            <textarea id="comment" class="materialize-textarea" name="comment" autocorrect="off" spellcheck="false" maxlength="140"
-                      [(ngModel)]="comment" #commenttextarea></textarea>
-            <label class="active" for="comment">What's happening?</label>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <a (click)="onCommentDoneClicked()" class="modal-action modal-close waves-effect waves-blue btn-flat blue white-text">Done</a>
-    </div>
-</div>
+    <!-- Comment Modal Component -->
+    <app-comment-modal
+            (commentSubmitted)="onCommentDoneClicked($event)">
+    </app-comment-modal>
 
-<div class="modal center" materialize="modal">
-    <div class="modal-content">
-        <h5 class="center">Delete game</h5>
-        <p>You are about to permanently delete this game. <strong>This operation cannot be undone.</strong></p>
-    </div>
-    <div class="modal-footer">
-        <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
-        <a (click)="onConfirmDeleteClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Delete</a>
-    </div>
-</div>
+    <!-- Delete Game Modal Component -->
+    <app-delete-game-modal
+            (deleteConfirmed)="onConfirmDeleteClicked()">
+    </app-delete-game-modal>
 
-<div class="modal center" materialize="modal">
-    <div class="modal-content">
-        <h5 class="center">Game in progress</h5>
-        <p>This game is not finished. Would you like to continue playing?</p>
-    </div>
-    <div class="modal-footer">
-        <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">No, thanks</a>
-        <a (click)="onConfirmContinueClicked()" class="modal-action modal-close waves-effect waves-blue btn-flat blue white-text">Yes</a>
-    </div>
+    <!-- Continue Game Modal Component -->
+    <app-continue-game-modal
+            (continueConfirmed)="onConfirmContinueClicked()">
+    </app-continue-game-modal>
 </div>

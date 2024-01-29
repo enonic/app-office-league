@@ -1,4 +1,8 @@
-import {Component, EventEmitter, OnDestroy, ViewChild} from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { GameCommentModalComponent } from '../game-comment-modal/game-comment-modal.component'; // adjust the path as necessary
+import { GameDeleteModalComponent } from '../game-delete-modal/game-delete-modal.component'; // adjust the path as necessary
+import { GameContinueModalComponent } from '../game-continue-modal/game-continue-modal.component'; // adjust the path as necessary
+import {Component, OnDestroy, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GameComponent} from '../game/game.component';
@@ -22,9 +26,6 @@ declare var XPCONFIG: Config;
 export class GameProfileComponent
     extends GameComponent
     implements OnDestroy {
-    materializeActions = new EventEmitter<any>();
-    materializeActionsDelete = new EventEmitter<any>();
-    materializeActionsContinue = new EventEmitter<any>();
     @ViewChild('commenttextarea') commentsTextAreaElementRef;
 
     comment: string;
@@ -36,9 +37,16 @@ export class GameProfileComponent
     private gameId: string;
     private wsMan: WebSocketManager;
 
-    constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, protected router: Router,
-                private authService: AuthService, private pageTitleService: PageTitleService,
-                protected offlineService: OfflinePersistenceService, private onlineStatusService: OnlineStatusService) {
+    constructor(
+        protected graphQLService: GraphQLService,
+        protected route: ActivatedRoute,
+        protected router: Router,
+        private authService: AuthService,
+        private pageTitleService: PageTitleService,
+        protected offlineService: OfflinePersistenceService,
+        private onlineStatusService: OnlineStatusService,
+        private dialog: MatDialog // Inject MatDialog
+    ) {
         super(graphQLService, route, router, offlineService);
     }
 
@@ -62,8 +70,7 @@ export class GameProfileComponent
     }
 
     initFloatingButtons(): void {
-        const buttons = document.querySelectorAll('.fixed-action-btn');
-        M.FloatingActionButton.init(buttons);
+        // TODO: Update this with Angular Material Floating Action Button initialization
     }
 
     ngOnDestroy(): void {
@@ -98,7 +105,7 @@ export class GameProfileComponent
 
         const userInGame = (game.gamePlayers || []).find((gp) => gp.player.id === this.playerId);
         if (userInGame && !game.finished) {
-            this.showModalContinuePlaying();
+            this.onConfirmContinueClicked();
         }
     }
 
@@ -114,28 +121,15 @@ export class GameProfileComponent
         this.connectionError = true;
     }
 
-    onCommentClicked() {
-        this.comment = '';
-        this.showModalMessage();
-        // TODO: fix this.
-        // setTimeout(_ =>
-        //     this._renderer.invokeElementMethod(
-        //         this.commentsTextAreaElementRef.nativeElement, 'focus', []), 0);
-    }
-
-    onCommentDoneClicked() {
-        this.comment = this.comment.trim();
+    onCommentDoneClicked(comment: string) {
+        this.comment = comment.trim();
         this.comment = this.comment.replace(/^\s+|\s+$/g, '');// trim line breaks
         if (this.comment) {
             this.createComment(this.comment).then((comment) => {
-                this.hideModalMessage();
+                // TODO: Hide Comment Modal Component
                 super.loadGame(this.gameId);
             });
         }
-    }
-
-    onDeleteClicked() {
-        this.showModalDelete();
     }
 
     onConfirmDeleteClicked() {
@@ -149,32 +143,45 @@ export class GameProfileComponent
             }
         });
     }
+
+    onCommentClicked() {
+        this.comment = '';
+        const dialogRef = this.dialog.open(GameCommentModalComponent, {
+            width: '250px',
+            data: { comment: this.comment }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The comment dialog was closed');
+            this.comment = result;
+            this.onCommentDoneClicked(this.comment);
+        });
+    }
+
+    onDeleteClicked() {
+        const dialogRef = this.dialog.open(GameDeleteModalComponent, {
+            width: '250px'
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The delete dialog was closed');
+            if (result === true) {
+                this.onConfirmDeleteClicked();
+            }
+        });
+    }
+
     onConfirmContinueClicked() {
-        this.router.navigate(['games', this.game.league.id, 'game-play'], {replaceUrl: true, queryParams: {gameId: this.gameId}});
-    }
+        const dialogRef = this.dialog.open(GameContinueModalComponent, {
+            width: '250px'
+        });
 
-    public showModalMessage(): void {
-        this.materializeActions.emit({action: "modal", params: ['open']});
-    }
-
-    public hideModalMessage(): void {
-        this.materializeActions.emit({action: "modal", params: ['close']});
-    }
-
-    public showModalDelete(): void {
-        this.materializeActionsDelete.emit({action: "modal", params: ['open']});
-    }
-
-    public hideModalDelete(): void {
-        this.materializeActionsDelete.emit({action: "modal", params: ['close']});
-    }
-
-    public showModalContinuePlaying(): void {
-        this.materializeActionsContinue.emit({action: "modal", params: ['open']});
-    }
-
-    public hideModalContinuePlaying(): void {
-        this.materializeActionsContinue.emit({action: "modal", params: ['close']});
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The continue dialog was closed');
+            if (result === true) {
+                this.router.navigate(['games', this.game.league.id, 'game-play'], {replaceUrl: true, queryParams: {gameId: this.gameId}});
+            }
+        });
     }
 
     onWsMessage(event: RemoteEvent) {

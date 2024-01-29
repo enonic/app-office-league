@@ -1,0 +1,11 @@
+<mat-dialog-content class="mat-typography">
+    <h6 class="center">Game comment</h6>
+    <mat-form-field appearance="fill">
+        <textarea matInput placeholder="What's happening?" [(ngModel)]="comment" maxlength="140"></textarea>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button (click)="onCommentDoneClicked()" cdkFocusInitial>Done</button>
+</mat-dialog-actions>
+
