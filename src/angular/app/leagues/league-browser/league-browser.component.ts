@@ -1,4 +1,4 @@
-import {Component, Input, ElementRef, AfterViewInit} from '@angular/core';
+import {Component, Input, OnDestroy, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ConfigUser} from '../../app.config';
 import {GraphQLService} from '../../services/graphql.service';
@@ -7,44 +7,25 @@ import {OnlineStatusService} from '../../services/online-status.service';
 import {League} from '../../../graphql/schemas/League';
 import {BaseComponent} from '../../common/base.component';
 import {PageTitleService} from '../../services/page-title.service';
+import {MatTabGroup} from '@angular/material/tabs';
 
 @Component({
     selector: 'league-browser',
     templateUrl: 'league-browser.component.html',
     styleUrls: ['league-browser.component.less']
 })
-export class LeagueBrowserComponent extends BaseComponent implements AfterViewInit {
 
-    private static readonly getLeaguesQuery: string = `query($playerId: ID, $leagueCount: Int) {
-        myLeagues : leagues(playerId:$playerId, first: $leagueCount){
-            id
-            name 
-            imageUrl
-            description 
-        }
-        
-        allLeagues: leagues(first: $leagueCount){
-            id
-            name 
-            imageUrl
-            description 
-            games(first:1 , finished:true) {
-                id
-                time
-            }
-        }
-    }`;
-
+export class LeagueBrowserComponent extends BaseComponent implements OnDestroy {
+    @ViewChild(MatTabGroup) tabGroup: MatTabGroup;
     @Input() myLeagues: League[] = [];
     @Input() discoverLeagues: League[];
     @Input() playerId: string;
     @Input() teamId: string;
-    private online: boolean;
+    online: boolean;
     private onlineStateCallback = () => this.online = navigator.onLine;
 
     constructor(route: ActivatedRoute, private graphQLService: GraphQLService, private pageTitleService: PageTitleService,
-                public authService: AuthService, private onlineStatusService: OnlineStatusService,
-                private elementRef: ElementRef) {
+                public authService: AuthService, private onlineStatusService: OnlineStatusService) {
         super(route);
     }
 
@@ -74,9 +55,8 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
     private handleLeaguesQueryResponse(data) {
         this.myLeagues = data.myLeagues.map(league => League.fromJson(league));
         if (this.myLeagues.length == 0) {
-            const tabs = document.querySelectorAll('ul.tabs').item(0);
-            const tabInstance = M.Tabs.getInstance(tabs);
-            tabInstance.select('discoverLeagues');
+            // Switch to the 'Discover' tab programmatically if 'My Leagues' is empty
+            setTimeout(() => this.tabGroup.selectedIndex = 1, 0); // using setTimeout to avoid ExpressionChangedAfterItHasBeenCheckedError
         }
         let myLeagueIds = data.myLeagues.map(league => league.id);
 
@@ -89,15 +69,6 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
         this.discoverLeagues = leagues;
     }
 
-    ngAfterViewInit(): void {
-        this.initTabs();
-    }
-
-    initTabs(): void {
-        const tabs = document.querySelectorAll('.tabs');
-        M.Tabs.init(tabs);
-    }
-
     private static compareLeagueByLastGameTime(l1: League, l2: League) {
         if (l1.games.length === 0 && l2.games.length === 0) {
             return 0;
@@ -108,4 +79,24 @@ export class LeagueBrowserComponent extends BaseComponent implements AfterViewIn
         }
         return l2.games[0].time.getTime() - l1.games[0].time.getTime();
     }
+
+    private static readonly getLeaguesQuery: string = `query($playerId: ID, $leagueCount: Int) {
+        myLeagues : leagues(playerId:$playerId, first: $leagueCount){
+            id
+            name 
+            imageUrl
+            description 
+        }
+        
+        allLeagues: leagues(first: $leagueCount){
+            id
+            name 
+            imageUrl
+            description 
+            games(first:1 , finished:true) {
+                id
+                time
+            }
+        }
+    }`;
 }

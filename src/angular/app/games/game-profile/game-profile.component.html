@@ -8,7 +8,7 @@
 
     <game [game]="game"></game>
     <div class="game__date">
-        <small class="center grey-text">{{game.time | amCalendar:{lastDay: '[Yesterday at] HH:mm', sameDay: '[Today at] HH:mm', nextDay : '[Tomorrow at] HH:mm', lastWeek : '[last] dddd [at] HH:mm', nextWeek : 'dddd [at] HH:mm', sameElse : 'll HH:mm'} }}</small>
+        <small class="center grey-text">{{ formattedDate }}</small>
     </div>
     <game-flow [game]="game"></game-flow>
 
@@ -35,17 +35,17 @@
     </div>
 
     <!-- Comment Modal Component -->
-    <app-comment-modal
+    <game-comment-modal
             (commentSubmitted)="onCommentDoneClicked($event)">
-    </app-comment-modal>
+    </game-comment-modal>
 
     <!-- Delete Game Modal Component -->
-    <app-delete-game-modal
+    <game-delete-modal
             (deleteConfirmed)="onConfirmDeleteClicked()">
-    </app-delete-game-modal>
+    </game-delete-modal>
 
     <!-- Continue Game Modal Component -->
-    <app-continue-game-modal
+    <game-continue-modal
             (continueConfirmed)="onConfirmContinueClicked()">
-    </app-continue-game-modal>
+    </game-continue-modal>
 </div>

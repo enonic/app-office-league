@@ -15,13 +15,15 @@ import {OnlineStatusService} from '../../services/online-status.service';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 import {WebSocketManager} from '../../services/websocket.manager';
 import { Config } from '../../app.config';
+import { DatePipe } from '@angular/common';
 
 declare var XPCONFIG: Config;
 
 @Component({
     selector: 'game-profile',
     templateUrl: 'game-profile.component.html',
-    styleUrls: ['game-profile.component.less']
+    styleUrls: ['game-profile.component.less'],
+    providers: [DatePipe]
 })
 export class GameProfileComponent
     extends GameComponent
@@ -32,7 +34,8 @@ export class GameProfileComponent
     playerId: string;
     deletable: boolean;
     connectionError: boolean;
-    private online: boolean;
+    formattedDate: string;
+    online: boolean;
     private onlineStateCallback = () => this.online = navigator.onLine;
     private gameId: string;
     private wsMan: WebSocketManager;
@@ -45,7 +48,8 @@ export class GameProfileComponent
         private pageTitleService: PageTitleService,
         protected offlineService: OfflinePersistenceService,
         private onlineStatusService: OnlineStatusService,
-        private dialog: MatDialog // Inject MatDialog
+        private dialog: MatDialog, // Inject MatDialog
+        private datePipe: DatePipe
     ) {
         super(graphQLService, route, router, offlineService);
     }
@@ -63,14 +67,25 @@ export class GameProfileComponent
 
         this.wsMan = new WebSocketManager(this.getWsUrl(this.gameId));
         this.wsMan.onMessage(this.onWsMessage.bind(this));
+        this.formatGameTime();
     }
 
-    ngAfterViewInit(): void {
-        setTimeout(() => this.initFloatingButtons(), 500);
-    }
+    formatGameTime() {
+        const now = new Date();
+        const gameDate = new Date(this.game.time); // assuming this.game.time is a date compatible string or a timestamp
 
-    initFloatingButtons(): void {
-        // TODO: Update this with Angular Material Floating Action Button initialization
+        const diffInDays = (now.getTime() - gameDate.getTime()) / (1000 * 3600 * 24);
+
+        if (diffInDays < 1 && now.getDate() === gameDate.getDate()) {
+            this.formattedDate = `Today at ${this.datePipe.transform(gameDate, 'HH:mm')}`;
+        } else if (diffInDays < 2 && now.getDate() - gameDate.getDate() === 1) {
+            this.formattedDate = `Yesterday at ${this.datePipe.transform(gameDate, 'HH:mm')}`;
+        } else if (diffInDays > -1 && now.getDate() - gameDate.getDate() === -1) {
+            this.formattedDate = `Tomorrow at ${this.datePipe.transform(gameDate, 'HH:mm')}`;
+        } else {
+            this.formattedDate = this.datePipe.transform(gameDate, 'EEEE [at] HH:mm'); // EEEE will give you the full name of the day
+        }
+        // Add more conditions for lastWeek, nextWeek, sameElse as per your requirement
     }
 
     ngOnDestroy(): void {

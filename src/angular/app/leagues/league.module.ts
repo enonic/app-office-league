@@ -21,6 +21,8 @@ import {AdminSelectDialogComponent} from './admin-select-dialog/admin-select-dia
 import {PlayerSelectDialogComponent} from './player-select-dialog/player-select-dialog.component';
 // import { MaterializeModule } from 'angular2-materialize';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
 
 const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, canActivate: [PlayerRouteGuard,]},
@@ -55,7 +57,9 @@ const leagueRoutes: Routes = [
         GamesModule,
         NgChartsModule,
         RouterModule.forChild(leagueRoutes),
-        MatButtonModule
+        MatButtonModule,
+        MatTabsModule,
+        MatIconModule
     ],
     exports: [LeagueListComponent, LeaguePlayerListComponent, LeagueTeamListComponent],
     providers: [],
