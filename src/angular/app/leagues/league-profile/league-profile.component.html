@@ -41,7 +41,7 @@
         </a>
         <ul>
             <li *ngIf="playerSystemAdmin"><a class="btn-floating purple" (click)="onRankingRefreshClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">poll</i></a></li>
-            <li><a class="btn-floating green" (click)="onAddPlayerClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">person_add</i></a></li>
+            <li><a class="btn-floating green" (click)="openAddPlayerModal()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">person_add</i></a></li>
             <li><a class="btn-floating blue" (click)="onEditClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">mode_edit</i></a></li>
             <li *ngIf="playerInLeague || joinLeagueRequested"><a class="btn-floating red" (click)="onLeaveClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">directions_run</i></a></li>
             <li><a class="btn-floating red" (click)="onDeleteClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">delete</i></a></li>
@@ -82,7 +82,6 @@
                    [games]="league.games"
                    [detailsPath]="['leagues', league.name.toLowerCase(), 'games']"></game-list>
     </div>
-
 
     <div class="modal center player-select-modal" materialize="modal"
          [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">

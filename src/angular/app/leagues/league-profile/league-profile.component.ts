@@ -11,6 +11,8 @@ import {Player} from '../../../graphql/schemas/Player';
 import {WebSocketManager} from '../../services/websocket.manager';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 import { Config } from '../../app.config';
+import { AddPlayerModalComponent } from '../add-player-modal/add-player-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 declare var XPCONFIG: Config;
 
@@ -48,8 +50,15 @@ export class LeagueProfileComponent
     onlineStateCallback = () => this.online = navigator.onLine;
     private wsMan: WebSocketManager;
 
-    constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
-                private pageTitleService: PageTitleService, private onlineStatusService: OnlineStatusService, private router: Router) {
+    constructor(
+        route: ActivatedRoute,
+        private authService: AuthService,
+        private graphQLService: GraphQLService,
+        private pageTitleService: PageTitleService,
+        private onlineStatusService: OnlineStatusService,
+        private router: Router,
+        private dialog: MatDialog
+    ) {
         super(route);
     }
 
@@ -75,7 +84,7 @@ export class LeagueProfileComponent
         this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
         this.online = navigator.onLine;
     }
-
+/*
     ngAfterViewInit(): void {
         // Poll until loaded
         const buttonPollId = setInterval(() => {
@@ -90,7 +99,7 @@ export class LeagueProfileComponent
         const buttons = document.querySelectorAll('.fixed-action-btn');
         M.FloatingActionButton.init(buttons);
     }
-
+*/
     ngOnDestroy() {
         clearTimeout(this.approvePollingTimerId);
         this.approvePollingTimerId = undefined;
@@ -194,11 +203,11 @@ export class LeagueProfileComponent
     onEditClicked() {
         this.router.navigate(['leagues', this.league.name.toLowerCase(), 'edit']);
     }
-
+/*
     onAddPlayerClicked() {
         this.showModal();
     }
-
+*/
     onDeleteClicked() {
         this.showModalDelete();
     }
@@ -217,13 +226,16 @@ export class LeagueProfileComponent
         }
     }
 
-    onPlayersAdded() {
-        this.graphQLService.post(LeagueProfileComponent.addPlayersLeagueQuery,
-            {leagueId: this.league.id, playerNames: this.playerNamesToAdd}).then(
-            data => {
-                this.refreshData(this.league.name);
-            });
-        this.hideModal();
+    onPlayersAdded(playerNamesToAdd: string[]) {
+        this.graphQLService.post(LeagueProfileComponent.addPlayersLeagueQuery, {
+            leagueId: this.league.id,
+            playerNames: playerNamesToAdd
+        }).then(data => {
+            this.refreshData(this.league.name);
+        }).catch(error => {
+            // Handle error
+            console.error("Error adding players: ", error);
+        });
     }
 
     onRemovePlayer(player: Player) {
@@ -293,12 +305,29 @@ export class LeagueProfileComponent
             });
     }
 
+    openAddPlayerModal(): void {
+        const dialogRef = this.dialog.open(AddPlayerModalComponent, {
+            width: '250px',
+            data: {
+                nonMembersPlayerNames: this.nonMembersPlayerNames,
+                playerNamesToAdd: this.playerNamesToAdd
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed. Result:', result);
+            if (result) {
+                this.onPlayersAdded(result);
+            }
+        });
+    }
+    /*
     showModal(): void {
         this.playerNamesToAdd = [];
         this.materializeActions.emit({action: "modal", params: ['open']});
         setTimeout(() => this.addPlayerChipsViewChild.focus(), 300); //No possibility to set a callback on display
     }
-
+*/
     hideModal(): void {
         this.materializeActions.emit({action: "modal", params: ['close']});
     }

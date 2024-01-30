@@ -23,6 +23,8 @@ import {PlayerSelectDialogComponent} from './player-select-dialog/player-select-
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AddPlayerModalComponent } from './add-player-modal/add-player-modal.component';
 
 const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, canActivate: [PlayerRouteGuard,]},
@@ -48,7 +50,8 @@ const leagueRoutes: Routes = [
         AdminListComponent,
         AdminSummaryComponent,
         AdminSelectDialogComponent,
-        PlayerSelectDialogComponent
+        PlayerSelectDialogComponent,
+        AddPlayerModalComponent
     ],
     imports: [
         //MaterializeModule,
@@ -59,7 +62,8 @@ const leagueRoutes: Routes = [
         RouterModule.forChild(leagueRoutes),
         MatButtonModule,
         MatTabsModule,
-        MatIconModule
+        MatIconModule,
+        MatDialogModule
     ],
     exports: [LeagueListComponent, LeaguePlayerListComponent, LeagueTeamListComponent],
     providers: [],
