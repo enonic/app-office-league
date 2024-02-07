@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>Remove player</h2>
+<mat-dialog-content class="mat-typography">
+    <p>You are about to remove player '<strong>{{data.playerName}}</strong>' from this league (<strong>{{data.leagueName}}</strong>).</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button [mat-dialog-close]="true" (click)="onConfirmRemoveClicked()" class="remove-button">Remove</button>
+</mat-dialog-actions>
+

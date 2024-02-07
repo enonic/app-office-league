@@ -60,7 +60,7 @@ import { MatIconModule } from '@angular/material/icon';
         LoadingComponent,
         ConnectionErrorComponent,
         PlayerSelectComponent,
-        ChipsComponent,
+        ChipsComponent
     ]
 })
 export class CommonModule {

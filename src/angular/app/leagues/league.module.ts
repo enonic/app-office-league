@@ -25,6 +25,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AddPlayerModalComponent } from './add-player-modal/add-player-modal.component';
+import { RemovePlayerModalComponent } from './remove-player-modal/remove-player-modal.component';
+import { ChipsComponent } from '../common/chips/chips.component';
 
 const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, canActivate: [PlayerRouteGuard,]},
@@ -51,7 +53,9 @@ const leagueRoutes: Routes = [
         AdminSummaryComponent,
         AdminSelectDialogComponent,
         PlayerSelectDialogComponent,
-        AddPlayerModalComponent
+        AddPlayerModalComponent,
+        RemovePlayerModalComponent,
+        ChipsComponent
     ],
     imports: [
         //MaterializeModule,
@@ -65,7 +69,12 @@ const leagueRoutes: Routes = [
         MatIconModule,
         MatDialogModule
     ],
-    exports: [LeagueListComponent, LeaguePlayerListComponent, LeagueTeamListComponent],
+    exports: [
+        LeagueListComponent,
+        LeaguePlayerListComponent,
+        LeagueTeamListComponent,
+        ChipsComponent
+    ],
     providers: [],
     bootstrap: []
 })

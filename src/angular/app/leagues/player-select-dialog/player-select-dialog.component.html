@@ -1,6 +1,6 @@
 <div class="modal-content">
     <h6 class="center">Select a player to add</h6>
-    <chips #addPlayerChips [availableTags]="data.allPlayerNames" [excludedTags]="data.playerNames" [selectedTags]="onlyPlayerNamesToAdd" placeholder="Enter a player name or email"></chips>
+    <app-chips #addPlayerChips [availableTags]="data.allPlayerNames" [excludedTags]="data.playerNames" [selectedTags]="onlyPlayerNamesToAdd" placeholder="Enter a player name or email"></app-chips>
     <div class="row submit-row">
         <button mat-button (click)="onPlayersSelected()">Add</button>
     </div>

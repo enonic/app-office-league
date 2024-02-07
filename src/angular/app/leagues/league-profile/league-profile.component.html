@@ -67,7 +67,7 @@
                             [leaguePlayers]="league.leaguePlayers"
                             [detailsPath]="['leagues', league.name.toLowerCase(), 'players']"
                             [seeMoreText]="'See full player ranking'"
-                            [allowRemove]="adminInLeague && online" (removePlayer)="onRemovePlayer($event)"
+                            [allowRemove]="adminInLeague && online" (removePlayer)="openRemovePlayerDialog($event)"
                             (approvePlayer)="onApprovePlayerJoin($event)"></league-player-list>
     </div>
 
@@ -83,17 +83,7 @@
                    [detailsPath]="['leagues', league.name.toLowerCase(), 'games']"></game-list>
     </div>
 
-    <div class="modal center player-select-modal" materialize="modal"
-         [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActions">
-        <div class="modal-content">
-            <h6 class="center">Add players to league</h6>
-            <chips #addPlayerChips [availableTags]="nonMembersPlayerNames" [selectedTags]="playerNamesToAdd" placeholder="Enter a player name or email"></chips>
-            <div class="row submit-row">
-                <a class="waves-effect waves-teal btn green" [attr.disabled]="playerNamesToAdd.length===0?true:null" (click)="onPlayersAdded()"><i class="material-icons left">add</i>Add</a>
-            </div>
-        </div>
-    </div>
-    <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
+<!--    <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
          [materializeActions]="materializeActionsRemove">
         <div class="modal-content">
             <h5 class="center">Remove player</h5>
@@ -103,7 +93,8 @@
             <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
             <a (click)="onConfirmRemoveClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Remove</a>
         </div>
-    </div>
+    </div>-->
+
     <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
          [materializeActions]="materializeActionsApprove">
         <div class="modal-content">

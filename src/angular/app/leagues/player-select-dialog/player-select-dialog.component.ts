@@ -10,7 +10,10 @@ export class PlayerSelectDialogComponent {
 
     constructor(
         private dialogRef: MatDialogRef<PlayerSelectDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any
+        @Inject(MAT_DIALOG_DATA) public data: {
+            allPlayerNames: string[];
+            playerNames: string[];
+        }
     ) {}
 
     onPlayersSelected() {

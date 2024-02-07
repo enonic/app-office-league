@@ -12,6 +12,7 @@ import {WebSocketManager} from '../../services/websocket.manager';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 import { Config } from '../../app.config';
 import { AddPlayerModalComponent } from '../add-player-modal/add-player-modal.component';
+import { RemovePlayerModalComponent } from '../remove-player-modal/remove-player-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 
 declare var XPCONFIG: Config;
@@ -36,11 +37,8 @@ export class LeagueProfileComponent
     activeGames: Game[] = [];
     nonMembersPlayerNames: string[] = [];
     playerNamesToAdd: string[] = [];
-    removePlayer: Player;
     approvePlayer: Player;
     approvePollingTimerId: any;
-    materializeActions = new EventEmitter<any>();
-    materializeActionsRemove = new EventEmitter<any>();
     materializeActionsApprove = new EventEmitter<any>();
     materializeActionsPending = new EventEmitter<any>();
     materializeActionsDelete = new EventEmitter<any>();
@@ -226,7 +224,7 @@ export class LeagueProfileComponent
         }
     }
 
-    onPlayersAdded(playerNamesToAdd: string[]) {
+    addPlayers(playerNamesToAdd: string[]) {
         this.graphQLService.post(LeagueProfileComponent.addPlayersLeagueQuery, {
             leagueId: this.league.id,
             playerNames: playerNamesToAdd
@@ -238,21 +236,38 @@ export class LeagueProfileComponent
         });
     }
 
+    openRemovePlayerDialog(player: Player): void {
+        //this.removePlayer = player;
+        const dialogRef = this.dialog.open(RemovePlayerModalComponent, {
+            width: '250px',
+            data: {
+                playerName: player.name,
+                leagueName: this.league.name
+            } // pass data as needed
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === true) {
+                this.removePlayer(player);
+                // Handle the removal confirmation
+            }
+        });
+    }
+    /*
     onRemovePlayer(player: Player) {
         this.removePlayer = player;
         this.showModalRemove();
     }
-
+*/
     onApprovePlayerJoin(player: Player) {
         this.approvePlayer = player;
         this.showModalApprove();
     }
 
-    onConfirmRemoveClicked() {
+    removePlayer(player: Player) {
         this.graphQLService.post(LeagueProfileComponent.leavePlayerLeagueQuery,
-            {playerId: this.removePlayer.id, leagueId: this.league.id}).then(
+            {playerId: player.id, leagueId: this.league.id}).then(
             data => {
-                this.hideModalRemove();
                 this.refreshData(this.league.name);
             });
     }
@@ -315,9 +330,8 @@ export class LeagueProfileComponent
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            console.log('The dialog was closed. Result:', result);
             if (result) {
-                this.onPlayersAdded(result);
+                this.addPlayers(result);
             }
         });
     }
@@ -327,7 +341,7 @@ export class LeagueProfileComponent
         this.materializeActions.emit({action: "modal", params: ['open']});
         setTimeout(() => this.addPlayerChipsViewChild.focus(), 300); //No possibility to set a callback on display
     }
-*/
+
     hideModal(): void {
         this.materializeActions.emit({action: "modal", params: ['close']});
     }
@@ -339,7 +353,7 @@ export class LeagueProfileComponent
     public hideModalRemove(): void {
         this.materializeActionsRemove.emit({action: "modal", params: ['close']});
     }
-
+*/
     public showModalApprove(): void {
         this.materializeActionsApprove.emit({action: "modal", params: ['open']});
     }
