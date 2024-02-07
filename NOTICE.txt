@@ -20,8 +20,6 @@ The following components are provided under the MIT License (MIT). See project l
     GraphQL Java implementation (https://github.com/graphql-java/graphql-java)
     Angular (https://github.com/angular/angular)
     ng2-charts (https://github.com/valor-software/ng2-charts)
-    Angular2 Materialize (https://github.com/InfomediaLtd/angular2-materialize)
-    Materialize (https://github.com/Dogfalo/materialize)
     Chart.js (https://github.com/chartjs/Chart.js)
     Annotation plugin for Chart.js (https://github.com/chartjs/chartjs-plugin-annotation)
     angular2-moment (https://github.com/urish/angular2-moment)
@@ -47,12 +45,12 @@ The following components are provided under the Apache License 2.0. See project 
 
     Less (https://github.com/less/less.js)
     Typescript (https://github.com/Microsoft/TypeScript)
-    
+
 
 ========================================================================
 Creative Commons - Attribution-NonCommercial-NoDerivs 2.0 Generic
-========================================================================    
-    DC Comics LEGO variant covers 
+========================================================================
+    DC Comics LEGO variant covers
         Origin: https://www.flickr.com/photos/toomuchdew/albums/72157645848803730/with/14667325240
         License: https://creativecommons.org/licenses/by-nc-nd/2.0/
 

@@ -24,7 +24,6 @@ import {UserProfileService} from './services/user-profile.service';
 import {WindowRefService} from './services/window-ref.service';
 import {AudioService} from './services/audio.service';
 import {PushNotificationService} from './services/push-notification.sevice';
-//import { MaterializeModule } from 'angular2-materialize';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';

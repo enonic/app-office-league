@@ -1,5 +1,3 @@
-// import './polyfills.ts';
-
 // Angular
 import '@angular/platform-browser';
 import '@angular/platform-browser-dynamic';
@@ -13,8 +11,6 @@ import 'rxjs';
 
 // Other vendors for example jQuery, Lodash or Bootstrap
 // You can import js, ts, css, sass, ...
-
-//import 'materialize-css';
 
 import 'crypto-js';
 import 'chart.js';

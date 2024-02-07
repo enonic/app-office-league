@@ -188,10 +188,10 @@ export class LeagueProfileComponent
     onJoinClicked() {
         if (this.authService.isAuthenticated() && !this.playerInLeague) {
             let playerId = this.authService.getUser().playerId;
-            this.graphQLService.post(LeagueProfileComponent.requestJoinLeagueQuery, {leagueId: this.league.id}).then(
-                data => {
-                    this.refreshData(this.league.name);
-                });
+            this.graphQLService.post(
+                LeagueProfileComponent.requestJoinLeagueQuery,
+                { leagueId: this.league.id }
+            ).then(() =>  this.refreshData(this.league.name));
         }
     }
 
@@ -199,11 +199,11 @@ export class LeagueProfileComponent
         this.graphQLService.post(LeagueProfileComponent.addPlayersLeagueQuery, {
             leagueId: this.league.id,
             playerNames: playerNamesToAdd
-        }).then(data => {
-            this.refreshData(this.league.name);
-        }).catch(error => {
-            // Handle error
-            console.error("Error adding players: ", error);
+        })
+            .then(() => this.refreshData(this.league.name))
+            .catch(error => {
+                // Handle error
+                console.error("Error adding players: ", error);
         });
     }
 

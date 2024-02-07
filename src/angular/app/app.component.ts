@@ -58,24 +58,7 @@ export class AppComponent implements OnInit {
                 this.pageTitleService.resetTitle();
             });
     }
-/*
-    ngAfterViewInit(): void {
-        this.initSidenav();
-        this.initUserDropdown();
-    }
 
-    initSidenav(): void {
-        const elems = document.querySelectorAll('.sidenav');
-        M.Sidenav.init(elems, {
-            edge: 'right'
-        });
-    }
-
-    initUserDropdown(): void {
-        const elems = document.querySelectorAll('.dropdown-trigger');
-        M.Dropdown.init(elems);
-    }
-*/
     toggleSidenav(): void {
         this.sidenav.toggle();
         this.sidenavOpened = !this.sidenavOpened;
@@ -111,8 +94,7 @@ export class AppComponent implements OnInit {
             this.playerName = player.name;
             this.isNewUser = false;
             this.isAuthenticated = true;
-            this.displayMenu = false;
-            setTimeout(() => this.displayMenu = true, 100); // hack to force refresh materialize SideNav menu
+            this.displayMenu = true;
         } else {
             this.playerImage = ImageService.playerDefault();
             this.playerName = '';

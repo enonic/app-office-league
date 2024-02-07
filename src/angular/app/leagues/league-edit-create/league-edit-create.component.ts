@@ -17,7 +17,6 @@ import {Player} from '../../../graphql/schemas/Player';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, lastValueFrom, map } from 'rxjs';
 import { Config } from '../../app.config';
-//import { MaterializeAction } from 'angular2-materialize';
 import { MatDialog } from '@angular/material/dialog';
 import { AdminSelectDialogComponent } from '../admin-select-dialog/admin-select-dialog.component';
 import { PlayerSelectDialogComponent } from '../player-select-dialog/player-select-dialog.component';
@@ -50,7 +49,6 @@ export class LeagueEditCreateComponent
     adminPlayerNames: string[] = [];
     onlyPlayers: Player[] = [];
     onlyPlayerNames: string[] = [];
-    onlyPlayerNamesToAdd: string[] = [];
     playerNames: string[] = [];
     allPlayerIds: string[] = [];
     allPlayerNames: string[] = [];

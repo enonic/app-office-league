@@ -16,7 +16,6 @@ import {GraphQLService} from '../../services/graphql.service';
 export class PlayerSelectComponent extends List2Component {
     @Input() playerIds: string[];
     @Input() excludedPlayerIds: string[] = [];
-    @Input() materializeActions: EventEmitter<any> = new EventEmitter<any>();
     @Output() playerSelected: EventEmitter<Player> = new EventEmitter<Player>();
     allPlayers: Player[] = [];
     players: Player[] = [];
@@ -30,17 +29,8 @@ export class PlayerSelectComponent extends List2Component {
     ngOnInit(): void {
         super.ngOnInit();
         this.searchValue = '';
-        if (this.materializeActions) {
-            this.materializeActions.subscribe((materialAction: any) => {
-                if (materialAction.params && materialAction.params[0] === 'open') {
-                    this.searchValue = '';
-                    this.onSearchFieldModified();
-                }
-            });
-        }
         this.observer = this;
     }
-
 
     ngOnChanges(changes: SimpleChanges): void {
         let playerIdsChange = changes['playerIds'];
@@ -111,10 +101,6 @@ export class PlayerSelectComponent extends List2Component {
     private cancel() {
         this.selectedPlayer = null;
         this.notifySelected();
-    }
-
-    private refresh(currentPage: number = 1, searchValue: string = '') {
-        this.filterPlayers(searchValue);
     }
 
     static readonly GetPlayersQuery = `query ($playerIds: [ID], $first:Int) {
