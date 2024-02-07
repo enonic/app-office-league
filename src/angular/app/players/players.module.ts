@@ -14,7 +14,6 @@ import {FormsModule} from '@angular/forms';
 import {AuthenticatedRouteGuard, } from '../guards/authenticated.route.guard';
 import {EditRouteGuard, } from '../guards/edit.route.guard';
 import {PlayerRouteGuard, } from '../guards/player.route.guard';
-import {PendingRequestDialogComponent} from '../leagues/pending-request-dialog/pending-request-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
 
 const playersRoutes: Routes = [
@@ -33,8 +32,7 @@ const playersRoutes: Routes = [
         PlayerTeamListComponent,
         PlayerStatsComponent,
         PlayerEditComponent,
-        PlayerCreateComponent,
-        PendingRequestDialogComponent
+        PlayerCreateComponent
     ],
     imports: [
         CommonModule,

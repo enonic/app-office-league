@@ -28,6 +28,7 @@ import { AddPlayersDialogComponent } from './add-players-dialog/add-players-dial
 import { RemovePlayerDialogComponent } from './remove-player-dialog/remove-player-dialog.component';
 import { ChipsComponent } from '../common/chips/chips.component';
 import {JoinLeagueRequestDialogComponent} from './join-league-request-dialog/join-league-request-dialog.component';
+import {PendingRequestDialogComponent} from './pending-request-dialog/pending-request-dialog.component';
 
 const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, canActivate: [PlayerRouteGuard,]},
@@ -56,7 +57,8 @@ const leagueRoutes: Routes = [
         PlayerSelectDialogComponent,
         AddPlayersDialogComponent,
         RemovePlayerDialogComponent,
-        JoinLeagueRequestDialogComponent
+        JoinLeagueRequestDialogComponent,
+        PendingRequestDialogComponent
     ],
     imports: [
         //MaterializeModule,
