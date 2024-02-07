@@ -36,7 +36,7 @@
                     </ul>
                     <ng-template [ngIf]="createMode">
                         <button class="btn waves-effect waves-light grey darken-1" type="button" name="selectPlayer"
-                                (click)="onSelectPlayerClicked()">
+                                (click)="openPlayerSelectDialog()">
                             Select player
                         </button>
                     </ng-template>
@@ -64,10 +64,3 @@
         </div>
     </div>
 </ng-template>
-
-<div class="modal center player-select-dialog" materialize="modal">
-    <div class="modal-content">
-        <h4 class="center">Select a player</h4>
-        <player-select [playerIds]="possibleTeamMateIds" [materializeActions]="materializeActions" (playerSelected)="onPlayerSelected($event)"></player-select>
-    </div>
-</div>

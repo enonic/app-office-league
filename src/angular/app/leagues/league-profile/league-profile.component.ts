@@ -15,6 +15,7 @@ import { AddPlayersDialogComponent } from '../add-players-dialog/add-players-dia
 import { RemovePlayerDialogComponent } from '../remove-player-dialog/remove-player-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import {JoinLeagueRequestDialogComponent} from '../join-league-request-dialog/join-league-request-dialog.component';
+import {PendingRequestDialogComponent} from '../pending-request-dialog/pending-request-dialog.component';
 
 declare var XPCONFIG: Config;
 
@@ -28,7 +29,6 @@ export class LeagueProfileComponent
     implements OnChanges, OnDestroy {
 
     @Input() league: League;
-    @ViewChild('addPlayerChips') addPlayerChipsViewChild;
     connectionError: boolean;
     playerInLeague: boolean;
     userAuthenticated: boolean;
@@ -254,17 +254,7 @@ export class LeagueProfileComponent
             }
         });
     }
-    /*
-    onRemovePlayer(player: Player) {
-        this.removePlayer = player;
-        this.showModalRemove();
-    }
 
-    onApprovePlayerJoin(player: Player) {
-        this.approvePlayer = player;
-        this.showModalApprove();
-    }
-*/
     removePlayer(player: Player) {
         this.graphQLService.post(LeagueProfileComponent.leavePlayerLeagueQuery,
             {playerId: player.id, leagueId: this.league.id}).then(
@@ -328,25 +318,7 @@ export class LeagueProfileComponent
             }
         });
     }
-    /*
-    showModal(): void {
-        this.playerNamesToAdd = [];
-        this.materializeActions.emit({action: "modal", params: ['open']});
-        setTimeout(() => this.addPlayerChipsViewChild.focus(), 300); //No possibility to set a callback on display
-    }
 
-    hideModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['close']});
-    }
-
-    public showModalRemove(): void {
-        this.materializeActionsRemove.emit({action: "modal", params: ['open']});
-    }
-
-    public hideModalRemove(): void {
-        this.materializeActionsRemove.emit({action: "modal", params: ['close']});
-    }
-*/
     public openApproveOrRejectPlayerDialog(player: Player): void {
         const dialogRef = this.dialog.open(JoinLeagueRequestDialogComponent, {
             width: '250px',
@@ -362,22 +334,20 @@ export class LeagueProfileComponent
             }
         });
     }
-/*
-    public hideModalApprove(): void {
-        this.materializeActionsApprove.emit({action: "modal", params: ['close']});
-    }
-*/
-    public showModalPending(): void {
+
+    public checkPendingRequest(): void {
         // check if pending, show info modal if still pending
         this.refreshData(this.league.name).then(() => {
             if (!this.playerInLeague && this.joinLeagueRequested) {
-                this.materializeActionsPending.emit({action: "modal", params: ['open']});
+                this.openPendingRequestDialog();
             }
         });
     }
 
-    public hideModalPending(): void {
-        this.materializeActionsPending.emit({action: "modal", params: ['close']});
+    public openPendingRequestDialog(): void {
+        this.dialog.open(PendingRequestDialogComponent, {
+            width: '250px'
+        });
     }
 
     public showModalDelete(): void {

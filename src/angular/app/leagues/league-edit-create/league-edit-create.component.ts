@@ -37,7 +37,6 @@ export class LeagueEditCreateComponent
     private static readonly DEFAULT_MIN_DIFFERENCE: number = 2;
 
     @ViewChild('fileInput') inputEl: ElementRef;
-    @ViewChild('addPlayerChips') addPlayerChipsViewChild;
     name: string;
     leagueId: string;
     description: string;

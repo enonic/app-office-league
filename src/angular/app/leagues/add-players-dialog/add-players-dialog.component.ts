@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import {Component, Inject, ViewChild} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface AddPlayersDialogData {
@@ -11,6 +11,8 @@ export interface AddPlayersDialogData {
 })
 
 export class AddPlayersDialogComponent {
+    @ViewChild('addPlayerChips') addPlayerChipsViewChild: any;
+
     constructor(
         public dialogRef: MatDialogRef<AddPlayersDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: AddPlayersDialogData

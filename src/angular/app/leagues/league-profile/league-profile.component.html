@@ -31,7 +31,7 @@
             <a class="waves-effect waves-light btn global__btn global__btn--play" (click)="onJoinClicked()" [attr.disabled]="online?null:true"><i class="material-icons left">stars</i>Join this league</a>
         </div>
         <div *ngIf="!playerInLeague && joinLeagueRequested" class="center">
-            <a class="waves-effect waves-light btn global__btn global__btn--pending" (click)="showModalPending()"><i class="material-icons left">more_horiz</i>Waiting for approval</a>
+            <a class="waves-effect waves-light btn global__btn global__btn--pending" (click)="checkPendingRequest()"><i class="material-icons left">more_horiz</i>Waiting for approval</a>
         </div>
     </div>
 

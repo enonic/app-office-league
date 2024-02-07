@@ -1,24 +1,21 @@
-import {Component, Inject, ViewChild} from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {Player} from '../../../graphql/schemas/Player';
 
 @Component({
-    selector: 'app-player-select-dialog',
     templateUrl: './player-select-dialog.component.html',
 })
 export class PlayerSelectDialogComponent {
-    @ViewChild('addPlayerChips') addPlayerChipsViewChild: any;
-    onlyPlayerNamesToAdd: string[] = [];
 
     constructor(
         private dialogRef: MatDialogRef<PlayerSelectDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: {
-            allPlayerNames: string[];
-            playerNames: string[];
+            possibleTeamMateIds: string[];
         }
     ) {}
 
-    onPlayersSelected() {
+    onPlayerSelected(player: Player) {
         // Close the dialog and return the selected players
-        this.dialogRef.close(this.onlyPlayerNamesToAdd);
+        this.dialogRef.close(player);
     }
 }

@@ -50,7 +50,6 @@ const leagueRoutes: Routes = [
         LeagueProfileTeamsComponent,
         LeagueEditCreateComponent,
         LeaguePlayerGraphComponent,
-        ChipsComponent,
         AdminListComponent,
         AdminSummaryComponent,
         AdminSelectDialogComponent,

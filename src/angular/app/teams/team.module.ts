@@ -8,7 +8,8 @@ import {TeamEditCreateComponent} from './team-edit-create/team-edit-create.compo
 import {TeamListPageComponent} from './team-list-page/team-list-page.component';
 import {FormsModule} from '@angular/forms';
 import {PlayerRouteGuard, } from '../guards/player.route.guard';
-//import { MaterializeModule } from 'angular2-materialize';
+import {PlayerSelectDialogComponent} from './player-select-dialog/player-select-dialog.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 const teamRoutes: Routes = [
     {path: 'teams', component: TeamListPageComponent, canActivate: [PlayerRouteGuard,]},
@@ -21,15 +22,16 @@ const teamRoutes: Routes = [
     declarations: [
         TeamListPageComponent,
         TeamProfileComponent,
-        TeamEditCreateComponent
+        TeamEditCreateComponent,
+        PlayerSelectDialogComponent
     ],
     imports: [
-        //MaterializeModule,
         CommonModule,
         GamesModule,
         LeaguesModule,
         RouterModule.forChild(teamRoutes),
-        FormsModule
+        FormsModule,
+        MatDialogModule
     ],
     exports: [],
     providers: [],

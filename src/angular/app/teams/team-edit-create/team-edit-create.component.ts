@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
 import {BaseComponent} from '../../common/base.component';
@@ -16,6 +16,8 @@ import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, lastValueFrom, map } from 'rxjs';
 import { Config } from '../../app.config';
+import {MatDialog} from '@angular/material/dialog';
+import {PlayerSelectDialogComponent} from '../player-select-dialog/player-select-dialog.component';
 
 declare var XPCONFIG: Config;
 
@@ -27,7 +29,6 @@ declare var XPCONFIG: Config;
 export class TeamEditCreateComponent
     extends BaseComponent
     implements AfterViewInit {
-    materializeActions = new EventEmitter<any>();
 
     name: string;
     id: string;
@@ -43,15 +44,16 @@ export class TeamEditCreateComponent
         'name': '',
         'description': ''
     };
+    online: boolean;
     private currentPlayer: Player;
-    private online: boolean;
     private onlineStateCallback = () => this.online = navigator.onLine;
     @ViewChild('fileInput') inputEl: ElementRef;
 
     constructor(private http: HttpClient, route: ActivatedRoute, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private router: Router, private location: Location,
-                private authService: AuthService, private onlineStatusService: OnlineStatusService, 
-                private fb: FormBuilder, private sanitizer: DomSanitizer) {
+                private authService: AuthService, private onlineStatusService: OnlineStatusService,
+                private fb: FormBuilder, private sanitizer: DomSanitizer,
+                private dialog: MatDialog) {
         super(route);
     }
 
@@ -92,7 +94,7 @@ export class TeamEditCreateComponent
         inputEl.addEventListener('change', () => this.onFileInputChange(inputEl));
     }
 
-    private updatePageTitle(title: string) {
+    updatePageTitle(title: string) {
         this.pageTitleService.setTitle(title);
     }
 
@@ -185,8 +187,19 @@ export class TeamEditCreateComponent
         this.location.back();
     }
 
-    onSelectPlayerClicked() {
-        this.showModal();
+    openPlayerSelectDialog(): void {
+        const dialogRef = this.dialog.open(PlayerSelectDialogComponent, {
+            width: '250px',
+            data: {
+                possibleTeamMateIds: this.possibleTeamMateIds
+            } // pass data as needed
+        });
+
+        dialogRef.afterClosed().subscribe((player: Player) => {
+            if (player) {
+                this.players = [this.currentPlayer, player];
+            }
+        });
     }
 
     private updateTeam() {
@@ -225,21 +238,6 @@ export class TeamEditCreateComponent
         } else {
             this.updateTeam();
         }
-    }
-
-    onPlayerSelected(p: Player) {
-        if (p) {
-            this.hideModal();
-            this.players = [this.currentPlayer, p];
-        }
-    }
-
-    public showModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['open']});
-    }
-
-    public hideModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['close']});
     }
 
     private checkTeamNameInUse(name: string): Promise<boolean> {
