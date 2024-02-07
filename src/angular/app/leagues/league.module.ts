@@ -25,7 +25,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AddPlayersDialogComponent } from './add-players-dialog/add-players-dialog.component';
-import { RemovePlayerModalComponent } from './remove-player-modal/remove-player-modal.component';
+import { RemovePlayerDialogComponent } from './remove-player-dialog/remove-player-dialog.component';
 import { ChipsComponent } from '../common/chips/chips.component';
 import {JoinLeagueRequestDialogComponent} from './join-league-request-dialog/join-league-request-dialog.component';
 
@@ -56,7 +56,7 @@ const leagueRoutes: Routes = [
         AdminSelectDialogComponent,
         PlayerSelectDialogComponent,
         AddPlayersDialogComponent,
-        RemovePlayerModalComponent,
+        RemovePlayerDialogComponent,
         JoinLeagueRequestDialogComponent
     ],
     imports: [

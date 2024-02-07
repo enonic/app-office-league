@@ -12,7 +12,7 @@ import {WebSocketManager} from '../../services/websocket.manager';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 import { Config } from '../../app.config';
 import { AddPlayersDialogComponent } from '../add-players-dialog/add-players-dialog.component';
-import { RemovePlayerModalComponent } from '../remove-player-modal/remove-player-modal.component';
+import { RemovePlayerDialogComponent } from '../remove-player-dialog/remove-player-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import {JoinLeagueRequestDialogComponent} from '../join-league-request-dialog/join-league-request-dialog.component';
 
@@ -239,7 +239,7 @@ export class LeagueProfileComponent
 
     openRemovePlayerDialog(player: Player): void {
         //this.removePlayer = player;
-        const dialogRef = this.dialog.open(RemovePlayerModalComponent, {
+        const dialogRef = this.dialog.open(RemovePlayerDialogComponent, {
             width: '250px',
             data: {
                 playerName: player.name,
@@ -274,21 +274,13 @@ export class LeagueProfileComponent
     }
 
     approveOrRejectPlayer(player: Player, allow: boolean) {
-        if (allow) {
-            this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery,
-                {playerId: player.id, leagueId: this.league.id}).then(
-                data => {
-                    //this.hideModalApprove();
-                    this.refreshData(this.league.name);
-                });
-        } else {
-            this.graphQLService.post(LeagueProfileComponent.denyJoinLeagueRequestQuery,
-                {playerId: player.id, leagueId: this.league.id}).then(
-                data => {
-                    //this.hideModalApprove();
-                    this.refreshData(this.league.name);
-                });
-        }
+        this.graphQLService.post(
+            allow ? LeagueProfileComponent.joinPlayerLeagueQuery : LeagueProfileComponent.denyJoinLeagueRequestQuery,
+            { playerId: player.id, leagueId: this.league.id }
+        ).then(() => {
+                //this.hideModalApprove();
+                this.refreshData(this.league.name);
+            });
     }
 
     onConfirmDeleteClicked() {

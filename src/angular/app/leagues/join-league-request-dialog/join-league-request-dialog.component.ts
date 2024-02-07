@@ -7,7 +7,6 @@ export interface JoinLeagueRequestDialogData {
 }
 
 @Component({
-    selector: 'app-join-league-request-modal',
     templateUrl: './join-league-request-dialog.component.html'
 })
 export class JoinLeagueRequestDialogComponent {

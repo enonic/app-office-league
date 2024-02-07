@@ -65,7 +65,7 @@
     </div>
 </ng-template>
 
-<div class="modal center player-select-modal" materialize="modal">
+<div class="modal center player-select-dialog" materialize="modal">
     <div class="modal-content">
         <h4 class="center">Select a player</h4>
         <player-select [playerIds]="possibleTeamMateIds" [materializeActions]="materializeActions" (playerSelected)="onPlayerSelected($event)"></player-select>

@@ -2,12 +2,11 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-    templateUrl: './remove-player-modal.component.html',
-    styleUrls: ['./remove-player-modal.component.css']
+    templateUrl: './remove-player-dialog.component.html'
 })
-export class RemovePlayerModalComponent {
+export class RemovePlayerDialogComponent {
     constructor(
-        public dialogRef: MatDialogRef<RemovePlayerModalComponent>,
+        public dialogRef: MatDialogRef<RemovePlayerDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: {
             playerName: string,
             leagueName: string

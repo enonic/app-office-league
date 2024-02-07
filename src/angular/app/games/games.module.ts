@@ -24,8 +24,8 @@ import { MatInputModule } from "@angular/material/input";
 import {PlayerSelectDialogComponent} from './player-select-dialog/player-select-dialog.component';
 import {NgOptimizedImage} from '@angular/common';
 import {GameCommentDialogComponent} from './game-comment-dialog/game-comment-dialog.component';
-import {GameDeleteModalComponent} from './game-delete-modal/game-delete-modal.component';
-import {GameContinueModalComponent} from './game-continue-modal/game-continue-modal.component';
+import {GameDeleteDialogComponent} from './game-delete-dialog/game-delete-dialog.component';
+import {GameContinueDialogComponent} from './game-continue-dialog/game-continue-dialog.component';
 
 const gameRoutes: Routes = [
     {path: 'games', component: GameListPageComponent, canActivate: [PlayerRouteGuard]},
@@ -51,8 +51,8 @@ const gameRoutes: Routes = [
         RatingPointsComponent,
         PlayerSelectDialogComponent,
         GameCommentDialogComponent,
-        GameDeleteModalComponent,
-        GameContinueModalComponent
+        GameDeleteDialogComponent,
+        GameContinueDialogComponent
     ],
     imports: [
         CommonModule,

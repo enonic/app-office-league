@@ -1,7 +1,7 @@
 import { MatDialog } from '@angular/material/dialog';
 import { GameCommentDialogComponent } from '../game-comment-dialog/game-comment-dialog.component'; // adjust the path as necessary
-import { GameDeleteModalComponent } from '../game-delete-modal/game-delete-modal.component'; // adjust the path as necessary
-import { GameContinueModalComponent } from '../game-continue-modal/game-continue-modal.component'; // adjust the path as necessary
+import { GameDeleteDialogComponent } from '../game-delete-dialog/game-delete-dialog.component'; // adjust the path as necessary
+import { GameContinueDialogComponent } from '../game-continue-dialog/game-continue-dialog.component'; // adjust the path as necessary
 import {Component, OnDestroy, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -174,7 +174,7 @@ export class GameProfileComponent
     }
 
     onDeleteClicked() {
-        const dialogRef = this.dialog.open(GameDeleteModalComponent, {
+        const dialogRef = this.dialog.open(GameDeleteDialogComponent, {
             width: '250px'
         });
 
@@ -187,7 +187,7 @@ export class GameProfileComponent
     }
 
     onConfirmContinueClicked() {
-        const dialogRef = this.dialog.open(GameContinueModalComponent, {
+        const dialogRef = this.dialog.open(GameContinueDialogComponent, {
             width: '250px'
         });
 

@@ -35,17 +35,17 @@
     </div>
 
     <!-- Comment Modal Component -->
-    <game-comment-modal
+    <game-comment-dialog
             (commentSubmitted)="onCommentDoneClicked($event)">
-    </game-comment-modal>
+    </game-comment-dialog>
 
     <!-- Delete Game Modal Component -->
-    <game-delete-modal
+    <game-delete-dialog
             (deleteConfirmed)="onConfirmDeleteClicked()">
-    </game-delete-modal>
+    </game-delete-dialog>
 
     <!-- Continue Game Modal Component -->
-    <game-continue-modal
+    <game-continue-dialog
             (continueConfirmed)="onConfirmContinueClicked()">
-    </game-continue-modal>
+    </game-continue-dialog>
 </div>

@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
-    selector: 'game-continue-modal',
-    templateUrl: 'game-continue-modal.component.html'
+    selector: 'game-continue-dialog',
+    templateUrl: 'game-continue-dialog.component.html'
 })
-export class GameContinueModalComponent {
+export class GameContinueDialogComponent {
     @Output() continueConfirmed = new EventEmitter<void>();
 
     constructor() {}
