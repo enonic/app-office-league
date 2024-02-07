@@ -1,4 +1,8 @@
-import {Component, EventEmitter, OnDestroy, ViewChild} from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { GameCommentDialogComponent } from '../game-comment-dialog/game-comment-dialog.component'; // adjust the path as necessary
+import { GameDeleteDialogComponent } from '../game-delete-dialog/game-delete-dialog.component'; // adjust the path as necessary
+import { GameContinueDialogComponent } from '../game-continue-dialog/game-continue-dialog.component'; // adjust the path as necessary
+import {Component, OnDestroy, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GameComponent} from '../game/game.component';
@@ -11,34 +15,42 @@ import {OnlineStatusService} from '../../services/online-status.service';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 import {WebSocketManager} from '../../services/websocket.manager';
 import { Config } from '../../app.config';
+import { DatePipe } from '@angular/common';
 
 declare var XPCONFIG: Config;
 
 @Component({
     selector: 'game-profile',
     templateUrl: 'game-profile.component.html',
-    styleUrls: ['game-profile.component.less']
+    styleUrls: ['game-profile.component.less'],
+    providers: [DatePipe]
 })
 export class GameProfileComponent
     extends GameComponent
     implements OnDestroy {
-    materializeActions = new EventEmitter<any>();
-    materializeActionsDelete = new EventEmitter<any>();
-    materializeActionsContinue = new EventEmitter<any>();
     @ViewChild('commenttextarea') commentsTextAreaElementRef;
 
     comment: string;
     playerId: string;
     deletable: boolean;
     connectionError: boolean;
-    private online: boolean;
+    formattedDate: string;
+    online: boolean;
     private onlineStateCallback = () => this.online = navigator.onLine;
     private gameId: string;
     private wsMan: WebSocketManager;
 
-    constructor(protected graphQLService: GraphQLService, protected route: ActivatedRoute, protected router: Router,
-                private authService: AuthService, private pageTitleService: PageTitleService,
-                protected offlineService: OfflinePersistenceService, private onlineStatusService: OnlineStatusService) {
+    constructor(
+        protected graphQLService: GraphQLService,
+        protected route: ActivatedRoute,
+        protected router: Router,
+        private authService: AuthService,
+        private pageTitleService: PageTitleService,
+        protected offlineService: OfflinePersistenceService,
+        private onlineStatusService: OnlineStatusService,
+        private dialog: MatDialog, // Inject MatDialog
+        private datePipe: DatePipe
+    ) {
         super(graphQLService, route, router, offlineService);
     }
 
@@ -55,15 +67,25 @@ export class GameProfileComponent
 
         this.wsMan = new WebSocketManager(this.getWsUrl(this.gameId));
         this.wsMan.onMessage(this.onWsMessage.bind(this));
+        this.formatGameTime();
     }
 
-    ngAfterViewInit(): void {
-        setTimeout(() => this.initFloatingButtons(), 500);
-    }
+    formatGameTime() {
+        const now = new Date();
+        const gameDate = new Date(this.game.time); // assuming this.game.time is a date compatible string or a timestamp
 
-    initFloatingButtons(): void {
-        const buttons = document.querySelectorAll('.fixed-action-btn');
-        M.FloatingActionButton.init(buttons);
+        const diffInDays = (now.getTime() - gameDate.getTime()) / (1000 * 3600 * 24);
+
+        if (diffInDays < 1 && now.getDate() === gameDate.getDate()) {
+            this.formattedDate = `Today at ${this.datePipe.transform(gameDate, 'HH:mm')}`;
+        } else if (diffInDays < 2 && now.getDate() - gameDate.getDate() === 1) {
+            this.formattedDate = `Yesterday at ${this.datePipe.transform(gameDate, 'HH:mm')}`;
+        } else if (diffInDays > -1 && now.getDate() - gameDate.getDate() === -1) {
+            this.formattedDate = `Tomorrow at ${this.datePipe.transform(gameDate, 'HH:mm')}`;
+        } else {
+            this.formattedDate = this.datePipe.transform(gameDate, 'EEEE [at] HH:mm'); // EEEE will give you the full name of the day
+        }
+        // Add more conditions for lastWeek, nextWeek, sameElse as per your requirement
     }
 
     ngOnDestroy(): void {
@@ -98,7 +120,7 @@ export class GameProfileComponent
 
         const userInGame = (game.gamePlayers || []).find((gp) => gp.player.id === this.playerId);
         if (userInGame && !game.finished) {
-            this.showModalContinuePlaying();
+            this.onConfirmContinueClicked();
         }
     }
 
@@ -114,28 +136,15 @@ export class GameProfileComponent
         this.connectionError = true;
     }
 
-    onCommentClicked() {
-        this.comment = '';
-        this.showModalMessage();
-        // TODO: fix this.
-        // setTimeout(_ =>
-        //     this._renderer.invokeElementMethod(
-        //         this.commentsTextAreaElementRef.nativeElement, 'focus', []), 0);
-    }
-
-    onCommentDoneClicked() {
-        this.comment = this.comment.trim();
+    onCommentDoneClicked(comment: string) {
+        this.comment = comment.trim();
         this.comment = this.comment.replace(/^\s+|\s+$/g, '');// trim line breaks
         if (this.comment) {
             this.createComment(this.comment).then((comment) => {
-                this.hideModalMessage();
+                // TODO: Hide Comment Modal Component
                 super.loadGame(this.gameId);
             });
         }
-    }
-
-    onDeleteClicked() {
-        this.showModalDelete();
     }
 
     onConfirmDeleteClicked() {
@@ -149,32 +158,45 @@ export class GameProfileComponent
             }
         });
     }
+
+    onCommentClicked() {
+        this.comment = '';
+        const dialogRef = this.dialog.open(GameCommentDialogComponent, {
+            width: '250px',
+            data: { comment: this.comment }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The comment dialog was closed');
+            this.comment = result;
+            this.onCommentDoneClicked(this.comment);
+        });
+    }
+
+    onDeleteClicked() {
+        const dialogRef = this.dialog.open(GameDeleteDialogComponent, {
+            width: '250px'
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The delete dialog was closed');
+            if (result === true) {
+                this.onConfirmDeleteClicked();
+            }
+        });
+    }
+
     onConfirmContinueClicked() {
-        this.router.navigate(['games', this.game.league.id, 'game-play'], {replaceUrl: true, queryParams: {gameId: this.gameId}});
-    }
+        const dialogRef = this.dialog.open(GameContinueDialogComponent, {
+            width: '250px'
+        });
 
-    public showModalMessage(): void {
-        this.materializeActions.emit({action: "modal", params: ['open']});
-    }
-
-    public hideModalMessage(): void {
-        this.materializeActions.emit({action: "modal", params: ['close']});
-    }
-
-    public showModalDelete(): void {
-        this.materializeActionsDelete.emit({action: "modal", params: ['open']});
-    }
-
-    public hideModalDelete(): void {
-        this.materializeActionsDelete.emit({action: "modal", params: ['close']});
-    }
-
-    public showModalContinuePlaying(): void {
-        this.materializeActionsContinue.emit({action: "modal", params: ['open']});
-    }
-
-    public hideModalContinuePlaying(): void {
-        this.materializeActionsContinue.emit({action: "modal", params: ['close']});
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The continue dialog was closed');
+            if (result === true) {
+                this.router.navigate(['games', this.game.league.id, 'game-play'], {replaceUrl: true, queryParams: {gameId: this.gameId}});
+            }
+        });
     }
 
     onWsMessage(event: RemoteEvent) {

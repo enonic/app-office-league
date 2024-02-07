@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>Join League Request</h2>
+<mat-dialog-content class="mat-typography">
+    <p>Player '<strong>{{data.playerName}}</strong>' has requested to join this league (<strong>{{data.leagueName}}</strong>).</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]="true" (click)="onConfirmJoin(true)" class="approve-button">Allow</button>
+    <button mat-button [mat-dialog-close]="false" (click)="onConfirmJoin(false)" class="deny-button">Deny</button>
+</mat-dialog-actions>
+

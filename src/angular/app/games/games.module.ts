@@ -15,8 +15,15 @@ import {NgChartsModule} from 'ng2-charts';
 import {GameFlowComponent} from './game-flow/game-flow.component';
 import {GameSelection} from './GameSelection';
 import {RatingPointsComponent} from './rating-points/rating-points.component';
-import {MomentModule} from 'angular2-moment'
-import { MaterializeModule } from 'angular2-materialize';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from "@angular/material/input";
+import {PlayerSelectDialogComponent} from './player-select-dialog/player-select-dialog.component';
+import {NgOptimizedImage} from '@angular/common';
+import {GameCommentDialogComponent} from './game-comment-dialog/game-comment-dialog.component';
+import {GameDeleteDialogComponent} from './game-delete-dialog/game-delete-dialog.component';
+import {GameContinueDialogComponent} from './game-continue-dialog/game-continue-dialog.component';
 
 const gameRoutes: Routes = [
     {path: 'games', component: GameListPageComponent, canActivate: [PlayerRouteGuard]},
@@ -39,15 +46,23 @@ const gameRoutes: Routes = [
         GamePlayComponent,
         GamePointsComponent,
         GameFlowComponent,
-        RatingPointsComponent
+        RatingPointsComponent,
+        PlayerSelectDialogComponent,
+        GameCommentDialogComponent,
+        GameDeleteDialogComponent,
+        GameContinueDialogComponent
     ],
     imports: [
         CommonModule,
-        MaterializeModule,
         RouterModule.forChild(gameRoutes),
         FormsModule,
         NgChartsModule,
-        MomentModule
+        //MomentModule
+        MatDialogModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatInputModule,
+        NgOptimizedImage
     ],
     exports: [GameListComponent],
     providers: [GameSelection],

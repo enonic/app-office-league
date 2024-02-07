@@ -1,0 +1,4 @@
+<mat-dialog-content class="mat-typography">
+    <h4 mat-dialog-title>Select a player</h4>
+    <player-select [playerIds]="data.possibleTeamMateIds" (playerSelected)="onPlayerSelected($event)"></player-select>
+</mat-dialog-content>

@@ -17,7 +17,20 @@ import {PlayerRouteGuard} from '../guards/player.route.guard';
 import {AdminListComponent} from './admin-list/admin-list.component';
 import {AdminSummaryComponent} from './admin-summary/admin-summary.component';
 import {LeaguePlayerGraphComponent} from './league-player-graph/league-player-graph.component';
-import { MaterializeModule } from 'angular2-materialize';
+import {AdminSelectDialogComponent} from './admin-select-dialog/admin-select-dialog.component';
+import {PlayerSelectDialogComponent} from './player-select-dialog/player-select-dialog.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AddPlayersDialogComponent } from './add-players-dialog/add-players-dialog.component';
+import { RemovePlayerDialogComponent } from './remove-player-dialog/remove-player-dialog.component';
+import { ChipsComponent } from '../common/chips/chips.component';
+import { JoinLeagueRequestDialogComponent } from './join-league-request-dialog/join-league-request-dialog.component';
+import { PendingRequestDialogComponent } from './pending-request-dialog/pending-request-dialog.component';
+import { LeagueDeleteDialogComponent } from './league-delete-dialog/league-delete-dialog.component';
+import {LeagueLeaveDialogComponent} from './league-leave-dialog/league-leave-dialog.component';
+import {RegenerateRankingDialogComponent} from './regenerate-ranking-dialog/regenerate-ranking-dialog.component';
 
 const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, canActivate: [PlayerRouteGuard,]},
@@ -41,17 +54,35 @@ const leagueRoutes: Routes = [
         LeagueEditCreateComponent,
         LeaguePlayerGraphComponent,
         AdminListComponent,
-        AdminSummaryComponent
+        AdminSummaryComponent,
+        AdminSelectDialogComponent,
+        PlayerSelectDialogComponent,
+        AddPlayersDialogComponent,
+        RemovePlayerDialogComponent,
+        JoinLeagueRequestDialogComponent,
+        PendingRequestDialogComponent,
+        LeagueDeleteDialogComponent,
+        LeagueLeaveDialogComponent,
+        RegenerateRankingDialogComponent
     ],
     imports: [
-        MaterializeModule,
+        //MaterializeModule,
         FormsModule,
         CommonModule,
         GamesModule,
         NgChartsModule,
-        RouterModule.forChild(leagueRoutes)
+        RouterModule.forChild(leagueRoutes),
+        MatButtonModule,
+        MatTabsModule,
+        MatIconModule,
+        MatDialogModule
     ],
-    exports: [LeagueListComponent, LeaguePlayerListComponent, LeagueTeamListComponent],
+    exports: [
+        LeagueListComponent,
+        LeaguePlayerListComponent,
+        LeagueTeamListComponent,
+        ChipsComponent
+    ],
     providers: [],
     bootstrap: []
 })

@@ -1,16 +1,15 @@
 <div class="col s12">
-    <ul class="league-browser__tabs tabs" *ngIf="authService.isAuthenticated()">
-        <li class="league-browser__tab tab col s6">
-            <a class="league-browser__tab-link" href="#myLeagues" i18n="My leagues|My leagues tab caption">My leagues</a>
-        </li>
-        <li class="league-browser__tab tab col s6">
-            <a class="league-browser__tab-link" href="#discoverLeagues" i18n="Discover|All leagues tab caption">Discover</a>
-        </li>
-    </ul>
-    <league-list id="myLeagues" [leagues]="myLeagues" class="no-margin" *ngIf="authService.isAuthenticated()"></league-list>
-    <league-list id="discoverLeagues" [leagues]="discoverLeagues" class="no-margin"></league-list>
+    <mat-tab-group mat-stretch-tabs *ngIf="authService.isAuthenticated()" backgroundColor="primary">
+        <mat-tab label="My Leagues">
+            <league-list [leagues]="myLeagues" class="no-margin"></league-list>
+        </mat-tab>
+        <mat-tab label="Discover">
+            <league-list [leagues]="discoverLeagues" class="no-margin"></league-list>
+        </mat-tab>
+    </mat-tab-group>
 </div>
 <div class="fixed-action-btn" *ngIf="authService.isAuthenticated()">
-    <a class="btn-floating btn-large waves-effect waves-light green" routerLink="/league-create"
-       [attr.disabled]="online?null:true"><i class="material-icons">add</i></a>
+    <button mat-fab color="primary" routerLink="/league-create" [disabled]="!online">
+        <mat-icon>add</mat-icon>
+    </button>
 </div>

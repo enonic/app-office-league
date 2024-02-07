@@ -15,7 +15,7 @@ app {
 
 node {
     download = true
-    version = '16.10.0'
+    version = '18.19.0'
 }
 
 dependencies {

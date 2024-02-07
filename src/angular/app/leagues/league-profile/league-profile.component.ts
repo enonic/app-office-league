@@ -11,6 +11,14 @@ import {Player} from '../../../graphql/schemas/Player';
 import {WebSocketManager} from '../../services/websocket.manager';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 import { Config } from '../../app.config';
+import { AddPlayersDialogComponent } from '../add-players-dialog/add-players-dialog.component';
+import { RemovePlayerDialogComponent } from '../remove-player-dialog/remove-player-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import {JoinLeagueRequestDialogComponent} from '../join-league-request-dialog/join-league-request-dialog.component';
+import {PendingRequestDialogComponent} from '../pending-request-dialog/pending-request-dialog.component';
+import {LeagueDeleteDialogComponent} from '../league-delete-dialog/league-delete-dialog.component';
+import {LeagueLeaveDialogComponent} from '../league-leave-dialog/league-leave-dialog.component';
+import {RegenerateRankingDialogComponent} from '../regenerate-ranking-dialog/regenerate-ranking-dialog.component';
 
 declare var XPCONFIG: Config;
 
@@ -24,7 +32,6 @@ export class LeagueProfileComponent
     implements OnChanges, OnDestroy {
 
     @Input() league: League;
-    @ViewChild('addPlayerChips') addPlayerChipsViewChild;
     connectionError: boolean;
     playerInLeague: boolean;
     userAuthenticated: boolean;
@@ -34,22 +41,20 @@ export class LeagueProfileComponent
     activeGames: Game[] = [];
     nonMembersPlayerNames: string[] = [];
     playerNamesToAdd: string[] = [];
-    removePlayer: Player;
-    approvePlayer: Player;
     approvePollingTimerId: any;
-    materializeActions = new EventEmitter<any>();
-    materializeActionsRemove = new EventEmitter<any>();
-    materializeActionsApprove = new EventEmitter<any>();
-    materializeActionsPending = new EventEmitter<any>();
-    materializeActionsDelete = new EventEmitter<any>();
-    materializeActionsLeave = new EventEmitter<any>();
-    materializeActionsRegenerateRanking = new EventEmitter<any>();
     online: boolean;
     onlineStateCallback = () => this.online = navigator.onLine;
     private wsMan: WebSocketManager;
 
-    constructor(route: ActivatedRoute, private authService: AuthService, private graphQLService: GraphQLService,
-                private pageTitleService: PageTitleService, private onlineStatusService: OnlineStatusService, private router: Router) {
+    constructor(
+        route: ActivatedRoute,
+        private authService: AuthService,
+        private graphQLService: GraphQLService,
+        private pageTitleService: PageTitleService,
+        private onlineStatusService: OnlineStatusService,
+        private router: Router,
+        private dialog: MatDialog
+    ) {
         super(route);
     }
 
@@ -74,21 +79,6 @@ export class LeagueProfileComponent
 
         this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
         this.online = navigator.onLine;
-    }
-
-    ngAfterViewInit(): void {
-        // Poll until loaded
-        const buttonPollId = setInterval(() => {
-            if (this.league) {
-                this.initFloatingButtons();
-                clearInterval(buttonPollId);
-            }
-        }, 500);
-    }
-
-    initFloatingButtons(): void {
-        const buttons = document.querySelectorAll('.fixed-action-btn');
-        M.FloatingActionButton.init(buttons);
     }
 
     ngOnDestroy() {
@@ -195,165 +185,172 @@ export class LeagueProfileComponent
         this.router.navigate(['leagues', this.league.name.toLowerCase(), 'edit']);
     }
 
-    onAddPlayerClicked() {
-        this.showModal();
-    }
-
-    onDeleteClicked() {
-        this.showModalDelete();
-    }
-
-    onLeaveClicked() {
-        this.showModalLeave();
-    }
-
     onJoinClicked() {
         if (this.authService.isAuthenticated() && !this.playerInLeague) {
             let playerId = this.authService.getUser().playerId;
-            this.graphQLService.post(LeagueProfileComponent.requestJoinLeagueQuery, {leagueId: this.league.id}).then(
-                data => {
-                    this.refreshData(this.league.name);
-                });
+            this.graphQLService.post(
+                LeagueProfileComponent.requestJoinLeagueQuery,
+                { leagueId: this.league.id }
+            ).then(() =>  this.refreshData(this.league.name));
         }
     }
 
-    onPlayersAdded() {
-        this.graphQLService.post(LeagueProfileComponent.addPlayersLeagueQuery,
-            {leagueId: this.league.id, playerNames: this.playerNamesToAdd}).then(
-            data => {
-                this.refreshData(this.league.name);
-            });
-        this.hideModal();
+    addPlayers(playerNamesToAdd: string[]) {
+        this.graphQLService.post(LeagueProfileComponent.addPlayersLeagueQuery, {
+            leagueId: this.league.id,
+            playerNames: playerNamesToAdd
+        })
+            .then(() => this.refreshData(this.league.name))
+            .catch(error => {
+                // Handle error
+                console.error("Error adding players: ", error);
+        });
     }
 
-    onRemovePlayer(player: Player) {
-        this.removePlayer = player;
-        this.showModalRemove();
-    }
+    openRemovePlayerDialog(player: Player): void {
+        //this.removePlayer = player;
+        const dialogRef = this.dialog.open(RemovePlayerDialogComponent, {
+            width: '250px',
+            data: {
+                playerName: player.name,
+                leagueName: this.league.name
+            } // pass data as needed
+        });
 
-    onApprovePlayerJoin(player: Player) {
-        this.approvePlayer = player;
-        this.showModalApprove();
-    }
-
-    onConfirmRemoveClicked() {
-        this.graphQLService.post(LeagueProfileComponent.leavePlayerLeagueQuery,
-            {playerId: this.removePlayer.id, leagueId: this.league.id}).then(
-            data => {
-                this.hideModalRemove();
-                this.refreshData(this.league.name);
-            });
-    }
-
-    onConfirmPlayerJoin(allow: boolean) {
-        if (allow) {
-            this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery,
-                {playerId: this.approvePlayer.id, leagueId: this.league.id}).then(
-                data => {
-                    this.hideModalApprove();
-                    this.refreshData(this.league.name);
-                });
-        } else {
-            this.graphQLService.post(LeagueProfileComponent.denyJoinLeagueRequestQuery,
-                {playerId: this.approvePlayer.id, leagueId: this.league.id}).then(
-                data => {
-                    this.hideModalApprove();
-                    this.refreshData(this.league.name);
-                });
-        }
-    }
-
-    onConfirmDeleteClicked() {
-        this.graphQLService.post(LeagueProfileComponent.deleteLeagueQuery,
-            {name: this.league.name}).then(
-            data => {
-                this.hideModalDelete();
-                this.router.navigate(['leagues']);
-            });
-    }
-
-    onConfirmLeaveClicked() {
-        this.graphQLService.post(LeagueProfileComponent.leavePlayerLeagueQuery,
-            {playerId: this.authService.getUser().playerId, leagueId: this.league.id}).then(
-            data => {
-                this.hideModalLeave();
-                this.refreshData(this.league.name);
-            });
-    }
-
-    onRankingRefreshClicked() {
-        this.showModalRanking();
-    }
-
-    onConfirmRegenerateClicked() {
-        this.graphQLService.post(LeagueProfileComponent.regenerateLeagueRanking,
-            {leagueId: this.league.id}).then(
-            data => {
-                this.hideModalRanking();
-            });
-    }
-
-    showModal(): void {
-        this.playerNamesToAdd = [];
-        this.materializeActions.emit({action: "modal", params: ['open']});
-        setTimeout(() => this.addPlayerChipsViewChild.focus(), 300); //No possibility to set a callback on display
-    }
-
-    hideModal(): void {
-        this.materializeActions.emit({action: "modal", params: ['close']});
-    }
-
-    public showModalRemove(): void {
-        this.materializeActionsRemove.emit({action: "modal", params: ['open']});
-    }
-
-    public hideModalRemove(): void {
-        this.materializeActionsRemove.emit({action: "modal", params: ['close']});
-    }
-
-    public showModalApprove(): void {
-        this.materializeActionsApprove.emit({action: "modal", params: ['open']});
-    }
-
-    public hideModalApprove(): void {
-        this.materializeActionsApprove.emit({action: "modal", params: ['close']});
-    }
-
-    public showModalPending(): void {
-        // check if pending, show info modal if still pending
-        this.refreshData(this.league.name).then(() => {
-            if (!this.playerInLeague && this.joinLeagueRequested) {
-                this.materializeActionsPending.emit({action: "modal", params: ['open']});
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === true) {
+                this.removePlayer(player);
+                // Handle the removal confirmation
             }
         });
     }
 
-    public hideModalPending(): void {
-        this.materializeActionsPending.emit({action: "modal", params: ['close']});
+    removePlayer(player: Player) {
+        this.graphQLService.post(LeagueProfileComponent.leavePlayerLeagueQuery,
+            {playerId: player.id, leagueId: this.league.id}).then(
+            data => {
+                this.refreshData(this.league.name);
+            });
     }
 
-    public showModalDelete(): void {
-        this.materializeActionsDelete.emit({action: "modal", params: ['open']});
+    approveOrRejectPlayer(player: Player, allow: boolean) {
+        this.graphQLService.post(
+            allow ? LeagueProfileComponent.joinPlayerLeagueQuery : LeagueProfileComponent.denyJoinLeagueRequestQuery,
+            { playerId: player.id, leagueId: this.league.id }
+        ).then(() => {
+                //this.hideModalApprove();
+                this.refreshData(this.league.name);
+            });
     }
 
-    public hideModalDelete(): void {
-        this.materializeActionsDelete.emit({action: "modal", params: ['close']});
+    deleteLeague() {
+        this.graphQLService.post(
+            LeagueProfileComponent.deleteLeagueQuery,
+            {name: this.league.name}
+        ).then( () => this.router.navigate(['leagues']));
     }
 
-    public showModalLeave(): void {
-        this.materializeActionsLeave.emit({action: "modal", params: ['open']});
+    leaveLeague() {
+        this.graphQLService.post(
+            LeagueProfileComponent.leavePlayerLeagueQuery,
+            { playerId: this.authService.getUser().playerId, leagueId: this.league.id }
+        ).then(() => this.refreshData(this.league.name) );
     }
 
-    public hideModalLeave(): void {
-        this.materializeActionsLeave.emit({action: "modal", params: ['close']});
+    regenerateRanking() {
+        this.graphQLService.post(LeagueProfileComponent.regenerateLeagueRanking, {leagueId: this.league.id});
     }
 
-    public showModalRanking(): void {
-        this.materializeActionsRegenerateRanking.emit({action: "modal", params: ['open']});
+    openAddPlayerDialog(): void {
+        const dialogRef = this.dialog.open(AddPlayersDialogComponent, {
+            width: '250px',
+            data: {
+                nonMembersPlayerNames: this.nonMembersPlayerNames,
+                playerNamesToAdd: this.playerNamesToAdd
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.addPlayers(result);
+            }
+        });
     }
 
-    public hideModalRanking(): void {
-        this.materializeActionsRegenerateRanking.emit({action: "modal", params: ['close']});
+    public openApproveOrRejectPlayerDialog(player: Player): void {
+        const dialogRef = this.dialog.open(JoinLeagueRequestDialogComponent, {
+            width: '250px',
+            data: {
+                playerName: player.name,
+                leagueName: this.league.name
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.approveOrRejectPlayer(player, result);
+            }
+        });
+    }
+
+    public checkPendingRequest(): void {
+        // check if pending, show info modal if still pending
+        this.refreshData(this.league.name).then(() => {
+            if (!this.playerInLeague && this.joinLeagueRequested) {
+                this.openPendingRequestDialog();
+            }
+        });
+    }
+
+    public openPendingRequestDialog(): void {
+        this.dialog.open(PendingRequestDialogComponent, {
+            width: '250px'
+        });
+    }
+
+    public openLeagueDeleteDialog(): void {
+        const dialogRef = this.dialog.open(LeagueDeleteDialogComponent, {
+            width: '250px',
+            data: {
+                leagueName: this.league.name
+            } // pass data as needed
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === true) {
+                this.deleteLeague();
+            }
+        });
+    }
+
+    public openLeagueLeaveDialog(): void {
+        const dialogRef = this.dialog.open(LeagueLeaveDialogComponent, {
+            width: '250px',
+            data: {
+                leagueName: this.league.name
+            } // pass data as needed
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === true) {
+                this.leaveLeague();
+            }
+        });
+    }
+
+    public openRegenerateRankingDialog(): void {
+        const dialogRef = this.dialog.open(RegenerateRankingDialogComponent, {
+            width: '250px',
+            data: {
+                leagueName: this.league.name
+            } // pass data as needed
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === true) {
+                this.regenerateRanking();
+            }
+        });
     }
 
     onWsMessage(event: RemoteEvent) {

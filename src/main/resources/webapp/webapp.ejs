@@ -55,7 +55,7 @@
     var XPCONFIG = {
         locale: '{{{locale}}}',
         countryIsoCode: '{{{countryIsoCode}}}',
-        {{#user}}user: {{{.}}},{{/user}}        
+        {{#user}}user: {{{.}}},{{/user}}
         {{#content}}content: {
             name: '{{_name}}',
             type: '{{type}}'
@@ -78,7 +78,7 @@
             .then(registerServiceWorker)
             .then(postAssets);
     }
-    
+
     function registerServiceWorker(registration) {
         if (!!registration && registration.active) {
             console.log('Detected active Service Worker with scope ' + registration.scope);
@@ -95,9 +95,9 @@
                     console.log('Service Worker registration failure.');
                     console.log(err);
                 });
-        }    
+        }
     }
-    
+
     function postAssets(registration) {
         let serviceWorker = registration.installing || registration.active;
         if (serviceWorker) {
@@ -117,17 +117,12 @@
                 });
             }
         }
-        return registration;     
+        return registration;
     }
 </script>
-<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
 <% for (var chunk in htmlWebpackPlugin.files.js) { %>
     <script type="text/javascript" src="<%= '{{baseHref}}' + htmlWebpackPlugin.files.js[chunk]%>"></script>
 <% } %>
 
-<!-- <% for (key in htmlWebpackPlugin.files.chunks) { %>
-<% item = htmlWebpackPlugin.files.chunks[key].entry; %>
-<script type="text/javascript" src="<%= '{{baseHref}}' + item %>"></script>
-<% }; %> -->
 </body>
 </html>

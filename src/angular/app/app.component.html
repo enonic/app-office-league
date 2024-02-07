@@ -1,73 +1,43 @@
-<div class="navbar-fixed" [hidden]="isPlayingGame">
-    <nav class="app__navbar">
-        <a href="#" data-target="mobile-sidenav" class="sidenav-trigger app__navbar-menu-btn">
-            <i class="material-icons">menu</i>
-        </a>
-
-        <a href="#" class="app__navbar-offline" [hidden]="!isOffline">
-            <i class="material-icons">signal_wifi_off</i>
-        </a>
-
-        <span class="app__navbar-title">{{pageTitle}}</span>
-
-        <a *ngIf="!displayMenu" href="#" (click)="back()" class="app__navbar-back">
-            <i class="material-icons">arrow_back</i>
-        </a>
-
-        <a *ngIf="displayMenu" href="#!" (click)="home()" class="app__navbar-home">
-            <img src="{{logoUrl}}"/>
-        </a>
-
-        <ul *ngIf="!isNewUser" class="app__navbar-menu right hide-on-med-and-down">
-            <li routerLinkActive="active" class="sidenav-close"><a routerLink="/leagues" href="#">Leagues</a></li>
-            <li routerLinkActive="active" class="sidenav-close"><a routerLink="/teams" href="#">Teams</a></li>
-            <li routerLinkActive="active" class="sidenav-close"><a routerLink="/players" href="#">Players</a></li>
-            <li routerLinkActive="active" class="sidenav-close"><a routerLink="/games" href="#">Games</a></li>
-            <li *ngIf="isAuthenticated">
-                <ul id="user-dropdown" class="dropdown-content">
-                    <li><a href="#" routerLink="/">{{playerName}}</a></li>
-                    <li><a href="#!" (click)="auth.logout()">Logout</a></li>
-                </ul>
-
-                <a class="dropdown-trigger" href="#!" data-target="user-dropdown">{{playerName}}
-                    <i class="material-icons right">arrow_drop_down</i></a>
-            </li>
-            <li *ngIf="!isAuthenticated">
-                <a href="#!" (click)="auth.login()">Login</a>
-            </li>
-        </ul>
-    </nav>
-</div>
-
-<div class="container" id="page" [class.game-play]="isPlayingGame">
-    <div class="row">
-        <router-outlet></router-outlet>
-    </div>
-</div>
-
-<ul *ngIf="!isNewUser" class="sidenav" id="mobile-sidenav">
-    <ng-template [ngIf]="isAuthenticated">
-        <li class="user-profile">
-            <a href="#" class="sidenav-close right"><i class="material-icons right">close</i></a>
-            <a href="#" routerLink="/">
-                <img [src]="playerImage" alt="{{playerName}}" class="circle">
-                <span>{{playerName}}</span>
+<mat-sidenav-container class="sidenav-container" [hidden]="isPlayingGame">
+    <mat-sidenav #sidenav mode="over" opened="false" id="mobile-sidenav" [(opened)]="sidenavOpened">
+        <mat-nav-list *ngIf="!isNewUser">
+            <a mat-list-item routerLink="/" *ngIf="isAuthenticated">
+                <img mat-list-avatar [src]="playerImage" alt="{{playerName}}">
+                <h3 mat-line>{{playerName}}</h3>
             </a>
-        </li>
-        <li class="divider"></li>
-    </ng-template>
-    <li routerLinkActive="active" class="sidenav-close"><a routerLink="/leagues" href="#">Leagues</a></li>
-    <li routerLinkActive="active" class="sidenav-close"><a routerLink="/teams" href="#">Teams</a></li>
-    <li routerLinkActive="active" class="sidenav-close"><a routerLink="/players" href="#">Players</a></li>
-    <li routerLinkActive="active" class="sidenav-close"><a routerLink="/games" href="#">Games</a></li>
-    <li *ngIf="infoPages?.length > 0" class="divider"></li>
-    <li *ngFor="let infoPage of infoPages" routerLinkActive="active"><a routerLink="/{{infoPage.name}}" href="#">{{infoPage.title}}</a></li>
-    <li class="divider"></li>
-    <ng-template [ngIf]="!isAuthenticated" class="nav navbar-nav pull-right">
-        <li><a href="#!" (click)="auth.login()">Login</a></li>
-    </ng-template>
-    <ng-template [ngIf]="isAuthenticated">
-        <li><a href="#!" (click)="auth.logout()">Logout</a></li>
-    </ng-template>
+            <mat-divider *ngIf="isAuthenticated"></mat-divider>
+            <a mat-list-item routerLink="/leagues">Leagues</a>
+            <a mat-list-item routerLink="/teams">Teams</a>
+            <a mat-list-item routerLink="/players">Players</a>
+            <a mat-list-item routerLink="/games">Games</a>
+            <mat-divider *ngIf="infoPages?.length > 0"></mat-divider>
+            <a mat-list-item *ngFor="let infoPage of infoPages" routerLink="/{{infoPage.name}}">{{infoPage.title}}</a>
+            <mat-divider></mat-divider>
+            <a mat-list-item href="#" *ngIf="!isAuthenticated" (click)="auth.login()">Login</a>
+            <a mat-list-item href="#" *ngIf="isAuthenticated" (click)="auth.logout()">Logout</a>
+        </mat-nav-list>
+    </mat-sidenav>
 
-</ul>
+    <mat-sidenav-content>
+        <mat-toolbar class="app__navbar">
+            <button mat-icon-button (click)="toggleSidenav()">
+                <mat-icon>menu</mat-icon>
+            </button>
+            <span>{{pageTitle}}</span>
+            <span class="app__navbar-spacer"></span>
+            <a href="#" *ngIf="!displayMenu" (click)="back()">
+                <mat-icon>arrow_back</mat-icon>
+            </a>
+            <a href="#" *ngIf="displayMenu" (click)="home()">
+                <img src="{{logoUrl}}" class="app__navbar-home"/>
+            </a>
+            <a href="#" *ngIf="isOffline" class="app__navbar-offline">
+                <mat-icon>signal_wifi_off</mat-icon>
+            </a>
+        </mat-toolbar>
+
+        <div class="container" id="page" [class.game-play]="isPlayingGame">
+            <router-outlet></router-outlet>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

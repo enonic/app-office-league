@@ -1,0 +1,8 @@
+<mat-dialog-content class="mat-typography">
+    <h5 class="center">Delete game</h5>
+    <p>You are about to permanently delete this game. <strong>This operation cannot be undone.</strong></p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button color="warn" (click)="onConfirmDeleteClicked()">Delete</button>
+</mat-dialog-actions>

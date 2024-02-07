@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>Leave League</h2>
+<mat-dialog-content class="mat-typography">
+    <p>You are about to leave this league (<strong>{{data.leagueName}}</strong>).</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancelLeave()" class="cancel-button">Cancel</button>
+    <button mat-button color="warn" (click)="onConfirmLeave()" class="leave-button">Leave</button>
+</mat-dialog-actions>
+
+

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
@@ -17,7 +17,9 @@ import {Player} from '../../../graphql/schemas/Player';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, lastValueFrom, map } from 'rxjs';
 import { Config } from '../../app.config';
-import { MaterializeAction } from 'angular2-materialize';
+import { MatDialog } from '@angular/material/dialog';
+import { AdminSelectDialogComponent } from '../admin-select-dialog/admin-select-dialog.component';
+import { PlayerSelectDialogComponent } from '../player-select-dialog/player-select-dialog.component';
 
 declare var XPCONFIG: Config;
 
@@ -34,7 +36,6 @@ export class LeagueEditCreateComponent
     private static readonly DEFAULT_MIN_DIFFERENCE: number = 2;
 
     @ViewChild('fileInput') inputEl: ElementRef;
-    @ViewChild('addPlayerChips') addPlayerChipsViewChild;
     name: string;
     leagueId: string;
     description: string;
@@ -48,7 +49,6 @@ export class LeagueEditCreateComponent
     adminPlayerNames: string[] = [];
     onlyPlayers: Player[] = [];
     onlyPlayerNames: string[] = [];
-    onlyPlayerNamesToAdd: string[] = [];
     playerNames: string[] = [];
     allPlayerIds: string[] = [];
     allPlayerNames: string[] = [];
@@ -61,12 +61,10 @@ export class LeagueEditCreateComponent
         'pointsToWin': '',
         'minimumDifference': ''
     };
-    materializeActionsAdmin = new EventEmitter<string | MaterializeAction>();
-    materializeActionsPlayer = new EventEmitter<any>();
-    private online: boolean;
+    public online: boolean;
     private onlineStateCallback = () => this.online = navigator.onLine;
 
-    constructor(private http: HttpClient, private authService: AuthService, private graphQLService: GraphQLService,
+    constructor(private dialog: MatDialog, private http: HttpClient, private authService: AuthService, private graphQLService: GraphQLService,
                 private pageTitleService: PageTitleService, private onlineStatusService: OnlineStatusService,
                 route: ActivatedRoute, private location: Location, private router: Router, private fb: FormBuilder,
                 private sanitizer: DomSanitizer) {
@@ -307,30 +305,53 @@ export class LeagueEditCreateComponent
     }
 
     onAddAdminClicked() {
-        this.showSelectAdminModal();
+        const dialogRef = this.dialog.open(AdminSelectDialogComponent, {
+            width: '250px',
+            data: {
+                allPlayerIds: this.allPlayerIds,
+                adminPlayerIds: this.adminPlayerIds,
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(selectedAdmin => {
+            if (selectedAdmin) {
+                this.onAdminSelected(selectedAdmin);
+            }
+        });
     }
 
     onAddPlayerClicked() {
-        this.showSelectPlayerModal();
+        const dialogRef = this.dialog.open(PlayerSelectDialogComponent, {
+            width: '250px',
+            data: {
+                allPlayerNames: this.allPlayerNames,
+                playerNames: this.playerNames,
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(selectedPlayers => {
+            if (selectedPlayers && selectedPlayers.length > 0) {
+                this.onPlayersSelected(selectedPlayers);
+            }
+        });
     }
 
-    onAdminSelected(newAdmin: Player) {
-        if (!newAdmin) {
+    onAdminSelected(selectedAdmin: Player) {
+        if (!selectedAdmin) {
             return;
         }
-        let existing = this.admins.find((player) => player.id === newAdmin.id);
+        let existing = this.admins.find((player) => player.id === selectedAdmin.id);
         if (!existing) {
-            this.admins.push(newAdmin);
-            this.adminPlayerIds.push(newAdmin.id);
-            this.adminPlayerNames.push(newAdmin.name);
-            this.onRemovePlayerClicked(newAdmin);
-            this.playerNames.push(newAdmin.name);
+            this.admins.push(selectedAdmin);
+            this.adminPlayerIds.push(selectedAdmin.id);
+            this.adminPlayerNames.push(selectedAdmin.name);
+            this.onRemovePlayerClicked(selectedAdmin);
+            this.playerNames.push(selectedAdmin.name);
         }
-        this.hideSelectAdminModal();
     }
 
-    onPlayersSelected() {
-        this.onlyPlayerNamesToAdd.forEach((playerName) => {
+    onPlayersSelected(selectedPlayerNames: string[]): void {
+        selectedPlayerNames.forEach(playerName => {
             if ((this.allPlayerMap[playerName] || playerName.indexOf('@') !== -1) && this.playerNames.indexOf(playerName) === -1) {
                 let player = this.allPlayerMap[playerName] || new Player(undefined, playerName);
                 this.onlyPlayers.push(player);
@@ -338,25 +359,6 @@ export class LeagueEditCreateComponent
                 this.playerNames.push(playerName);
             }
         });
-        this.hideSelectPlayerModal();
-    }
-
-    showSelectAdminModal(): void {
-        this.materializeActionsAdmin.emit({action: "modal", params: ['open']});
-    }
-
-    showSelectPlayerModal(): void {
-        this.onlyPlayerNamesToAdd = [];
-        this.materializeActionsPlayer.emit({action: "modal", params: ['open']});
-        setTimeout(() => this.addPlayerChipsViewChild.focus(), 300); //No possibility to set a callback on display
-    }
-
-    hideSelectAdminModal(): void {
-        this.materializeActionsAdmin.emit({action: "modal", params: ['close']});
-    }
-
-    hideSelectPlayerModal(): void {
-        this.materializeActionsPlayer.emit({action: "modal", params: ['close']});
     }
 
     private static readonly createLeagueMutation = `mutation ($name: String!, $description: String!, $sport: Sport!, $adminPlayerIds: [ID], $playerNames: [String], $pointsToWin: Int, $minimumDifference: Int, $halfTimeSwitch: Boolean) {

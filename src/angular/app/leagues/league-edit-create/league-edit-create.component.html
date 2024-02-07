@@ -4,12 +4,7 @@
 <ng-template [ngIf]="leagueForm != null">
     <div class="card edit-form league-edit-create">
         <div class="card-content">
-            <ng-template [ngIf]="editMode">
-                <span class="card-title">Edit league</span>
-            </ng-template>
-            <ng-template [ngIf]="!editMode">
-                <span class="card-title">Create league</span>
-            </ng-template>
+            <span class="card-title">{{ editMode ? 'Edit league' : 'Create league' }}</span>
             <form [formGroup]="leagueForm">
                 <div class="row">
                     <div class="input-field">
@@ -37,29 +32,25 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Administrators Section -->
                 <div class="row">
                     <div class="">
                         <label>Administrators</label>
                         <admin-list [admins]="admins" [pageCount]="1" hideSearchField="true" emptyMessage="No administrator selected"
                                     (removeAdmin)="onRemoveAdminClicked($event)"></admin-list>
-                        <div class="league__admins-add">
-                            <button class="btn global__btn-small waves-effect waves-light light-blue darken-3 right"
-                                    (click)="onAddAdminClicked()">Add admin
-                            </button>
-                        </div>
+                        <button mat-button color="primary" (click)="onAddAdminClicked()">Add admin</button>
                     </div>
                 </div>
+
+                <!-- Players Section (only if not in editMode) -->
                 <ng-template [ngIf]="!editMode">
                     <div class="row">
                         <div class="">
                             <label>Players</label>
                             <admin-list [admins]="onlyPlayers" [pageCount]="1" hideSearchField="true" emptyMessage="No player selected"
                                         (removeAdmin)="onRemovePlayerClicked($event)"></admin-list>
-                            <div class="league__admins-add">
-                                <button class="btn global__btn-small waves-effect waves-light light-blue darken-3 right"
-                                        (click)="onAddPlayerClicked()">Add player
-                                </button>
-                            </div>
+                            <button mat-button color="primary" (click)="onAddPlayerClicked()">Add player</button>
                         </div>
                     </div>
                 </ng-template>
@@ -97,43 +88,15 @@
                     </div>
                 </fieldset>
 
+                <!-- Submit/Cancel Buttons -->
                 <div class="row submit-row league-edit-create__submit-row">
-                    <ng-template [ngIf]="!editMode">
-                        <a class="waves-effect waves-teal btn red league-edit-create__btn league-edit-create__btn--cancel" (click)="onCancelClicked()">Cancel</a>
-                        <a class="waves-effect waves-teal btn light-blue league-edit-create__btn league-edit-create__btn--submit"
-                           [attr.disabled]="!online||!leagueForm.valid||admins.length===0?true:null"
-                           (click)="onCreateClicked()">Create</a>
-                    </ng-template>
-                    <ng-template [ngIf]="editMode">
-                        <a class="waves-effect waves-teal btn red league-edit-create__btn league-edit-create__btn--cancel" (click)="onCancelClicked()">Cancel</a>
-                        <a class="waves-effect waves-teal btn light-blue league-edit-create__btn league-edit-create__btn--submit"
-                           [attr.disabled]="!online||!leagueForm.valid||admins.length===0?true:null" (click)="onUpdateClicked()">Save</a>
-                    </ng-template>
-
+                    <button mat-button color="warn" (click)="onCancelClicked()">Cancel</button>
+                    <button mat-button color="primary" [disabled]="!online || !leagueForm.valid || admins.length === 0"
+                            (click)="editMode ? onUpdateClicked() : onCreateClicked()">
+                        {{ editMode ? 'Save' : 'Create' }}
+                    </button>
                 </div>
             </form>
         </div>
-
-        <div class="modal center player-select-modal" materialize="modal"
-             [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActionsAdmin">
-            <div class="modal-content">
-                <h6 class="center">Select an admin to add</h6>
-                <player-select [playerIds]="allPlayerIds" [excludedPlayerIds]="adminPlayerIds" [materializeActions]="materializeActionsAdmin"
-                               (playerSelected)="onAdminSelected($event)"></player-select>
-            </div>
-        </div>
-
-        <div class="modal center player-select-modal" materialize="modal"
-             [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]" [materializeActions]="materializeActionsPlayer">
-            <div class="modal-content">
-                <h6 class="center">Select a player to add</h6>
-                <chips #addPlayerChips [availableTags]="allPlayerNames" [excludedTags]="playerNames" [selectedTags]="onlyPlayerNamesToAdd" placeholder="Enter a player name or email"></chips>
-                <div class="row submit-row">
-                    <a class="waves-effect waves-teal btn green" [attr.disabled]="onlyPlayerNamesToAdd.length===0?true:null" (click)="onPlayersSelected()"><i class="material-icons left">add</i>Add</a>
-                </div>
-            </div>
-        </div>
     </div>
-
-
 </ng-template>

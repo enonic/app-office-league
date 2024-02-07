@@ -15,8 +15,9 @@ import {PlayerSelectComponent} from './player-select/player-select.component';
 import {ChipsComponent} from './chips/chips.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {ConnectionErrorComponent} from './connection-error/connection-error.component';
-import { MaterializeModule } from 'angular2-materialize';
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
     declarations: [
@@ -36,9 +37,12 @@ import { MaterializeModule } from 'angular2-materialize';
     ],
     imports: [
         BrowserModule,
-        MaterializeModule,
+        //MaterializeModule,
+        MatSnackBarModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatChipsModule,
+        MatIconModule
     ],
     exports: [
         BrowserModule,
@@ -55,7 +59,7 @@ import { MaterializeModule } from 'angular2-materialize';
         LoadingComponent,
         ConnectionErrorComponent,
         PlayerSelectComponent,
-        ChipsComponent,
+        ChipsComponent
     ]
 })
 export class CommonModule {

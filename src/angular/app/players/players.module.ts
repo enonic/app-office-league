@@ -14,6 +14,7 @@ import {FormsModule} from '@angular/forms';
 import {AuthenticatedRouteGuard, } from '../guards/authenticated.route.guard';
 import {EditRouteGuard, } from '../guards/edit.route.guard';
 import {PlayerRouteGuard, } from '../guards/player.route.guard';
+import {MatDialogModule} from '@angular/material/dialog';
 
 const playersRoutes: Routes = [
     {path: '', component: PlayerProfileComponent, canActivate: [EditRouteGuard, AuthenticatedRouteGuard, PlayerRouteGuard,]},
@@ -39,7 +40,8 @@ const playersRoutes: Routes = [
         LeaguesModule,
         TeamsModule,
         RouterModule.forChild(playersRoutes),
-        FormsModule
+        FormsModule,
+        MatDialogModule
     ],
     exports: [],
     providers: [],

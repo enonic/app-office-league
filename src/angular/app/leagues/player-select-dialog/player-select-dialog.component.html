@@ -1,0 +1,7 @@
+<h2 mat-dialog-title>Select a player to add</h2>
+<mat-dialog-content class="mat-typography">
+    <app-chips #addPlayerChips [availableTags]="data.allPlayerNames" [excludedTags]="data.playerNames" [selectedTags]="onlyPlayerNamesToAdd" placeholder="Enter a player name or email"></app-chips>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onPlayersSelected()">Add</button>
+</mat-dialog-actions>
