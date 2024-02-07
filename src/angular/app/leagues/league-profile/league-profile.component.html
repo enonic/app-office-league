@@ -44,7 +44,7 @@
             <li><a class="btn-floating green" (click)="openAddPlayerModal()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">person_add</i></a></li>
             <li><a class="btn-floating blue" (click)="onEditClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">mode_edit</i></a></li>
             <li *ngIf="playerInLeague || joinLeagueRequested"><a class="btn-floating red" (click)="onLeaveClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">directions_run</i></a></li>
-            <li><a class="btn-floating red" (click)="onDeleteClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">delete</i></a></li>
+            <li><a class="btn-floating red" (click)="openLeagueDeleteDialog()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">delete</i></a></li>
         </ul>
     </div>
     <div *ngIf="!adminInLeague && (playerInLeague || joinLeagueRequested)" class="fixed-action-btn">
@@ -105,7 +105,7 @@
             <a (click)="onConfirmPlayerJoin(true)" class="modal-action waves-effect btn-flat green white-text left">Allow</a>
             <a (click)="onConfirmPlayerJoin(false)" class="modal-action waves-effect btn-flat red white-text">Deny</a>
         </div>
-    </div>-->
+    </div>
 
     <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
          [materializeActions]="materializeActionsPending">
@@ -128,7 +128,7 @@
             <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
             <a (click)="onConfirmDeleteClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Delete</a>
         </div>
-    </div>
+    </div>-->
     <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
          [materializeActions]="materializeActionsLeave">
         <div class="modal-content">

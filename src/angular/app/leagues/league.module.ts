@@ -19,7 +19,6 @@ import {AdminSummaryComponent} from './admin-summary/admin-summary.component';
 import {LeaguePlayerGraphComponent} from './league-player-graph/league-player-graph.component';
 import {AdminSelectDialogComponent} from './admin-select-dialog/admin-select-dialog.component';
 import {PlayerSelectDialogComponent} from './player-select-dialog/player-select-dialog.component';
-// import { MaterializeModule } from 'angular2-materialize';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,8 +26,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { AddPlayersDialogComponent } from './add-players-dialog/add-players-dialog.component';
 import { RemovePlayerDialogComponent } from './remove-player-dialog/remove-player-dialog.component';
 import { ChipsComponent } from '../common/chips/chips.component';
-import {JoinLeagueRequestDialogComponent} from './join-league-request-dialog/join-league-request-dialog.component';
-import {PendingRequestDialogComponent} from './pending-request-dialog/pending-request-dialog.component';
+import { JoinLeagueRequestDialogComponent } from './join-league-request-dialog/join-league-request-dialog.component';
+import { PendingRequestDialogComponent } from './pending-request-dialog/pending-request-dialog.component';
+import { LeagueDeleteDialogComponent } from './league-delete-dialog/league-delete-dialog.component';
 
 const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, canActivate: [PlayerRouteGuard,]},
@@ -58,7 +58,8 @@ const leagueRoutes: Routes = [
         AddPlayersDialogComponent,
         RemovePlayerDialogComponent,
         JoinLeagueRequestDialogComponent,
-        PendingRequestDialogComponent
+        PendingRequestDialogComponent,
+        LeagueDeleteDialogComponent
     ],
     imports: [
         //MaterializeModule,

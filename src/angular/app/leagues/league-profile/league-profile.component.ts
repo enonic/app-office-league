@@ -16,6 +16,7 @@ import { RemovePlayerDialogComponent } from '../remove-player-dialog/remove-play
 import { MatDialog } from '@angular/material/dialog';
 import {JoinLeagueRequestDialogComponent} from '../join-league-request-dialog/join-league-request-dialog.component';
 import {PendingRequestDialogComponent} from '../pending-request-dialog/pending-request-dialog.component';
+import {LeagueDeleteDialogComponent} from '../league-delete-dialog/league-delete-dialog.component';
 
 declare var XPCONFIG: Config;
 
@@ -206,11 +207,11 @@ export class LeagueProfileComponent
     onAddPlayerClicked() {
         this.showModal();
     }
-*/
+
     onDeleteClicked() {
         this.showModalDelete();
     }
-
+*/
     onLeaveClicked() {
         this.showModalLeave();
     }
@@ -273,13 +274,11 @@ export class LeagueProfileComponent
             });
     }
 
-    onConfirmDeleteClicked() {
-        this.graphQLService.post(LeagueProfileComponent.deleteLeagueQuery,
-            {name: this.league.name}).then(
-            data => {
-                this.hideModalDelete();
-                this.router.navigate(['leagues']);
-            });
+    deleteLeague() {
+        this.graphQLService.post(
+            LeagueProfileComponent.deleteLeagueQuery,
+            {name: this.league.name}
+        ).then( () => this.router.navigate(['leagues']));
     }
 
     onConfirmLeaveClicked() {
@@ -350,14 +349,25 @@ export class LeagueProfileComponent
         });
     }
 
-    public showModalDelete(): void {
-        this.materializeActionsDelete.emit({action: "modal", params: ['open']});
-    }
+    public openLeagueDeleteDialog(): void {
+        const dialogRef = this.dialog.open(LeagueDeleteDialogComponent, {
+            width: '250px',
+            data: {
+                leagueName: this.league.name
+            } // pass data as needed
+        });
 
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === true) {
+                this.deleteLeague();
+            }
+        });
+    }
+/*
     public hideModalDelete(): void {
         this.materializeActionsDelete.emit({action: "modal", params: ['close']});
     }
-
+*/
     public showModalLeave(): void {
         this.materializeActionsLeave.emit({action: "modal", params: ['open']});
     }
