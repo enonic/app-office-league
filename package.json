@@ -27,7 +27,7 @@
     "rxjs": "7.8.1",
     "ts-loader": "^9.5.1",
     "webpack-node-externals": "^3.0.0",
-    "zone.js": "~0.11.8"
+    "zone.js": "~0.13.0"
   },
   "devDependencies": {
     "@angular/compiler-cli": "15.2.10",
@@ -51,8 +51,8 @@
     "webpack-merge": "5.10.0"
   },
   "engines": {
-    "node": ">= 16.10.0",
-    "npm": ">= 7.10.0"
+    "node": ">= 18.19.0",
+    "npm": ">= 10.2.3"
   },
   "type": "module"
 }
