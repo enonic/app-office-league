@@ -40,15 +40,15 @@
             <i class="material-icons">more_vert</i>
         </a>
         <ul>
-            <li *ngIf="playerSystemAdmin"><a class="btn-floating purple" (click)="onRankingRefreshClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">poll</i></a></li>
-            <li><a class="btn-floating green" (click)="openAddPlayerModal()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">person_add</i></a></li>
+            <li *ngIf="playerSystemAdmin"><a class="btn-floating purple" (click)="openRegenerateRankingDialog()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">poll</i></a></li>
+            <li><a class="btn-floating green" (click)="openAddPlayerDialog()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">person_add</i></a></li>
             <li><a class="btn-floating blue" (click)="onEditClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">mode_edit</i></a></li>
-            <li *ngIf="playerInLeague || joinLeagueRequested"><a class="btn-floating red" (click)="onLeaveClicked()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">directions_run</i></a></li>
+            <li *ngIf="playerInLeague || joinLeagueRequested"><a class="btn-floating red" (click)="openLeagueLeaveDialog()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">directions_run</i></a></li>
             <li><a class="btn-floating red" (click)="openLeagueDeleteDialog()" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px) translateX(0px); opacity: 0;" [attr.disabled]="online?null:true"><i class="material-icons">delete</i></a></li>
         </ul>
     </div>
     <div *ngIf="!adminInLeague && (playerInLeague || joinLeagueRequested)" class="fixed-action-btn">
-        <a (click)="onLeaveClicked()" class="btn-floating btn-large waves-effect waves-light red" [attr.disabled]="online?null:true"><i class="material-icons">directions_run</i></a>
+        <a (click)="openLeagueLeaveDialog()" class="btn-floating btn-large waves-effect waves-light red" [attr.disabled]="online?null:true"><i class="material-icons">directions_run</i></a>
     </div>
 
     <div class="row">
@@ -81,75 +81,6 @@
         <game-list [title]="'Latest games'"
                    [games]="league.games"
                    [detailsPath]="['leagues', league.name.toLowerCase(), 'games']"></game-list>
-    </div>
-
-<!--    <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
-         [materializeActions]="materializeActionsRemove">
-        <div class="modal-content">
-            <h5 class="center">Remove player</h5>
-            <p>You are about to remove player '<strong>{{removePlayer?.name}}</strong>' from this league (<strong>{{league.name}}</strong>).</p>
-        </div>
-        <div class="modal-footer">
-            <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
-            <a (click)="onConfirmRemoveClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Remove</a>
-        </div>
-    </div>
-
-    <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
-         [materializeActions]="materializeActionsApprove">
-        <div class="modal-content">
-            <h5 class="center">Join League Request</h5>
-            <p>Player '<strong>{{approvePlayer?.name}}</strong>' has requested to join this league (<strong>{{league.name}}</strong>).</p>
-        </div>
-        <div class="modal-footer">
-            <a (click)="onConfirmPlayerJoin(true)" class="modal-action waves-effect btn-flat green white-text left">Allow</a>
-            <a (click)="onConfirmPlayerJoin(false)" class="modal-action waves-effect btn-flat red white-text">Deny</a>
-        </div>
-    </div>
-
-    <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
-         [materializeActions]="materializeActionsPending">
-        <div class="modal-content">
-            <h5 class="center">Join League Requested</h5>
-            <p>A request for joining this league has been sent to the league administrators.
-                You will be notified by email as soon as the petition is resolved.</p>
-        </div>
-        <div class="modal-footer">
-            <a class="modal-action modal-close waves-effect waves-green btn-flat green white-text">Ok</a>
-        </div>
-    </div>
-    <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
-         [materializeActions]="materializeActionsDelete">
-        <div class="modal-content">
-            <h5 class="center">Delete league</h5>
-            <p>You are about to delete this league (<strong>{{league.name}}</strong>). <strong>This operation cannot be undone.</strong></p>
-        </div>
-        <div class="modal-footer">
-            <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
-            <a (click)="onConfirmDeleteClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Delete</a>
-        </div>
-    </div>-->
-    <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
-         [materializeActions]="materializeActionsLeave">
-        <div class="modal-content">
-            <h5 class="center">Leave league</h5>
-            <p>You are about to leave this league (<strong>{{league.name}}</strong>).</p>
-        </div>
-        <div class="modal-footer">
-            <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
-            <a (click)="onConfirmLeaveClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Leave</a>
-        </div>
-    </div>
-    <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
-         [materializeActions]="materializeActionsRegenerateRanking">
-        <div class="modal-content">
-            <h5 class="center">Regenerate league ranking</h5>
-            <p>Are you sure you want to regenerate '<strong>{{league.name}}</strong>' league's ranking?</p>
-        </div>
-        <div class="modal-footer">
-            <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">No</a>
-            <a (click)="onConfirmRegenerateClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Yes</a>
-        </div>
     </div>
 
 </ng-template>

@@ -29,6 +29,8 @@ import { ChipsComponent } from '../common/chips/chips.component';
 import { JoinLeagueRequestDialogComponent } from './join-league-request-dialog/join-league-request-dialog.component';
 import { PendingRequestDialogComponent } from './pending-request-dialog/pending-request-dialog.component';
 import { LeagueDeleteDialogComponent } from './league-delete-dialog/league-delete-dialog.component';
+import {LeagueLeaveDialogComponent} from './league-leave-dialog/league-leave-dialog.component';
+import {RegenerateRankingDialogComponent} from './regenerate-ranking-dialog/regenerate-ranking-dialog.component';
 
 const leagueRoutes: Routes = [
     {path: 'leagues', component: LeagueBrowserComponent, canActivate: [PlayerRouteGuard,]},
@@ -59,7 +61,9 @@ const leagueRoutes: Routes = [
         RemovePlayerDialogComponent,
         JoinLeagueRequestDialogComponent,
         PendingRequestDialogComponent,
-        LeagueDeleteDialogComponent
+        LeagueDeleteDialogComponent,
+        LeagueLeaveDialogComponent,
+        RegenerateRankingDialogComponent
     ],
     imports: [
         //MaterializeModule,

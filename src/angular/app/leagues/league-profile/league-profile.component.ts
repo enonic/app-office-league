@@ -17,6 +17,8 @@ import { MatDialog } from '@angular/material/dialog';
 import {JoinLeagueRequestDialogComponent} from '../join-league-request-dialog/join-league-request-dialog.component';
 import {PendingRequestDialogComponent} from '../pending-request-dialog/pending-request-dialog.component';
 import {LeagueDeleteDialogComponent} from '../league-delete-dialog/league-delete-dialog.component';
+import {LeagueLeaveDialogComponent} from '../league-leave-dialog/league-leave-dialog.component';
+import {RegenerateRankingDialogComponent} from '../regenerate-ranking-dialog/regenerate-ranking-dialog.component';
 
 declare var XPCONFIG: Config;
 
@@ -39,13 +41,7 @@ export class LeagueProfileComponent
     activeGames: Game[] = [];
     nonMembersPlayerNames: string[] = [];
     playerNamesToAdd: string[] = [];
-    approvePlayer: Player;
     approvePollingTimerId: any;
-    materializeActionsApprove = new EventEmitter<any>();
-    materializeActionsPending = new EventEmitter<any>();
-    materializeActionsDelete = new EventEmitter<any>();
-    materializeActionsLeave = new EventEmitter<any>();
-    materializeActionsRegenerateRanking = new EventEmitter<any>();
     online: boolean;
     onlineStateCallback = () => this.online = navigator.onLine;
     private wsMan: WebSocketManager;
@@ -84,22 +80,7 @@ export class LeagueProfileComponent
         this.onlineStatusService.addOnlineStateEventListener(this.onlineStateCallback);
         this.online = navigator.onLine;
     }
-/*
-    ngAfterViewInit(): void {
-        // Poll until loaded
-        const buttonPollId = setInterval(() => {
-            if (this.league) {
-                this.initFloatingButtons();
-                clearInterval(buttonPollId);
-            }
-        }, 500);
-    }
 
-    initFloatingButtons(): void {
-        const buttons = document.querySelectorAll('.fixed-action-btn');
-        M.FloatingActionButton.init(buttons);
-    }
-*/
     ngOnDestroy() {
         clearTimeout(this.approvePollingTimerId);
         this.approvePollingTimerId = undefined;
@@ -203,18 +184,6 @@ export class LeagueProfileComponent
     onEditClicked() {
         this.router.navigate(['leagues', this.league.name.toLowerCase(), 'edit']);
     }
-/*
-    onAddPlayerClicked() {
-        this.showModal();
-    }
-
-    onDeleteClicked() {
-        this.showModalDelete();
-    }
-*/
-    onLeaveClicked() {
-        this.showModalLeave();
-    }
 
     onJoinClicked() {
         if (this.authService.isAuthenticated() && !this.playerInLeague) {
@@ -281,28 +250,18 @@ export class LeagueProfileComponent
         ).then( () => this.router.navigate(['leagues']));
     }
 
-    onConfirmLeaveClicked() {
-        this.graphQLService.post(LeagueProfileComponent.leavePlayerLeagueQuery,
-            {playerId: this.authService.getUser().playerId, leagueId: this.league.id}).then(
-            data => {
-                this.hideModalLeave();
-                this.refreshData(this.league.name);
-            });
+    leaveLeague() {
+        this.graphQLService.post(
+            LeagueProfileComponent.leavePlayerLeagueQuery,
+            { playerId: this.authService.getUser().playerId, leagueId: this.league.id }
+        ).then(() => this.refreshData(this.league.name) );
     }
 
-    onRankingRefreshClicked() {
-        this.showModalRanking();
+    regenerateRanking() {
+        this.graphQLService.post(LeagueProfileComponent.regenerateLeagueRanking, {leagueId: this.league.id});
     }
 
-    onConfirmRegenerateClicked() {
-        this.graphQLService.post(LeagueProfileComponent.regenerateLeagueRanking,
-            {leagueId: this.league.id}).then(
-            data => {
-                this.hideModalRanking();
-            });
-    }
-
-    openAddPlayerModal(): void {
+    openAddPlayerDialog(): void {
         const dialogRef = this.dialog.open(AddPlayersDialogComponent, {
             width: '250px',
             data: {
@@ -363,25 +322,35 @@ export class LeagueProfileComponent
             }
         });
     }
-/*
-    public hideModalDelete(): void {
-        this.materializeActionsDelete.emit({action: "modal", params: ['close']});
-    }
-*/
-    public showModalLeave(): void {
-        this.materializeActionsLeave.emit({action: "modal", params: ['open']});
+
+    public openLeagueLeaveDialog(): void {
+        const dialogRef = this.dialog.open(LeagueLeaveDialogComponent, {
+            width: '250px',
+            data: {
+                leagueName: this.league.name
+            } // pass data as needed
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === true) {
+                this.leaveLeague();
+            }
+        });
     }
 
-    public hideModalLeave(): void {
-        this.materializeActionsLeave.emit({action: "modal", params: ['close']});
-    }
+    public openRegenerateRankingDialog(): void {
+        const dialogRef = this.dialog.open(RegenerateRankingDialogComponent, {
+            width: '250px',
+            data: {
+                leagueName: this.league.name
+            } // pass data as needed
+        });
 
-    public showModalRanking(): void {
-        this.materializeActionsRegenerateRanking.emit({action: "modal", params: ['open']});
-    }
-
-    public hideModalRanking(): void {
-        this.materializeActionsRegenerateRanking.emit({action: "modal", params: ['close']});
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === true) {
+                this.regenerateRanking();
+            }
+        });
     }
 
     onWsMessage(event: RemoteEvent) {
