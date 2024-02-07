@@ -68,7 +68,7 @@
                             [detailsPath]="['leagues', league.name.toLowerCase(), 'players']"
                             [seeMoreText]="'See full player ranking'"
                             [allowRemove]="adminInLeague && online" (removePlayer)="openRemovePlayerDialog($event)"
-                            (approvePlayer)="onApprovePlayerJoin($event)"></league-player-list>
+                            (approvePlayer)="openApproveOrRejectPlayerDialog($event)"></league-player-list>
     </div>
 
     <div class="row">
@@ -93,7 +93,7 @@
             <a class="modal-action modal-close waves-effect btn-flat grey lighten-1 left">Cancel</a>
             <a (click)="onConfirmRemoveClicked()" class="modal-action modal-close waves-effect btn-flat red white-text">Remove</a>
         </div>
-    </div>-->
+    </div>
 
     <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
          [materializeActions]="materializeActionsApprove">
@@ -105,7 +105,7 @@
             <a (click)="onConfirmPlayerJoin(true)" class="modal-action waves-effect btn-flat green white-text left">Allow</a>
             <a (click)="onConfirmPlayerJoin(false)" class="modal-action waves-effect btn-flat red white-text">Deny</a>
         </div>
-    </div>
+    </div>-->
 
     <div class="modal center" materialize="modal" [materializeParams]="[{dismissible: true, inDuration: 100, outDuration: 100}]"
          [materializeActions]="materializeActionsPending">

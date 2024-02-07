@@ -2,9 +2,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
     selector: 'game-comment-modal',
-    templateUrl: 'game-comment-modal.component.html'
+    templateUrl: 'game-comment-dialog.component.html'
 })
-export class GameCommentModalComponent {
+export class GameCommentDialogComponent {
     comment: string;
 
     @Output() commentSubmitted = new EventEmitter<string>();

@@ -1,5 +1,5 @@
 import { MatDialog } from '@angular/material/dialog';
-import { GameCommentModalComponent } from '../game-comment-modal/game-comment-modal.component'; // adjust the path as necessary
+import { GameCommentDialogComponent } from '../game-comment-dialog/game-comment-dialog.component'; // adjust the path as necessary
 import { GameDeleteModalComponent } from '../game-delete-modal/game-delete-modal.component'; // adjust the path as necessary
 import { GameContinueModalComponent } from '../game-continue-modal/game-continue-modal.component'; // adjust the path as necessary
 import {Component, OnDestroy, ViewChild} from '@angular/core';
@@ -161,7 +161,7 @@ export class GameProfileComponent
 
     onCommentClicked() {
         this.comment = '';
-        const dialogRef = this.dialog.open(GameCommentModalComponent, {
+        const dialogRef = this.dialog.open(GameCommentDialogComponent, {
             width: '250px',
             data: { comment: this.comment }
         });

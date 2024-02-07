@@ -23,7 +23,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from "@angular/material/input";
 import {PlayerSelectDialogComponent} from './player-select-dialog/player-select-dialog.component';
 import {NgOptimizedImage} from '@angular/common';
-import {GameCommentModalComponent} from './game-comment-modal/game-comment-modal.component';
+import {GameCommentDialogComponent} from './game-comment-dialog/game-comment-dialog.component';
 import {GameDeleteModalComponent} from './game-delete-modal/game-delete-modal.component';
 import {GameContinueModalComponent} from './game-continue-modal/game-continue-modal.component';
 
@@ -50,7 +50,7 @@ const gameRoutes: Routes = [
         GameFlowComponent,
         RatingPointsComponent,
         PlayerSelectDialogComponent,
-        GameCommentModalComponent,
+        GameCommentDialogComponent,
         GameDeleteModalComponent,
         GameContinueModalComponent
     ],

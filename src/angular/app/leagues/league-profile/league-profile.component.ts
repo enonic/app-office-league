@@ -11,9 +11,10 @@ import {Player} from '../../../graphql/schemas/Player';
 import {WebSocketManager} from '../../services/websocket.manager';
 import {EventType, RemoteEvent} from '../../../graphql/schemas/RemoteEvent';
 import { Config } from '../../app.config';
-import { AddPlayerModalComponent } from '../add-player-modal/add-player-modal.component';
+import { AddPlayersDialogComponent } from '../add-players-dialog/add-players-dialog.component';
 import { RemovePlayerModalComponent } from '../remove-player-modal/remove-player-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import {JoinLeagueRequestDialogComponent} from '../join-league-request-dialog/join-league-request-dialog.component';
 
 declare var XPCONFIG: Config;
 
@@ -258,12 +259,12 @@ export class LeagueProfileComponent
         this.removePlayer = player;
         this.showModalRemove();
     }
-*/
+
     onApprovePlayerJoin(player: Player) {
         this.approvePlayer = player;
         this.showModalApprove();
     }
-
+*/
     removePlayer(player: Player) {
         this.graphQLService.post(LeagueProfileComponent.leavePlayerLeagueQuery,
             {playerId: player.id, leagueId: this.league.id}).then(
@@ -272,19 +273,19 @@ export class LeagueProfileComponent
             });
     }
 
-    onConfirmPlayerJoin(allow: boolean) {
+    approveOrRejectPlayer(player: Player, allow: boolean) {
         if (allow) {
             this.graphQLService.post(LeagueProfileComponent.joinPlayerLeagueQuery,
-                {playerId: this.approvePlayer.id, leagueId: this.league.id}).then(
+                {playerId: player.id, leagueId: this.league.id}).then(
                 data => {
-                    this.hideModalApprove();
+                    //this.hideModalApprove();
                     this.refreshData(this.league.name);
                 });
         } else {
             this.graphQLService.post(LeagueProfileComponent.denyJoinLeagueRequestQuery,
-                {playerId: this.approvePlayer.id, leagueId: this.league.id}).then(
+                {playerId: player.id, leagueId: this.league.id}).then(
                 data => {
-                    this.hideModalApprove();
+                    //this.hideModalApprove();
                     this.refreshData(this.league.name);
                 });
         }
@@ -321,7 +322,7 @@ export class LeagueProfileComponent
     }
 
     openAddPlayerModal(): void {
-        const dialogRef = this.dialog.open(AddPlayerModalComponent, {
+        const dialogRef = this.dialog.open(AddPlayersDialogComponent, {
             width: '250px',
             data: {
                 nonMembersPlayerNames: this.nonMembersPlayerNames,
@@ -354,14 +355,26 @@ export class LeagueProfileComponent
         this.materializeActionsRemove.emit({action: "modal", params: ['close']});
     }
 */
-    public showModalApprove(): void {
-        this.materializeActionsApprove.emit({action: "modal", params: ['open']});
-    }
+    public openApproveOrRejectPlayerDialog(player: Player): void {
+        const dialogRef = this.dialog.open(JoinLeagueRequestDialogComponent, {
+            width: '250px',
+            data: {
+                playerName: player.name,
+                leagueName: this.league.name
+            }
+        });
 
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.approveOrRejectPlayer(player, result);
+            }
+        });
+    }
+/*
     public hideModalApprove(): void {
         this.materializeActionsApprove.emit({action: "modal", params: ['close']});
     }
-
+*/
     public showModalPending(): void {
         // check if pending, show info modal if still pending
         this.refreshData(this.league.name).then(() => {
