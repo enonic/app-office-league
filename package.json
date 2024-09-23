@@ -36,7 +36,7 @@
     "@ngtools/webpack": "13.3.11",
     "@types/materialize-css": "1.0.14",
     "@types/node": "22.5.0",
-    "babel-loader": "^9.1.3",
+    "babel-loader": "^9.2.1",
     "copy-webpack-plugin": "12.0.2",
     "css-loader": "7.1.2",
     "html-loader": "5.1.0",
