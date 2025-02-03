@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@angular/compiler-cli": "13.2.6",
-    "@ngtools/webpack": "13.3.11",
+    "@ngtools/webpack": "19.1.5",
     "@types/materialize-css": "1.0.14",
     "@types/node": "22.5.0",
     "babel-loader": "^9.2.1",
