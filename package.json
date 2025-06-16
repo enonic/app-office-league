@@ -32,7 +32,7 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular/compiler-cli": "13.2.6",
+    "@angular/compiler-cli": "20.0.3",
     "@ngtools/webpack": "13.3.11",
     "@types/materialize-css": "1.0.14",
     "@types/node": "22.5.0",
