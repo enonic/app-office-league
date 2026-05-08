@@ -64,11 +64,12 @@ const processGameWebhook = function (gameData, url) {
     //     }
     // };
 
-    // We don't want to send the full data ever goal
-            // Currently: Start or finish
+    // We don't want to send data on every goal.
+    // Notify Slack once when the game is finished.
     if (gameData.league.slackIntegration) {
-        if (!gameData.finished && (!gameData.points || gameData.points.length == 0) ||
-            gameData.finished && gameData.players[0].ratingDelta && gameData.players[0].ratingDelta != 0) {
+        if (gameData.finished &&
+            gameData.players[0].ratingDelta &&
+            gameData.players[0].ratingDelta != 0) {
 
             const slackMessage = officeSlackLib.createNewSlackMessage(gameData);
 
