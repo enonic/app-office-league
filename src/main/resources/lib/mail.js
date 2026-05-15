@@ -8,9 +8,9 @@ var ioLib = require('/lib/xp/io');
 exports.sendJoinRequestNotification = function (playerId, leagueId) {
     log.info('Join request notification email will be sent in the background.');
 
-    taskLib.submit({
+    taskLib.executeFunction({
         description: 'Office League Email Sending Task',
-        task: function () {
+        func: function () {
             try {
                 log.info('Sending email...');
                 doSendJoinRequestNotification(playerId, leagueId);
@@ -28,9 +28,9 @@ exports.sendJoinRequestNotification = function (playerId, leagueId) {
 exports.sendDenyJoinRequestNotification = function (playerId, leagueId) {
     log.info('Deny join request notification email will be sent in the background.');
 
-    taskLib.submit({
+    taskLib.executeFunction({
         description: 'Office League Email Sending Task',
-        task: function () {
+        func: function () {
             try {
                 log.info('Sending email...');
                 doSendDenyJoinRequestNotification(playerId, leagueId);
@@ -49,9 +49,9 @@ exports.sendDenyJoinRequestNotification = function (playerId, leagueId) {
 exports.sendAllowJoinRequestNotification = function (playerId, leagueId) {
     log.info('Allow join request notification email will be sent in the background.');
 
-    taskLib.submit({
+    taskLib.executeFunction({
         description: 'Office League Email Sending Task',
-        task: function () {
+        func: function () {
             try {
                 log.info('Sending email...');
                 doSendAllowJoinRequestNotification(playerId, leagueId);
@@ -70,9 +70,9 @@ exports.sendAllowJoinRequestNotification = function (playerId, leagueId) {
 exports.sendInvitation = function (email, leagueId, adminId, token) {
     log.info('Invitation email will be sent in the background.');
 
-    taskLib.submit({
+    taskLib.executeFunction({
         description: 'Office League Email Sending Task',
-        task: function () {
+        func: function () {
             try {
                 log.info('Sending email...');
                 doSendInvitation(email, leagueId, adminId, token);

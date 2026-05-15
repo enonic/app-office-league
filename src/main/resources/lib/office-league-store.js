@@ -2990,9 +2990,9 @@ var sendPushNotification = function (params) {
     if (!params.async) {
         doSendPushNotification(params);
     } else {
-        taskLib.submit({
+        taskLib.executeFunction({
             description: 'Push notification task (' + params.key + '',
-            task: function () {
+            func: function () {
                 doSendPushNotification(params);
             }
         });

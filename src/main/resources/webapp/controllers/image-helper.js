@@ -1,6 +1,5 @@
 var imageLib = require("/lib/image");
 var contextLib = require("/lib/xp/context");
-const util = require("/lib/util");
 
 exports.processImage = function (node, attachment, params) {
     if (!isProcessableImage(attachment.mimeType)) {

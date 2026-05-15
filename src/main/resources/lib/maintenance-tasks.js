@@ -10,9 +10,9 @@ var gameGCTaskId;
 var gameGCTaskLastRun;
 
 exports.launchGameGCTask = function () {
-    gameGCTaskId = taskLib.submit({
+    gameGCTaskId = taskLib.executeFunction({
         description: 'Remove abandoned games',
-        task: function () {
+        func: function () {
             var id = gameGCTaskId;
             log.info('Game GC task started');
             gameGCTaskLastRun = gameGCTaskLastRun || new Date();
