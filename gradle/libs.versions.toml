@@ -3,7 +3,6 @@ router = "4.0.0-SNAPSHOT"
 thymeleaf = "3.0.0-SNAPSHOT"
 mustache = "3.0.0-SNAPSHOT"
 http-client = "4.0.0-SNAPSHOT"
-util = "4.0.0-SNAPSHOT"
 graphql = "3.0.0-SNAPSHOT"
 geoip = "3.0.0-SNAPSHOT"
 text-encoding = "3.0.0-SNAPSHOT"
@@ -14,7 +13,6 @@ lib-router        = { module = "com.enonic.lib:lib-router",        version.ref =
 lib-thymeleaf     = { module = "com.enonic.lib:lib-thymeleaf",     version.ref = "thymeleaf" }
 lib-mustache      = { module = "com.enonic.lib:lib-mustache",      version.ref = "mustache" }
 lib-http-client   = { module = "com.enonic.lib:lib-http-client",   version.ref = "http-client" }
-lib-util          = { module = "com.enonic.lib:lib-util",          version.ref = "util" }
 lib-graphql       = { module = "com.enonic.lib:lib-graphql",       version.ref = "graphql" }
 lib-geoip         = { module = "com.enonic.lib:lib-geoip",         version.ref = "geoip" }
 lib-text-encoding = { module = "com.enonic.lib:lib-text-encoding", version.ref = "text-encoding" }
