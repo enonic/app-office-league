@@ -66,8 +66,8 @@ router.route(
 );
 
 function defaultRoute(req) {
-    const baseHref = portalLib.pageUrl({ path: '/', type: 'relative' });
-    const baseAbsoluteUrl = portalLib.pageUrl({ path: '/', type: 'absolute' });
+    const baseHref = req.contextPath;
+    const baseAbsoluteUrl = req.scheme + '://' + req.host + (req.port && req.port !== 80 && req.port !== 443 ? ':' + req.port : '') + req.contextPath;
 
     if (mustLogIn(req)) {
         return {

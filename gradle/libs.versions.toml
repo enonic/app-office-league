@@ -1,12 +1,12 @@
 [versions]
-router = "3.2.0"
+router = "4.0.0-SNAPSHOT"
 thymeleaf = "3.0.0-SNAPSHOT"
-mustache = "2.1.1"
-http-client = "3.2.2"
-graphql = "2.1.0"
-geoip = "2.1.0"
-text-encoding = "2.1.1"
-notifications = "2.0.1"
+mustache = "3.0.0-SNAPSHOT"
+http-client = "4.0.0-SNAPSHOT"
+graphql = "3.0.0-SNAPSHOT"
+geoip = "3.0.0-SNAPSHOT"
+text-encoding = "3.0.0-SNAPSHOT"
+notifications = "3.0.0-SNAPSHOT"
 
 [libraries]
 lib-router        = { module = "com.enonic.lib:lib-router",        version.ref = "router" }
