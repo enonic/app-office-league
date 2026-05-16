@@ -30,7 +30,6 @@ dependencies {
     include libs.lib.thymeleaf
     include libs.lib.mustache
     include libs.lib.http.client
-    include libs.lib.util
     include libs.lib.graphql
     include libs.lib.geoip
     include libs.lib.text.encoding

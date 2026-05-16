@@ -2,7 +2,6 @@ const storeLib = require("/lib/office-league-store");
 const attachmentLib = require("/lib/attachment");
 const ioLib = require("/lib/xp/io");
 const imageHelper = require("./image-helper");
-const util = require("/lib/util");
 
 const defaultImage = ioLib
     .getResource("/assets/img/default-images/account.svg")
