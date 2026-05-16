@@ -7,6 +7,7 @@ graphql = "3.0.0-SNAPSHOT"
 geoip = "3.0.0-SNAPSHOT"
 text-encoding = "3.0.0-SNAPSHOT"
 notifications = "3.0.0-SNAPSHOT"
+asset = "2.0.0-SNAPSHOT"
 
 [libraries]
 lib-router        = { module = "com.enonic.lib:lib-router",        version.ref = "router" }
@@ -17,3 +18,4 @@ lib-graphql       = { module = "com.enonic.lib:lib-graphql",       version.ref =
 lib-geoip         = { module = "com.enonic.lib:lib-geoip",         version.ref = "geoip" }
 lib-text-encoding = { module = "com.enonic.lib:lib-text-encoding", version.ref = "text-encoding" }
 lib-notifications = { module = "com.enonic.lib:lib-notifications", version.ref = "notifications" }
+lib-asset         = { module = "com.enonic.lib:lib-asset",         version.ref = "asset" }

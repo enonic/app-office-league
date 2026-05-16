@@ -34,6 +34,7 @@ dependencies {
     include libs.lib.geoip
     include libs.lib.text.encoding
     include libs.lib.notifications
+    include libs.lib.asset
 }
 
 repositories {

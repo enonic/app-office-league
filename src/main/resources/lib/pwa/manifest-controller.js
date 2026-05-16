@@ -1,4 +1,4 @@
-var portalLib = require('/lib/xp/portal');
+var assetLib = require('/lib/enonic/asset');
 var mustache = require('/lib/mustache');
 
 exports.get = function(req) {
@@ -7,7 +7,7 @@ exports.get = function(req) {
 
     var params = {
         startUrl,
-        iconUrl : portalLib.assetUrl({path: '/icons'})
+        iconUrl : assetLib.assetUrl({path: '/icons'})
     };
     var res = mustache.render(resolve('manifest.json'), params);
 
