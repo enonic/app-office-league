@@ -1,5 +1,5 @@
 plugins {
-    id("com.enonic.xp.settings") version "4.0.0-B1"
+    id("com.enonic.xp.settings") version "4.1.0"
 }
 
 rootProject.name = projectName
