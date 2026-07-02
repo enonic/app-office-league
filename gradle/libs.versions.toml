@@ -7,7 +7,7 @@ graphql = "3.0.0"
 geoip = "3.0.0"
 text-encoding = "3.0.0"
 notifications = "3.0.0"
-asset = "2.0.0"
+asset = "2.0.1"
 
 [libraries]
 lib-router        = { module = "com.enonic.lib:lib-router",        version.ref = "router" }
