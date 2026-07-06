@@ -6,7 +6,7 @@ http-client = "4.0.0"
 graphql = "3.0.0"
 geoip = "3.0.0"
 text-encoding = "3.0.0"
-notifications = "3.0.0"
+notifications = "3.0.2"
 asset = "2.0.1"
 
 [libraries]
