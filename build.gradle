@@ -35,6 +35,12 @@ dependencies {
     include libs.lib.text.encoding
     include libs.lib.notifications
     include libs.lib.asset
+
+    testImplementation "com.enonic.xp:testing:${xpVersion}"
+    testImplementation libs.junit.jupiter
+    testImplementation libs.mockito.core
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly libs.graalvm.js
 }
 
 repositories {
@@ -43,6 +49,22 @@ repositories {
     xp.enonicRepo()
     xp.enonicRepo("dev")
 }
+
+test {
+    useJUnitPlatform()
+}
+
+def testGraalJs = tasks.register('testGraalJs', Test) {
+    group = 'verification'
+    description = 'Runs tests with the GraalJS script engine.'
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    systemProperty 'xp.script-engine', 'GraalJS'
+    shouldRunAfter test
+}
+
+check.dependsOn testGraalJs
 
 tasks.register('webpackBuild', NpmTask) {
     dependsOn npmInstall

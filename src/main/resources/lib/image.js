@@ -18,14 +18,14 @@
  */
 exports.processImage = function (params) {
     var bean = __.newBean('com.enonic.app.officeleague.image.ImageHandler');
-    bean.id = __.nullOrValue(checkRequired(params, 'id'));
-    bean.name = __.nullOrValue(checkRequired(params, 'name'));
-    bean.scale = __.nullOrValue(checkRequired(params, 'scale'));
-    bean.quality = __.nullOrValue(params.quality);
-    bean.background = __.nullOrValue(params.background);
-    bean.mimeType = __.nullOrValue(params.mimeType);
-    bean.filter = __.nullOrValue(params.filter);
-    bean.orientation = __.nullOrValue(params.orientation);
+    bean.setId(__.nullOrValue(checkRequired(params, 'id')));
+    bean.setName(__.nullOrValue(checkRequired(params, 'name')));
+    bean.setScale(__.nullOrValue(checkRequired(params, 'scale')));
+    bean.setQuality(__.nullOrValue(params.quality));
+    bean.setBackground(__.nullOrValue(params.background));
+    bean.setMimeType(__.nullOrValue(params.mimeType));
+    bean.setFilter(__.nullOrValue(params.filter));
+    bean.setOrientation(__.nullOrValue(params.orientation));
     return bean.process();
 };
 
