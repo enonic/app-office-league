@@ -1,5 +1,4 @@
 [versions]
-graalvm = "25.0.3"
 junit = "6.1.1"
 mockito = "5.23.0"
 router = "4.0.0"
@@ -13,7 +12,6 @@ notifications = "3.0.2"
 asset = "2.0.1"
 
 [libraries]
-graalvm-js        = { module = "org.graalvm.polyglot:js",          version.ref = "graalvm" }
 junit-jupiter     = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "junit" }
 mockito-core      = { module = "org.mockito:mockito-core",         version.ref = "mockito" }
 lib-router        = { module = "com.enonic.lib:lib-router",        version.ref = "router" }

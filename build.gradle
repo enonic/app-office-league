@@ -40,7 +40,6 @@ dependencies {
     testImplementation libs.junit.jupiter
     testImplementation libs.mockito.core
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testRuntimeOnly libs.graalvm.js
 }
 
 repositories {
@@ -54,17 +53,9 @@ test {
     useJUnitPlatform()
 }
 
-def testGraalJs = tasks.register('testGraalJs', Test) {
-    group = 'verification'
-    description = 'Runs tests with the GraalJS script engine.'
-    useJUnitPlatform()
-    testClassesDirs = sourceSets.test.output.classesDirs
-    classpath = sourceSets.test.runtimeClasspath
-    systemProperty 'xp.script-engine', 'GraalJS'
-    shouldRunAfter test
+xp {
+    scriptEngines = ['Nashorn', 'GraalJS']
 }
-
-check.dependsOn testGraalJs
 
 tasks.register('webpackBuild', NpmTask) {
     dependsOn npmInstall
