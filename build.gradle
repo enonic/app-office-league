@@ -35,6 +35,11 @@ dependencies {
     include libs.lib.text.encoding
     include libs.lib.notifications
     include libs.lib.asset
+
+    testImplementation "com.enonic.xp:testing:${xpVersion}"
+    testImplementation libs.junit.jupiter
+    testImplementation libs.mockito.core
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 repositories {
@@ -42,6 +47,14 @@ repositories {
     mavenCentral()
     xp.enonicRepo()
     xp.enonicRepo("dev")
+}
+
+test {
+    useJUnitPlatform()
+}
+
+xp {
+    scriptEngines = ['Nashorn', 'GraalJS']
 }
 
 tasks.register('webpackBuild', NpmTask) {
