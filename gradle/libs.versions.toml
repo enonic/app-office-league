@@ -1,5 +1,5 @@
 [versions]
-junit = "6.1.1"
+junit = "6.1.2"
 mockito = "5.23.0"
 router = "4.0.0"
 thymeleaf = "3.0.0"
