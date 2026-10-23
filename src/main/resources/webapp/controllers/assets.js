@@ -2,11 +2,14 @@ const ioLib = require('/lib/xp/io');
 
 exports.get = function(req) {
     var path = req.url.split('assets/')[1];
-    var type = getMimeType(path);
+    var resource = ioLib.getResource('/assets/' + path);
+    if (!resource.exists()) {
+        return {status: 404};
+    }
 
     return {
-        contentType: type,
-        body: ioLib.getResource('/assets/' + path).getStream()
+        contentType: getMimeType(path),
+        body: resource.getStream()
     };
 };
 

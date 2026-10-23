@@ -6,11 +6,10 @@ const cacheNames = [cacheName, dataCacheName, imageCacheName];
 const debugging = false;
 const offlineUrl = './offline';
 const appUrl = '{{appUrl}}';
-const APIUrl = './api/graphql?etag';
-const homePageUrl = '{{appUrl}}';
+const assetUrl = '{{assetUrl}}';
+const APIUrl = appUrl + '/api/graphql';
 const staticAssets = [
     './manifest.json',
-    '{{assetUrl}}/css/critical.css',
     '{{assetUrl}}/css/styles.css',
     '{{assetUrl}}/img/office-league-logo.svg',
     '{{assetUrl}}/img/questionmark.svg',
@@ -21,7 +20,6 @@ const staticAssets = [
     '{{assetUrl}}/icons/favicon-32x32.png',
     '{{assetUrl}}/js/app.js',
     '{{assetUrl}}/js/common.js',
-    '{{assetUrl}}/js/critical.js',
     '{{assetUrl}}/js/polyfills.js',
     '{{assetUrl}}/js/styles.js',
     '{{assetUrl}}/js/vendor.js',
@@ -29,8 +27,7 @@ const staticAssets = [
     offlineUrl
 ];
 const userDependantAssets = [
-    '{{appUrl}}/',
-    homePageUrl
+    appUrl + '/'
 ];
 const dynamicAssets = [
     '{{assetUrl}}/fonts/',
@@ -50,16 +47,26 @@ function isRequestToDynamicAsset(url) {
     return dynamicAssets.some(asset => (url.indexOf(asset) > -1));
 }
 
+function isSameOrigin(url) {
+    return new URL(url).origin === self.location.origin;
+}
+
+function pathOf(url) {
+    return new URL(url).pathname;
+}
+
 function isRequestToAppRoot(url) {
-    return url.endsWith(appUrl) || url.endsWith(appUrl + '/') || url.endsWith(homePageUrl);
+    const path = pathOf(url);
+    return isSameOrigin(url) && (path === appUrl || path === appUrl + '/');
 }
 
 function isRequestToAppPage(url) {
-    return url.indexOf('{{assetUrl}}') == -1 && url.indexOf(appUrl) > -1;
+    const path = pathOf(url);
+    return isSameOrigin(url) && path.startsWith(appUrl + '/') && !path.startsWith(assetUrl + '/');
 }
 
 function isRequestToAPI(url) {
-    return url.indexOf(APIUrl) > -1;
+    return isSameOrigin(url) && pathOf(url) === APIUrl;
 }
 
 function isRequestToImage(url) {
@@ -145,7 +152,7 @@ self.addEventListener('fetch', function (e) {
     if (apiRequest || rootRequest) {
 
         // /app and /app/ should be cached under a same and unique URL
-        if (requestUrl.endsWith(appUrl)) {
+        if (rootRequest) {
             requestUrl = appUrl + '/';
         }
 

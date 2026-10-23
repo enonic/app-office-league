@@ -6,9 +6,13 @@ var version = (Date.now() / 1000).toFixed();
 exports.get = function (req) {
     var user = authLib.getUser();
 
+    // vhost-aware base path: "" with root vhost, "/webapp/<app>" without
+    var basePath = portalLib.url({ path: req.contextPath });
+    var appUrl = basePath === '/' ? '' : basePath;
+
     var params = {
-        appUrl: '',
-        assetUrl: '/assets',
+        appUrl: appUrl,
+        assetUrl: appUrl + '/assets',
         version: version,
         userKey: user ? user.key : ''
     };
