@@ -1,4 +1,4 @@
-import {Component, Input, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, SimpleChanges} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {AuthService} from '../../services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -9,6 +9,8 @@ import {Team} from '../../../graphql/schemas/Team';
 import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'league-profile-teams',
     templateUrl: 'league-profile-teams.component.html'
 })

@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, ElementRef} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, Output, EventEmitter, ElementRef} from '@angular/core';
 import {Player} from '../../../graphql/schemas/Player';
 import { Config } from '../../app.config';
 import {MaterializeAction} from '../../common/materialize/materialize.directive';
@@ -6,6 +6,8 @@ import {MaterializeAction} from '../../common/materialize/materialize.directive'
 declare var XPCONFIG: Config;
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'new-game-player',
     templateUrl: 'new-game-player.component.html',
     styleUrls: ['new-game-player.component.less']

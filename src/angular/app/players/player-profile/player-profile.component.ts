@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Handedness} from '../../../graphql/schemas/Handedness';
 import {Player} from '../../../graphql/schemas/Player';
@@ -17,6 +17,8 @@ import { Config } from '../../app.config';
 declare var XPCONFIG: Config;
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'player-profile',
     templateUrl: 'player-profile.component.html',
     styleUrls: ['player-profile.component.less']

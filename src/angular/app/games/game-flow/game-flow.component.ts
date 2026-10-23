@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges, ViewChild} from '@angular/core';
 import {Game} from '../../../graphql/schemas/Game';
 import {GamePlayer} from '../../../graphql/schemas/GamePlayer';
 import {Side} from '../../../graphql/schemas/Side';
@@ -6,6 +6,8 @@ import {GameTeam} from '../../../graphql/schemas/GameTeam';
 import {Chart} from '../../common/chart';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'game-flow',
     templateUrl: 'game-flow.component.html',
     styleUrls: ['game-flow.component.less']

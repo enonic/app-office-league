@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
 import {GraphQLService} from '../../services/graphql.service';
@@ -28,6 +28,8 @@ enum PlayerPosition {
 }
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'game-play',
     templateUrl: 'game-play.component.html',
     styleUrls: ['game-play.component.less']

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {BaseComponent} from '../base.component';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -6,6 +6,8 @@ import {Team} from '../../../graphql/schemas/Team';
 import {RankingHelper} from '../../../graphql/schemas/RankingHelper';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'team-summary',
     templateUrl: 'team-summary.component.html',
     styleUrls: ['team-summary.component.less']
