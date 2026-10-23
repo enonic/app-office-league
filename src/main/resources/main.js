@@ -20,5 +20,4 @@ if (!app.config['skip-test-data']) {
 maintenanceTaskLib.launchGameGCTask();
 
 webhooks.setupWebHooks();
-// Currently not working
-// gameNotifications.setupPushNotifications();
+gameNotifications.setupPushNotifications();

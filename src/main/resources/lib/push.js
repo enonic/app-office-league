@@ -22,21 +22,20 @@ exports.getKeyPair = function () {
 
 exports.sendPushNotification = function (endpoint, auth, p256dh, message) {
     var keyPair = exports.getKeyPair();
+    var prefix = '[' + p256dh.substring(0, 10) + '] ';
 
-    notifications.sendAsync({
+    // sync send: caller already runs in a task; async callbacks never fire
+    var status = notifications.send({
         privateKey: keyPair.privateKey,
         publicKey: keyPair.publicKey,
         endpoint: endpoint,
         auth: auth,
         receiverKey: p256dh,
-        payload: message,
-        success: function () {
-            log.info(prefix + 'Push notification sent successfully');
-        },
-        error: function () {
-            log.warning(prefix + 'Could not send push notification');
-        }
+        payload: message
     });
+    if (status < 200 || status >= 300) {
+        log.warning(prefix + 'Push notification rejected, status ' + status);
+    }
 };
 
 

@@ -1,12 +1,12 @@
 const eventLib = require("/lib/xp/event");
 const storeLib = require("/lib/office-league-store");
 const authLib = require("/lib/xp/auth");
-const portal = require("/lib/xp/portal");
 
 const OFFICE_LEAGUE_GAME_EVENT_ID = storeLib.OFFICE_LEAGUE_GAME_EVENT_ID;
 
 exports.setupPushNotifications = function () {
-    const baseUrl = portal.pageUrl({ path: "/", type: "absolute" });
+    // runs at startup, no request bound: base url must come from config
+    const baseUrl = app.config["officeleague.baseUrl"] || "";
 
     eventLib.listener({
         type: "custom." + OFFICE_LEAGUE_GAME_EVENT_ID,
