@@ -1,10 +1,5 @@
 <ng-template [ngIf]="game != null">
     <div class="game-flow row">
-        <canvas baseChart width="600" height="400"
-                [datasets]="chartDatasets"
-                [options]="lineChartOptions"
-                [colors]="lineChartColors"
-                [legend]="lineChartLegend"
-                [type]="lineChartType"></canvas>
+        <canvas #canvas width="600" height="400"></canvas>
     </div>
 </ng-template>

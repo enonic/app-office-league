@@ -15,7 +15,8 @@ import {PlayerSelectComponent} from './player-select/player-select.component';
 import {ChipsComponent} from './chips/chips.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {ConnectionErrorComponent} from './connection-error/connection-error.component';
-import { MaterializeModule } from 'angular2-materialize';
+import {MaterializeDirective} from './materialize/materialize.directive';
+import {CalendarPipe} from './calendar.pipe';
 
 
 @NgModule({
@@ -32,11 +33,12 @@ import { MaterializeModule } from 'angular2-materialize';
         LoadingComponent,
         ConnectionErrorComponent,
         PlayerSelectComponent,
-        ChipsComponent
+        ChipsComponent,
+        MaterializeDirective,
+        CalendarPipe
     ],
     imports: [
         BrowserModule,
-        MaterializeModule,
         FormsModule,
         ReactiveFormsModule
     ],
@@ -56,6 +58,8 @@ import { MaterializeModule } from 'angular2-materialize';
         ConnectionErrorComponent,
         PlayerSelectComponent,
         ChipsComponent,
+        MaterializeDirective,
+        CalendarPipe
     ]
 })
 export class CommonModule {

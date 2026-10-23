@@ -1,5 +1,5 @@
 import {ErrorHandler, Injectable} from '@angular/core';
-import {toast} from 'angular2-materialize';
+import {toast} from './materialize/materialize.directive';
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {

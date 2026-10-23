@@ -17,7 +17,7 @@ import {Player} from '../../../graphql/schemas/Player';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, lastValueFrom, map } from 'rxjs';
 import { Config } from '../../app.config';
-import { MaterializeAction } from 'angular2-materialize';
+import {MaterializeAction} from '../../common/materialize/materialize.directive';
 
 declare var XPCONFIG: Config;
 

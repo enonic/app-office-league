@@ -96,3 +96,6 @@ crashlytics-build.properties
 ### Node.js ###
 node_modules
 npm-debug.log
+
+### Claude ###
+.claude/docs
