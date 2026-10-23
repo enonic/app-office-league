@@ -1,20 +1,11 @@
-import {Injectable} from '@angular/core';
-import {CanActivate, Router} from '@angular/router';
+import {inject} from '@angular/core';
+import {CanActivateFn, Router} from '@angular/router';
 import {AuthService} from '../services/auth.service';
 
-@Injectable()
-export class PlayerRouteGuard
-    implements CanActivate {
-
-    constructor(private authService: AuthService, private router: Router) {
+export const playerRouteGuard: CanActivateFn = () => {
+    if (inject(AuthService).isNewUser()) {
+        inject(Router).navigate(['player-create'], {replaceUrl: true});
+        return false;
     }
-
-    canActivate() {
-        if (this.authService.isNewUser()) {
-            this.router.navigate(['player-create'], {replaceUrl: true});
-            return false;
-        }
-        return true;
-    }
-
-}
+    return true;
+};
