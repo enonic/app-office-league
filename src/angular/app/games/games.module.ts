@@ -11,12 +11,9 @@ import {FormsModule} from '@angular/forms';
 import {GamePlayComponent} from './game-play/game-play.component';
 import {GamePointsComponent} from './game-points/game-points.component';
 import {PlayerRouteGuard} from '../guards/player.route.guard';
-import {NgChartsModule} from 'ng2-charts';
 import {GameFlowComponent} from './game-flow/game-flow.component';
 import {GameSelection} from './GameSelection';
 import {RatingPointsComponent} from './rating-points/rating-points.component';
-import {MomentModule} from 'angular2-moment'
-import { MaterializeModule } from 'angular2-materialize';
 
 const gameRoutes: Routes = [
     {path: 'games', component: GameListPageComponent, canActivate: [PlayerRouteGuard]},
@@ -43,11 +40,8 @@ const gameRoutes: Routes = [
     ],
     imports: [
         CommonModule,
-        MaterializeModule,
         RouterModule.forChild(gameRoutes),
-        FormsModule,
-        NgChartsModule,
-        MomentModule
+        FormsModule
     ],
     exports: [GameListComponent],
     providers: [GameSelection],
