@@ -1,22 +1,14 @@
-import {Injectable} from '@angular/core';
-import {CanActivate, Router} from '@angular/router';
-import { Config } from '../app.config';
+import {inject} from '@angular/core';
+import {CanActivateFn, Router} from '@angular/router';
+import {Config} from '../app.config';
 
 declare var XPCONFIG: Config;
 
-@Injectable()
-export class EditRouteGuard implements CanActivate {
-
-    constructor(private router: Router) {
+export const editRouteGuard: CanActivateFn = () => {
+    console.log('EditRouteGuard.canActivate:', XPCONFIG.content && XPCONFIG.content.type);
+    if (XPCONFIG.content && XPCONFIG.content.type == 'com.enonic.app.officeleague:info-page') {
+        inject(Router).navigate([XPCONFIG.content.name], {replaceUrl: true});
+        return false;
     }
-
-    canActivate() {
-        console.log('EditRouteGuard.canActivate:', XPCONFIG.content && XPCONFIG.content.type);
-        if (XPCONFIG.content && XPCONFIG.content.type  == 'com.enonic.app.officeleague:info-page') {
-            this.router.navigate([XPCONFIG.content.name], {replaceUrl: true});
-            return false;
-        }
-        return true;
-    }
-
-}
+    return true;
+};

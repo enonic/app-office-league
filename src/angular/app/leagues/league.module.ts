@@ -12,18 +12,18 @@ import {LeagueProfilePlayersComponent} from './league-profile-players/league-pro
 import {LeagueProfileTeamsComponent} from './league-profile-teams/league-profile-teams.component';
 import {LeagueEditCreateComponent} from './league-edit-create/league-edit-create.component';
 import {FormsModule} from '@angular/forms';
-import {PlayerRouteGuard} from '../guards/player.route.guard';
+import {playerRouteGuard} from '../guards/player.route.guard';
 import {AdminListComponent} from './admin-list/admin-list.component';
 import {AdminSummaryComponent} from './admin-summary/admin-summary.component';
 import {LeaguePlayerGraphComponent} from './league-player-graph/league-player-graph.component';
 
 const leagueRoutes: Routes = [
-    {path: 'leagues', component: LeagueBrowserComponent, canActivate: [PlayerRouteGuard,]},
-    {path: 'leagues/:name', component: LeagueProfileComponent, canActivate: [PlayerRouteGuard,]},
-    {path: 'leagues/:name/players', component: LeagueProfilePlayersComponent, canActivate: [PlayerRouteGuard,]},
-    {path: 'leagues/:name/teams', component: LeagueProfileTeamsComponent, canActivate: [PlayerRouteGuard,]},
-    {path: 'leagues/:name/edit', component: LeagueEditCreateComponent, canActivate: [PlayerRouteGuard,]},
-    {path: 'league-create', component: LeagueEditCreateComponent, canActivate: [PlayerRouteGuard,]},
+    {path: 'leagues', component: LeagueBrowserComponent, canActivate: [playerRouteGuard]},
+    {path: 'leagues/:name', component: LeagueProfileComponent, canActivate: [playerRouteGuard]},
+    {path: 'leagues/:name/players', component: LeagueProfilePlayersComponent, canActivate: [playerRouteGuard]},
+    {path: 'leagues/:name/teams', component: LeagueProfileTeamsComponent, canActivate: [playerRouteGuard]},
+    {path: 'leagues/:name/edit', component: LeagueEditCreateComponent, canActivate: [playerRouteGuard]},
+    {path: 'league-create', component: LeagueEditCreateComponent, canActivate: [playerRouteGuard]},
 ];
 
 @NgModule({

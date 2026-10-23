@@ -1,10 +1,7 @@
 {
   "name": "office-league",
   "scripts": {
-    "start": "webpack-dev-server --config config/webpack.js",
-    "build": "webpack --config config/webpack.js",
-    "build:aot": "webpack --config config/webpack.aot.js",
-    "i18n": "ng-xi18n -p tsconfig.json"
+    "build:aot": "webpack --config config/webpack.aot.js"
   },
   "dependencies": {
     "@angular/common": "22.2.3",
@@ -13,7 +10,6 @@
     "@angular/forms": "22.2.3",
     "@angular/localize": "22.2.3",
     "@angular/platform-browser": "22.2.3",
-    "@angular/platform-browser-dynamic": "22.2.3",
     "@angular/router": "22.2.3",
     "chart.js": "^4.4.7",
     "chartjs-plugin-annotation": "3.1.0",
@@ -22,9 +18,7 @@
     "materialize-css": "1.0.0",
     "moment": "2.31.0",
     "rxjs": "7.8.1",
-    "ts-loader": "^9.5.2",
     "tslib": "2.8.1",
-    "webpack-node-externals": "^3.0.0",
     "zone.js": "~0.16.3"
   },
   "devDependencies": {
@@ -32,7 +26,6 @@
     "@babel/core": "8.0.9",
     "@ngtools/webpack": "22.2.4",
     "@types/materialize-css": "1.0.14",
-    "@types/node": "22.5.0",
     "babel-loader": "10.1.1",
     "copy-webpack-plugin": "13.0.0",
     "css-loader": "7.1.2",
@@ -41,13 +34,10 @@
     "less": "^4.2.2",
     "less-loader": "^12.2.0",
     "mini-css-extract-plugin": "^2.9.2",
-    "raw-loader": "^4.0.0",
-    "style-loader": "4.0.0",
     "to-string-loader": "1.2.0",
     "typescript": "6.0.3",
     "webpack": "^5.105.0",
     "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^6.0.0",
     "webpack-merge": "6.0.1"
   },
   "engines": {

@@ -21,7 +21,6 @@
     "src/angular/**/*.ts"
   ],
   "exclude": [
-    "./node_modules/**",
-    "**/main.aot.ts"
+    "./node_modules/**"
   ]
 }

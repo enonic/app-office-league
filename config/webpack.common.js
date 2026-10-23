@@ -26,13 +26,6 @@ export default {
     depth: true,
   },
 
-  entry: {
-    polyfills: "./src/angular/polyfills.ts",
-    vendor: "./src/angular/vendor.ts",
-    app: "./src/angular/main.ts",
-    styles: "./src/angular/styles.less",
-  },
-
   resolve: {
     extensions: [".ts", ".js", ".less", ".css"],
   },

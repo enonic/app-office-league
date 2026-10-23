@@ -6,7 +6,7 @@ import commonConfig from "./webpack.common.js";
 import { root } from "./helpers.js";
 
 const angularWebpackPlugin = new AngularWebpackPlugin({
-  tsconfig: "./tsconfig.aot.json",
+  tsconfig: "./tsconfig.json",
   jitMode: false,
 });
 
@@ -20,9 +20,12 @@ export default merge(commonConfig, {
   devtool: "source-map",
   target: 'web',
 
+  // order = script order in webapp.ejs: vendor (materialize, global M) must load before app
   entry: {
-    app: "./src/angular/main.aot.ts",
+    polyfills: "./src/angular/polyfills.ts",
     vendor: "./src/angular/vendor.aot.ts",
+    app: "./src/angular/main.aot.ts",
+    styles: "./src/angular/styles.less",
   },
 
   output: {

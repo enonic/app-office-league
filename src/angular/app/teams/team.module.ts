@@ -7,13 +7,13 @@ import {LeaguesModule} from '../leagues/league.module';
 import {TeamEditCreateComponent} from './team-edit-create/team-edit-create.component';
 import {TeamListPageComponent} from './team-list-page/team-list-page.component';
 import {FormsModule} from '@angular/forms';
-import {PlayerRouteGuard, } from '../guards/player.route.guard';
+import {playerRouteGuard} from '../guards/player.route.guard';
 
 const teamRoutes: Routes = [
-    {path: 'teams', component: TeamListPageComponent, canActivate: [PlayerRouteGuard,]},
-    {path: 'teams/:name', component: TeamProfileComponent, canActivate: [PlayerRouteGuard,]},
-    {path: 'teams/:name/edit', component: TeamEditCreateComponent, canActivate: [PlayerRouteGuard,]},
-    {path: 'team-create', component: TeamEditCreateComponent, canActivate: [PlayerRouteGuard,]},
+    {path: 'teams', component: TeamListPageComponent, canActivate: [playerRouteGuard]},
+    {path: 'teams/:name', component: TeamProfileComponent, canActivate: [playerRouteGuard]},
+    {path: 'teams/:name/edit', component: TeamEditCreateComponent, canActivate: [playerRouteGuard]},
+    {path: 'team-create', component: TeamEditCreateComponent, canActivate: [playerRouteGuard]},
 ];
 
 @NgModule({
