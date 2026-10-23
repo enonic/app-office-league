@@ -66,8 +66,10 @@ router.route(
 );
 
 function defaultRoute(req) {
-    const baseHref = req.contextPath;
-    const baseAbsoluteUrl = req.scheme + '://' + req.host + (req.port && req.port !== 80 && req.port !== 443 ? ':' + req.port : '') + req.contextPath;
+    // vhost-aware base path: "/" with root vhost, "/webapp/<app>" without
+    const basePath = portalLib.url({ path: req.contextPath });
+    const baseHref = basePath === "/" ? "" : basePath;
+    const baseAbsoluteUrl = portalLib.url({ path: req.contextPath, type: "absolute" });
 
     if (mustLogIn(req)) {
         return {
@@ -136,7 +138,7 @@ function defaultRoute(req) {
         baseHref: baseHref + "/", // trailing slash for relative urls to be correct
         assetsUrl: baseHref + "/assets",
         audioUrl: baseHref + "/assets/audio/",
-        loginUrl: portalLib.loginUrl({ redirect: baseHref }),
+        loginUrl: portalLib.loginUrl({ redirect: baseHref + "/" }),
         logoutUrl: portalLib.logoutUrl({ redirect: baseAbsoluteUrl, type: "absolute" }),
         logoutMarketingUrl: portalLib.url({ path: '/', type: 'absolute'}),
         idProvider: portalLib.idProviderUrl(),
