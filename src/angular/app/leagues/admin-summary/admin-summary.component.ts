@@ -1,10 +1,12 @@
-import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import {Player} from '../../../graphql/schemas/Player';
 import {ActivatedRoute} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
 import {BaseComponent} from '../../common/base.component';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'admin-summary',
     templateUrl: 'admin-summary.component.html',
     styleUrls: ['admin-summary.component.less']

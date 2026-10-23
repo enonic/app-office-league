@@ -1,10 +1,12 @@
-import {Component, OnInit, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {GraphQLService} from '../../services/graphql.service';
 import {Game} from '../../../graphql/schemas/Game';
 import {List2Component} from '../../common/list2.component';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'game-list',
     templateUrl: 'game-list.component.html',
     styleUrls: ['game-list.component.less']

@@ -46,11 +46,14 @@ export default {
   module: {
     rules: [
       {
+        // Angular packages are shipped partially compiled; the Ivy linker finishes them (required outside the Angular CLI)
         test: /\.m?js$/,
         resolve: {fullySpecified: false},
         use: {
           loader: 'babel-loader',
           options: {
+            cacheDirectory: true,
+            compact: false,
             plugins: [ linkerPlugin ],
           }
         }
@@ -119,13 +122,6 @@ export default {
   },
 
   plugins: [
-    // Workaround for angular/angular#11580
-    new webpack.ContextReplacementPlugin(
-      // The (\\|\/) piece accounts for path separators in *nix and Windows
-      /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
-      root("./src"), // location of your src
-      {} // a map of your routes
-    ),
     new CopyWebpackPlugin({
       patterns: [
         {

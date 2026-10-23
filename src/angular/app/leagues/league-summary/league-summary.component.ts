@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
 import {League} from '../../../graphql/schemas/League';
@@ -6,6 +6,8 @@ import {BaseComponent} from '../../common/base.component';
 import {RankingHelper} from '../../../graphql/schemas/RankingHelper';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'league-summary',
     templateUrl: 'league-summary.component.html',
     styleUrls: ['league-summary.component.less']

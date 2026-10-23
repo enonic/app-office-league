@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {Team} from '../../../graphql/schemas/Team';
@@ -6,6 +6,8 @@ import {GraphQLService} from '../../services/graphql.service';
 import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'player-team-list',
     templateUrl: 'player-team-list.component.html',
     styleUrls: ['player-team-list.component.less']

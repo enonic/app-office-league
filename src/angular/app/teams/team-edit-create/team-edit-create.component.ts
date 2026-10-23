@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, AfterViewInit, Component, ElementRef, EventEmitter, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
 import {BaseComponent} from '../../common/base.component';
@@ -20,6 +20,8 @@ import { Config } from '../../app.config';
 declare var XPCONFIG: Config;
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'team-edit-create',
     templateUrl: 'team-edit-create.component.html',
     styleUrls: ['team-edit-create.component.less']

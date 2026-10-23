@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {AuthService} from './services/auth.service';
 import {GraphQLService} from './services/graphql.service';
@@ -10,6 +10,8 @@ import {Player} from '../graphql/schemas/Player';
 import { filter } from 'rxjs';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'office-league',
     templateUrl: './app.component.html',
     styleUrls: ['app.component.less']

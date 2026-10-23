@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Game} from '../../../graphql/schemas/Game';
 import {TimelineEntry} from '../TimelineEntry';
@@ -9,6 +9,8 @@ import {Side} from '../../../graphql/schemas/Side';
 import {GamePlayer} from '../../../graphql/schemas/GamePlayer';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'game-points',
     templateUrl: 'game-points.component.html',
     styleUrls: ['game-points.component.less']

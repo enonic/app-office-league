@@ -1,8 +1,10 @@
-import {Input, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Input, Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {BaseComponent} from './base.component';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'list',
     template: ''
 })

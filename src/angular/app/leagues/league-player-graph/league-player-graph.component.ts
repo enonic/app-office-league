@@ -1,9 +1,11 @@
-import {Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges, ViewChild} from '@angular/core';
 import {LeaguePlayer} from '../../../graphql/schemas/LeaguePlayer';
 import {Chart} from '../../common/chart';
 
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'league-player-graph',
     templateUrl: 'league-player-graph.component.html'
 })

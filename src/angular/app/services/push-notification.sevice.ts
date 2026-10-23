@@ -6,7 +6,7 @@ declare var XPCONFIG: Config;
 @Injectable()
 export class PushNotificationService {
 
-    private publicKey: Uint8Array;
+    private publicKey: Uint8Array<ArrayBuffer>;
 
     constructor() {
         this.publicKey = this.urlB64ToUint8Array(XPCONFIG.publicKey);
@@ -105,7 +105,7 @@ export class PushNotificationService {
         });
     }
 
-    private urlB64ToUint8Array(base64String) {
+    private urlB64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
         const padding = '='.repeat((4 - base64String.length % 4) % 4);
         const base64 = (base64String + padding)
             .replace(/\-/g, '+')

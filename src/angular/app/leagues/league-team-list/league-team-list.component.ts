@@ -1,9 +1,11 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, Input} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {List2Component} from '../../common/list2.component';
 import {LeagueTeam} from '../../../graphql/schemas/LeagueTeam';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'league-team-list',
     templateUrl: 'league-team-list.component.html',
     styleUrls: ['league-team-list.component.less']

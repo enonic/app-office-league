@@ -1,4 +1,4 @@
-import {Component, Input, ElementRef, AfterViewInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, ElementRef, AfterViewInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ConfigUser} from '../../app.config';
 import {GraphQLService} from '../../services/graphql.service';
@@ -9,6 +9,8 @@ import {BaseComponent} from '../../common/base.component';
 import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'league-browser',
     templateUrl: 'league-browser.component.html',
     styleUrls: ['league-browser.component.less']

@@ -1,8 +1,10 @@
-import {Component, OnChanges, SimpleChanges, OnInit, OnDestroy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Observable, throwError} from 'rxjs';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'base',
     template: ''
 })

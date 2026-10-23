@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {BaseComponent} from '../base.component';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -9,6 +9,8 @@ import {Side} from '../../../graphql/schemas/Side';
 import {OfflinePersistenceService} from '../../services/offline-persistence.service';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'game-summary',
     templateUrl: './game-summary.component.html',
     styleUrls: ['./game-summary.component.less']

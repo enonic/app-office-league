@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GameComponent} from '../game/game.component';
@@ -15,6 +15,8 @@ import { Config } from '../../app.config';
 declare var XPCONFIG: Config;
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'game-profile',
     templateUrl: 'game-profile.component.html',
     styleUrls: ['game-profile.component.less']

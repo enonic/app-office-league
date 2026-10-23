@@ -1,8 +1,10 @@
-import {Component, Input, AfterViewInit, SimpleChanges, ElementRef, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, AfterViewInit, SimpleChanges, ElementRef, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {BaseComponent} from '../base.component';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'chips',
     templateUrl: 'chips.component.html',
     styleUrls: ['chips.component.less']

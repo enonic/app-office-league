@@ -1,4 +1,4 @@
-import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import {Player} from '../../../graphql/schemas/Player';
 import {BaseComponent} from '../base.component';
 import {GraphQLService} from '../../services/graphql.service';
@@ -7,6 +7,8 @@ import {RankingHelper} from '../../../graphql/schemas/RankingHelper';
 import {AuthService} from '../../services/auth.service';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'player-summary',
     templateUrl: 'player-summary.component.html',
     styleUrls: ['player-summary.component.less']

@@ -15,6 +15,7 @@ export function toast(html: string, displayLength: number = 3000, classes?: stri
  * Actions: {action: 'modal', params: ['open' | 'close']}
  */
 @Directive({
+    standalone: false,
     selector: '[materialize]'
 })
 export class MaterializeDirective implements AfterViewInit, OnDestroy {
