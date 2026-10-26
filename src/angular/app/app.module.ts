@@ -1,6 +1,6 @@
-import {ErrorHandler, NgModule} from '@angular/core';
+import {ErrorHandler, NgModule, provideZoneChangeDetection} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
+import {provideHttpClient} from '@angular/common/http';
 import {AppComponent} from './app.component';
 import {RouterModule, Routes} from '@angular/router';
 import {PlayersModule} from './players/players.module';
@@ -9,9 +9,6 @@ import {GamesModule} from './games/games.module';
 import {TeamsModule} from './teams/team.module';
 import {LeaguesModule} from './leagues/league.module';
 import {InfoPageModule} from './info-page/info-page.module';
-import {AuthenticatedRouteGuard} from './guards/authenticated.route.guard';
-import {PlayerRouteGuard} from './guards/player.route.guard';
-import {EditRouteGuard} from './guards/edit.route.guard';
 import {AuthService} from './services/auth.service';
 import {CryptoService} from './services/crypto.service';
 import {CommonModule} from './common/common.module';
@@ -24,7 +21,6 @@ import {UserProfileService} from './services/user-profile.service';
 import {WindowRefService} from './services/window-ref.service';
 import {AudioService} from './services/audio.service';
 import {PushNotificationService} from './services/push-notification.sevice';
-import { MaterializeModule } from 'angular2-materialize';
 
 const appRoutes: Routes = [
     {path: '**', redirectTo: '', pathMatch: 'full'}
@@ -36,17 +32,15 @@ const appRoutes: Routes = [
     ],
     imports: [
         CommonModule,
-        MaterializeModule,
         RouterModule.forRoot(appRoutes),
         FormsModule,
-        HttpClientModule,
         PlayersModule,
         GamesModule,
         TeamsModule,
         LeaguesModule,
         InfoPageModule
     ],
-    providers: [GraphQLService, AuthService, CryptoService, PageTitleService, AuthenticatedRouteGuard, PlayerRouteGuard, EditRouteGuard,
+    providers: [provideZoneChangeDetection(), provideHttpClient(), GraphQLService, AuthService, CryptoService, PageTitleService,
         OfflinePersistenceService, OnlineStatusService, RankingService, UserProfileService, WindowRefService, AudioService,
         PushNotificationService,
         {

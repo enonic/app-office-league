@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {BaseComponent} from '../../common/base.component';
 import {Game} from '../../../graphql/schemas/Game';
@@ -6,6 +6,8 @@ import {GraphQLService} from '../../services/graphql.service';
 import {PageTitleService} from '../../services/page-title.service';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'game-list-page',
     templateUrl: 'game-list-page.component.html'
 })

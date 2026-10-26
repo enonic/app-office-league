@@ -1,13 +1,13 @@
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import { merge } from "webpack-merge";
-import { AngularWebpackPlugin as AotPlugin } from "@ngtools/webpack";
+import { AngularWebpackPlugin } from "@ngtools/webpack";
 import commonConfig from "./webpack.common.js";
 
 import { root } from "./helpers.js";
 
-const aotPlugin = new AotPlugin({
-  tsconfig: "./tsconfig.aot.json",
-  entryModule: root("src/angular/app/app.module#AppModule"),
+const angularWebpackPlugin = new AngularWebpackPlugin({
+  tsconfig: "./tsconfig.json",
+  jitMode: false,
 });
 
 const htmlWebpackPlugin = new HtmlWebpackPlugin({
@@ -20,9 +20,12 @@ export default merge(commonConfig, {
   devtool: "source-map",
   target: 'web',
 
+  // order = script order in webapp.ejs: vendor (materialize, global M) must load before app
   entry: {
-    app: "./src/angular/main.aot.ts",
+    polyfills: "./src/angular/polyfills.ts",
     vendor: "./src/angular/vendor.aot.ts",
+    app: "./src/angular/main.aot.ts",
+    styles: "./src/angular/styles.less",
   },
 
   output: {
@@ -43,21 +46,5 @@ export default merge(commonConfig, {
     ],
   },
 
-  plugins: [ aotPlugin, htmlWebpackPlugin],
+  plugins: [ angularWebpackPlugin, htmlWebpackPlugin],
 });
-
-// Fix for AotPlugin Error: Cannot read property 'getSourceFile' of undefined
-// https://github.com/angular/angular-cli/issues/5329?platform=hootsuite
-/*aotPlugin._compilerHost._resolve = function (path_to_resolve) {
-    path_1 = require("path");
-    path_to_resolve = aotPlugin._compilerHost._normalizePath(path_to_resolve);
-    if (path_to_resolve[0] == '.') {
-        return aotPlugin._compilerHost._normalizePath(path_1.join(aotPlugin._compilerHost.getCurrentDirectory(), path_to_resolve));
-    }
-    else if (path_to_resolve[0] == '/' || path_to_resolve.match(/^\w:\//)) {
-        return path_to_resolve;
-    }
-    else {
-        return aotPlugin._compilerHost._normalizePath(path_1.join(aotPlugin._compilerHost._basePath, path_to_resolve));
-    }
-};*/

@@ -1,29 +1,26 @@
 {
   "compilerOptions": {
-    "baseUrl": "",
-    "declaration": false,
-    "downlevelIteration": true,
-    "emitDecoratorMetadata": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "target": "es2022",
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "lib": ["es2022", "dom"],
+    "types": ["materialize-css"],
+    "useDefineForClassFields": false,
     "experimentalDecorators": true,
-    "skipLibCheck": true,
     "importHelpers": true,
-    "lib": ["es6", "dom"],
-    "mapRoot": "./",
-    "module": "es2015",
-    "moduleResolution": "node",
-    "outDir": "../dist/out-tsc",
+    "skipLibCheck": true,
     "sourceMap": true,
-    "target": "es2015",
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
-    "allowSyntheticDefaultImports": true
+    "noUncheckedSideEffectImports": false
   },
   "angularCompilerOptions": {
-    "genDir": "src/angular/assets/locale"
+    "strictTemplates": false
   },
+  "include": [
+    "src/angular/**/*.ts"
+  ],
   "exclude": [
-    "./node_modules",
-    "**/main.aot.ts"
+    "./node_modules/**"
   ]
 }

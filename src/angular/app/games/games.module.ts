@@ -10,22 +10,19 @@ import {NewGamePlayerComponent} from './new-game-player/new-game-player.componen
 import {FormsModule} from '@angular/forms';
 import {GamePlayComponent} from './game-play/game-play.component';
 import {GamePointsComponent} from './game-points/game-points.component';
-import {PlayerRouteGuard} from '../guards/player.route.guard';
-import {NgChartsModule} from 'ng2-charts';
+import {playerRouteGuard} from '../guards/player.route.guard';
 import {GameFlowComponent} from './game-flow/game-flow.component';
 import {GameSelection} from './GameSelection';
 import {RatingPointsComponent} from './rating-points/rating-points.component';
-import {MomentModule} from 'angular2-moment'
-import { MaterializeModule } from 'angular2-materialize';
 
 const gameRoutes: Routes = [
-    {path: 'games', component: GameListPageComponent, canActivate: [PlayerRouteGuard]},
-    {path: 'games/:id', component: GameProfileComponent, canActivate: [PlayerRouteGuard]},
-    {path: 'games/:leagueId/new-game', component: NewGameComponent, canActivate: [PlayerRouteGuard]},
-    {path: 'games/:leagueId/game-play', component: GamePlayComponent, canActivate: [PlayerRouteGuard]},
-    {path: 'leagues/:leagueName/games', component: GameListPageComponent, canActivate: [PlayerRouteGuard,]},
-    {path: 'players/:playerName/games', component: GameListPageComponent, canActivate: [PlayerRouteGuard,]},
-    {path: 'teams/:teamName/games', component: GameListPageComponent, canActivate: [PlayerRouteGuard,]}
+    {path: 'games', component: GameListPageComponent, canActivate: [playerRouteGuard]},
+    {path: 'games/:id', component: GameProfileComponent, canActivate: [playerRouteGuard]},
+    {path: 'games/:leagueId/new-game', component: NewGameComponent, canActivate: [playerRouteGuard]},
+    {path: 'games/:leagueId/game-play', component: GamePlayComponent, canActivate: [playerRouteGuard]},
+    {path: 'leagues/:leagueName/games', component: GameListPageComponent, canActivate: [playerRouteGuard]},
+    {path: 'players/:playerName/games', component: GameListPageComponent, canActivate: [playerRouteGuard]},
+    {path: 'teams/:teamName/games', component: GameListPageComponent, canActivate: [playerRouteGuard]}
 ];
 
 @NgModule({
@@ -43,11 +40,8 @@ const gameRoutes: Routes = [
     ],
     imports: [
         CommonModule,
-        MaterializeModule,
         RouterModule.forChild(gameRoutes),
-        FormsModule,
-        NgChartsModule,
-        MomentModule
+        FormsModule
     ],
     exports: [GameListComponent],
     providers: [GameSelection],

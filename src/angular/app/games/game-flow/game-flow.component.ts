@@ -1,32 +1,54 @@
-import {Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges, ViewChild} from '@angular/core';
 import {Game} from '../../../graphql/schemas/Game';
 import {GamePlayer} from '../../../graphql/schemas/GamePlayer';
 import {Side} from '../../../graphql/schemas/Side';
 import {GameTeam} from '../../../graphql/schemas/GameTeam';
+import {Chart} from '../../common/chart';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'game-flow',
     templateUrl: 'game-flow.component.html',
     styleUrls: ['game-flow.component.less']
 })
 export class GameFlowComponent
-    implements OnInit, OnChanges {
+    implements OnInit, OnChanges, OnDestroy {
 
     @Input() game: Game;
 
     chartDatasets: Array<any> = [
-        {
+        { // red
             lineTension: 0,
             fill: false,
             data: [],
-            label: 'Red'
+            label: 'Red',
+            backgroundColor: 'rgba(148,159,177,0.2)',
+            borderColor: "rgba(160,37,33,1)",
+            pointBorderColor: "rgba(160,37,33,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(160,37,33,1)",
+            pointHoverBorderColor: "rgba(160,37,33,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 2,
         },
-        {
+        { // blue
             lineTension: 0,
             fill: false,
             data: [],
-            label: 'Blue'
+            label: 'Blue',
+            backgroundColor: 'rgba(77,83,96,0.2)',
+            borderColor: "rgba(0,61,131,1)",
+            pointBorderColor: "rgba(0,61,131,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(0,61,131,1)",
+            pointHoverBorderColor: "rgba(0,61,131,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 2,
         }
     ];
     lineChartOptions: any = {
@@ -60,6 +82,9 @@ export class GameFlowComponent
             }
         },
         plugins: {
+            legend: {
+                display: false
+            },
             tooltip: {
                 callbacks: {
                     title: (ctx) => {
@@ -68,48 +93,35 @@ export class GameFlowComponent
                     }
                 }
             },
-        },
-        annotation: {
-            annotations: [{
-                type: 'line',
-                mode: 'vertical',
-                scaleID: 'xAxis',
-                value: 0,
-                borderColor: 'rgba(84, 110, 122, 0)',
-                borderDash: [4, 2],
-                borderWidth: 2
-            }],
-            drawTime: 'afterDatasetsDraw'
+            annotation: {
+                annotations: [{
+                    type: 'line',
+                    scaleID: 'xAxis',
+                    value: 0,
+                    borderColor: 'rgba(84, 110, 122, 0)',
+                    borderDash: [4, 2],
+                    borderWidth: 2
+                }],
+                drawTime: 'afterDatasetsDraw'
+            }
         }
     };
-    lineChartColors: Array<any> = [
-        { // red
-            backgroundColor: 'rgba(148,159,177,0.2)',
-            borderColor: "rgba(160,37,33,1)",
-            pointBorderColor: "rgba(160,37,33,1)",
-            pointBackgroundColor: "#fff",
-            pointBorderWidth: 1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: "rgba(160,37,33,1)",
-            pointHoverBorderColor: "rgba(160,37,33,1)",
-            pointHoverBorderWidth: 2,
-            pointRadius: 2,
-        },
-        { //blue
-            backgroundColor: 'rgba(77,83,96,0.2)',
-            borderColor: "rgba(0,61,131,1)",
-            pointBorderColor: "rgba(0,61,131,1)",
-            pointBackgroundColor: "#fff",
-            pointBorderWidth: 1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: "rgba(0,61,131,1)",
-            pointHoverBorderColor: "rgba(0,61,131,1)",
-            pointHoverBorderWidth: 2,
-            pointRadius: 2,
+    private chart: Chart;
+
+    // canvas lives inside an *ngIf: create the chart when it appears, drop it when it goes
+    @ViewChild('canvas')
+    set canvas(canvas: ElementRef<HTMLCanvasElement>) {
+        if (canvas && !this.chart) {
+            this.chart = new Chart(canvas.nativeElement, {
+                type: 'line',
+                data: {datasets: this.chartDatasets},
+                options: this.lineChartOptions
+            });
+        } else if (!canvas && this.chart) {
+            this.chart.destroy();
+            this.chart = null;
         }
-    ];
-    lineChartLegend: boolean = false;
-    lineChartType: string = 'line';
+    }
 
     ngOnInit(): void {
         if (this.game) {
@@ -121,6 +133,20 @@ export class GameFlowComponent
         let gameChange: SimpleChange = changes['game'];
         if (gameChange && gameChange.currentValue) {
             this.processPoints(gameChange.currentValue);
+        }
+    }
+
+    ngOnDestroy(): void {
+        if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
+
+    private refreshChart(): void {
+        if (this.chart) {
+            this.chart.data.datasets = this.chartDatasets;
+            this.chart.update();
         }
     }
 
@@ -184,9 +210,9 @@ export class GameFlowComponent
         this.chartDatasets[1].data = dataBlue;
         this.chartDatasets[1].label = blueLabel;
 
-        this.lineChartOptions.annotation.annotations[0].value = midTime;
+        this.lineChartOptions.plugins.annotation.annotations[0].value = midTime;
 
-        this.chartDatasets = this.chartDatasets.slice(); // force refresh of chart
+        this.refreshChart();
     }
 
     public static formatSeconds = function (s) {

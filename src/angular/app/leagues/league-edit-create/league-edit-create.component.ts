@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, AfterViewInit, Component, ElementRef, EventEmitter, ViewChild} from '@angular/core';
 import {GraphQLService} from '../../services/graphql.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
@@ -17,11 +17,13 @@ import {Player} from '../../../graphql/schemas/Player';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, lastValueFrom, map } from 'rxjs';
 import { Config } from '../../app.config';
-import { MaterializeAction } from 'angular2-materialize';
+import {MaterializeAction} from '../../common/materialize/materialize.directive';
 
 declare var XPCONFIG: Config;
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'league-edit-create',
     templateUrl: 'league-edit-create.component.html',
     styleUrls: ['league-edit-create.component.less']

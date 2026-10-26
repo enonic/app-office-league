@@ -1,15 +1,16 @@
-import {Component, HostListener, Input, OnChanges, OnInit, SimpleChange, SimpleChanges, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges, ViewChild} from '@angular/core';
 import {LeaguePlayer} from '../../../graphql/schemas/LeaguePlayer';
-import {BaseChartDirective} from 'ng2-charts';
+import {Chart} from '../../common/chart';
 
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'league-player-graph',
     templateUrl: 'league-player-graph.component.html'
 })
 export class LeaguePlayerGraphComponent
-    implements OnInit, OnChanges {
+    implements OnInit, OnChanges, OnDestroy {
 
     private static readonly SERIES_COLORS = ['rgb(228,228,0)', 'rgb(0,255,0)', 'rgb(0,255,255)', 'rgb(176,176,255)', 'rgb(255,0,255)',
         'rgb(228,228,228)', 'rgb(176,0,0)', 'rgb(186,186,0)', 'rgb(0,176,0)', 'rgb(0,176,176)', 'rgb(132,132,255)', 'rgb(176,0,176)',
@@ -66,12 +67,25 @@ export class LeaguePlayerGraphComponent
             }
         }
     };
-    lineChartColors: Array<any> = [];
-    lineChartLegend: boolean = true;
-    lineChartType: string = 'line';
+    private chart: Chart;
 
     constructor() {
         this.handleResize();
+    }
+
+    // canvas lives inside an *ngIf: create the chart when it appears, drop it when it goes
+    @ViewChild('canvas')
+    set canvas(canvas: ElementRef<HTMLCanvasElement>) {
+        if (canvas && !this.chart) {
+            this.chart = new Chart(canvas.nativeElement, {
+                type: 'line',
+                data: {datasets: this.chartDatasets},
+                options: this.lineChartOptions
+            });
+        } else if (!canvas && this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
     }
 
     ngOnInit(): void {
@@ -88,13 +102,24 @@ export class LeaguePlayerGraphComponent
         }
     }
 
-    @ViewChild(BaseChartDirective)
-    public chart: BaseChartDirective;
+    ngOnDestroy(): void {
+        if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
 
     @HostListener('window:resize', ['$event'])
     onResize(event) {
         this.handleResize();
-        this.chart.ngOnChanges({} as SimpleChanges); // force redraw
+        this.refreshChart();
+    }
+
+    private refreshChart(): void {
+        if (this.chart) {
+            this.chart.data.datasets = this.chartDatasets;
+            this.chart.update();
+        }
     }
 
     private handleResize() {
@@ -113,7 +138,6 @@ export class LeaguePlayerGraphComponent
 
     private processData(leaguePlayers: LeaguePlayer[]) {
         let chartDatasets = [];
-        let lineChartColors = [];
         let lastDatePoint = 0, firstDatePoint = Number.MAX_SAFE_INTEGER;
 
         // group points by date
@@ -196,11 +220,6 @@ export class LeaguePlayerGraphComponent
                     borderColor: this.getColor(idx)
                 };
                 chartDatasets.push(chartDataset);
-                lineChartColors.push({
-                    backgroundColor: this.getColor(idx),
-                    borderColor: 'rgb(20, 55, 87)'
-                }
-                );
             } else {
                 console.log(leaguePlayer);
                 console.log("Found game with no players \n Remove the game from storrage");
@@ -212,22 +231,19 @@ export class LeaguePlayerGraphComponent
                 data: [],
                 label: '\t',
                 showLine: false,
-                hidden: true
-            };
-            chartDatasets.push(chartDataset);
-            lineChartColors.push({
+                hidden: true,
                 backgroundColor: this.getColor(cd),
                 borderColor: 'rgb(20, 55, 87)'
-            })
+            };
+            chartDatasets.push(chartDataset);
         }
 
-        this.lineChartColors = lineChartColors;
         this.chartDatasets = chartDatasets;
-        this.lineChartColors = this.lineChartColors.slice();
-        this.chartDatasets = this.chartDatasets.slice();
 
         this.lineChartOptions.scales.xAxes.min = firstDatePoint;
         this.lineChartOptions.scales.xAxes.max = lastDatePoint;
+
+        this.refreshChart();
     }
 
     public static formatTime = function (s) {

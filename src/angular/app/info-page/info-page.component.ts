@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../common/base.component';
 import {GraphQLService} from '../services/graphql.service';
@@ -9,6 +9,8 @@ import { Config } from '../app.config';
 declare var XPCONFIG: Config;
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'info-page',
     templateUrl: 'info-page.component.html',
     styleUrls: ['info-page.component.less']

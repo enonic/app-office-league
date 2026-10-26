@@ -1,9 +1,11 @@
-import {Component, Input, SimpleChanges, Output, EventEmitter} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, SimpleChanges, Output, EventEmitter} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {Player} from '../../../graphql/schemas/Player';
 import {List2Component} from '../../common/list2.component';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'admin-list',
     templateUrl: 'admin-list.component.html',
     styleUrls: ['admin-list.component.less']

@@ -3,11 +3,10 @@ import {RouterModule, Routes} from '@angular/router';
 import {CommonModule} from '../common/common.module';
 import {InfoPageComponent} from './info-page.component';
 import {FormsModule} from '@angular/forms';
-import {PlayerRouteGuard, } from '../guards/player.route.guard';
-import { MaterializeModule } from 'angular2-materialize';
+import {playerRouteGuard} from '../guards/player.route.guard';
 
 const pageInfoRoutes: Routes = [
-    {path: ':info-page', component: InfoPageComponent, canActivate: [PlayerRouteGuard,]}
+    {path: ':info-page', component: InfoPageComponent, canActivate: [playerRouteGuard]}
 ];
 
 @NgModule({
@@ -16,7 +15,6 @@ const pageInfoRoutes: Routes = [
     ],
     imports: [
         CommonModule,
-        MaterializeModule,
         RouterModule.forChild(pageInfoRoutes),
         FormsModule
     ],

@@ -1,6 +1,8 @@
-import {Component, Input, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit, SimpleChanges} from '@angular/core';
 
 @Component({
+    standalone: false,
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'rating-points',
     templateUrl: 'rating-points.component.html',
     styleUrls: ['rating-points.component.less']

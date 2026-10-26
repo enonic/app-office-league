@@ -1,20 +1,13 @@
-import {Injectable} from '@angular/core';
-import {CanActivate, Router} from '@angular/router';
+import {inject} from '@angular/core';
+import {CanActivateFn} from '@angular/router';
 import {AuthService} from '../services/auth.service';
 
-@Injectable()
-export class AuthenticatedRouteGuard implements CanActivate {
-
-    constructor(private authService: AuthService) {
+export const authenticatedRouteGuard: CanActivateFn = () => {
+    const authService = inject(AuthService);
+    if (navigator.onLine && !authService.isAuthenticated()) {
+        authService.login();
+        return false;
     }
-
-    canActivate() {
-        if (navigator.onLine && !this.authService.isAuthenticated()) {
-            this.authService.login();
-            return false;
-        }
-        //TODO Redirect to leagues if offline and unauth
-        return true;
-    }
-
-}
+    //TODO Redirect to leagues if offline and unauth
+    return true;
+};
