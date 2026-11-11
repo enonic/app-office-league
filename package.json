@@ -4,13 +4,13 @@
     "build:aot": "webpack --config config/webpack.aot.js"
   },
   "dependencies": {
-    "@angular/common": "22.2.3",
-    "@angular/compiler": "22.2.3",
-    "@angular/core": "22.2.3",
-    "@angular/forms": "22.2.3",
-    "@angular/localize": "22.2.3",
-    "@angular/platform-browser": "22.2.3",
-    "@angular/router": "22.2.3",
+    "@angular/common": "22.2.5",
+    "@angular/compiler": "22.2.5",
+    "@angular/core": "22.2.5",
+    "@angular/forms": "22.2.5",
+    "@angular/localize": "22.2.5",
+    "@angular/platform-browser": "22.2.5",
+    "@angular/router": "22.2.5",
     "chart.js": "^4.4.7",
     "chartjs-plugin-annotation": "3.1.0",
     "crypto-js": "4.2.0",
@@ -22,7 +22,7 @@
     "zone.js": "~0.16.3"
   },
   "devDependencies": {
-    "@angular/compiler-cli": "22.2.3",
+    "@angular/compiler-cli": "22.2.5",
     "@babel/core": "8.0.9",
     "@ngtools/webpack": "22.2.5",
     "@types/materialize-css": "1.0.14",
