@@ -33,7 +33,7 @@
     "html-webpack-plugin": "5.6.3",
     "less": "^4.2.2",
     "less-loader": "^12.2.0",
-    "mini-css-extract-plugin": "^2.9.2",
+    "mini-css-extract-plugin": "^2.10.2",
     "to-string-loader": "1.2.0",
     "typescript": "6.0.3",
     "webpack": "^5.105.0",
