@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@angular/compiler-cli": "22.2.6",
-    "@babel/core": "8.1.0",
+    "@babel/core": "8.1.2",
     "@ngtools/webpack": "22.2.7",
     "@types/materialize-css": "1.0.14",
     "babel-loader": "10.1.1",
